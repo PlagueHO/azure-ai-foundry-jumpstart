@@ -24,10 +24,10 @@ jobs:
      
     - name: Build Bicep
       run: |
-        bicep build ./infra/core/main.bicep
+        bicep build ./infra/main.bicep
   
     - name: Upload ARM Template as workflow artifact
       uses: actions/upload-artifact@v4
       with:
         name: infrastructurearmtemplate
-        path: ./infra/core/main.json
+        path: ./infra/main.json
