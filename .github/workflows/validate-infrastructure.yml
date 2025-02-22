@@ -11,11 +11,15 @@ on:
         description: "The version of the build to deploy to the application resources"
         required: true
         type: string
-      LOCATION:
+      AZURE_LOCATION:
         description: "The Azure region to deploy the application resources to"
         required: true
         type: string
-          
+      AZURE_ENV_NAME:
+        description: "The name of the Azure environment"
+        required: true
+        type: string
+
     secrets:
       AZURE_TENANT_ID:
         description: "The Azure tenant ID to use for authentication to Azure for deployment"
@@ -26,18 +30,16 @@ on:
       AZURE_CLIENT_ID:
         description: "The Azure client ID to use for authentication to Azure for deployment"
         required: true
-      SQL_SERVER_USERNAME:
-        description: "The SQL logical server administrator username"
-        required: true
-      SQL_SERVER_PASSWORD:
-        description: "The SQL logical server administrator password"
-        required: true
   
 jobs:
   validate-infrastructure:
     name: Validate Infrastructure ${{ inputs.ENVIRONMENT }}
     environment: ${{ inputs.ENVIRONMENT }}
     runs-on: ubuntu-latest
+    env:
+      AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
+      AZURE_ENV_NAME: ${{ inputs.AZURE_ENV_NAME }}
+
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
@@ -53,15 +55,8 @@ jobs:
         uses: azure/arm-deploy@v2
         with:
           failOnStdErr: false
-          resourceGroupName: ${{ vars.RESOURCE_GROUP_NAME }}
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           template: ./infra/main.json
-          region: ${{ inputs.LOCATION }}
+          parameters: ./infra/main.parameters.json
           scope: subscription
-          parameters: >
-            location=${{ inputs.LOCATION }}
-            baseResourceName=${{ vars.BASE_RESOURCE_NAME }}
-            resourceGroupName=${{ vars.RESOURCE_GROUP_NAME }}
-            sqlServerUsername=${{ secrets.SQL_SERVER_USERNAME }}
-            sqlServerPassword=${{ secrets.SQL_SERVER_PASSWORD }}
           additionalArguments: --what-if
