@@ -1,0 +1,76 @@
+name: deploy-infrastructure
+
+on:
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        description: "The environment to validate the application infrastructure for"
+        required: true
+        type: string
+      BUILD_VERSION:
+        description: "The version of the build to deploy to the application resources"
+        required: true
+        type: string
+      LOCATION:
+        description: "The Azure region to deploy the application resources to"
+        required: true
+        type: string
+          
+    secrets:
+      AZURE_TENANT_ID:
+        description: "The Azure tenant ID to use for authentication to Azure for deployment"
+        required: true
+      AZURE_SUBSCRIPTION_ID:
+        description: "The Azure subscription ID to use for authentication to Azure for deployment"
+        required: true
+      AZURE_CLIENT_ID:
+        description: "The Azure client ID to use for authentication to Azure for deployment"
+        required: true
+      SQL_SERVER_USERNAME:
+        description: "The SQL logical server administrator username"
+        required: true
+      SQL_SERVER_PASSWORD:
+        description: "The SQL logical server administrator password"
+        required: true      
+  
+    outputs:
+      openAiServiceEndpoint:
+        description: "The URL of the Azure OpenAI Service endpoint"
+        value: ${{ jobs.deploy-infrastructure.outputs.openAiServiceEndpoint }}
+
+jobs:
+  deploy-infrastructure:
+    name: Deploy Infrastructure ${{ inputs.ENVIRONMENT }}
+    environment: ${{ inputs.ENVIRONMENT }}
+    runs-on: ubuntu-latest
+    outputs:
+      openAiServiceEndpoint: ${{ steps.deploy.outputs.openAiServiceEndpoint }}
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+
+      - name: Deploy Azure resources
+        id: deploy
+        uses: azure/arm-deploy@v2
+        with:
+          failOnStdErr: false
+          deploymentName: 'app-${{ inputs.ENVIRONMENT }}-${{ github.action_ref }}-${{ github.run_number }}'
+          resourceGroupName: ${{ vars.RESOURCE_GROUP_NAME }}
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          template: ./infra/main.json
+          region: ${{ inputs.LOCATION }}
+          scope: subscription
+          parameters: >
+            location=${{ inputs.LOCATION }}
+            baseResourceName=${{ vars.BASE_RESOURCE_NAME }}
+            resourceGroupName=${{ vars.RESOURCE_GROUP_NAME }}
+            sqlServerUsername=${{ secrets.SQL_SERVER_USERNAME }}
+            sqlServerPassword=${{ secrets.SQL_SERVER_PASSWORD }}

@@ -1,0 +1,33 @@
+name: build-arm-templates
+
+on:
+  workflow_call:
+
+# We are building an ARM template rather than submitting the Bicep directly
+# because this allows us to use the latest version of the Bicep compiler.
+
+jobs:
+  build-armtemplates:
+    name: Build ARM Templates from Bicep
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install Bicep
+      run: | 
+        curl -Lo bicepinstall https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
+        chmod +x ./bicepinstall
+        sudo mv ./bicepinstall /usr/local/bin/bicep
+        bicep --help
+     
+    - name: Build Bicep
+      run: |
+        bicep build ./infra/core/main.bicep
+  
+    - name: Upload ARM Template as workflow artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: infrastructurearmtemplate
+        path: ./infra/core/main.json

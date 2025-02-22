@@ -1,0 +1,14 @@
+name: continuous-integration
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  checks: write
+  pull-requests: write
+
+jobs:
+  build-arm-templates:
+    uses: ./.github/workflows/build-arm-templates.yml

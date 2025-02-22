@@ -1,0 +1,55 @@
+name: continuous-deployment
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+
+  workflow_dispatch:
+  
+permissions:
+  id-token: write
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  set-build-variables:
+    uses: ./.github/workflows/set-build-variables.yml
+
+  build-arm-templates:
+    uses: ./.github/workflows/build-arm-templates.yml
+
+  validate-infrastructure-test:
+    needs:
+      - set-build-variables
+      - build-arm-templates
+    uses: ./.github/workflows/validate-infrastructure.yml
+    with:
+      ENVIRONMENT: Test
+      BUILD_VERSION: ${{ needs.set-build-variables.outputs.BUILD_VERSION }}
+      LOCATION: ${{ vars.LOCATION }}
+    secrets:
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      SQL_SERVER_USERNAME: ${{ secrets.SQL_SERVER_USERNAME }}
+      SQL_SERVER_PASSWORD: ${{ secrets.SQL_SERVER_PASSWORD }}
+  
+  deploy-infrastructure-test:
+    needs:
+      - set-build-variables
+      - validate-infrastructure-test
+    uses: ./.github/workflows/deploy-infrastructure.yml
+    with:
+      ENVIRONMENT: Test
+      BUILD_VERSION: ${{ needs.set-build-variables.outputs.BUILD_VERSION }}
+      LOCATION: ${{ vars.LOCATION }}
+    secrets:
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}     
+      SQL_SERVER_USERNAME: ${{ secrets.SQL_SERVER_USERNAME }}
+      SQL_SERVER_PASSWORD: ${{ secrets.SQL_SERVER_PASSWORD }}
