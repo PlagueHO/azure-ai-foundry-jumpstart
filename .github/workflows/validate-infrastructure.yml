@@ -57,7 +57,7 @@ jobs:
           failOnStdErr: false
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           region: ${{ inputs.AZURE_LOCATION }}
-          template: ./infra/main.bicep
-          parameters: ./infra/main.parameters.json
+          template: ./infrastructurearmtemplate/main.json
+          parameters: ./infrastructurearmtemplate/main.parameters.json
           scope: subscription
           additionalArguments: --what-if

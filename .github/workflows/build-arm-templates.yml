@@ -30,4 +30,6 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: infrastructurearmtemplate
-        path: ./infra/main.bicep
+        path: |
+           ./infra/main.json
+           ./infra/main.parameters.json
