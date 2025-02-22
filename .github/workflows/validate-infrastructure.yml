@@ -55,9 +55,10 @@ jobs:
         uses: azure/arm-deploy@v2
         with:
           failOnStdErr: false
+          deploymentName: 'app-${{ inputs.ENVIRONMENT }}-${{ github.action_ref }}-${{ github.run_number }}'
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           region: ${{ inputs.AZURE_LOCATION }}
           template: ./infrastructurearmtemplate/main.json
-          parameters: ./infrastructurearmtemplate/main.parameters.json
+          templateParameters: ./infrastructurearmtemplate/main.parameters.json
           scope: subscription
           additionalArguments: --what-if
