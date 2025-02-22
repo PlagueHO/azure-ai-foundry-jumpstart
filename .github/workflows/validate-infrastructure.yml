@@ -36,9 +36,6 @@ jobs:
     name: Validate Infrastructure ${{ inputs.ENVIRONMENT }}
     environment: ${{ inputs.ENVIRONMENT }}
     runs-on: ubuntu-latest
-    env:
-      AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
-      AZURE_ENV_NAME: ${{ inputs.AZURE_ENV_NAME }}
 
     steps:
       - name: Download build artifacts
@@ -59,6 +56,8 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           region: ${{ inputs.AZURE_LOCATION }}
           template: ./infrastructurearmtemplate/main.json
-          parameters: ./infrastructurearmtemplate/main.parameters.json
+          parameters: |
+            location=${{ inputs.AZURE_LOCATION }}
+            environmentName=${{ inputs.AZURE_ENV_NAME }}
           scope: subscription
           additionalArguments: --what-if

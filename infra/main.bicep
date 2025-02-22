@@ -43,7 +43,7 @@ var apiServiceName = 'python-api'
 
 // Organize resources in a resource group
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
+  name: !empty(resourceGroupName) ? resourceGroupName : '${environmentName}-${abbrs.resourcesResourceGroups}'
   location: location
   tags: tags
 }

@@ -32,4 +32,3 @@ jobs:
         name: infrastructurearmtemplate
         path: |
            ./infra/main.json
-           ./infra/main.parameters.json
