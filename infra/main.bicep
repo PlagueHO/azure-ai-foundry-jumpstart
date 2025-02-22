@@ -48,19 +48,46 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
-// Add resources to be provisioned below.
-// A full example that leverages azd bicep modules can be seen in the todo-python-mongo template:
-// https://github.com/Azure-Samples/todo-python-mongo/tree/main/infra
+// Virtual Network to host all AI services and supporting resources
+module virtualNetwork 'core/networking/virtual-network.bicep' = {
+  name: 'virtual-network'
+  scope: rg
+  params: {
+    name: '${abbrs.networkVirtualNetworks}${environmentName}'
+    location: location
+    tags: tags
+    addressPrefixes: [
+      '10.0.0.0/16'
+    ]
+    subnets: [
+      {
+        // Default subnet (generally not used)
+        name: 'Default'
+        addressPrefix: '10.0.0.0/24'
+      }
+      {
+        // AI Services Subnet
+        name: '${abbrs.networkVirtualNetworksSubnets}AiServices'
+        addressPrefix: '10.0.1.0/24'
+      }
+      {
+        // Azure AI Foundry Hubs Subnet
+        name: '${abbrs.networkVirtualNetworksSubnets}FoundryHubs'
+        addressPrefix: '10.0.2.0/24'
+      }
+      {
+        // Shared Services Subnet (storage accounts, key vaults, monitoring, etc.)
+        name: '${abbrs.networkVirtualNetworksSubnets}SharedServices'
+        addressPrefix: '10.0.3.0/24'
+      }
+      {
+        // Bastion Gateway Subnet
+        name: 'AzureBastionSubnet'
+        addressPrefix: '10.0.255.0/27'
+      }
+    ]
+  }
+}
 
-
-
-// Add outputs from the deployment here, if needed.
-//
-// This allows the outputs to be referenced by other bicep deployments in the deployment pipeline,
-// or by the local machine as a way to reference created resources in Azure for local development.
-// Secrets should not be added here.
-//
-// Outputs are automatically saved in the local azd environment .env file.
-// To see these outputs, run `azd env get-values`,  or `azd env get-values --output json` for json output.
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
