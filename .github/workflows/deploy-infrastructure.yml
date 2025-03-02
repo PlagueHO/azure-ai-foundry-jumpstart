@@ -67,5 +67,5 @@ jobs:
 
       - name: Display Deployment Outputs
         run: |
-          echo "AZURE_LOCATION: ${{ steps.deployment.outputs.AZURE_LOCATION }}"
-          echo "AZURE_TENANT_ID: ${{ steps.deployment.outputs.AZURE_TENANT_ID }}"
+          echo "AZURE_LOCATION: ${{ steps.deploy-azure-infrastructure.outputs.AZURE_LOCATION }}"
+          echo "AZURE_TENANT_ID: ${{ steps.deploy-azure-infrastructure.outputs.AZURE_TENANT_ID }}"
