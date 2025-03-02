@@ -53,7 +53,7 @@ jobs:
         uses: azure/bicep-deploy@v2
         with:
           type: deployment
-          operation: whatIf
+          operation: create
           name: ${{ inputs.AZURE_ENV_NAME }}-${{inputs.AZURE_LOCATION}}-${{ inputs.ENVIRONMENT }}-${{ github.action_ref }}-${{ github.run_number }}
           scope: subscription
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
