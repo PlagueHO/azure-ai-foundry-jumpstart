@@ -1,14 +1,11 @@
-name: build-arm-templates
+name: lint-and-publish-bicep
 
 on:
   workflow_call:
 
-# We are building an ARM template rather than submitting the Bicep directly
-# because this allows us to use the latest version of the Bicep compiler.
-
 jobs:
   build-armtemplates:
-    name: Build ARM Templates from Bicep
+    name: Lint and Publish Bicep
     runs-on: ubuntu-latest
     
     steps:
@@ -22,13 +19,14 @@ jobs:
         sudo mv ./bicepinstall /usr/local/bin/bicep
         bicep --help
      
-    - name: Build Bicep
+    - name: Lint Bicep
       run: |
-        bicep build ./infra/main.bicep
+        bicep lint ./infra/main.bicep
   
-    - name: Upload ARM Template as workflow artifact
+    - name: Publish Bicep as Workflow Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: infrastructurearmtemplate
+        name: infrastructure_bicep
         path: |
-           ./infra/main.json
+           ./infra/main.bicep
+           ./infra/core/

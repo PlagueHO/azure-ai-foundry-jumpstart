@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download build artifacts
+      - name: Download Build Artifacts
         uses: actions/download-artifact@v4
 
       - name: Azure Login
@@ -48,16 +48,24 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
 
-      - name: Deploy Azure resources
-        id: deploy
-        uses: azure/arm-deploy@v2
+      - name: Deploy Azure Infrastructure
+        id: deploy-azure-infrastructure
+        uses: azure/bicep-deploy@v2
         with:
-          failOnStdErr: false
-          deploymentName: '${{ inputs.AZURE_ENV_NAME }}-${{inputs.AZURE_LOCATION}}-${{ inputs.ENVIRONMENT }}-${{ github.action_ref }}-${{ github.run_number }}'
-          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          region: ${{ inputs.AZURE_LOCATION }}
-          template: ./infrastructurearmtemplate/main.json
-          parameters: >
-            location=${{ inputs.AZURE_LOCATION }}
-            environmentName=${{ inputs.AZURE_ENV_NAME }}
+          type: deployment
+          operation: whatIf
+          name: ${{ inputs.AZURE_ENV_NAME }}-${{inputs.AZURE_LOCATION}}-${{ inputs.ENVIRONMENT }}-${{ github.action_ref }}-${{ github.run_number }}
           scope: subscription
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          location: ${{ inputs.AZURE_LOCATION }}
+          template-file: ./infrastructure_bicep/main.bicep
+          parameters: >
+            {
+              "location": "${{ inputs.AZURE_LOCATION }}",
+              "environmentName": "${{ inputs.AZURE_ENV_NAME }}"
+            }
+
+      - name: Display Deployment Outputs
+        run: |
+          echo "AZURE_LOCATION: ${{ steps.deployment.outputs.AZURE_LOCATION }}"
+          echo "AZURE_TENANT_ID: ${{ steps.deployment.outputs.AZURE_TENANT_ID }}"
