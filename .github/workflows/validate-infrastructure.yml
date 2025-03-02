@@ -64,8 +64,3 @@ jobs:
               "location": "${{ inputs.AZURE_LOCATION }}",
               "environmentName": "${{ inputs.AZURE_ENV_NAME }}"
             }
-
-      - name: Display Validate Outputs
-        run: |
-          echo "AZURE_LOCATION: ${{ steps.validate-azure-infrastructure.outputs.AZURE_LOCATION }}"
-          echo "AZURE_TENANT_ID: ${{ steps.validate-azure-infrastructure.outputs.AZURE_TENANT_ID }}"
