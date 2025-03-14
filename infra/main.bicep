@@ -18,7 +18,12 @@ param location string
 // "resourceGroupName": {
 //      "value": "myGroupName"
 // }
+@description('Name of the resource group to create.')
 param resourceGroupName string = ''
+
+// Should an Azure Bastion be created?
+@description('Should an Azure Bastion be created?')
+param createBastionHost bool = true
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
@@ -86,6 +91,19 @@ module virtualNetwork 'core/networking/virtual-network.bicep' = {
         addressPrefix: '10.0.255.0/27'
       }
     ]
+  }
+}
+
+module bastion 'core/networking/bastion-host.bicep' = if (createBastionHost) {
+  name: 'bastion-host'
+  scope: rg
+  params: {
+    name: '${abbrs.networkBastionHosts}${environmentName}'
+    location: location
+    tags: tags
+    virtualNetworkId: virtualNetwork.outputs.virtualNetworkId
+    publicIpName: '${abbrs.networkPublicIPAddresses}${environmentName}'
+    publicIpSku: 'Standard'
   }
 }
 

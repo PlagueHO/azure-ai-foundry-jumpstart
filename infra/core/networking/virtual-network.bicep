@@ -1,7 +1,12 @@
 metadata description = 'Creates an Azure Virtual Network with subnets.'
 
+@description('Name of the Virtual Network resource.')
 param name string
+
+@description('Location where the Virtual Network resource should be deployed.')
 param location string = resourceGroup().location
+
+@description('Tags to apply to the Virtual Network resource.')
 param tags object = {}
 
 @description('Array of address prefixes for the Virtual Network (e.g. ["10.0.0.0/16"])')
@@ -29,5 +34,5 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-09-01' = {
   }
 }
 
-output id string = virtualNetwork.id
+output virtualNetworkId string = virtualNetwork.id
 output virtualNetworkName string = virtualNetwork.name
