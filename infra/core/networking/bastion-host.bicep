@@ -56,7 +56,7 @@ resource azureBastion 'Microsoft.Network/bastionHosts@2023-02-01' = {
         name: 'ipconfig1'
         properties: {
           subnet: {
-            id: extensionResourceId(virtualNetworkId, 'subnets', 'AzureBastionSubnet')
+            id: extensionResourceId(virtualNetworkId, 'Microsoft.Network/virtualNetworks/subnets', 'AzureBastionSubnet')
           }
           publicIPAddress: {
             id: bastionPublicIp.id
