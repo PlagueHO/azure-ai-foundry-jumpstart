@@ -107,5 +107,16 @@ module bastion 'core/networking/bastion-host.bicep' = if (createBastionHost) {
   }
 }
 
+// Private DNS Zone for the storage accounts to be used by Private Link
+module storagePrivateDnsZone 'core/networking/private-dns-zone.bicep' = {
+  name: 'storage-private-dns-zone'
+  scope: rg
+  params: {
+    privateDnsZoneName: 'privatelink.${environment().suffixes.storage}'
+    location: 'global'
+    tags: tags
+  }
+}
+
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
