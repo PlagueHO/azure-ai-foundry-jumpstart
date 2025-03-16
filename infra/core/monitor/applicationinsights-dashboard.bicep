@@ -1,11 +1,18 @@
 metadata description = 'Creates a dashboard for an Application Insights instance.'
+
+@description('Name of the Application Insights dashboard.')
 param name string
+
+@description('Name of the Application Insights instance.')
 param applicationInsightsName string
+
+@description('Location where the Application Insights dashboard should be deployed.')
 param location string = resourceGroup().location
+
+@description('Tags to apply to the Application Insights dashboard.')
 param tags object = {}
 
-// 2020-09-01-preview because that is the latest valid version
-resource applicationInsightsDashboard 'Microsoft.Portal/dashboards@2020-09-01-preview' = {
+resource applicationInsightsDashboard 'Microsoft.Portal/dashboards@2022-12-01-preview' = {
   name: name
   location: location
   tags: tags

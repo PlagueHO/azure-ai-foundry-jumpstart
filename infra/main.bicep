@@ -53,6 +53,19 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
+// Create the monitoring resources for the environment
+module monitoring 'core/monitor/monitoring.bicep' = {
+  name: 'monitoring'
+  scope: rg
+  params: {
+    location: location
+    tags: tags
+    logAnalyticsName: '${abbrs.operationalInsightsWorkspaces}${environmentName}'
+    applicationInsightsName: '${abbrs.insightsComponents}${environmentName}'
+    applicationInsightsDashboardName: '${abbrs.portalDashboards}${environmentName}'
+  }
+}
+
 // Virtual Network to host all AI services and supporting resources
 module virtualNetwork 'core/networking/virtual-network.bicep' = {
   name: 'virtual-network'
