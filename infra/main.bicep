@@ -38,13 +38,12 @@ var tags = {
 #disable-next-line no-unused-vars
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 
-// Name of the service defined in azure.yaml
-// A tag named azd-service-name with this value should be applied to the service host resource, such as:
-//   Microsoft.Web/sites for appservice, function
-// Example usage:
-//   tags: union(tags, { 'azd-service-name': apiServiceName })
-#disable-next-line no-unused-vars
-var apiServiceName = 'python-api'
+var logAnalyticsName = '${abbrs.operationalInsightsWorkspaces}${environmentName}'
+var applicationInsightsName = '${abbrs.insightsComponents}${environmentName}'
+var applicationInsightsDashboardName = '${abbrs.portalDashboards}${environmentName}'
+var virtualNetworkName = '${abbrs.networkVirtualNetworks}${environmentName}'
+var storageAccounName = toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', ''))
+
 
 // Organize resources in a resource group
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -60,9 +59,9 @@ module monitoring 'core/monitor/monitoring.bicep' = {
   params: {
     location: location
     tags: tags
-    logAnalyticsName: '${abbrs.operationalInsightsWorkspaces}${environmentName}'
-    applicationInsightsName: '${abbrs.insightsComponents}${environmentName}'
-    applicationInsightsDashboardName: '${abbrs.portalDashboards}${environmentName}'
+    logAnalyticsName: logAnalyticsName
+    applicationInsightsName: applicationInsightsName
+    applicationInsightsDashboardName: applicationInsightsDashboardName
   }
 }
 
@@ -71,7 +70,7 @@ module virtualNetwork 'core/networking/virtual-network.bicep' = {
   name: 'virtual-network'
   scope: rg
   params: {
-    name: '${abbrs.networkVirtualNetworks}${environmentName}'
+    name: virtualNetworkName
     location: location
     tags: tags
     addressPrefixes: [
@@ -107,17 +106,14 @@ module virtualNetwork 'core/networking/virtual-network.bicep' = {
   }
 }
 
-// Optional: Create an Azure Bastion host in the virtual network.
-module bastion 'core/networking/bastion-host.bicep' = if (createBastionHost) {
-  name: 'bastion-host'
+// Private DNS Zone for the storage accounts to be used by Private Link
+module storagePrivateDnsZone 'core/networking/private-dns-zone.bicep' = {
+  name: 'storage-private-dns-zone'
   scope: rg
   params: {
-    name: '${abbrs.networkBastionHosts}${environmentName}'
-    location: location
+    privateDnsZoneName: 'privatelink.${environment().suffixes.storage}'
+    location: 'global'
     tags: tags
-    virtualNetworkId: virtualNetwork.outputs.virtualNetworkId
-    publicIpName: '${abbrs.networkPublicIPAddresses}${abbrs.networkBastionHosts}${environmentName}'
-    publicIpSku: 'Standard'
   }
 }
 
@@ -126,7 +122,7 @@ module storageAccount 'core/storage/storage-account.bicep' = {
   name: 'storage-account'
   scope: rg
   params: {
-    name: '${abbrs.storageStorageAccounts}${environmentName}'
+    name: storageAccounName
     location: location
     tags: tags
     accessTier: 'Hot'
@@ -150,14 +146,17 @@ module storageAccount 'core/storage/storage-account.bicep' = {
   }
 }
 
-// Private DNS Zone for the storage accounts to be used by Private Link
-module storagePrivateDnsZone 'core/networking/private-dns-zone.bicep' = {
-  name: 'storage-private-dns-zone'
+// Optional: Create an Azure Bastion host in the virtual network.
+module bastion 'core/networking/bastion-host.bicep' = if (createBastionHost) {
+  name: 'bastion-host'
   scope: rg
   params: {
-    privateDnsZoneName: 'privatelink.${environment().suffixes.storage}'
-    location: 'global'
+    name: '${abbrs.networkBastionHosts}${environmentName}'
+    location: location
     tags: tags
+    virtualNetworkId: virtualNetwork.outputs.virtualNetworkId
+    publicIpName: '${abbrs.networkPublicIPAddresses}${abbrs.networkBastionHosts}${environmentName}'
+    publicIpSku: 'Standard'
   }
 }
 
