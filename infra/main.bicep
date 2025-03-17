@@ -107,6 +107,7 @@ module virtualNetwork 'core/networking/virtual-network.bicep' = {
   }
 }
 
+// Optional: Create an Azure Bastion host in the virtual network.
 module bastion 'core/networking/bastion-host.bicep' = if (createBastionHost) {
   name: 'bastion-host'
   scope: rg
@@ -117,6 +118,35 @@ module bastion 'core/networking/bastion-host.bicep' = if (createBastionHost) {
     virtualNetworkId: virtualNetwork.outputs.virtualNetworkId
     publicIpName: '${abbrs.networkPublicIPAddresses}${abbrs.networkBastionHosts}${environmentName}'
     publicIpSku: 'Standard'
+  }
+}
+
+// Create a Storage Account to use for the AI services
+module storageAccount 'core/storage/storage-account.bicep' = {
+  name: 'storage-account'
+  scope: rg
+  params: {
+    name: '${abbrs.storageStorageAccounts}${environmentName}'
+    location: location
+    tags: tags
+    accessTier: 'Hot'
+    allowBlobPublicAccess: false
+    allowCrossTenantReplication: false
+    allowSharedKeyAccess: true
+    defaultToOAuthAuthentication: true
+    deleteRetentionPolicy: {
+      enabled: true
+      days: 7
+    }
+    dnsEndpointType: 'Standard'
+    isHnsEnabled: false
+    kind: 'StorageV2'
+    minimumTlsVersion: 'TLS1_2'
+    enablePrivateEndpoint: true
+    privateEndpointSubnetId: '${virtualNetwork.outputs.virtualNetworkId}/subnets/${abbrs.networkVirtualNetworksSubnets}SharedServices'
+    privateDnsZoneIds: [
+      storagePrivateDnsZone.outputs.privateDnsZoneId
+    ]
   }
 }
 
