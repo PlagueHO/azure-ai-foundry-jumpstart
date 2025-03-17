@@ -100,6 +100,13 @@ param privateDnsZoneGroupName string = 'default'
 @description('The resource IDs of the private DNS zones to link to the private endpoint.')
 param privateDnsZoneIds array = []
 
+// ...existing code...
+
+@description('List of private link service group IDs to expose via the private endpoint. Allowed values: blob, file, queue, table.')
+param privateEndpointGroupIds array = [
+  'blob'
+]
+
 resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: name
   location: location
@@ -178,12 +185,7 @@ resource storagePrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' 
         name: '${name}-plsc'
         properties: {
           privateLinkServiceId: storage.id
-          groupIds: [
-            'blob'
-            'file'
-            'queue'
-            'table'
-          ]
+          groupIds: privateEndpointGroupIds
         }
       }
     ]
