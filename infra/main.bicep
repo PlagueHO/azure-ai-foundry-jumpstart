@@ -115,7 +115,7 @@ module bastion 'core/networking/bastion-host.bicep' = if (createBastionHost) {
     location: location
     tags: tags
     virtualNetworkId: virtualNetwork.outputs.virtualNetworkId
-    publicIpName: '${abbrs.networkPublicIPAddresses}${environmentName}'
+    publicIpName: '${abbrs.networkPublicIPAddresses}${abbrs.networkBastionHosts}${environmentName}'
     publicIpSku: 'Standard'
   }
 }
