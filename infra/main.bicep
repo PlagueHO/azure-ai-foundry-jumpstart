@@ -140,6 +140,7 @@ module storageAccount 'core/storage/storage-account.bicep' = {
     minimumTlsVersion: 'TLS1_2'
     enablePrivateEndpoint: true
     privateEndpointSubnetId: '${virtualNetwork.outputs.virtualNetworkId}/subnets/${abbrs.networkVirtualNetworksSubnets}SharedServices'
+    privateDnsZoneGroupName: storageAccounName
     privateDnsZoneIds: [
       storagePrivateDnsZone.outputs.privateDnsZoneId
     ]
