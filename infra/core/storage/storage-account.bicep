@@ -172,7 +172,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   }
 }
 
-resource storagePrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = if (enablePrivateEndpoint) {
+resource storagePrivateEndpoint 'Microsoft.Network/privateEndpoints@2024-05-01' = if (enablePrivateEndpoint) {
   name: privateEndpointName
   location: location
   tags: tags
@@ -191,7 +191,7 @@ resource storagePrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' 
     ]
   }
 
-  resource privateDnsZoneGroup 'privateDnsZoneGroups' = if (!empty(privateDnsZoneIds)) {
+  resource privateDnsZoneGroup 'privateDnsZoneGroups@2024-05-01' = if (!empty(privateDnsZoneIds)) {
     name: privateDnsZoneGroupName
     properties: {
       privateDnsZoneConfigs: [for dnsZoneId in privateDnsZoneIds: {
