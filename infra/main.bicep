@@ -111,7 +111,7 @@ module storagePrivateDnsZone 'core/networking/private-dns-zone.bicep' = {
   name: 'storage-private-dns-zone'
   scope: rg
   params: {
-    privateDnsZoneName: 'privatelink.${environment().suffixes.storage}'
+    privateDnsZoneName: 'privatelink.blob.${environment().suffixes.storage}'
     location: 'global'
     tags: tags
   }
@@ -139,10 +139,9 @@ module storageAccount 'core/storage/storage-account.bicep' = {
     kind: 'StorageV2'
     minimumTlsVersion: 'TLS1_2'
     enablePrivateEndpoint: true
-    privateEndpointSubnetId: '${virtualNetwork.outputs.virtualNetworkId}/subnets/${abbrs.networkVirtualNetworksSubnets}SharedServices'
-    privateDnsZoneIds: [
-      storagePrivateDnsZone.outputs.privateDnsZoneId
-    ]
+    privateEndpointVnetName: virtualNetworkName
+    privateEndpointSubnetName: '${abbrs.networkVirtualNetworksSubnets}SharedServices'
+    logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
   }
 }
 

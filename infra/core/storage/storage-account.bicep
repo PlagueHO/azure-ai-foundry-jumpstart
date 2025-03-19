@@ -83,13 +83,18 @@ param networkAcls object = {
 param publicNetworkAccess string = 'Enabled'
 
 @description('The SKU of the storage account.')
-param sku object = { name: 'Standard_LRS' }
+param sku object = {
+  name: 'Standard_LRS'
+}
 
 @description('Flag indicating whether to create a private endpoint for the storage account.')
 param enablePrivateEndpoint bool = false
 
-@description('The resource ID of the subnet to deploy the private endpoint into.')
-param privateEndpointSubnetId string = ''
+@description('The name of the virtual netork where the private endpoint will be created.')
+param privateEndpointVnetName string = ''
+
+@description('The name of the subnet where the private endpoint will be created.')
+param privateEndpointSubnetName string = ''
 
 @description('The name of the private endpoint resource.')
 param privateEndpointName string = '${name}-pe'
@@ -97,17 +102,40 @@ param privateEndpointName string = '${name}-pe'
 @description('The name of the private DNS zone group for the private endpoint.')
 param privateDnsZoneGroupName string = 'default'
 
-@description('The resource IDs of the private DNS zones to link to the private endpoint.')
-param privateDnsZoneIds array = []
+@description('The ID of the Log Analytics workspace to send diagnostic logs to.')
+param logAnalyticsWorkspaceId string = ''
 
-// ...existing code...
+@description('Retention period in days for logs and metrics.')
+param retentionInDays int = 30
 
-@description('List of private link service group IDs to expose via the private endpoint. Allowed values: blob, file, queue, table.')
-param privateEndpointGroupIds array = [
-  'blob'
+// Variables
+var diagnosticSettingsName = 'diagnosticSettings'
+var logCategories = [
+  'StorageRead'
+  'StorageWrite'
+  'StorageDelete'
 ]
+var metricCategories = [
+  'Transaction'
+]
+var logs = [for category in logCategories: {
+  category: category
+  enabled: true
+  retentionPolicy: {
+    enabled: true
+    days: retentionInDays
+  }
+}]
+var metrics = [for category in metricCategories: {
+  category: category
+  enabled: true
+  retentionPolicy: {
+    enabled: true
+    days: retentionInDays
+  }
+}]
 
-resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: name
   location: location
   tags: tags
@@ -127,7 +155,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
     supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
   }
 
-  resource blobServices 'blobServices' = if (!empty(containers)) {
+  resource blobServices 'blobServices@2023-05-01' = if (!empty(containers)) {
     name: 'default'
     properties: {
       cors: {
@@ -135,7 +163,8 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
       }
       deleteRetentionPolicy: deleteRetentionPolicy
     }
-    resource container 'containers' = [for container in containers: {
+
+    resource container 'containers@2023-05-01' = [for container in containers: {
       name: container.name
       properties: {
         publicAccess: container.?publicAccess ?? 'None'
@@ -143,7 +172,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
     }]
   }
 
-  resource fileServices 'fileServices' = if (!empty(files)) {
+  resource fileServices 'fileServices@2023-05-01' = if (!empty(files)) {
     name: 'default'
     properties: {
       cors: {
@@ -153,11 +182,10 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
     }
   }
 
-  resource queueServices 'queueServices' = if (!empty(queues)) {
+  resource queueServices 'queueServices@2023-05-01' = if (!empty(queues)) {
     name: 'default'
-    properties: {
+    properties: {}
 
-    }
     resource queue 'queues' = [for queue in queues: {
       name: queue.name
       properties: {
@@ -166,44 +194,37 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
     }]
   }
 
-  resource tableServices 'tableServices' = if (!empty(tables)) {
+  resource tableServices 'tableServices@2023-05-01' = if (!empty(tables)) {
     name: 'default'
     properties: {}
   }
 }
 
-resource storagePrivateEndpoint 'Microsoft.Network/privateEndpoints@2024-05-01' = if (enablePrivateEndpoint) {
-  name: privateEndpointName
-  location: location
-  tags: tags
+// Diagnostic settings for storage account
+resource blobServiceDiagnosticSettings 'Microsoft.Storage/storageAccounts/diagnosticSettings@2023-05-01' = if (!empty(logAnalyticsWorkspaceId)) {
+  name: diagnosticSettingsName
+  parent: storageAccount
   properties: {
-    subnet: {
-      id: privateEndpointSubnetId
-    }
-    privateLinkServiceConnections: [
-      {
-        name: '${name}-plsc'
-        properties: {
-          privateLinkServiceId: storage.id
-          groupIds: privateEndpointGroupIds
-        }
-      }
-    ]
-  }
-
-  resource privateDnsZoneGroup 'privateDnsZoneGroups@2024-05-01' = if (!empty(privateDnsZoneIds)) {
-    name: privateDnsZoneGroupName
-    properties: {
-      privateDnsZoneConfigs: [for dnsZoneId in privateDnsZoneIds: {
-        name: last(split(dnsZoneId, '/'))
-        properties: {
-          privateDnsZoneId: dnsZoneId
-        }
-      }]
-    }
+    workspaceId: logAnalyticsWorkspaceId
+    logs: logs
+    metrics: metrics
   }
 }
 
-output id string = storage.id
-output name string = storage.name
-output primaryEndpoints object = storage.properties.primaryEndpoints
+// Enable blobservice private endpoint if specified
+module blobServicePrivateEndpoint 'blobservice-private-endpoint.bicep' = if (enablePrivateEndpoint) {
+  name: privateEndpointName
+  scope: resourceGroup(privateEndpointVnetName)
+  params: {
+    virtualNetworkName: privateEndpointVnetName
+    subnetName: privateEndpointSubnetName
+    blobStorageAccountPrivateEndpointName: privateEndpointName
+    storageAccountId: storageAccount.id
+    location: location
+    tags: tags
+  }
+}
+
+output id string = storageAccount.id
+output name string = storageAccount.name
+output primaryEndpoints object = storageAccount.properties.primaryEndpoints
