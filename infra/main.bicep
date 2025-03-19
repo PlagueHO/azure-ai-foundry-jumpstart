@@ -108,7 +108,7 @@ module virtualNetwork 'core/networking/virtual-network.bicep' = {
 
 // Private DNS Zone for the storage accounts to be used by Private Link
 module storagePrivateDnsZone 'core/networking/private-dns-zone.bicep' = {
-  name: 'storage-private-dns-zone'
+  name: 'storage-blobservice-private-dns-zone'
   scope: rg
   params: {
     privateDnsZoneName: 'privatelink.blob.${environment().suffixes.storage}'

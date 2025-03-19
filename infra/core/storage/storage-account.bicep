@@ -99,9 +99,6 @@ param privateEndpointSubnetName string = ''
 @description('The name of the private endpoint resource.')
 param privateEndpointName string = '${name}-pe'
 
-@description('The name of the private DNS zone group for the private endpoint.')
-param privateDnsZoneGroupName string = 'default'
-
 @description('The ID of the Log Analytics workspace to send diagnostic logs to.')
 param logAnalyticsWorkspaceId string = ''
 
@@ -203,7 +200,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 // Diagnostic settings for storage account
 resource blobServiceDiagnosticSettings 'Microsoft.Storage/storageAccounts/diagnosticSettings@2023-05-01' = if (!empty(logAnalyticsWorkspaceId)) {
   name: diagnosticSettingsName
-  parent: storageAccount
+  scope: storageAccount::blobServices
   properties: {
     workspaceId: logAnalyticsWorkspaceId
     logs: logs
