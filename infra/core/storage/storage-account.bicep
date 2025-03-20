@@ -198,7 +198,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 }
 
 // Diagnostic settings for storage account
-resource blobServiceDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2023-05-01' = if (!empty(logAnalyticsWorkspaceId)) {
+resource blobServiceDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(logAnalyticsWorkspaceId)) {
   name: diagnosticSettingsName
   scope: storageAccount
   properties: {
@@ -208,10 +208,10 @@ resource blobServiceDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@20
   }
 }
 
-// Enable blobservice private endpoint if specified
+// Enable Storage Account blob service private endpoint if specified
 module blobServicePrivateEndpoint 'storage-account-private-endpoint.bicep' = if (enablePrivateEndpoint) {
   name: privateEndpointName
-  scope: resourceGroup(privateEndpointVnetName)
+  scope: resourceGroup()
   params: {
     virtualNetworkName: privateEndpointVnetName
     subnetName: privateEndpointSubnetName
