@@ -102,12 +102,6 @@ param privateEndpointName string = '${name}-pe'
 @description('The ID of the Log Analytics workspace to send diagnostic logs to.')
 param logAnalyticsWorkspaceId string = ''
 
-@description('Retention period in days for logs and metrics.')
-param retentionInDays int = 30
-
-// Variables
-var diagnosticSettingsName = 'diagnosticSettings'
-
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: name
   location: location
@@ -174,6 +168,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 }
 
 // Diagnostic settings for storage account blob service
+var blobServiceDiagnosticSettingsName = 'blobServiceDiagnosticSettings'
 var blobServiceLogCategories = [
   'StorageRead'
   'StorageWrite'
@@ -185,22 +180,14 @@ var blobServiceMetricCategories = [
 var blobServiceLogs = [for category in blobServiceLogCategories: {
   category: category
   enabled: true
-  retentionPolicy: {
-    enabled: true
-    days: retentionInDays
-  }
 }]
 var blobServiceMetrics = [for category in blobServiceMetricCategories: {
   category: category
   enabled: true
-  retentionPolicy: {
-    enabled: true
-    days: retentionInDays
-  }
 }]
 
 resource blobServiceDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(logAnalyticsWorkspaceId)) {
-  name: diagnosticSettingsName
+  name: blobServiceDiagnosticSettingsName
   scope: storageAccount::blobServices
   properties: {
     workspaceId: logAnalyticsWorkspaceId
