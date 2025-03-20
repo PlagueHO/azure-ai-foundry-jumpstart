@@ -200,7 +200,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 // Diagnostic settings for storage account
 resource blobServiceDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(logAnalyticsWorkspaceId)) {
   name: diagnosticSettingsName
-  scope: storageAccount
+  scope: storageAccount::blobServices
   properties: {
     workspaceId: logAnalyticsWorkspaceId
     logs: logs
