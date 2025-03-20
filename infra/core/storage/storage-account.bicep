@@ -107,30 +107,6 @@ param retentionInDays int = 30
 
 // Variables
 var diagnosticSettingsName = 'diagnosticSettings'
-var logCategories = [
-  'StorageRead'
-  'StorageWrite'
-  'StorageDelete'
-]
-var metricCategories = [
-  'Transaction'
-]
-var logs = [for category in logCategories: {
-  category: category
-  enabled: true
-  retentionPolicy: {
-    enabled: true
-    days: retentionInDays
-  }
-}]
-var metrics = [for category in metricCategories: {
-  category: category
-  enabled: true
-  retentionPolicy: {
-    enabled: true
-    days: retentionInDays
-  }
-}]
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: name
@@ -197,14 +173,39 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   }
 }
 
-// Diagnostic settings for storage account
+// Diagnostic settings for storage account blob service
+var blobServiceLogCategories = [
+  'StorageRead'
+  'StorageWrite'
+  'StorageDelete'
+]
+var blobServiceMetricCategories = [
+  'Transaction'
+]
+var blobServiceLogs = [for category in blobServiceLogCategories: {
+  category: category
+  enabled: true
+  retentionPolicy: {
+    enabled: true
+    days: retentionInDays
+  }
+}]
+var blobServiceMetrics = [for category in blobServiceMetricCategories: {
+  category: category
+  enabled: true
+  retentionPolicy: {
+    enabled: true
+    days: retentionInDays
+  }
+}]
+
 resource blobServiceDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(logAnalyticsWorkspaceId)) {
   name: diagnosticSettingsName
   scope: storageAccount::blobServices
   properties: {
     workspaceId: logAnalyticsWorkspaceId
-    logs: logs
-    metrics: metrics
+    logs: blobServiceLogs
+    metrics: blobServiceMetrics
   }
 }
 
