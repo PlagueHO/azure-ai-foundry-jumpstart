@@ -1,4 +1,5 @@
 {
+    "aiSearchSearchServices": "aisrch-",
     "analysisServicesServers": "as",
     "apiManagementService": "apim-",
     "appConfigurationStores": "appcs-",
@@ -108,7 +109,6 @@
     "purviewAccounts": "pview-",
     "recoveryServicesVaults": "rsv-",
     "resourcesResourceGroups": "rg-",
-    "searchSearchServices": "srch-",
     "serviceBusNamespaces": "sb-",
     "serviceBusNamespacesQueues": "sbq-",
     "serviceBusNamespacesTopics": "sbt-",

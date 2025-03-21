@@ -44,7 +44,6 @@ var applicationInsightsDashboardName = '${abbrs.portalDashboards}${environmentNa
 var virtualNetworkName = '${abbrs.networkVirtualNetworks}${environmentName}'
 var storageAccounName = toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', ''))
 
-
 // Organize resources in a resource group
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
@@ -138,10 +137,35 @@ module storageAccount 'core/storage/storage-account.bicep' = {
     isHnsEnabled: false
     kind: 'StorageV2'
     minimumTlsVersion: 'TLS1_2'
+    publicNetworkAccess: 'Disabled'
     enablePrivateEndpoint: true
     privateEndpointVnetName: virtualNetworkName
     privateEndpointSubnetName: '${abbrs.networkVirtualNetworksSubnets}SharedServices'
     logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
+  }
+}
+
+// Create Private DNS Zone for Azure AI Search
+module searchPrivateDnsZone 'core/networking/private-dns-zone.bicep' = {
+  name: 'search-private-dns-zone'
+  scope: rg
+  params: {
+    privateDnsZoneName: 'privatelink.search.windows.net'
+    tags: tags
+  }
+}
+
+// Create Azure AI Search service
+module aiSearchService 'core/search/ai-search-service.bicep' = {
+  name: 'ai-search-service'
+  scope: rg
+  params: {
+    name: '${abbrs.aiSearchSearchServices}${environmentName}'
+    location: location
+    tags: tags
+    sku: {
+      name: 'standard'
+    }
   }
 }
 

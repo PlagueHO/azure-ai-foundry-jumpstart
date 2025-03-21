@@ -1,4 +1,5 @@
-// Parameters
+metadata description = 'Creates a Private Endpoint for a Storage Account.'
+
 @description('Specifies the name of the virtual network.')
 param virtualNetworkName string
 
