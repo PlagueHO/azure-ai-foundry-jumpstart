@@ -105,6 +105,79 @@ module virtualNetwork 'core/networking/virtual-network.bicep' = {
   }
 }
 
+// Private DNS Zone for the Key Vault to be used by Private Link
+module keyVaultPrivateDnsZone 'core/networking/private-dns-zone.bicep' = {
+  name: 'keyvault-private-dns-zone'
+  scope: rg
+  params: {
+    privateDnsZoneName: 'privatelink.vaultcore.azure.net'
+    location: 'global'
+    tags: tags
+  }
+}
+
+// Create a Key Vault to use for the AI services
+module keyVault 'core/security/keyvault.bicep' = {
+  name: 'key-vault'
+  scope: rg
+  params: {
+    name: '${abbrs.keyVaultVaults}${environmentName}'
+    location: location
+    tags: tags
+    publicNetworkAccess: 'Disabled'
+    networkAcls: {
+      bypass: 'None'
+      defaultAction: 'Allow'
+      ipRules: []
+      virtualNetworkRules: [
+        {
+          id: virtualNetwork.outputs.virtualNetworkId
+          ignoreMissingVnetServiceEndpoint: true
+        }
+      ]
+    }
+    accessPolicies: [
+      {
+        tenantId: subscription().tenantId
+        objectId: subscription().tenantId
+        permissions: {
+          keys: [
+            'get'
+            'list'
+            'create'
+            'import'
+            'delete'
+            'update'
+            'backup'
+            'restore'
+            'recover'
+          ]
+          secrets: [
+            'get'
+            'list'
+            'set'
+            'delete'
+            'backup'
+            'restore'
+            'recover'
+          ]
+          certificates: [
+            'get'
+            'list'
+            'create'
+            'import'
+            'delete'
+            'update'
+            'managecontacts'
+            'manageissuers'
+            'setissuersettings'
+          ]
+        }
+      }
+    ]
+  }
+}
+
 // Private DNS Zone for the storage accounts to be used by Private Link
 module storagePrivateDnsZone 'core/networking/private-dns-zone.bicep' = {
   name: 'storage-blobservice-private-dns-zone'
