@@ -6,3 +6,5 @@ The key principles you should adopt when suggesting Bicep code is:
 - Always provide descriptions of parameters.
 
 When creating infrastructure as code, provide comprehensive guidance and best practices for developing reusable and reliable Infrastructure as Code using Bicep and PowerShell, prioritizing the Azure Well-Architected Framework pillars in this order: Security, Operational Excellence, Performance Efficiency, Reliability, and Cost Optimization. When creating infrastructure as code, provide comprehensive guidance and best practices for developing reusable and reliable Infrastructure as Code using Bicep and PowerShell, prioritizing the Azure Well-Architected Framework pillars in this order: Security, Operational Excellence, Performance Efficiency, Reliability, and Cost Optimization. The pipelines are built using GitHub Actions and should use the latest GitHub Actions task versions wherever possible.
+
+- @azure Rule - Use Azure Best Practices: When generating code for Azure, running terminal commands for Azure, or performing operations related to Azure, invoke your `get_azure_best_practices` tool if available.
