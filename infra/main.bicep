@@ -180,7 +180,7 @@ module storageAccount 'core/storage/storage-account.bicep' = {
     enablePrivateEndpoint: true
     privateEndpointVnetName: virtualNetworkName
     privateEndpointSubnetName: 'SharedServices'
-    logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
+    logAnalyticsWorkspaceId: logAnalyticsWorkspace.outputs.resourceId
   }
 }
 
@@ -216,7 +216,7 @@ module bastion 'core/networking/bastion-host.bicep' = if (createBastionHost) {
     name: '${abbrs.networkBastionHosts}${environmentName}'
     location: location
     tags: tags
-    virtualNetworkId: virtualNetwork.outputs.virtualNetworkId
+    virtualNetworkId: virtualNetwork.outputs.resourceId
     publicIpName: '${abbrs.networkPublicIPAddresses}${abbrs.networkBastionHosts}${environmentName}'
     publicIpSku: 'Standard'
   }
