@@ -1,5 +1,6 @@
 {
     "aiSearchSearchServices": "aisrch-",
+    "aiServicesAccounts": "aisvc-",
     "analysisServicesServers": "as",
     "apiManagementService": "apim-",
     "appConfigurationStores": "appcs-",
@@ -12,10 +13,6 @@
     "cacheRedis": "redis-",
     "cdnProfiles": "cdnp-",
     "cdnProfilesEndpoints": "cdne-",
-    "cognitiveServicesAccounts": "cog-",
-    "cognitiveServicesFormRecognizer": "cog-fr-",
-    "cognitiveServicesTextAnalytics": "cog-ta-",
-    "cognitiveServicesSpeech": "cog-sp-",
     "computeAvailabilitySets": "avail-",
     "computeCloudServices": "cld-",
     "computeDiskEncryptionSets": "des",
