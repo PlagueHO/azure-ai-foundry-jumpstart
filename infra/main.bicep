@@ -166,7 +166,7 @@ module storageAccount 'core/storage/storage-account.bicep' = {
     publicNetworkAccess: 'Disabled'
     enablePrivateEndpoint: true
     privateEndpointVnetName: virtualNetworkName
-    privateEndpointSubnetName: '${abbrs.networkVirtualNetworksSubnets}SharedServices'
+    privateEndpointSubnetName: 'SharedServices'
     logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
   }
 }
