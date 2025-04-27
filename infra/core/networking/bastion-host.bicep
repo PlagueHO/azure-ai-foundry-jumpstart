@@ -68,7 +68,14 @@ resource azureBastion 'Microsoft.Network/bastionHosts@2023-02-01' = {
   tags: tags
 }
 
+@description('The resource ID of the Azure Bastion host.')
 output bastionId string = azureBastion.id
+
+@description('The name of the Azure Bastion host.')
 output bastionName string = azureBastion.name
+
+@description('The resource ID of the public IP associated with the Azure Bastion host.')
 output publicIpId string = bastionPublicIp.id
+
+@description('The name of the public IP associated with the Azure Bastion host.')
 output publicIpName string = bastionPublicIp.name

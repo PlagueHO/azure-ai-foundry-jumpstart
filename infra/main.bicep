@@ -23,7 +23,7 @@ param resourceGroupName string = ''
 
 // Should an Azure Bastion be created?
 @description('Should an Azure Bastion be created?')
-param createBastionHost bool = true
+param createBastionHost bool = false
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
