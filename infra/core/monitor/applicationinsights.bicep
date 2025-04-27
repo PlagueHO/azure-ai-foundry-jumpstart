@@ -23,7 +23,14 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
+@description('The connection string of the Application Insights instance.')
 output connectionString string = applicationInsights.properties.ConnectionString
+
+@description('The resource ID of the Application Insights instance.')
 output id string = applicationInsights.id
+
+@description('The instrumentation key of the Application Insights instance.')
 output instrumentationKey string = applicationInsights.properties.InstrumentationKey
+
+@description('The name of the Application Insights instance.')
 output name string = applicationInsights.name

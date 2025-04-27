@@ -34,5 +34,8 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-09-01' = {
   }
 }
 
+@description('The resource ID of the Virtual Network.')
 output virtualNetworkId string = virtualNetwork.id
+
+@description('The name of the Virtual Network.')
 output virtualNetworkName string = virtualNetwork.name

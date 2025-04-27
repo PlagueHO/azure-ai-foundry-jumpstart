@@ -1,5 +1,9 @@
 metadata description = 'Assigns ACR Pull permissions to access an Azure Container Registry.'
+
+@description('The name of the Azure Container Registry.')
 param containerRegistryName string
+
+@description('The object ID of the principal to assign the ACR Pull role to.')
 param principalId string
 
 var acrPullRole = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')

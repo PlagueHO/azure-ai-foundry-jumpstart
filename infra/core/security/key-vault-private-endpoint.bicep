@@ -44,4 +44,5 @@ resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-08-01'
   }
 }
 
+@description('The resource ID of the Key Vault private endpoint.')
 output keyVaultPrivateEndpointId string = keyVaultPrivateEndpoint.id

@@ -78,7 +78,14 @@ module keyVaultPrivateEndpoint 'key-vault-private-endpoint.bicep' = if (enablePr
   }
 }
 
+@description('The DNS endpoint URI of the Azure Key Vault.')
 output endpoint string = keyVault.properties.vaultUri
+
+@description('The resource ID of the Azure Key Vault.')
 output id string = keyVault.id
+
+@description('The name of the Azure Key Vault.')
 output name string = keyVault.name
+
+@description('The resource ID of the Key Vault private endpoint, if enabled.')
 output privateEndpointId string = enablePrivateEndpoint ? keyVaultPrivateEndpoint.outputs.keyVaultPrivateEndpointId : ''

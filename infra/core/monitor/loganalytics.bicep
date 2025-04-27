@@ -24,5 +24,8 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-12-01-previ
   })
 }
 
+@description('The resource ID of the Log Analytics workspace.')
 output id string = logAnalytics.id
+
+@description('The name of the Log Analytics workspace.')
 output name string = logAnalytics.name

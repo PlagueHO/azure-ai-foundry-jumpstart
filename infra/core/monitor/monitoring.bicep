@@ -31,9 +31,20 @@ module applicationInsights 'applicationinsights.bicep' = {
   }
 }
 
+@description('The connection string of the Application Insights instance.')
 output applicationInsightsConnectionString string = applicationInsights.outputs.connectionString
+
+@description('The resource ID of the Application Insights instance.')
 output applicationInsightsId string = applicationInsights.outputs.id
+
+@description('The instrumentation key of the Application Insights instance.')
 output applicationInsightsInstrumentationKey string = applicationInsights.outputs.instrumentationKey
+
+@description('The name of the Application Insights instance.')
 output applicationInsightsName string = applicationInsights.outputs.name
+
+@description('The resource ID of the Log Analytics workspace.')
 output logAnalyticsWorkspaceId string = logAnalytics.outputs.id
+
+@description('The name of the Log Analytics workspace.')
 output logAnalyticsWorkspaceName string = logAnalytics.outputs.name
