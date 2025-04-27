@@ -79,10 +79,23 @@ resource searchServicePrivateDnsZoneGroupName 'Microsoft.Network/privateEndpoint
   }
 }
 
+@description('The resource ID of the AI Search private endpoint.')
 output searchServicePrivateEndpointId string = searchServicePrivateEndpoint.id
+
+@description('The resource ID of the AI Search private DNS zone group.')
 output searchServicePrivateDnsZoneGroupId string = searchServicePrivateDnsZoneGroupName.id
+
+@description('The resource ID of the AI Search private DNS zone virtual network link.')
 output searchServicePrivateDnsZoneVirtualNetworkLinkId string = searchServicePrivateDnsZoneVirtualNetworkLink.id
+
+@description('The resource ID of the AI Search private DNS zone.')
 output searchServicePrivateDnsZoneId string = searchServicePrivateDnsZone.id
+
+@description('The name of the AI Search private DNS zone.')
 output searchServicePrivateDnsZoneName string = searchServicePrivateDnsZone.name
+
+@description('The resource ID of the AI Search private DNS zone.')
 output searchServicePrivateDnsZoneResourceId string = searchServicePrivateDnsZone.id
+
+@description('The name of the AI Search private DNS zone virtual network link.')
 output searchServicePrivateDnsZoneVirtualNetworkLinkName string = searchServicePrivateDnsZoneVirtualNetworkLink.name
