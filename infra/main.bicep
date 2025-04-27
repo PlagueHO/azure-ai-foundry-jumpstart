@@ -40,9 +40,9 @@ var resourceToken = toLower(uniqueString(subscription().id, environmentName, loc
 
 var logAnalyticsName = '${abbrs.operationalInsightsWorkspaces}${environmentName}'
 var applicationInsightsName = '${abbrs.insightsComponents}${environmentName}'
-var applicationInsightsDashboardName = '${abbrs.portalDashboards}${environmentName}'
 var virtualNetworkName = '${abbrs.networkVirtualNetworks}${environmentName}'
 var storageAccounName = toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', ''))
+var keyVaultName = toLower(replace('${abbrs.keyVaultVaults}${environmentName}', '-', ''))
 
 // Organize resources in a resource group
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -60,7 +60,6 @@ module monitoring 'core/monitor/monitoring.bicep' = {
     tags: tags
     logAnalyticsName: logAnalyticsName
     applicationInsightsName: applicationInsightsName
-    applicationInsightsDashboardName: applicationInsightsDashboardName
   }
 }
 
@@ -83,17 +82,17 @@ module virtualNetwork 'core/networking/virtual-network.bicep' = {
       }
       {
         // AI Services Subnet
-        name: '${abbrs.networkVirtualNetworksSubnets}AiServices'
+        name: 'AiServices'
         addressPrefix: '10.0.1.0/24'
       }
       {
         // Azure AI Foundry Hubs Subnet
-        name: '${abbrs.networkVirtualNetworksSubnets}FoundryHubs'
+        name: 'FoundryHubs'
         addressPrefix: '10.0.2.0/24'
       }
       {
         // Shared Services Subnet (storage accounts, key vaults, monitoring, etc.)
-        name: '${abbrs.networkVirtualNetworksSubnets}SharedServices'
+        name: 'SharedServices'
         addressPrefix: '10.0.3.0/24'
       }
       {
@@ -117,64 +116,18 @@ module keyVaultPrivateDnsZone 'core/networking/private-dns-zone.bicep' = {
 }
 
 // Create a Key Vault to use for the AI services
-module keyVault 'core/security/keyvault.bicep' = {
+module keyVault 'core/security/key-vault.bicep' = {
   name: 'key-vault'
   scope: rg
   params: {
-    name: '${abbrs.keyVaultVaults}${environmentName}'
+    name: keyVaultName
     location: location
     tags: tags
     publicNetworkAccess: 'Disabled'
-    networkAcls: {
-      bypass: 'None'
-      defaultAction: 'Allow'
-      ipRules: []
-      virtualNetworkRules: [
-        {
-          id: virtualNetwork.outputs.virtualNetworkId
-          ignoreMissingVnetServiceEndpoint: true
-        }
-      ]
-    }
-    accessPolicies: [
-      {
-        tenantId: subscription().tenantId
-        objectId: subscription().tenantId
-        permissions: {
-          keys: [
-            'get'
-            'list'
-            'create'
-            'import'
-            'delete'
-            'update'
-            'backup'
-            'restore'
-            'recover'
-          ]
-          secrets: [
-            'get'
-            'list'
-            'set'
-            'delete'
-            'backup'
-            'restore'
-            'recover'
-          ]
-          certificates: [
-            'get'
-            'list'
-            'create'
-            'import'
-            'delete'
-            'update'
-            'managecontacts'
-            'manageissuers'
-            'setissuersettings'
-          ]
-        }
-      }
-    ]
+    enablePrivateEndpoint: true
+    privateEndpointVnetName: virtualNetworkName
+    privateEndpointSubnetName: 'SharedServices'
+    privateEndpointName: '${keyVaultName}-pe'
   }
 }
 

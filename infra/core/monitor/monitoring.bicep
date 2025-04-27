@@ -6,9 +6,6 @@ param logAnalyticsName string
 @description('Name of the Application Insights instance.')
 param applicationInsightsName string
 
-@description('Name of the Application Insights dashboard.')
-param applicationInsightsDashboardName string = ''
-
 @description('Location where the resources should be deployed.')
 param location string = resourceGroup().location
 
@@ -30,7 +27,6 @@ module applicationInsights 'applicationinsights.bicep' = {
     name: applicationInsightsName
     location: location
     tags: tags
-    dashboardName: applicationInsightsDashboardName
     logAnalyticsWorkspaceId: logAnalytics.outputs.id
   }
 }

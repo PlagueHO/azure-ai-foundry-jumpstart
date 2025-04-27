@@ -3,9 +3,6 @@ metadata description = 'Creates an Application Insights instance based on an exi
 @description('Name of the Application Insights instance.')
 param name string
 
-@description('Name of the Application Insights dashboard.')
-param dashboardName string = ''
-
 @description('Location where the Application Insights instance should be deployed.')
 param location string = resourceGroup().location
 
@@ -23,15 +20,6 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   properties: {
     Application_Type: 'web'
     WorkspaceResourceId: logAnalyticsWorkspaceId
-  }
-}
-
-module applicationInsightsDashboard 'applicationinsights-dashboard.bicep' = if (!empty(dashboardName)) {
-  name: 'application-insights-dashboard'
-  params: {
-    name: dashboardName
-    location: location
-    applicationInsightsName: applicationInsights.name
   }
 }
 
