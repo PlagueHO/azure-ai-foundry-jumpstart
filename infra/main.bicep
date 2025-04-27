@@ -44,6 +44,34 @@ var virtualNetworkName = '${abbrs.networkVirtualNetworks}${environmentName}'
 var storageAccounName = toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', ''))
 var keyVaultName = toLower(replace('${abbrs.keyVaultVaults}${environmentName}', '-', ''))
 
+var subnets = [
+  {
+    // Default subnet (generally not used)
+    name: 'Default'
+    addressPrefix: '10.0.0.0/24'
+  }
+  {
+    // AI Services Subnet
+    name: 'AiServices'
+    addressPrefix: '10.0.1.0/24'
+  }
+  {
+    // Azure AI Foundry Hubs Subnet
+    name: 'FoundryHubs'
+    addressPrefix: '10.0.2.0/24'
+  }
+  {
+    // Shared Services Subnet (storage accounts, key vaults, monitoring, etc.)
+    name: 'SharedServices'
+    addressPrefix: '10.0.3.0/24'
+  }
+  {
+    // Bastion Gateway Subnet
+    name: 'AzureBastionSubnet'
+    addressPrefix: '10.0.255.0/27'
+  }
+]
+
 // Organize resources in a resource group
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
@@ -51,21 +79,32 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
-// Create the monitoring resources for the environment
-module monitoring 'core/monitor/monitoring.bicep' = {
-  name: 'monitoring'
+// Create the Log Analytics workspace using Azure Verified Module (AVM)
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
+  name: 'logAnalyticsWorkspace'
   scope: rg
   params: {
+    name: logAnalyticsName
     location: location
     tags: tags
-    logAnalyticsName: logAnalyticsName
-    applicationInsightsName: applicationInsightsName
   }
 }
 
-// Virtual Network to host all AI services and supporting resources
-module virtualNetwork 'core/networking/virtual-network.bicep' = {
-  name: 'virtual-network'
+// Create the Application Insights resource using Azure Verified Module (AVM)
+module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
+  name: 'applicationInsights'
+  scope: rg
+  params: {
+    name: applicationInsightsName
+    location: location
+    tags: tags
+    workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+  }
+}
+
+// Create the Virtual Network and subnets using Azure Verified Modules (AVM)
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = {
+  name: 'virtualNetwork'
   scope: rg
   params: {
     name: virtualNetworkName
@@ -74,33 +113,7 @@ module virtualNetwork 'core/networking/virtual-network.bicep' = {
     addressPrefixes: [
       '10.0.0.0/16'
     ]
-    subnets: [
-      {
-        // Default subnet (generally not used)
-        name: 'Default'
-        addressPrefix: '10.0.0.0/24'
-      }
-      {
-        // AI Services Subnet
-        name: 'AiServices'
-        addressPrefix: '10.0.1.0/24'
-      }
-      {
-        // Azure AI Foundry Hubs Subnet
-        name: 'FoundryHubs'
-        addressPrefix: '10.0.2.0/24'
-      }
-      {
-        // Shared Services Subnet (storage accounts, key vaults, monitoring, etc.)
-        name: 'SharedServices'
-        addressPrefix: '10.0.3.0/24'
-      }
-      {
-        // Bastion Gateway Subnet
-        name: 'AzureBastionSubnet'
-        addressPrefix: '10.0.255.0/27'
-      }
-    ]
+    subnets: subnets
   }
 }
 
