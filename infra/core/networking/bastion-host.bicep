@@ -56,8 +56,7 @@ resource azureBastion 'Microsoft.Network/bastionHosts@2023-02-01' = {
         name: 'ipconfig1'
         properties: {
           subnet: {
-            // Todo: Fix the linter error: If property "id" represents a resource ID, it must use a symbolic resource reference, be a parameter or start with one of these functions: extensionResourceId, guid, if, managementGroupResourceId, reference, resourceId, subscription, subscriptionResourceId, tenantResourceId.
-            id: '${virtualNetworkId}/subnets/AzureBastionSubnet'
+            id: resourceId(virtualNetworkId, 'Microsoft.Network/virtualNetworks/subnets', 'AzureBastionSubnet')
           }
           publicIPAddress: {
             id: bastionPublicIp.id
