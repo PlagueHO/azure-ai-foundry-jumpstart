@@ -39,10 +39,14 @@ var tags = {
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 
 var logAnalyticsName = '${abbrs.operationalInsightsWorkspaces}${environmentName}'
+var sendTologAnalyticsCustomSettingName = 'send-to-${logAnalyticsName}'
 var applicationInsightsName = '${abbrs.insightsComponents}${environmentName}'
 var virtualNetworkName = '${abbrs.networkVirtualNetworks}${environmentName}'
 var storageAccounName = toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', ''))
 var keyVaultName = toLower(replace('${abbrs.keyVaultVaults}${environmentName}', '-', ''))
+var aiSearchName = '${abbrs.aiSearchSearchServices}${environmentName}'
+var aiServicesName = '${abbrs.aiServicesAccounts}${environmentName}'
+var bastionHostName = '${abbrs.networkBastionHosts}${environmentName}'
 
 var subnets = [
   {
@@ -173,32 +177,106 @@ module storageBlobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7
   }
 }
 
-// Create a Storage Account to use for the AI services
-module storageAccount 'core/storage/storage-account.bicep' = {
-  name: 'storage-account'
+// Create a Storage Account with private endpoint in the AppStorage subnet using Azure Verified Module (AVM)
+module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
+  name: 'storage-account-deployment'
   scope: rg
   params: {
     name: storageAccounName
-    location: location
-    tags: tags
-    accessTier: 'Hot'
     allowBlobPublicAccess: false
-    allowCrossTenantReplication: false
-    allowSharedKeyAccess: true
-    defaultToOAuthAuthentication: true
-    deleteRetentionPolicy: {
-      enabled: true
-      days: 7
+    blobServices: {
+      automaticSnapshotPolicyEnabled: false
+      containerDeleteRetentionPolicyEnabled: false
+      deleteRetentionPolicyEnabled: false
+      diagnosticSettings: [
+        {
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          name: sendTologAnalyticsCustomSettingName
+          workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+        }
+      ]
+      lastAccessTimeTrackingPolicyEnabled: true
     }
-    dnsEndpointType: 'Standard'
-    isHnsEnabled: false
-    kind: 'StorageV2'
-    minimumTlsVersion: 'TLS1_2'
-    publicNetworkAccess: 'Disabled'
-    enablePrivateEndpoint: true
-    privateEndpointVnetName: virtualNetworkName
-    privateEndpointSubnetName: 'SharedServices'
-    logAnalyticsWorkspaceId: logAnalyticsWorkspace.outputs.resourceId
+    diagnosticSettings: [
+      {
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: sendTologAnalyticsCustomSettingName
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+      }
+    ]
+    enableHierarchicalNamespace: false
+    enableNfsV3: false
+    enableSftp: false
+    fileServices: {
+      diagnosticSettings: [
+        {
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          name: sendTologAnalyticsCustomSettingName
+          workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+        }
+      ]
+    }
+    largeFileSharesState: 'Enabled'
+    location: location
+    managedIdentities: {
+      systemAssigned: true
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: storageBlobPrivateDnsZone.outputs.resourceId
+            }
+          ]
+        }
+        service: 'blob'
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[3]
+        tags: tags
+      }
+    ]
+    queueServices: {
+      diagnosticSettings: [
+        {
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          name: sendTologAnalyticsCustomSettingName
+          workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+        }
+      ]
+    }
+    requireInfrastructureEncryption: true
+    sasExpirationPeriod: '180.00:00:00'
+    skuName: 'Standard_LRS'
+    tableServices: {
+      diagnosticSettings: [
+        {
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          name: sendTologAnalyticsCustomSettingName
+          workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+        }
+      ]
+    }
+    tags: tags
   }
 }
 
@@ -213,31 +291,96 @@ module aiSearchPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1'
   }
 }
 
-// Create Azure AI Search service
-module aiSearchService 'core/search/ai-search-service.bicep' = {
-  name: 'ai-search-service'
+// Create Azure AI Search service with private endpoint in the AiServices subnet using Azure Verified Module (AVM)
+module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
+  name: 'ai-search-service-deployment'
   scope: rg
   params: {
-    name: '${abbrs.aiSearchSearchServices}${environmentName}'
+    name: aiSearchName
     location: location
+    sku: 'standard'
+    semanticSearch: 'standard'
+    diagnosticSettings: [
+      {
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: sendTologAnalyticsCustomSettingName
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+      }
+    ]
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: aiSearchPrivateDnsZone.outputs.resourceId
+            }
+          ]
+        }
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
+        tags: tags
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
     tags: tags
-    sku: {
-      name: 'basic'
-    }
   }
 }
 
-// Optional: Create an Azure Bastion host in the virtual network.
-module bastion 'core/networking/bastion-host.bicep' = if (createBastionHost) {
-  name: 'bastion-host'
+// Create Private DNS Zone for Azure AI Services to be used by Private Link using Azure Verified Module (AVM)
+module aiServicesPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
+  name: 'ai-services-private-dns-zone'
   scope: rg
   params: {
-    name: '${abbrs.networkBastionHosts}${environmentName}'
-    location: location
+    name: 'privatelink.cognitiveservices.azure.com'
+    location: 'global'
     tags: tags
-    virtualNetworkId: virtualNetwork.outputs.resourceId
-    publicIpName: '${abbrs.networkPublicIPAddresses}${abbrs.networkBastionHosts}${environmentName}'
-    publicIpSku: 'Standard'
+  }
+}
+
+// Create Azure AI Services instance with private endpoint in the AiServices subnet using Azure Verified Module (AVM)
+module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' = {
+  name: 'ai-services-account-deployment'
+  scope: rg
+  params: {
+    kind: 'AIServices'
+    name: aiServicesName
+    location: location
+    sku: 'S0'
+    diagnosticSettings: [
+      {
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+      }
+    ]
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: aiServicesPrivateDnsZone.outputs.resourceId
+            }
+          ]
+        }
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
+        tags: tags
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+  }
+}
+
+// Optional: Create an Azure Bastion host in the virtual network using Azure Verified Module (AVM)
+module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (createBastionHost) {
+  name: 'bastion-host-deployment'
+  scope: rg
+  params: {
+    name: bastionHostName
+    location: location
+    virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+    skuName: 'Developer'
+    tags: tags
   }
 }
 
