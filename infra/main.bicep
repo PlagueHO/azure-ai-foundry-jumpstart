@@ -138,7 +138,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
-    enablePurgeProtection: false
+    enablePurgeProtection: true
     enableRbacAuthorization: true
     networkAcls: {
       bypass: 'AzureServices'
