@@ -260,7 +260,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
         }
       ]
     }
-    requireInfrastructureEncryption: true
     sasExpirationPeriod: '180.00:00:00'
     skuName: 'Standard_LRS'
     tableServices: {
