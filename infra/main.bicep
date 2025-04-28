@@ -117,14 +117,13 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = {
   }
 }
 
-// Private DNS Zone for the Key Vault to be used by Private Link
-module keyVaultPrivateDnsZone 'core/networking/private-dns-zone.bicep' = {
+// Create the Private DNS Zone for the Key Vault to be used by Private Link using Azure Verified Module (AVM)
+module keyVaultPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
   name: 'keyvault-private-dns-zone'
   scope: rg
   params: {
-    privateDnsZoneName: 'privatelink.vaultcore.azure.net'
+    name: 'privatelink.vaultcore.azure.net'
     location: 'global'
-    tags: tags
   }
 }
 
@@ -144,12 +143,12 @@ module keyVault 'core/security/key-vault.bicep' = {
   }
 }
 
-// Private DNS Zone for the storage accounts to be used by Private Link
-module storagePrivateDnsZone 'core/networking/private-dns-zone.bicep' = {
+// Create Private DNS Zone for the Storage Account blob service to be used by Private Link using Azure Verified Module (AVM)
+module storageBlobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
   name: 'storage-blobservice-private-dns-zone'
   scope: rg
   params: {
-    privateDnsZoneName: 'privatelink.blob.${environment().suffixes.storage}'
+    name: 'privatelink.blob.${environment().suffixes.storage}'
     location: 'global'
     tags: tags
   }
@@ -184,12 +183,13 @@ module storageAccount 'core/storage/storage-account.bicep' = {
   }
 }
 
-// Create Private DNS Zone for Azure AI Search
-module searchPrivateDnsZone 'core/networking/private-dns-zone.bicep' = {
-  name: 'search-private-dns-zone'
+// Create Private DNS Zone for Azure AI Search to be used by Private Link using Azure Verified Module (AVM)
+module aiSearchPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
+  name: 'ai-search-private-dns-zone'
   scope: rg
   params: {
-    privateDnsZoneName: 'privatelink.search.windows.net'
+    name: 'privatelink.search.windows.net'
+    location: 'global'
     tags: tags
   }
 }
