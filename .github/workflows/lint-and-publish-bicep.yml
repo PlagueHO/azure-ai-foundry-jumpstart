@@ -30,4 +30,4 @@ jobs:
         path: |
            ./infra/main.bicep
            ./infra/abbreviations.json
-           ./infra/core/
+           ./infra/res/
