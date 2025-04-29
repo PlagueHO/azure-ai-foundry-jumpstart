@@ -1,6 +1,7 @@
 {
     "aiSearchSearchServices": "aisrch-",
     "aiServicesAccounts": "aisvc-",
+    "aiFoundryHubs": "aihub-",
     "analysisServicesServers": "as",
     "apiManagementService": "apim-",
     "appConfigurationStores": "appcs-",

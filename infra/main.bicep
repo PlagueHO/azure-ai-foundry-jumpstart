@@ -44,9 +44,11 @@ var applicationInsightsName = '${abbrs.insightsComponents}${environmentName}'
 var virtualNetworkName = '${abbrs.networkVirtualNetworks}${environmentName}'
 var storageAccounName = toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', ''))
 var keyVaultName = toLower(replace('${abbrs.keyVaultVaults}${environmentName}', '-', ''))
+var containerRegistryName = '${abbrs.containerRegistryRegistries}${environmentName}'
 var aiSearchName = '${abbrs.aiSearchSearchServices}${environmentName}'
 var aiServicesName = '${abbrs.aiServicesAccounts}${environmentName}'
 var aiServicesCustomSubDomainName = toLower(replace(environmentName, '-', ''))
+var aiFoundryHubName = '${abbrs.aiFoundryHubs}${environmentName}'
 var bastionHostName = '${abbrs.networkBastionHosts}${environmentName}'
 
 var subnets = [
@@ -229,6 +231,53 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
   }
 }
 
+// Create Private DNS Zone for Container Registry to be used by Private Link using Azure Verified Module (AVM)
+module containerRegistryPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
+  name: 'container-registry-private-dns-zone'
+  scope: rg
+  params: {
+    name: 'privatelink.azurecr.io'
+    location: 'global'
+    tags: tags
+  }
+}
+
+// Create Azure Container Registry with private endpoint in the SharedServices subnet using Azure Verified Module (AVM)
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = {
+  name: 'container-registry-deployment'
+  scope: rg
+  params: {
+    name: containerRegistryName
+    location: location
+    acrSku: 'Basic'
+    acrAdminUserEnabled: false
+    diagnosticSettings: [
+      {
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: sendTologAnalyticsCustomSettingName
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+      }
+    ]
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: containerRegistryPrivateDnsZone.outputs.resourceId
+            }
+          ]
+        }
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[3]
+        tags: tags
+      }
+    ]
+  }
+}
+
 // Create Private DNS Zone for Azure AI Search to be used by Private Link using Azure Verified Module (AVM)
 module aiSearchPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
   name: 'ai-search-private-dns-zone'
@@ -318,6 +367,63 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
       }
     ]
     publicNetworkAccess: 'Disabled'
+  }
+}
+
+// Create Private DNS Zone for Azure AI Hub endpoints to be used by Private Link using Azure Verified Module (AVM)
+module aiHubApiMlPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
+  name: 'ai-hub-apiml-private-dns-zone'
+  scope: rg
+  params: {
+    name: 'privatelink.api.azureml.ms'
+    location: 'global'
+    tags: tags
+  }
+}
+
+module aiHubNotebooksPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
+  name: 'ai-hub-notebooks-private-dns-zone'
+  scope: rg
+  params: {
+    name: 'privatelink.notebooks.azure.net'
+    location: 'global'
+    tags: tags
+  }
+}
+
+// Create Azure AI Foundry Hub workspace with private endpoint in the FoundryHubs subnet using res\ai\ai-foundry-hub.bicep
+module aiFoundryHub 'res/ai/ai-foundry-hub.bicep' = {
+  name: 'ai-foundry-hub-deployment'
+  scope: rg
+  params: {
+    name: aiFoundryHubName
+    location: location
+    tags: tags
+    aiHubFriendlyName: 'AI Foundry Hub'
+    aiHubDescription: 'AI Foundry Hub for ${environmentName}'
+    aiServicesId: aiServicesAccount.outputs.resourceId
+    aiServicesTarget: aiServicesAccount.outputs.endpoint
+    keyVaultId: keyVault.outputs.resourceId
+    storageAccountId: storageAccount.outputs.resourceId
+    applicationInsightsId: applicationInsights.outputs.resourceId
+    containerRegistryId: containerRegistry.outputs.resourceId
+    publicNetworkAccess: 'Disabled'
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: aiHubApiMlPrivateDnsZone.outputs.resourceId
+            }
+            {
+              privateDnsZoneResourceId: aiHubNotebooksPrivateDnsZone.outputs.resourceId
+            }
+          ]
+        }
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2]
+        tags: tags
+      }
+    ]
   }
 }
 
