@@ -1,12 +1,19 @@
 # Azure AI Sandbox Solution Accelerator
 
-A starter blueprint for getting your application up on Azure using [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview) (azd). Add your application code, write Infrastructure as Code assets in [Bicep](https://aka.ms/bicep) to get your application up and running quickly.
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-sandbox-accelerator/continuous-integration.yml?branch=main)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-sandbox-accelerator/continuous-deployment.yml?branch=main)
+![License](https://img.shields.io/github/license/PlagueHO/azure-ai-sandbox-accelerator)
+![Azure](https://img.shields.io/badge/Azure-Solution%20Accelerator-0078D4?logo=microsoftazure&logoColor=white)
+![Infrastructure as Code](https://img.shields.io/badge/Infrastructure%20as%20Code-Bicep-5C2D91?logo=azurepipelines&logoColor=white)
 
-The following assets have been provided:
+The Azure AI Sandbox Solution Accelerator is used to set up an Azure AI Foundry environment with a set of pre-defined resources and configurations. This solution accelerator is designed to help you quickly get started with Azure AI Foundry and provides a set of templates and scripts to automate the setup process.
 
-- Infrastructure-as-code (IaC) Bicep files under the `infra` folder that demonstrate how to provision resources and setup resource tagging for azd.
-- A [dev container](https://containers.dev) configuration file under the `.devcontainer` directory that installs infrastructure tooling by default. This can be readily used to create cloud-hosted developer environments such as [GitHub Codespaces](https://aka.ms/codespaces).
-- Continuous deployment workflows for CI providers such as GitHub Actions under the `.github` directory, and Azure Pipelines under the `.azdo` directory that work for most use-cases.
+## Prerequisites
+
+Before you begin, ensure you have the following prerequisites in place:
+
+- An active Azure subscription - [Create a free account](https://azure.microsoft.com/free/) if you don't have one.
+- The Azure Developer CLI (azd) installed on your machine - [Install azd](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/install-azd).
 
 ## Next Steps
 

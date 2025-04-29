@@ -4,12 +4,11 @@ This folder contains the design, architecture, and technical documentation for t
 
 ## Contents
 
-- [OVERVIEW.md](OVERVIEW.md) — Project summary and high-level description
-- [ARCHITECTURE.md](ARCHITECTURE.md) — Architecture overview, diagrams, and components
-- [AZURE_INFRASTRUCTURE.md](AZURE_INFRASTRUCTURE.md) — Azure services, deployment topology, and infrastructure as code
-- [TECHNOLOGY_STACK.md](TECHNOLOGY_STACK.md) — Backend and frontend technology choices and rationale
-- [FOLDER_STRUCTURE.md](FOLDER_STRUCTURE.md) — Repository folder structure and conventions
-- [TESTING.md](TESTING.md) — Automated test approaches, frameworks, and strategies
-- [CI_CD.md](CI_CD.md) — CI/CD strategy, workflows, and secrets management
+- [OVERVIEW.md](OVERVIEW.md) - Project summary and high-level description
+- [ARCHITECTURE.md](ARCHITECTURE.md) - Architecture overview, diagrams, and components
+- [AZURE.md](AZURE.md) - Azure services, deployment topology, and infrastructure as code
+- [TECHNOLOGY.md](TECHNOLOGY.md) - Technologies used, programming languages, and frameworks
+- [FOLDERS.md](FOLDERS.md) - Repository folder structure and conventions
+- [DEVOPS.md](DEVOPS.md) - DevOps approach, automated testing, CI/CD strategy and workflows
 
 Refer to each file for detailed documentation on each aspect of the system.
