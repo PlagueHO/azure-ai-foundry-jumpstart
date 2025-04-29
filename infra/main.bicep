@@ -25,6 +25,12 @@ param resourceGroupName string = ''
 @description('Should an Azure Bastion be created?')
 param createBastionHost bool = false
 
+@description('Optional friendly name for the AI Foundry Hub workspace.')
+param aiFoundryHubFriendlyName string = 'AI Foundry Hub (${environmentName})'
+
+@description('Optional description for the AI Foundry Hub workspace.')
+param aiFoundryHubDescription string = 'AI Foundry Hub for ${environmentName}'
+
 var abbrs = loadJsonContent('./abbreviations.json')
 
 // tags that should be applied to all resources.
@@ -350,6 +356,12 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
     sku: 'S0'
     diagnosticSettings: [
       {
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: sendTologAnalyticsCustomSettingName
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
@@ -391,22 +403,32 @@ module aiHubNotebooksPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:
   }
 }
 
-// Create Azure AI Foundry Hub workspace with private endpoint in the FoundryHubs subnet using res\ai\ai-foundry-hub.bicep
-module aiFoundryHub 'res/ai/ai-foundry-hub.bicep' = {
-  name: 'ai-foundry-hub-deployment'
+// Create Azure AI Foundry Hub workspace with private endpoint in the FoundryHubs subnet using Azure Verified Module (AVM)
+module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = {
+  name: 'ai-foundry-hub-workspace-deployment'
   scope: rg
   params: {
     name: aiFoundryHubName
+    friendlyName: aiFoundryHubFriendlyName
+    description: aiFoundryHubDescription
     location: location
-    tags: tags
-    aiHubFriendlyName: 'AI Foundry Hub'
-    aiHubDescription: 'AI Foundry Hub for ${environmentName}'
-    aiServicesId: aiServicesAccount.outputs.resourceId
-    aiServicesTarget: aiServicesAccount.outputs.endpoint
-    keyVaultId: keyVault.outputs.resourceId
-    storageAccountId: storageAccount.outputs.resourceId
-    applicationInsightsId: applicationInsights.outputs.resourceId
-    containerRegistryId: containerRegistry.outputs.resourceId
+    kind: 'Hub'
+    sku: 'Standard'
+    associatedApplicationInsightsResourceId: applicationInsights.outputs.resourceId
+    associatedKeyVaultResourceId: keyVault.outputs.resourceId
+    associatedStorageAccountResourceId: storageAccount.outputs.resourceId
+    associatedContainerRegistryResourceId: containerRegistry.outputs.resourceId
+    diagnosticSettings: [
+      {
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: sendTologAnalyticsCustomSettingName
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+      }
+    ]
     publicNetworkAccess: 'Disabled'
     privateEndpoints: [
       {
@@ -424,6 +446,9 @@ module aiFoundryHub 'res/ai/ai-foundry-hub.bicep' = {
         tags: tags
       }
     ]
+    provisionNetworkNow: true
+    systemDatastoresAuthMode: 'Identity'
+    tags: tags
   }
 }
 
