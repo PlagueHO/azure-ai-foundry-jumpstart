@@ -249,7 +249,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
   params: {
     name: containerRegistryName
     location: location
-    acrSku: 'Standard'
+    acrSku: 'Premium'
     acrAdminUserEnabled: false
     diagnosticSettings: [
       {
