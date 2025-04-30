@@ -48,6 +48,7 @@ var virtualNetworkName = '${abbrs.networkVirtualNetworks}${environmentName}'
 var storageAccounName = toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', ''))
 var keyVaultName = toLower(replace('${abbrs.keyVaultVaults}${environmentName}', '-', ''))
 var containerRegistryName = toLower(replace('${abbrs.containerRegistryRegistries}${environmentName}', '-', ''))
+var aiSearchUserAssignedIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}${environmentName}'
 var aiSearchName = '${abbrs.aiSearchSearchServices}${environmentName}'
 var aiServicesName = '${abbrs.aiServicesAccounts}${environmentName}'
 var aiServicesCustomSubDomainName = toLower(replace(environmentName, '-', ''))
@@ -241,7 +242,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
       {
         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         principalType: 'ServicePrincipal'
-        principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
+        principalId: aiSearchUserAssignedIdentity.outputs.principalId
       }
     ]
     sasExpirationPeriod: '180.00:00:00'
@@ -297,6 +298,19 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
   }
 }
 
+// Create a user assigned managed identity for the Azure AI Search using Azure Verified Module (AVM)
+// This is needed to decouple the lifecycle of the Azure AI search service from the identity
+// to prevent a circular dependency when assigning roles to the identity
+module aiSearchUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
+  name: 'ai-search-user-assigned-identity-deployment'
+  scope: rg
+  params: {
+    name: aiSearchUserAssignedIdentityName
+    location: location
+    tags: tags
+  }
+}
+
 // Create Private DNS Zone for Azure AI Search to be used by Private Link using Azure Verified Module (AVM)
 module aiSearchPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
   name: 'ai-search-private-dns-zone'
@@ -330,6 +344,9 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
     disableLocalAuth: disableApiKeys
     managedIdentities: {
       systemAssigned: true
+      userAssignedResourceIds: [
+        aiSearchUserAssignedIdentity.outputs.resourceId
+      ]
     }
     authOptions: {
       aadOrApiKey: {
@@ -350,7 +367,7 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
       }
     ]
     publicNetworkAccess: 'Disabled'
-    roleAssignments:[
+    roleAssignments: [
       {
         roleDefinitionIdOrName: 'Search Index Data Contributor'
         principalType: 'ServicePrincipal'
@@ -415,6 +432,18 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
       }
     ]
     publicNetworkAccess: 'Disabled'
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Cognitive Services Contributor'
+        principalType: 'ServicePrincipal'
+        principalId: aiSearchUserAssignedIdentity.outputs.principalId
+      }
+      {
+        roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
+        principalType: 'ServicePrincipal'
+        principalId: aiSearchUserAssignedIdentity.outputs.principalId
+      }
+    ]
     sku: 'S0'
     tags: tags
   }
