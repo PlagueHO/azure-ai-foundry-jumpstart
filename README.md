@@ -1,12 +1,12 @@
 # Azure AI Sandbox Solution Accelerator
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-sandbox-accelerator/continuous-integration.yml?branch=main)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-sandbox-accelerator/continuous-deployment.yml?branch=main)
-![License](https://img.shields.io/github/license/PlagueHO/azure-ai-sandbox-accelerator)
-![Azure](https://img.shields.io/badge/Azure-Solution%20Accelerator-0078D4?logo=microsoftazure&logoColor=white)
-![Infrastructure as Code](https://img.shields.io/badge/Infrastructure%20as%20Code-Bicep-5C2D91?logo=azurepipelines&logoColor=white)
+[![CI][ci-shield]][ci-url]
+[![CD][cd-shield]][cd-url]
+[![License][license-shield]][license-url]
+[![Azure][azure-shield]][azure-url]
+[![IaC][iac-shield]][iac-url]
 
-The Azure AI Sandbox Solution Accelerator is used to set up an Azure AI Foundry environment with a set of pre-defined resources and configurations. This solution accelerator is designed to help you quickly get started with Azure AI Foundry and provides a set of templates and scripts to automate the setup process.
+The Azure AI Sandbox Solution Accelerator is used to set up an Azure AI Foundry environment with a set of pre‑defined resources and configurations. This solution accelerator is designed to help you quickly get started with Azure AI Foundry and provides a set of templates and scripts to automate the setup process.
 
 ## Prerequisites
 
@@ -80,3 +80,19 @@ For `appservice`, the following host configuration options are often modified:
 - Exposed port from the running container (if running a web service)
 - Allowed origins for CORS (Cross-Origin Resource Sharing) protection (if running a web service backend with a frontend)
 - The run command that starts up your service
+
+<!-- Badge reference links -->
+[ci-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-sandbox-accelerator/continuous-integration.yml?branch=main
+[ci-url]: https://github.com/PlagueHO/azure-ai-sandbox-accelerator/actions/workflows/continuous-integration.yml
+
+[cd-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-sandbox-accelerator/continuous-deployment.yml?branch=main
+[cd-url]: https://github.com/PlagueHO/azure-ai-sandbox-accelerator/actions/workflows/continuous-deployment.yml
+
+[license-shield]: https://img.shields.io/github/license/PlagueHO/azure-ai-sandbox-accelerator
+[license-url]: https://github.com/PlagueHO/azure-ai-sandbox-accelerator/blob/main/LICENSE
+
+[azure-shield]: https://img.shields.io/badge/Azure-Solution%20Accelerator-0078D4?logo=microsoftazure&logoColor=white
+[azure-url]: https://azure.microsoft.com/
+
+[iac-shield]: https://img.shields.io/badge/Infrastructure%20as%20Code-Bicep-5C2D91?logo=azurepipelines&logoColor=white
+[iac-url]: https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview
