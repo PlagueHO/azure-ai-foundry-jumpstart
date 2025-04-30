@@ -346,7 +346,20 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
     publicNetworkAccess: 'Disabled'
     roleAssignments:[
       {
+        name: 'Search Index Data Owner'
         roleDefinitionIdOrName: 'Search Index Data Contributor'
+        principalType: 'ServicePrincipal'
+        principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
+      }
+      {
+        name: 'Search Index Data Reader'
+        roleDefinitionIdOrName: 'Search Index Data Reader'
+        principalType: 'ServicePrincipal'
+        principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
+      }
+      {
+        name: 'Search Service Contributor'
+        roleDefinitionIdOrName: 'Search Service Contributor'
         principalType: 'ServicePrincipal'
         principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
       }
