@@ -13,23 +13,17 @@ param environmentName string
 @description('Primary location for all resources')
 param location string
 
-// Optional parameters to override the default azd resource naming conventions.
-// Add the following to main.parameters.json to provide values:
-// "resourceGroupName": {
-//      "value": "myGroupName"
-// }
-@description('Name of the resource group to create.')
-param resourceGroupName string = ''
-
-// Should an Azure Bastion be created?
-@description('Should an Azure Bastion be created?')
-param createBastionHost bool = false
+@description('Name of the resource group to create. If not specified, a unique name will be generated.')
+param resourceGroupName string = 'rg-${environmentName}'
 
 @description('Optional friendly name for the AI Foundry Hub workspace.')
 param aiFoundryHubFriendlyName string = 'AI Foundry Hub (${environmentName})'
 
 @description('Optional description for the AI Foundry Hub workspace.')
 param aiFoundryHubDescription string = 'AI Foundry Hub for ${environmentName}'
+
+@description('Should an Azure Bastion be created?')
+param createBastionHost bool = false
 
 @description('Disable API key authentication for AI Services and AI Search. Defaults to false.')
 param disableApiKeys bool = false

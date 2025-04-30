@@ -7,6 +7,21 @@
       },
       "location": {
         "value": "${AZURE_LOCATION}"
+      },
+      "AZURE_PRINCIPAL_ID": {
+        "value": "${AZURE_PRINCIPAL_ID}"
+      },
+      "resourceGroupName": {
+        "value": "${RESOURCE_GROUP_NAME}"
+      },
+      "aiFoundryHubFriendlyName": {
+        "value": "${AI_FOUNDRY_HUB_FRIENDLY_NAME}"
+      },
+      "aiFoundryHubDescription": {
+        "value": "${AI_FOUNDRY_HUB_DESCRIPTION}"
+      },
+      "createBastionHost":{
+        "value": "${CREATE_BASTION_HOST}"
       }
     }
 }
