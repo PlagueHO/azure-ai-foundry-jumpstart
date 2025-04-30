@@ -6,11 +6,11 @@
 [![Azure][azure-shield]][azure-url]
 [![IaC][iac-shield]][iac-url]
 
-The Azure AI Foundry Secure Hub Solution Accelerator deploys a [network isolated Azure AI Foundry environment](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/create-secure-ai-hub) and [supporting services](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/secure-data-playground) into your Azure subscription. This accelerator is designed to be used as a secure an for exploring and experimenting with Azure AI Foundry capabilities.
+The Azure AI Foundry Secure Hub Solution Accelerator deploys a [network isolated Azure AI Foundry environment](https://le    arn.microsoft.com/en-us/azure/ai-foundry/how-to/create-secure-ai-hub) and supporting services into your Azure subscription. This accelerator is designed to be used as a secure an for exploring and experimenting with Azure AI Foundry capabilities.
 
 This was created to get started with Azure AI Foundry quickly and easily, while meeting security and well-architected framework best practices.
 
-Important: This isn't a special version of Azure AI Foundry but rather a quick and simple way to get Azure AI Foundry up and running in a virtual network with private endpoints, no public access and using managed identities for services to authenticate to each other.
+This Secure Hub isn't a special version of Azure AI Foundry but rather is a quick and simple way to get Azure AI Foundry up and running in a virtual network using private endpoints, no public access and managed identities for services to authenticate to each other. It autlomates the deployment of the services using the same approach as the instructions on [How to create a secure Azure AI Foundry hub and project with a managed virtual network](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/secure-data-playground) page.
 
 ## Prerequisites
 
@@ -86,14 +86,14 @@ For `appservice`, the following host configuration options are often modified:
 - The run command that starts up your service
 
 <!-- Badge reference links -->
-[ci-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-sandbox-accelerator/continuous-integration.yml?branch=main
-[ci-url]: https://github.com/PlagueHO/azure-ai-sandbox-accelerator/actions/workflows/continuous-integration.yml
+[ci-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-foundry-secure-hub/continuous-integration.yml?branch=main
+[ci-url]: https://github.com/PlagueHO/azure-ai-foundry-secure-hub/actions/workflows/continuous-integration.yml
 
-[cd-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-sandbox-accelerator/continuous-deployment.yml?branch=main
-[cd-url]: https://github.com/PlagueHO/azure-ai-sandbox-accelerator/actions/workflows/continuous-deployment.yml
+[cd-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-foundry-secure-hub/continuous-deployment.yml?branch=main
+[cd-url]: https://github.com/PlagueHO/azure-ai-foundry-secure-hub/actions/workflows/continuous-deployment.yml
 
-[license-shield]: https://img.shields.io/github/license/PlagueHO/azure-ai-sandbox-accelerator
-[license-url]: https://github.com/PlagueHO/azure-ai-sandbox-accelerator/blob/main/LICENSE
+[license-shield]: https://img.shields.io/github/license/PlagueHO/azure-ai-foundry-secure-hub
+[license-url]: https://github.com/PlagueHO/azure-ai-foundry-secure-hub/blob/main/LICENSE
 
 [azure-shield]: https://img.shields.io/badge/Azure-Solution%20Accelerator-0078D4?logo=microsoftazure&logoColor=white
 [azure-url]: https://azure.microsoft.com/

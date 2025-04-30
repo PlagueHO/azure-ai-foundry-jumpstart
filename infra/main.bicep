@@ -464,6 +464,13 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
+    managedIdentities: {
+      systemAssigned: true
+    }
+    managedNetworkSettings: {
+      firewallSku: 'Basic'
+      isolationMode: 'AllowInternetOutbound'
+    }
     publicNetworkAccess: 'Disabled'
     privateEndpoints: [
       {
