@@ -1,6 +1,6 @@
-# Azure AI Foundry Private Playground Technical Documentation
+# Azure AI Foundry Secure Hub Solution Accelerator Technical Documentation
 
-This folder contains technical documentation and architecture design for the Azure AI Foundry Private Playground.
+This folder contains technical documentation and architecture design for the Azure AI Foundry Secure Hub.
 
 ## Contents
 

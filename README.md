@@ -1,4 +1,4 @@
-# Azure AI Foundry Private Playground Solution Accelerator
+# Azure AI Foundry Secure Hub Solution Accelerator
 
 [![CI][ci-shield]][ci-url]
 [![CD][cd-shield]][cd-url]
@@ -6,9 +6,11 @@
 [![Azure][azure-shield]][azure-url]
 [![IaC][iac-shield]][iac-url]
 
-The Azure AI Foundry Private Playground Solution Accelerator deploys a [network isolated Azure AI Foundry environment](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/create-secure-ai-hub) and [supporting services](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/secure-data-playground) into your Azure subscription. This accelerator is designed to be used as a secure private playground for exploring and experimenting with Azure AI Foundry capabilities.
+The Azure AI Foundry Secure Hub Solution Accelerator deploys a [network isolated Azure AI Foundry environment](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/create-secure-ai-hub) and [supporting services](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/secure-data-playground) into your Azure subscription. This accelerator is designed to be used as a secure an for exploring and experimenting with Azure AI Foundry capabilities.
 
 This was created to get started with Azure AI Foundry quickly and easily, while meeting security and well-architected framework best practices.
+
+Important: This isn't a special version of Azure AI Foundry but rather a quick and simple way to get Azure AI Foundry up and running in a virtual network with private endpoints, no public access and using managed identities for services to authenticate to each other.
 
 ## Prerequisites
 

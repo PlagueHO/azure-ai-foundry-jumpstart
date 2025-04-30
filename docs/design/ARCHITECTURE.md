@@ -1,4 +1,4 @@
-# Azure AI Sandbox Accelerator – Architecture
+# Azure AI Foundry Secure Hub – Architecture
 
 This document describes the Azure resources deployed by [infra/main.bicep](infra/main.bicep), the Azure Verified Modules (AVM) used, and the network topology.
 
