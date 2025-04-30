@@ -31,6 +31,9 @@ param aiFoundryHubFriendlyName string = 'AI Foundry Hub (${environmentName})'
 @description('Optional description for the AI Foundry Hub workspace.')
 param aiFoundryHubDescription string = 'AI Foundry Hub for ${environmentName}'
 
+@description('Disable API key authentication for AI Services and AI Search. Defaults to false.')
+param disableApiKeys bool = false
+
 var abbrs = loadJsonContent('./abbreviations.json')
 
 // tags that should be applied to all resources.
@@ -329,6 +332,7 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
       }
     ]
     publicNetworkAccess: 'Disabled'
+    disableLocalAuth: disableApiKeys
     tags: tags
   }
 }
@@ -356,12 +360,6 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
     sku: 'S0'
     diagnosticSettings: [
       {
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: sendTologAnalyticsCustomSettingName
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
@@ -379,6 +377,7 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
       }
     ]
     publicNetworkAccess: 'Disabled'
+    disableLocalAuth: disableApiKeys
   }
 }
 
@@ -413,11 +412,32 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
     description: aiFoundryHubDescription
     location: location
     kind: 'Hub'
-    sku: 'Standard'
+    sku: 'Basic'
     associatedApplicationInsightsResourceId: applicationInsights.outputs.resourceId
     associatedKeyVaultResourceId: keyVault.outputs.resourceId
     associatedStorageAccountResourceId: storageAccount.outputs.resourceId
     associatedContainerRegistryResourceId: containerRegistry.outputs.resourceId
+    connections: [
+      {
+        category: 'AIServices'
+        connectionProperties: {
+          authType: 'ApiKey'
+          credentials: {
+            key: 'key'
+          }
+        }
+        metadata: {
+          ApiType: 'Azure'
+          ApiVersion: '2023-07-01-preview'
+          DeploymentApiVersion: '2023-10-01-preview'
+          Location: location
+          ResourceId: aiServicesAccount.outputs.resourceId
+        }
+        name: 'ai'
+        target: aiServicesAccount.outputs.resourceId
+        isSharedToAll: true
+      }
+    ]
     diagnosticSettings: [
       {
         metricCategories: [
@@ -449,6 +469,9 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
     provisionNetworkNow: true
     systemDatastoresAuthMode: 'Identity'
     tags: tags
+    workspaceHubConfig: {
+      defaultWorkspaceResourceGroup: rg.id
+    }
   }
 }
 

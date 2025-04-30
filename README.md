@@ -6,7 +6,7 @@
 [![Azure][azure-shield]][azure-url]
 [![IaC][iac-shield]][iac-url]
 
-The Azure AI Sandbox Solution Accelerator is used to set up an Azure AI Foundry environment with a set of pre‑defined resources and configurations. This solution accelerator is designed to help you quickly get started with Azure AI Foundry and provides a set of templates and scripts to automate the setup process.
+The Azure AI Sandbox Solution Accelerator deploys an Azure AI Foundry environment with a set of pre‑defined resources and configurations. This solution accelerator is designed to help you quickly get started with Azure AI Foundry and provides a set of templates and scripts to automate the setup process.
 
 ## Prerequisites
 
