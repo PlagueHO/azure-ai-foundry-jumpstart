@@ -238,6 +238,18 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
         tags: tags
       }
     ]
+    roleAssignments:[
+      {
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        principalType: 'ServicePrincipal'
+        principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
+      }
+      {
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        principalType: 'ServicePrincipal'
+        principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
+      }
+    ]
     sasExpirationPeriod: '180.00:00:00'
     skuName: 'Standard_LRS'
     tags: tags
@@ -386,15 +398,15 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
     name: aiServicesName
     location: location
     customSubDomainName: aiServicesCustomSubDomainName
-    managedIdentities: {
-      systemAssigned: true
-    }
-    sku: 'S0'
+    disableLocalAuth: disableApiKeys
     diagnosticSettings: [
       {
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
+    managedIdentities: {
+      systemAssigned: true
+    }
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -409,7 +421,8 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
       }
     ]
     publicNetworkAccess: 'Disabled'
-    disableLocalAuth: disableApiKeys
+    sku: 'S0'
+    tags: tags
   }
 }
 
@@ -513,6 +526,9 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
     }
   }
 }
+
+// Final stage of the deployment is to set the IAM role assignments for the
+// Azure AI Service for the Azure AI Search Service to avoie a circular dependency
 
 // Optional: Create an Azure Bastion host in the virtual network using Azure Verified Module (AVM)
 module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (createBastionHost) {
