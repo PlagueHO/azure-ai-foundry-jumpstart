@@ -1,4 +1,4 @@
-# Azure AI Sandbox Solution Accelerator
+# Azure AI Foundry Private Playground Solution Accelerator
 
 [![CI][ci-shield]][ci-url]
 [![CD][cd-shield]][cd-url]
@@ -6,7 +6,9 @@
 [![Azure][azure-shield]][azure-url]
 [![IaC][iac-shield]][iac-url]
 
-The Azure AI Sandbox Solution Accelerator deploys an Azure AI Foundry environment with a set of pre‑defined resources and configurations. This solution accelerator is designed to help you quickly get started with Azure AI Foundry and provides a set of templates and scripts to automate the setup process.
+The Azure AI Foundry Private Playground Solution Accelerator deploys a [network isolated Azure AI Foundry environment](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/create-secure-ai-hub) and [supporting services](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/secure-data-playground) into your Azure subscription. This accelerator is designed to be used as a secure private playground for exploring and experimenting with Azure AI Foundry capabilities.
+
+This was created to get started with Azure AI Foundry quickly and easily, while meeting security and well-architected framework best practices.
 
 ## Prerequisites
 

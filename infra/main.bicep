@@ -220,6 +220,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
     managedIdentities: {
       systemAssigned: true
     }
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -306,7 +310,6 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
     name: aiSearchName
     location: location
     sku: 'standard'
-    semanticSearch: 'standard'
     diagnosticSettings: [
       {
         metricCategories: [
@@ -318,6 +321,15 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
+    disableLocalAuth: disableApiKeys
+    managedIdentities: {
+      systemAssigned: true
+    }
+    authOptions: {
+      aadOrApiKey: {
+        aadAuthFailureMode: 'http401WithBearerChallenge'
+      }
+    }
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -332,7 +344,7 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
       }
     ]
     publicNetworkAccess: 'Disabled'
-    disableLocalAuth: disableApiKeys
+    semanticSearch: 'standard'
     tags: tags
   }
 }
@@ -357,6 +369,9 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
     name: aiServicesName
     location: location
     customSubDomainName: aiServicesCustomSubDomainName
+    managedIdentities: {
+      systemAssigned: true
+    }
     sku: 'S0'
     diagnosticSettings: [
       {

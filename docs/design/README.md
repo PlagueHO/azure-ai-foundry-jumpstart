@@ -1,6 +1,6 @@
-# Azure AI Sandbox Accelerator Design & Architecture Docs
+# Azure AI Foundry Private Playground Technical Documentation
 
-This folder contains the design, architecture, and technical documentation for the Azure AI Sandbox Accelerator.
+This folder contains technical documentation and architecture design for the Azure AI Foundry Private Playground.
 
 ## Contents
 
