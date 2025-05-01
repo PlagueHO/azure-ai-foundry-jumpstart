@@ -28,6 +28,9 @@ param createBastionHost bool = false
 @description('Disable API key authentication for AI Services and AI Search. Defaults to false.')
 param disableApiKeys bool = false
 
+@description('Id of the user or app to assign application roles')
+param principalId string = ''
+
 var abbrs = loadJsonContent('./abbreviations.json')
 
 // tags that should be applied to all resources.
@@ -48,7 +51,7 @@ var virtualNetworkName = '${abbrs.networkVirtualNetworks}${environmentName}'
 var storageAccounName = toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', ''))
 var keyVaultName = toLower(replace('${abbrs.keyVaultVaults}${environmentName}', '-', ''))
 var containerRegistryName = toLower(replace('${abbrs.containerRegistryRegistries}${environmentName}', '-', ''))
-var aiSearchUserAssignedIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}${environmentName}'
+var aiSearchUserAssignedIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}${abbrs.aiSearchSearchServices}${environmentName}'
 var aiSearchName = '${abbrs.aiSearchSearchServices}${environmentName}'
 var aiServicesName = '${abbrs.aiServicesAccounts}${environmentName}'
 var aiServicesCustomSubDomainName = toLower(replace(environmentName, '-', ''))
@@ -149,7 +152,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
-    enablePurgeProtection: true
+    enablePurgeProtection: false
     enableRbacAuthorization: true
     networkAcls: {
       bypass: 'AzureServices'
@@ -244,6 +247,24 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
         principalType: 'ServicePrincipal'
         principalId: aiSearchUserAssignedIdentity.outputs.principalId
       }
+      // Developer role assignments
+      ...(!empty(principalId) ? [
+        {
+          roleDefinitionIdOrName: 'Contributor'
+          principalType: 'User'
+          principalId: principalId
+        }
+        {
+          roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+          principalType: 'User'
+          principalId: principalId
+        }
+        {
+          roleDefinitionIdOrName: 'Storage File Data Privileged Contributor'
+          principalType: 'User'
+          principalId: principalId
+        }
+      ] : [])
     ]
     sasExpirationPeriod: '180.00:00:00'
     skuName: 'Standard_LRS'
@@ -383,6 +404,19 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
         principalType: 'ServicePrincipal'
         principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
       }
+      // Developer role assignments
+      ...(!empty(principalId) ? [
+        {
+          roleDefinitionIdOrName: 'Search Services Contributor'
+          principalType: 'User'
+          principalId: principalId
+        }
+        {
+          roleDefinitionIdOrName: 'Search Index Data Contributor'
+          principalType: 'User'
+          principalId: principalId
+        }
+      ] : [])
     ]
     semanticSearch: 'standard'
     tags: tags
@@ -443,6 +477,11 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
         principalType: 'ServicePrincipal'
         principalId: aiSearchUserAssignedIdentity.outputs.principalId
       }
+      {
+        roleDefinitionIdOrName: 'Contributor'
+        principalType: 'User'
+        principalId: principalId
+      }
     ]
     sku: 'S0'
     tags: tags
@@ -489,6 +528,7 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
       {
         category: 'AIServices'
         connectionProperties: {
+          // TODO: Update the authType to 'ManagedIdentity'
           authType: 'ApiKey'
           credentials: {
             key: 'key'
@@ -568,3 +608,5 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (createBa
 
 output AZURE_LOCATION string = location
 output AZURE_TENANT_ID string = tenant().tenantId
+output AZURE_SUBSCRIPTION_ID string = subscription().subscriptionId
+output AZURE_RESOURCE_GROUP string = rg.name
