@@ -4,13 +4,13 @@ targetScope = 'subscription'
 // For a more complete walkthrough to understand how this file works with azd,
 // see https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/make-azd-compatible?pivots=azd-create
 
+@description('Name of the the environment which is used to generate a short unique hash used in all resources.')
 @minLength(1)
 @maxLength(64)
-@description('Name of the the environment which is used to generate a short unique hash used in all resources.')
 param environmentName string
 
-@minLength(1)
 @description('Primary location for all resources')
+@minLength(1)
 param location string
 
 @description('Name of the resource group to create. If not specified, a unique name will be generated.')
@@ -31,7 +31,14 @@ param disableApiKeys bool = false
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
-@description('Enable network isolation. When false no VNet / private‑link resources are created and all services expose public endpoints.')
+@description('Type of the principal referenced by *principalId*.')
+@allowed([
+  'User'
+  'ServicePrincipal'
+])
+param principalIdType string = 'User'
+
+@description('Enable network isolation. When false no virtual network, private endpoint or private DNS resources are created and all services expose public endpoints.')
 param azureNetworkIsolation bool = true
 
 var abbrs = loadJsonContent('./abbreviations.json')
@@ -305,17 +312,17 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
       ...(!empty(principalId) ? [
         {
           roleDefinitionIdOrName: 'Contributor'
-          principalType: 'User'
+          principalType: principalIdType
           principalId: principalId
         }
         {
           roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-          principalType: 'User'
+          principalType: principalIdType
           principalId: principalId
         }
         {
           roleDefinitionIdOrName: 'Storage File Data Privileged Contributor'
-          principalType: 'User'
+          principalType: principalIdType
           principalId: principalId
         }
       ] : [])
@@ -440,12 +447,12 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
       ...(!empty(principalId) ? [
         {
           roleDefinitionIdOrName: 'Search Services Contributor'
-          principalType: 'User'
+          principalType: principalIdType
           principalId: principalId
         }
         {
           roleDefinitionIdOrName: 'Search Index Data Contributor'
-          principalType: 'User'
+          principalType: principalIdType
           principalId: principalId
         }
       ] : [])
@@ -500,7 +507,7 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
       }
       {
         roleDefinitionIdOrName: 'Contributor'
-        principalType: 'User'
+        principalType: principalIdType
         principalId: principalId
       }
     ]

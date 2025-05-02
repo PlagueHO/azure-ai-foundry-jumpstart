@@ -24,7 +24,7 @@ on:
         required: false
         type: string
         default: 'false'
-          
+
     secrets:
       AZURE_TENANT_ID:
         description: "The Azure tenant ID to use for authentication to Azure for deployment"
@@ -49,6 +49,7 @@ jobs:
       AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
       # Optional azd parameters
       AZURE_NETWORK_ISOLATION: ${{ inputs.AZURE_NETWORK_ISOLATION }}
+      AZURE_PRINCIPAL_ID_TYPE: 'ServicePrincipal'
 
     environment: ${{ inputs.ENVIRONMENT }}
     runs-on: ubuntu-latest
