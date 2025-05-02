@@ -33,7 +33,7 @@ jobs:
       ENVIRONMENT: Test
       BUILD_VERSION: ${{ needs.set-build-variables.outputs.BUILD_VERSION }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
-      AZURE_ENV_NAME: ${{ format('{0}-aifjmp-{1}-{2}', github.ref_name, github.run_number, github.run_id) }}
+      AZURE_ENV_NAME: ${{ format('aifj-{0}-{1}', github.ref_name, github.run_id) }}
     secrets:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
@@ -46,7 +46,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: network-isolated
+          - name: isolated
             AZURE_NETWORK_ISOLATION: 'true'
           - name: public
             AZURE_NETWORK_ISOLATION: 'false'
@@ -56,7 +56,7 @@ jobs:
       ENVIRONMENT: Test
       BUILD_VERSION: ${{ needs.set-build-variables.outputs.BUILD_VERSION }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
-      AZURE_ENV_NAME: ${{ format('aifjmp-{0}-{1}-{2}-{3}', github.ref_name, github.run_number, github.run_id, matrix.name) }}
+      AZURE_ENV_NAME: ${{ format('aifj-{0}-{1}-{2}', github.ref_name, github.run_id, matrix.name) }}
       AZURE_NETWORK_ISOLATION: ${{ matrix.AZURE_NETWORK_ISOLATION }}
     secrets:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}

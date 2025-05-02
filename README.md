@@ -1,4 +1,4 @@
-# Azure AI Foundry Secure Hub Solution Accelerator
+# Azure AI Foundry Jumpstart Solution Accelerator
 
 [![CI][ci-shield]][ci-url]
 [![CD][cd-shield]][cd-url]
@@ -6,94 +6,77 @@
 [![Azure][azure-shield]][azure-url]
 [![IaC][iac-shield]][iac-url]
 
-The Azure AI Foundry Secure Hub Solution Accelerator deploys a [network isolated Azure AI Foundry environment](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/create-secure-ai-hub) and supporting services into your Azure subscription. This accelerator is designed to be used as a secure an for exploring and experimenting with Azure AI Foundry capabilities.
+## Introduction
 
-This was created to get started with Azure AI Foundry quickly and easily, while meeting security and well-architected framework best practices.
+The Azure AI Foundry Jumpstart Solution Accelerator deploys an [Azure AI Foundry environment](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/create-secure-ai-hub) and supporting services into your Azure subscription. This accelerator is designed to be used as a secure an for exploring and experimenting with Azure AI Foundry capabilities.
 
-This Secure Hub isn't a special version of Azure AI Foundry but rather is a quick and simple way to get Azure AI Foundry up and running in a virtual network using private endpoints, no public access and managed identities for services to authenticate to each other. It autlomates the deployment of the services using the same approach as the instructions on [How to create a secure Azure AI Foundry hub and project with a managed virtual network](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/secure-data-playground) page.
+This solution accelerator is intended to help getting started with Azure AI Foundry quickly and easily, while meeting security and well-architected framework best practices.
+
+### Zero-trust
+
+By default, this soltion accelerator deploys Azure AI Foundry and most of the supporting resources into a virtual network using private endpoints, disables public access and uses managed identities for services to authenticate to each other.
+
+It automates the deployment of the services using the same approach as the instructions on [How to create a secure Azure AI Foundry hub and project with a managed virtual network](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/secure-data-playground) page.
+
+> Note: Zero-trust is the default configuration. But you can choose to deploy the resources without a virtual network and public endpoints if you prefer. See the [Deployment Options](#deployment-options) section for more details.
 
 ## Prerequisites
 
 Before you begin, ensure you have the following prerequisites in place:
 
 - An active Azure subscription - [Create a free account](https://azure.microsoft.com/free/) if you don't have one.
-- The Azure Developer CLI (azd) installed on your machine - [Install azd](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/install-azd).
 
-## Next Steps
+## Deploy to Azure
 
-### Step 1: Add application code
+You can deploy this solution accelerator using either the Azure Developer CLI or the Deploy to Azure button below.
 
-1. Initialize the service source code projects anywhere under the current directory. Ensure that all source code projects can be built successfully.
-    - > Note: For `function` services, it is recommended to initialize the project using the provided [quickstart tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-get-started).
-2. Once all service source code projects are building correctly, update `azure.yaml` to reference the source code projects.
-3. Run `azd package` to validate that all service source code projects can be built and packaged locally.
+### Deployment Options
 
-### Step 2: Provision Azure resources
+You can deploy the application using one of the following options:
 
-Update or add Bicep files to provision the relevant Azure resources. This can be done incrementally, as the list of [Azure resources](https://learn.microsoft.com/en-us/azure/?product=popular) are explored and added.
+- [1. Azure Developer CLI](#1-azure-developer-cli)
+- [2. Azure Portal Deployment](#2-azure-portal-deployment)
 
-- A reference library that contains all of the Bicep modules used by the azd templates can be found [here](https://github.com/Azure-Samples/todo-nodejs-mongo/tree/main/infra/core).
-- All Azure resources available in Bicep format can be found [here](https://learn.microsoft.com/en-us/azure/templates/).
+### 1. Azure Developer CLI
 
-Run `azd provision` whenever you want to ensure that changes made are applied correctly and work as expected.
+> [!IMPORTANT]
+> This section will create Azure resources and deploy the solution from your local environment using the Azure Developer CLI. Note that you do not need to clone this repo to complete these steps.
 
-### Step 3: Tie in application and infrastructure
+1. Download the [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview)
+1. If you have not cloned this repo, run `azd init -t PlagueHO/azure-ai-foundry-jumpstart`. If you have cloned this repo, just run 'azd init' from the repo root directory.
+1. Authenticate the Azure Developer CLI  by running `azd auth login`.
 
-Certain changes to Bicep files or deployment manifests are required to tie in application and infrastructure together. For example:
+```pwsh
+azd auth login
+```
 
-1. Set up [application settings](#application-settings) for the code running in Azure to connect to other Azure resources.
-1. If you are accessing sensitive resources in Azure, set up [managed identities](#managed-identities) to allow the code running in Azure to securely access the resources.
-1. If you have secrets, it is recommended to store secrets in [Azure Key Vault](#azure-key-vault) that then can be retrieved by your application, with the use of managed identities.
-1. Configure [host configuration](#host-configuration) on your hosting platform to match your application's needs. This may include networking options, security options, or more advanced configuration that helps you take full advantage of Azure capabilities.
+1. Run `azd up` to provision and deploy the application
 
-For more details, see [additional details](#additional-details) below.
+```pwsh
+azd init -t PlagueHO/azure-ai-foundry-jumpstart
+azd up
+```
 
-When changes are made, use azd to validate and apply your changes in Azure, to ensure that they are working as expected:
+### 2. Azure Portal Deployment
 
-- Run `azd up` to validate both infrastructure and application code changes.
-- Run `azd deploy` to validate application code changes only.
+> [!WARNING]
+> This button will only create Azure resources. It will not populate the data
 
-### Step 4: Up to Azure
+Click on the Deploy to Azure button to deploy the Azure resources for this solution accelerator.
 
-Finally, run `azd up` to run the end-to-end infrastructure provisioning (`azd provision`) and deployment (`azd deploy`) flow. Visit the service endpoints listed to see your application up-and-running!
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FPlagueHO%2Fazure-ai-foundry-jumpstart%2Fmain%2Finfra%2Fmain.bicepparam)
 
-## Additional Details
-
-The following section examines different concepts that help tie in application and infrastructure.
-
-### Application settings
-
-It is recommended to have application settings managed in Azure, separating configuration from code. Typically, the service host allows for application settings to be defined.
-
-- For `appservice` and `function`, application settings should be defined on the Bicep resource for the targeted host. Reference template example [here](https://github.com/Azure-Samples/todo-nodejs-mongo/tree/main/infra).
-- For `aks`, application settings are applied using deployment manifests under the `<service>/manifests` folder. Reference template example [here](https://github.com/Azure-Samples/todo-nodejs-mongo-aks/tree/main/src/api/manifests).
-
-### Managed identities
-
-[Managed identities](https://learn.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview) allows you to secure communication between services. This is done without having the need for you to manage any credentials.
-
-### Azure Key Vault
-
-[Azure Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/overview) allows you to store secrets securely. Your application can access these secrets securely through the use of managed identities.
-
-### Host configuration
-
-For `appservice`, the following host configuration options are often modified:
-
-- Language runtime version
-- Exposed port from the running container (if running a web service)
-- Allowed origins for CORS (Cross-Origin Resource Sharing) protection (if running a web service backend with a frontend)
-- The run command that starts up your service
+## Deployment Options
 
 <!-- Badge reference links -->
-[ci-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-foundry-secure-hub/continuous-integration.yml?branch=main
-[ci-url]: https://github.com/PlagueHO/azure-ai-foundry-secure-hub/actions/workflows/continuous-integration.yml
+[ci-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-foundry-jumpstart/continuous-integration.yml?branch=main
+[ci-url]: https://github.com/PlagueHO/azure-ai-foundry-jumpstart/actions/workflows/continuous-integration.yml
 
-[cd-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-foundry-secure-hub/continuous-deployment.yml?branch=main
-[cd-url]: https://github.com/PlagueHO/azure-ai-foundry-secure-hub/actions/workflows/continuous-deployment.yml
+[cd-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-foundry-jumpstart/continuous-deployment.yml?branch=main
+[cd-url]: https://github.com/PlagueHO/azure-ai-foundry-jumpstart/actions/workflows/continuous-deployment.yml
 
-[license-shield]: https://img.shields.io/github/license/PlagueHO/azure-ai-foundry-secure-hub
-[license-url]: https://github.com/PlagueHO/azure-ai-foundry-secure-hub/blob/main/LICENSE
+[license-shield]: https://img.shields.io/github/license/PlagueHO/azure-ai-foundry-jumpstart
+[license-url]: https://github.com/PlagueHO/azure-ai-foundry-jumpstart/blob/main/LICENSE
 
 [azure-shield]: https://img.shields.io/badge/Azure-Solution%20Accelerator-0078D4?logo=microsoftazure&logoColor=white
 [azure-url]: https://azure.microsoft.com/
