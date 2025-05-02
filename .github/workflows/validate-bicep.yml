@@ -1,4 +1,4 @@
-name: validate-infrastructure
+name: validate-bicep
 
 on:
   workflow_call:

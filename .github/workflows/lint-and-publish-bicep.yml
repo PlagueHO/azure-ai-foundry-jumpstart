@@ -11,14 +11,7 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-
-    - name: Install Bicep
-      run: | 
-        curl -Lo bicepinstall https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
-        chmod +x ./bicepinstall
-        sudo mv ./bicepinstall /usr/local/bin/bicep
-        bicep --help
-     
+    
     - name: Lint Bicep
       run: |
         bicep lint ./infra/main.bicep

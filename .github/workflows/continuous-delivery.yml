@@ -24,11 +24,11 @@ jobs:
   lint-and-publish-bicep:
     uses: ./.github/workflows/lint-and-publish-bicep.yml
 
-  validate-infrastructure:
+  validate-bicep:
     needs:
       - set-build-variables
       - lint-and-publish-bicep
-    uses: ./.github/workflows/validate-infrastructure.yml
+    uses: ./.github/workflows/validate-bicep.yml
     with:
       ENVIRONMENT: Test
       BUILD_VERSION: ${{ needs.set-build-variables.outputs.BUILD_VERSION }}
@@ -39,10 +39,10 @@ jobs:
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   
-  deploy-template:
+  test-template:
     needs:
       - set-build-variables
-      - validate-infrastructure
+      - validate-bicep
     strategy:
       matrix:
         include:
@@ -50,8 +50,8 @@ jobs:
             AZURE_NETWORK_ISOLATION: 'true'
           - name: public
             AZURE_NETWORK_ISOLATION: 'false'
-    name: Deploy Template (${{ matrix.name }})
-    uses: ./.github/workflows/deploy-template.yml
+    name: Test Template (${{ matrix.name }})
+    uses: ./.github/workflows/test-template.yml
     with:
       ENVIRONMENT: Test
       BUILD_VERSION: ${{ needs.set-build-variables.outputs.BUILD_VERSION }}
