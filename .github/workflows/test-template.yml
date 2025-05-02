@@ -37,8 +37,19 @@ on:
         required: true
 
 jobs:
-  deploy-infrastructure:
+  test-template:
     name: Deploy Infrastructure ${{ inputs.ENVIRONMENT }}
+    env:
+      # Required for azd to authenticate with Azure using Federated Credentials
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      # Required for azd to provision the infrastructure
+      AZURE_ENV_NAME: ${{ inputs.AZURE_ENV_NAME }}
+      AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
+      # Optional azd parameters
+      AZURE_NETWORK_ISOLATION: ${{ inputs.AZURE_NETWORK_ISOLATION }}
+
     environment: ${{ inputs.ENVIRONMENT }}
     runs-on: ubuntu-latest
 
@@ -47,29 +58,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install azd
-        uses: Azure/setup-azd@v2
+        uses: Azure/setup-azd@v2.1.0
 
       - name: Authenticate azd (Federated Credentials)
         run: |
           azd auth login `
-            --managed-identity `
-            --client-id "$env:AZURE_CLIENT_ID" `
+            --client-id "$Env:AZURE_CLIENT_ID" `
             --federated-credential-provider "github" `
-            --tenant-id "$env:AZURE_TENANT_ID"
+            --tenant-id "$Env:AZURE_TENANT_ID"
         shell: pwsh
 
       - name: Provision Infrastructure
         run: azd provision --no-prompt
-        env:
-          AZURE_ENV_NAME: ${{ inputs.AZURE_ENV_NAME }}
-          AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
-          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          AZURE_NETWORK_ISOLATION: ${{ inputs.AZURE_NETWORK_ISOLATION }}
           
       - name: Delete Infrastructure
         run: azd down --no-prompt --purge
-        env:
-          AZURE_ENV_NAME: ${{ inputs.AZURE_ENV_NAME }}
-          AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
-          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          AZURE_NETWORK_ISOLATION: ${{ inputs.AZURE_NETWORK_ISOLATION }}
