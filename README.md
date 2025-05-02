@@ -1,4 +1,4 @@
-# Azure AI Foundry Secure Hub Solution Accelerator
+# Azure AI Foundry Jumpstart Solution Accelerator
 
 [![CI][ci-shield]][ci-url]
 [![CD][cd-shield]][cd-url]
