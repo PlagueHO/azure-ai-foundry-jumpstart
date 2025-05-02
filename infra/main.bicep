@@ -31,6 +31,9 @@ param disableApiKeys bool = false
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
+@description('Enable network isolation. When false no VNet / private‑link resources are created and all services expose public endpoints.')
+param azureNetworkIsolation bool = true
+
 var abbrs = loadJsonContent('./abbreviations.json')
 
 // tags that should be applied to all resources.
@@ -58,33 +61,7 @@ var aiServicesCustomSubDomainName = toLower(replace(environmentName, '-', ''))
 var aiFoundryHubName = '${abbrs.aiFoundryHubs}${environmentName}'
 var bastionHostName = '${abbrs.networkBastionHosts}${environmentName}'
 
-var subnets = [
-  {
-    // Default subnet (generally not used)
-    name: 'Default'
-    addressPrefix: '10.0.0.0/24'
-  }
-  {
-    // AI Services Subnet
-    name: 'AiServices'
-    addressPrefix: '10.0.1.0/24'
-  }
-  {
-    // Azure AI Foundry Hubs Subnet
-    name: 'FoundryHubs'
-    addressPrefix: '10.0.2.0/24'
-  }
-  {
-    // Shared Services Subnet (storage accounts, key vaults, monitoring, etc.)
-    name: 'SharedServices'
-    addressPrefix: '10.0.3.0/24'
-  }
-  {
-    // Bastion Gateway Subnet
-    name: 'AzureBastionSubnet'
-    addressPrefix: '10.0.255.0/27'
-  }
-]
+var networkDefaultAction = azureNetworkIsolation ? 'Deny' : 'Allow'
 
 // Organize resources in a resource group
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -116,8 +93,36 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
   }
 }
 
-// Create the Virtual Network and subnets using Azure Verified Modules (AVM)
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = {
+// ---------- VIRTUAL NETWORK (REQUIRED FOR NETOWRK ISOLATION) ----------
+var subnets = [
+  {
+    // Default subnet (generally not used)
+    name: 'Default'
+    addressPrefix: '10.0.0.0/24'
+  }
+  {
+    // AI Services Subnet
+    name: 'AiServices'
+    addressPrefix: '10.0.1.0/24'
+  }
+  {
+    // Azure AI Foundry Hubs Subnet
+    name: 'FoundryHubs'
+    addressPrefix: '10.0.2.0/24'
+  }
+  {
+    // Shared Services Subnet (storage accounts, key vaults, monitoring, etc.)
+    name: 'SharedServices'
+    addressPrefix: '10.0.3.0/24'
+  }
+  {
+    // Bastion Gateway Subnet
+    name: 'AzureBastionSubnet'
+    addressPrefix: '10.0.255.0/27'
+  }
+]
+
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (azureNetworkIsolation) {
   name: 'virtualNetwork'
   scope: rg
   params: {
@@ -131,8 +136,8 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = {
   }
 }
 
-// Create the Private DNS Zone for the Key Vault to be used by Private Link using Azure Verified Module (AVM)
-module keyVaultPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
+// ---------- PRIVTE DNS ZONES (REQUIRED FOR NETOWRK ISOLATION) ----------
+module keyVaultPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
   name: 'keyvault-private-dns-zone'
   scope: rg
   params: {
@@ -141,7 +146,67 @@ module keyVaultPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1'
   }
 }
 
-// Create a Key Vault with private endpoint in the Shared Services subnet using Azure Verified Module (AVM)
+module storageBlobPrivateDnsZone   'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
+  name: 'storage-blobservice-private-dns-zone'
+  scope: rg
+  params: {
+    name: 'privatelink.blob.${environment().suffixes.storage}'
+    location: 'global'
+    tags: tags
+  }
+}
+
+module containerRegistryPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
+  name: 'container-registry-private-dns-zone'
+  scope: rg
+  params: {
+    name: 'privatelink.azurecr.io'
+    location: 'global'
+    tags: tags
+  }
+}
+
+module aiSearchPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
+  name: 'ai-search-private-dns-zone'
+  scope: rg
+  params: {
+    name: 'privatelink.search.windows.net'
+    location: 'global'
+    tags: tags
+  }
+}
+
+module aiServicesPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
+  name: 'ai-services-private-dns-zone'
+  scope: rg
+  params: {
+    name: 'privatelink.cognitiveservices.azure.com'
+    location: 'global'
+    tags: tags
+  }
+}
+
+module aiHubApiMlPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
+  name: 'ai-hub-apiml-private-dns-zone'
+  scope: rg
+  params: {
+    name: 'privatelink.api.azureml.ms'
+    location: 'global'
+    tags: tags
+  }
+}
+
+module aiHubNotebooksPrivateDnsZone'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
+  name: 'ai-hub-notebooks-private-dns-zone'
+  scope: rg
+  params: {
+    name: 'privatelink.notebooks.azure.net'
+    location: 'global'
+    tags: tags
+  }
+}
+
+// ---------- KEY VAULT ----------
 module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
   name: 'keyVault'
   scope: rg
@@ -156,9 +221,9 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
     enableRbacAuthorization: true
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: 'Deny'
+      defaultAction: networkDefaultAction
     }
-    privateEndpoints: [
+    privateEndpoints: azureNetworkIsolation ? [
       {
         privateDnsZoneGroup: {
           privateDnsZoneGroupConfigs: [
@@ -170,23 +235,12 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
         service: 'vault'
         subnetResourceId: virtualNetwork.outputs.subnetResourceIds[3]
       }
-    ]
+    ] : []
     tags: tags
   }
 }
 
-// Create Private DNS Zone for the Storage Account blob service to be used by Private Link using Azure Verified Module (AVM)
-module storageBlobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
-  name: 'storage-blobservice-private-dns-zone'
-  scope: rg
-  params: {
-    name: 'privatelink.blob.${environment().suffixes.storage}'
-    location: 'global'
-    tags: tags
-  }
-}
-
-// Create a Storage Account with private endpoint in the AppStorage subnet using Azure Verified Module (AVM)
+// ---------- STORAGE ACCOUNT ----------
 module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
   name: 'storage-account-deployment'
   scope: rg
@@ -220,9 +274,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
     }
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: 'Deny'
+      defaultAction: networkDefaultAction
     }
-    privateEndpoints: [
+    privateEndpoints: azureNetworkIsolation ? [
       {
         privateDnsZoneGroup: {
           privateDnsZoneGroupConfigs: [
@@ -235,7 +289,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
         subnetResourceId: virtualNetwork.outputs.subnetResourceIds[3]
         tags: tags
       }
-    ]
+    ] : []
     roleAssignments:[
       {
         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
@@ -272,18 +326,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
   }
 }
 
-// Create Private DNS Zone for Container Registry to be used by Private Link using Azure Verified Module (AVM)
-module containerRegistryPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
-  name: 'container-registry-private-dns-zone'
-  scope: rg
-  params: {
-    name: 'privatelink.azurecr.io'
-    location: 'global'
-    tags: tags
-  }
-}
-
-// Create Azure Container Registry with private endpoint in the SharedServices subnet using Azure Verified Module (AVM)
+// ---------- CONTAINER REGISTRY ----------
 module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = {
   name: 'container-registry-deployment'
   scope: rg
@@ -303,7 +346,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
-    privateEndpoints: [
+    privateEndpoints: azureNetworkIsolation ? [
       {
         privateDnsZoneGroup: {
           privateDnsZoneGroupConfigs: [
@@ -315,7 +358,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
         subnetResourceId: virtualNetwork.outputs.subnetResourceIds[3]
         tags: tags
       }
-    ]
+    ] : []
   }
 }
 
@@ -332,18 +375,7 @@ module aiSearchUserAssignedIdentity 'br/public:avm/res/managed-identity/user-ass
   }
 }
 
-// Create Private DNS Zone for Azure AI Search to be used by Private Link using Azure Verified Module (AVM)
-module aiSearchPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
-  name: 'ai-search-private-dns-zone'
-  scope: rg
-  params: {
-    name: 'privatelink.search.windows.net'
-    location: 'global'
-    tags: tags
-  }
-}
-
-// Create Azure AI Search service with private endpoint in the AiServices subnet using Azure Verified Module (AVM)
+// ---------- AI SEARCH ----------
 module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
   name: 'ai-search-service-deployment'
   scope: rg
@@ -374,7 +406,7 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
         aadAuthFailureMode: 'http401WithBearerChallenge'
       }
     }
-    privateEndpoints: [
+    privateEndpoints: azureNetworkIsolation ? [
       {
         privateDnsZoneGroup: {
           privateDnsZoneGroupConfigs: [
@@ -386,8 +418,8 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
         subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
         tags: tags
       }
-    ]
-    publicNetworkAccess: 'Disabled'
+    ] : []
+    publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Search Index Data Contributor'
@@ -423,18 +455,7 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
   }
 }
 
-// Create Private DNS Zone for Azure AI Services to be used by Private Link using Azure Verified Module (AVM)
-module aiServicesPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
-  name: 'ai-services-private-dns-zone'
-  scope: rg
-  params: {
-    name: 'privatelink.cognitiveservices.azure.com'
-    location: 'global'
-    tags: tags
-  }
-}
-
-// Create Azure AI Services instance with private endpoint in the AiServices subnet using Azure Verified Module (AVM)
+// ---------- AI SERVICES ----------
 module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' = {
   name: 'ai-services-account-deployment'
   scope: rg
@@ -452,7 +473,7 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
     managedIdentities: {
       systemAssigned: true
     }
-    privateEndpoints: [
+    privateEndpoints: azureNetworkIsolation ? [
       {
         privateDnsZoneGroup: {
           privateDnsZoneGroupConfigs: [
@@ -464,8 +485,8 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
         subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
         tags: tags
       }
-    ]
-    publicNetworkAccess: 'Disabled'
+    ] : []
+    publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Cognitive Services Contributor'
@@ -488,28 +509,7 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
   }
 }
 
-// Create Private DNS Zone for Azure AI Hub endpoints to be used by Private Link using Azure Verified Module (AVM)
-module aiHubApiMlPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
-  name: 'ai-hub-apiml-private-dns-zone'
-  scope: rg
-  params: {
-    name: 'privatelink.api.azureml.ms'
-    location: 'global'
-    tags: tags
-  }
-}
-
-module aiHubNotebooksPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
-  name: 'ai-hub-notebooks-private-dns-zone'
-  scope: rg
-  params: {
-    name: 'privatelink.notebooks.azure.net'
-    location: 'global'
-    tags: tags
-  }
-}
-
-// Create Azure AI Foundry Hub workspace with private endpoint in the FoundryHubs subnet using Azure Verified Module (AVM)
+// ---------- AI FOUNDRY HUB ----------
 module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = {
   name: 'ai-foundry-hub-workspace-deployment'
   scope: rg
@@ -564,8 +564,8 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
       firewallSku: 'Basic'
       isolationMode: 'AllowInternetOutbound'
     }
-    publicNetworkAccess: 'Disabled'
-    privateEndpoints: [
+    publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
+    privateEndpoints: azureNetworkIsolation ? [
       {
         privateDnsZoneGroup: {
           privateDnsZoneGroupConfigs: [
@@ -580,7 +580,7 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
         subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2]
         tags: tags
       }
-    ]
+    ] : []
     provisionNetworkNow: true
     systemDatastoresAuthMode: 'Identity'
     tags: tags
@@ -593,8 +593,8 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
 // Final stage of the deployment is to set the IAM role assignments for the
 // Azure AI Service for the Azure AI Search Service to avoie a circular dependency
 
-// Optional: Create an Azure Bastion host in the virtual network using Azure Verified Module (AVM)
-module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (createBastionHost) {
+// ------------- BASTION HOST (OPTIONAL) -------------
+module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (createBastionHost && azureNetworkIsolation) {
   name: 'bastion-host-deployment'
   scope: rg
   params: {

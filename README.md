@@ -1,4 +1,4 @@
-# Azure AI Foundry Jumpstart Solution Accelerator
+# Azure AI Foundry Secure Hub Solution Accelerator
 
 [![CI][ci-shield]][ci-url]
 [![CD][cd-shield]][cd-url]
@@ -6,7 +6,7 @@
 [![Azure][azure-shield]][azure-url]
 [![IaC][iac-shield]][iac-url]
 
-The Azure AI Foundry Secure Hub Solution Accelerator deploys a [network isolated Azure AI Foundry environment](https://le    arn.microsoft.com/en-us/azure/ai-foundry/how-to/create-secure-ai-hub) and supporting services into your Azure subscription. This accelerator is designed to be used as a secure an for exploring and experimenting with Azure AI Foundry capabilities.
+The Azure AI Foundry Secure Hub Solution Accelerator deploys a [network isolated Azure AI Foundry environment](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/create-secure-ai-hub) and supporting services into your Azure subscription. This accelerator is designed to be used as a secure an for exploring and experimenting with Azure AI Foundry capabilities.
 
 This was created to get started with Azure AI Foundry quickly and easily, while meeting security and well-architected framework best practices.
 

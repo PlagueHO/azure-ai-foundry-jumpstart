@@ -19,6 +19,11 @@ on:
         description: "The name of the Azure environment"
         required: true
         type: string
+      AZURE_NETWORK_ISOLATION:
+        description: "Whether to deploy the application resources in a network isolated environment"
+        required: false
+        type: string
+        default: 'false'
           
     secrets:
       AZURE_TENANT_ID:
@@ -38,34 +43,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+      - name: Install azd
+        uses: Azure/setup-azd@v2
 
-      - name: Deploy Azure Infrastructure
-        id: deploy-azure-infrastructure
-        uses: azure/bicep-deploy@v2
-        with:
-          type: deployment
-          operation: create
-          name: ${{ inputs.AZURE_ENV_NAME }}-${{inputs.AZURE_LOCATION}}-${{ inputs.ENVIRONMENT }}-${{ github.action_ref }}-${{ github.run_number }}
-          scope: subscription
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          location: ${{ inputs.AZURE_LOCATION }}
-          template-file: ./infrastructure_bicep/main.bicep
-          parameters: >
-            {
-              "location": "${{ inputs.AZURE_LOCATION }}",
-              "environmentName": "${{ inputs.AZURE_ENV_NAME }}"
-            }
-
-      - name: Display Deployment Outputs
+      - name: Log in with Azure (Federated Credentials)
         run: |
-          echo "AZURE_LOCATION: ${{ steps.deploy-azure-infrastructure.outputs.AZURE_LOCATION }}"
-          echo "AZURE_TENANT_ID: ${{ steps.deploy-azure-infrastructure.outputs.AZURE_TENANT_ID }}"
+          azd auth login `
+            --client-id "$Env:AZURE_CLIENT_ID" `
+            --federated-credential-provider "github" `
+            --tenant-id "$Env:AZURE_TENANT_ID"
+        shell: pwsh
+
+      - name: Provision Infrastructure
+        run: azd provision --no-prompt
+        env:
+          AZURE_ENV_NAME: ${{ inputs.AZURE_ENV_NAME }}
+          AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          AZURE_NETWORK_ISOLATION: ${{ inputs.AZURE_NETWORK_ISOLATION }}
