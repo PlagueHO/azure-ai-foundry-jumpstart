@@ -73,4 +73,5 @@ jobs:
         run: azd provision --no-prompt
           
       - name: Delete Infrastructure
+        if: always()
         run: azd down --no-prompt --purge

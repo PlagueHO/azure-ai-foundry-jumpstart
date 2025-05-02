@@ -58,7 +58,6 @@ jobs:
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       AZURE_ENV_NAME: ${{ format('{0}-aifjmp-{1}-{2}-{3}', github.ref_name, github.run_number, github.run_id, matrix.name) }}
       AZURE_NETWORK_ISOLATION: ${{ matrix.AZURE_NETWORK_ISOLATION }}
-      AZURE_PRINCIPAL_ID_TYPE: ${{ vars.AZURE_PRINCIPAL_ID_TYPE || 'user' }}
     secrets:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
