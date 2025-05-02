@@ -52,6 +52,7 @@ jobs:
       - name: Authenticate azd (Federated Credentials)
         run: |
           azd auth login `
+            --managed-identity `
             --client-id "$env:AZURE_CLIENT_ID" `
             --federated-credential-provider "github" `
             --tenant-id "$env:AZURE_TENANT_ID"
