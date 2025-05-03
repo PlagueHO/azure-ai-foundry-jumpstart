@@ -350,6 +350,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
     location: location
     acrSku: 'Premium'
     acrAdminUserEnabled: false
+    publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
     diagnosticSettings: [
       {
         metricCategories: [
