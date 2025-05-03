@@ -351,6 +351,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
     acrSku: 'Premium'
     acrAdminUserEnabled: false
     publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
+    exportPolicyStatus: 'disabled'
     diagnosticSettings: [
       {
         metricCategories: [
