@@ -40,27 +40,27 @@ You can deploy the application using one of the following options:
 ### 1. Azure Developer CLI
 
 > [!IMPORTANT]
-> This section will create Azure resources and deploy the solution from your local environment using the Azure Developer CLI. Note that you do not need to clone this repo to complete these steps.
+> This section will create Azure resources and deploy the solution from your local environment using the Azure Developer CLI. You do not need to clone this repo to complete these steps.
 
 1. Download the [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview)
 1. If you have not cloned this repo, run `azd init -t PlagueHO/azure-ai-foundry-jumpstart`. If you have cloned this repo, just run 'azd init' from the repo root directory.
 1. Authenticate the Azure Developer CLI  by running `azd auth login`.
 
-```pwsh
-azd auth login
-```
+   ```pwsh
+   azd auth login
+   ```
 
 1. Run `azd up` to provision and deploy the application
 
-```pwsh
-azd init -t PlagueHO/azure-ai-foundry-jumpstart
-azd up
-```
+   ```pwsh
+   azd init -t PlagueHO/azure-ai-foundry-jumpstart
+   azd up
+   ```
 
 ### 2. Azure Portal Deployment
 
 > [!WARNING]
-> This button will only create Azure resources. It will not populate the data
+> This button will only create Azure resources. It will not populate any sample data.
 
 Click on the Deploy to Azure button to deploy the Azure resources for this solution accelerator.
 
