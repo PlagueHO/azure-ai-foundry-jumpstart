@@ -66,13 +66,15 @@ var applicationInsightsName = '${abbrs.insightsComponents}${environmentName}'
 var virtualNetworkName = '${abbrs.networkVirtualNetworks}${environmentName}'
 // Ensure the storage account name is ≤ 24 characters as required by Azure.
 var storageAccounName = substring(toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', '')),0,24)
+// Ensure the key vault name is ≤ 24 characters as required by Azure.
 var keyVaultName = substring(toLower(replace('${abbrs.keyVaultVaults}${environmentName}', '-', '')),0,24)
 var containerRegistryName = toLower(replace('${abbrs.containerRegistryRegistries}${environmentName}', '-', ''))
 var aiSearchUserAssignedIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}${abbrs.aiSearchSearchServices}${environmentName}'
 var aiSearchName = '${abbrs.aiSearchSearchServices}${environmentName}'
 var aiServicesName = '${abbrs.aiServicesAccounts}${environmentName}'
 var aiServicesCustomSubDomainName = toLower(replace(environmentName, '-', ''))
-var aiFoundryHubName = '${abbrs.aiFoundryHubs}${environmentName}'
+// Ensure the AI Foundry Hub name is ≤ 32 characters as required by Azure.
+var aiFoundryHubName = substring('${abbrs.aiFoundryHubs}${environmentName}',0,32)
 var bastionHostName = '${abbrs.networkBastionHosts}${environmentName}'
 
 var networkDefaultAction = azureNetworkIsolation ? 'Deny' : 'Allow'
