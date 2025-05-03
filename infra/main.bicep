@@ -22,12 +22,6 @@ param aiFoundryHubFriendlyName string = 'AI Foundry Hub (${environmentName})'
 @description('Optional description for the AI Foundry Hub workspace.')
 param aiFoundryHubDescription string = 'AI Foundry Hub for ${environmentName}'
 
-@description('Should an Azure Bastion be created?')
-param createBastionHost bool = false
-
-@description('Disable API key authentication for AI Services and AI Search. Defaults to false.')
-param disableApiKeys bool = false
-
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
@@ -40,6 +34,12 @@ param principalIdType string = 'User'
 
 @description('Enable network isolation. When false no virtual network, private endpoint or private DNS resources are created and all services expose public endpoints.')
 param azureNetworkIsolation bool = true
+
+@description('Should an Azure Bastion be created?')
+param createBastionHost bool = false
+
+@description('Disable API key authentication for AI Services and AI Search. Defaults to false.')
+param disableApiKeys bool = false
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
