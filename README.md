@@ -46,13 +46,13 @@ You can deploy the application using one of the following options:
 1. If you have not cloned this repo, run `azd init -t PlagueHO/azure-ai-foundry-jumpstart`. If you have cloned this repo, just run 'azd init' from the repo root directory.
 1. Authenticate the Azure Developer CLI  by running `azd auth login`.
 
-   ```pwsh
+   ```powershell
    azd auth login
    ```
 
 1. Run `azd up` to provision and deploy the application
 
-   ```pwsh
+   ```powershell
    azd init -t PlagueHO/azure-ai-foundry-jumpstart
    azd up
    ```
@@ -68,13 +68,7 @@ Click on the Deploy to Azure button to deploy the Azure resources for this solut
 
 ## Configuration Options
 
-There are a number of configuration options available for this solution accelerator that control the deployment of the Azure resources and other processes that run during the deployment. These options can be configured by either setting an environment variable or using the Azure Developer CLI `azd env set` command.
-
-For example, to set the `LOCATION` environment variable to `eastus`, you can run the following command:
-
-```pwsh
-azd env set LOCATION eastus
-```
+The complete list of environment variables can be found in the [Configuration Options](docs/CONFIGURATION_OPTIONS.md) document.
 
 <!-- Badge reference links -->
 [ci-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-foundry-jumpstart/continuous-integration.yml?branch=main&label=CI
