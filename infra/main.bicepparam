@@ -3,7 +3,6 @@ using './main.bicep'
 // Required parameters
 param environmentName = readEnvironmentVariable('AZURE_ENV_NAME', 'env_name')
 param location = readEnvironmentVariable('AZURE_LOCATION', 'location')
-param resourceGroupName = readEnvironmentVariable('AZURE_RESOURCE_GROUP_NAME', 'resource_group_name')
 
 // Optional parameters
 param aiFoundryHubFriendlyName = readEnvironmentVariable('AZURE_AI_FOUNDRY_HUB_FRIENDLY_NAME', 'ai_foundry_hub_friendly_name')
