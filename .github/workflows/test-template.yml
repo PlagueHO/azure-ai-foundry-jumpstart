@@ -74,4 +74,4 @@ jobs:
           
       - name: Delete Infrastructure
         if: always()
-        run: azd down --no-prompt --purge
+        run: azd down --no-prompt --purge --force

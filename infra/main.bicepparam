@@ -19,3 +19,4 @@ param createBastionHost = toLower(readEnvironmentVariable('AZURE_CREATE_BASTION_
 
 // Security parameters
 param disableApiKeys = toLower(readEnvironmentVariable('AZURE_DISABLE_API_KEYS', 'false')) == 'true'
+param keyVaultEnablePurgeProtection = toLower(readEnvironmentVariable('AZURE_KEYVAULT_ENABLE_PURGE_PROTECTION', 'false')) == 'true'

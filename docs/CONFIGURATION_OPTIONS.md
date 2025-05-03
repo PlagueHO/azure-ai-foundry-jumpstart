@@ -89,3 +89,14 @@ Default: `false`.
 ```powershell
 azd env set AZURE_CREATE_BASTION_HOST true
 ```
+
+## Security
+
+### AZURE_KEYVAULT_ENABLE_PURGE_PROTECTION
+
+Enable purge protection on the Key Vault (`true`). When enabled, the vault cannot be permanently deleted until purge protection is disabled.  
+Default: `false`.
+
+```powershell
+azd env set AZURE_KEYVAULT_ENABLE_PURGE_PROTECTION true
+```

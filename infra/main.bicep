@@ -44,6 +44,9 @@ param createBastionHost bool = false
 @description('Disable API key authentication for AI Services and AI Search. Defaults to false.')
 param disableApiKeys bool = false
 
+@description('Enable purge protection on the Key Vault. When set to true the vault cannot be permanently deleted until purge protection is disabled. Defaults to false.')
+param keyVaultEnablePurgeProtection bool = false
+
 var abbrs = loadJsonContent('./abbreviations.json')
 
 // tags that should be applied to all resources.
@@ -61,8 +64,9 @@ var logAnalyticsName = '${abbrs.operationalInsightsWorkspaces}${environmentName}
 var sendTologAnalyticsCustomSettingName = 'send-to-${logAnalyticsName}'
 var applicationInsightsName = '${abbrs.insightsComponents}${environmentName}'
 var virtualNetworkName = '${abbrs.networkVirtualNetworks}${environmentName}'
-var storageAccounName = toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', ''))
-var keyVaultName = toLower(replace('${abbrs.keyVaultVaults}${environmentName}', '-', ''))
+// Ensure the storage account name is ≤ 24 characters as required by Azure.
+var storageAccounName = substring(toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', '')),0,24)
+var keyVaultName = substring(toLower(replace('${abbrs.keyVaultVaults}${environmentName}', '-', '')),0,24)
 var containerRegistryName = toLower(replace('${abbrs.containerRegistryRegistries}${environmentName}', '-', ''))
 var aiSearchUserAssignedIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}${abbrs.aiSearchSearchServices}${environmentName}'
 var aiSearchName = '${abbrs.aiSearchSearchServices}${environmentName}'
@@ -226,7 +230,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
-    enablePurgeProtection: false
+    enablePurgeProtection: keyVaultEnablePurgeProtection
     enableRbacAuthorization: true
     networkAcls: {
       bypass: 'AzureServices'
