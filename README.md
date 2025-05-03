@@ -66,14 +66,22 @@ Click on the Deploy to Azure button to deploy the Azure resources for this solut
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FPlagueHO%2Fazure-ai-foundry-jumpstart%2Fmain%2Finfra%2Fmain.bicepparam)
 
-## Deployment Options
+## Configuration Options
+
+There are a number of configuration options available for this solution accelerator that control the deployment of the Azure resources and other processes that run during the deployment. These options can be configured by either setting an environment variable or using the Azure Developer CLI `azd env set` command.
+
+For example, to set the `LOCATION` environment variable to `eastus`, you can run the following command:
+
+```pwsh
+azd env set LOCATION eastus
+```
 
 <!-- Badge reference links -->
 [ci-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-foundry-jumpstart/continuous-integration.yml?branch=main
 [ci-url]: https://github.com/PlagueHO/azure-ai-foundry-jumpstart/actions/workflows/continuous-integration.yml
 
-[cd-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-foundry-jumpstart/continuous-deployment.yml?branch=main
-[cd-url]: https://github.com/PlagueHO/azure-ai-foundry-jumpstart/actions/workflows/continuous-deployment.yml
+[cd-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-foundry-jumpstart/continuous-delivery.yml?branch=main
+[cd-url]: https://github.com/PlagueHO/azure-ai-foundry-jumpstart/actions/workflows/continuous-delivery.yml
 
 [license-shield]: https://img.shields.io/github/license/PlagueHO/azure-ai-foundry-jumpstart
 [license-url]: https://github.com/PlagueHO/azure-ai-foundry-jumpstart/blob/main/LICENSE
