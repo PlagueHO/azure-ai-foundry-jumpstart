@@ -2,12 +2,13 @@ using './main.bicep'
 
 // Required parameters
 param environmentName = readEnvironmentVariable('AZURE_ENV_NAME', 'env_name')
-param location = readEnvironmentVariable('AZURE_LOCATION', 'location')
+param location = readEnvironmentVariable('AZURE_LOCATION', 'EastUS2')
 
 // Optional parameters
-param aiFoundryHubFriendlyName = readEnvironmentVariable('AZURE_AI_FOUNDRY_HUB_FRIENDLY_NAME', 'ai_foundry_hub_friendly_name')
-param aiFoundryHubDescription = readEnvironmentVariable('AZURE_AI_FOUNDRY_HUB_DESCRIPTION', 'ai_foundry_hub_description')
-param principalId = readEnvironmentVariable('AZURE_PRINCIPAL_ID', 'principal_id')
+param aiFoundryHubFriendlyName = readEnvironmentVariable('AZURE_AI_FOUNDRY_HUB_FRIENDLY_NAME', '')
+param aiFoundryHubDescription = readEnvironmentVariable('AZURE_AI_FOUNDRY_HUB_DESCRIPTION', '')
+param aiFoundryHubIpAllowList = empty(readEnvironmentVariable('AZURE_AI_FOUNDRY_HUB_IP_ALLOW_LIST', '')) ? [] : split(readEnvironmentVariable('AZURE_AI_FOUNDRY_HUB_IP_ALLOW_LIST',), ',')
+param principalId = readEnvironmentVariable('AZURE_PRINCIPAL_ID', '')
 param principalIdType = toLower(readEnvironmentVariable('AZURE_PRINCIPAL_ID_TYPE', 'user')) == 'serviceprincipal' ? 'ServicePrincipal' : 'User'
 
 // Networking parameters

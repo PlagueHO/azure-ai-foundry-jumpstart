@@ -17,13 +17,16 @@ param location string
 param resourceGroupName string = 'rg-${environmentName}'
 
 @description('Optional friendly name for the AI Foundry Hub workspace.')
-param aiFoundryHubFriendlyName string = 'AI Foundry Hub (${environmentName})'
+param aiFoundryHubFriendlyName string
 
 @description('Optional description for the AI Foundry Hub workspace.')
-param aiFoundryHubDescription string = 'AI Foundry Hub for ${environmentName}'
+param aiFoundryHubDescription string
+
+@description('Array of public IPv4 addresses or CIDR ranges that will be added to the Azure AI Foundry Hub allow‑list when `azureNetworkIsolation` is true.')
+param aiFoundryHubIpAllowList array = []
 
 @description('Id of the user or app to assign application roles')
-param principalId string = ''
+param principalId string
 
 @description('Type of the principal referenced by *principalId*.')
 @allowed([
@@ -70,14 +73,14 @@ var bastionHostName = '${abbrs.networkBastionHosts}${environmentName}'
 
 var networkDefaultAction = azureNetworkIsolation ? 'Deny' : 'Allow'
 
-// Organize resources in a resource group
+// ---------- RESOURCE GROUP ----------
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
   location: location
   tags: tags
 }
 
-// Create the Log Analytics workspace using Azure Verified Module (AVM)
+// ---------- MONITORING RESOURCES ----------
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
   name: 'logAnalyticsWorkspace'
   scope: rg
@@ -88,7 +91,6 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
   }
 }
 
-// Create the Application Insights resource using Azure Verified Module (AVM)
 module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
   name: 'applicationInsights'
   scope: rg
@@ -446,7 +448,7 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
       // Developer role assignments
       ...(!empty(principalId) ? [
         {
-          roleDefinitionIdOrName: 'Search Services Contributor'
+          roleDefinitionIdOrName: 'Search Service Contributor'
           principalType: principalIdType
           principalId: principalId
         }
@@ -522,8 +524,8 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
   scope: rg
   params: {
     name: aiFoundryHubName
-    friendlyName: aiFoundryHubFriendlyName
-    description: aiFoundryHubDescription
+    friendlyName: empty(aiFoundryHubFriendlyName) ? 'AI Foundry Hub (${environmentName})' : aiFoundryHubFriendlyName
+    description: empty(aiFoundryHubDescription) ? 'AI Foundry Hub for ${environmentName}' : aiFoundryHubDescription
     location: location
     kind: 'Hub'
     sku: 'Basic'
@@ -564,6 +566,7 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
+    ipAllowlist: aiFoundryHubIpAllowList
     managedIdentities: {
       systemAssigned: true
     }
@@ -613,7 +616,44 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (createBa
   }
 }
 
-output AZURE_LOCATION string = location
-output AZURE_TENANT_ID string = tenant().tenantId
-output AZURE_SUBSCRIPTION_ID string = subscription().subscriptionId
-output AZURE_RESOURCE_GROUP string = rg.name
+output RESOURCE_GROUP string = rg.name
+output RESOURCE_GROUP_ID string = rg.id
+
+// Output the monitoring resources
+output LOG_ANALYTICS_WORKSPACE_NAME string = logAnalyticsWorkspace.outputs.name
+output LOG_ANALYTICS_RESOURCE_ID string = logAnalyticsWorkspace.outputs.resourceId
+output LOG_ANALYTICS_WORKSPACE_ID string = logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
+output APPLICATION_INSIGHTS_NAME string = applicationInsights.outputs.name
+output APPLICATION_INSIGHTS_RESOURCE_ID string = applicationInsights.outputs.resourceId
+output APPLICATION_INSIGHTS_INSTRUMENTATION_KEY string = applicationInsights.outputs.instrumentationKey
+
+// Output the network isolation resources
+output VIRTUAL_NETWORK_NAME string = azureNetworkIsolation ? virtualNetwork.outputs.name : ''
+output VIRTUAL_NETWORK_RESOURCE_ID string = azureNetworkIsolation ? virtualNetwork.outputs.resourceId : ''
+
+// Output the supporting resources
+output STORAGE_ACCOUNT_NAME string = storageAccount.outputs.name
+output STORAGE_ACCOUNT_RESOURCE_ID string = storageAccount.outputs.resourceId
+output STORAGE_ACCOUNT_BLOB_ENDPOINT string = storageAccount.outputs.primaryBlobEndpoint
+output STORAGE_ACCOUNT_PRIVATE_ENDPOINTS array = storageAccount.outputs.privateEndpoints
+output STORAGE_ACCOUNT_SERVICE_ENDPOINTS object = storageAccount.outputs.serviceEndpoints
+output KEY_VAULT_NAME string = keyVault.outputs.name
+output KEY_VAULT_RESOURCE_ID string = keyVault.outputs.resourceId
+output KEY_VAULT_ENDPOINT string = keyVault.outputs.uri
+output CONTAINER_REGISTRY_NAME string = containerRegistry.outputs.name
+output CONTAINER_REGISTRY_ID string = containerRegistry.outputs.resourceId
+output AI_SEARCH_NAME string = aiSearchService.outputs.name
+output AI_SEARCH_ID string = aiSearchService.outputs.resourceId
+output AI_SERVICES_NAME string = aiServicesAccount.outputs.name
+output AI_SERVICES_ID string = aiServicesAccount.outputs.resourceId
+output AI_SERVICES_ENDPOINT string = aiServicesAccount.outputs.endpoint
+output AI_SERVICES_RESOURCE_ID string = aiServicesAccount.outputs.resourceId
+
+// Output the Azure AI Foundry resources
+output AI_FOUNDRY_HUB_NAME string = aiFoundryHub.outputs.name
+output AI_FOUNDRY_HUB_RESOURCE_ID string = aiFoundryHub.outputs.resourceId
+output AI_FOUNDRY_HUB_PRIVATE_ENDPOINTS array = aiFoundryHub.outputs.privateEndpoints
+
+// Output the Bastion Host resources
+output BASTION_HOST_NAME string = createBastionHost && azureNetworkIsolation ? bastionHost.outputs.name : ''
+output BASTION_HOST_RESOURCE_ID string = createBastionHost && azureNetworkIsolation ? bastionHost.outputs.resourceId : ''
