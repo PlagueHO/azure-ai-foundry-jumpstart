@@ -8,7 +8,16 @@ The following environment variables control the deployment behaviour of the Azur
 > azd env set LOCATION eastus
 > ```
 
-## Network & Security
+The configuration options are grouped into the following categories:
+
+- [Networking & Isolation](#networking--isolation)
+- [Azure AI Foundry Hub Configuration](#azure-ai-foundry-hub-configuration)
+- [Azure AI Search Service](#azure-ai-search-service)
+- [Identity & Access](#identity--access)
+- [Optional Infrastructure](#optional-infrastructure)
+- [Security](#security)
+
+## Networking & Isolation
 
 ### AZURE_NETWORK_ISOLATION
 
@@ -39,7 +48,7 @@ Default: `false`.
 azd env set AZURE_DISABLE_API_KEYS true
 ```
 
-## Hub Configuration
+## Azure AI Foundry Hub Configuration
 
 ### AZURE_AI_FOUNDRY_HUB_FRIENDLY_NAME
 
@@ -57,6 +66,17 @@ Default: `''` - the friendly name is automatically generated from the environmen
 
 ```powershell
 azd env set AZURE_AI_FOUNDRY_HUB_DESCRIPTION "Sandbox hub for PoC work"
+```
+
+## Azure AI Search Service
+
+### AZURE_AI_SEARCH_SKU
+
+SKU tier for the Azure AI Search service.  
+Allowed: `standard` (default) | `standard2` | `standard3` | `storage_optimized_l1` | `storage_optimized_l2`.
+
+```powershell
+azd env set AZURE_AI_SEARCH_SKU standard2
 ```
 
 ## Identity & Access

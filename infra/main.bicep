@@ -16,6 +16,10 @@ param location string
 @description('Name of the resource group to create. If not specified, a unique name will be generated.')
 param resourceGroupName string = 'rg-${environmentName}'
 
+@description('Enable purge protection on the Key Vault. When set to true the vault cannot be permanently deleted until purge protection is disabled. Defaults to false.')
+param keyVaultEnablePurgeProtection bool = false
+
+
 @description('Optional friendly name for the AI Foundry Hub workspace.')
 param aiFoundryHubFriendlyName string
 
@@ -24,6 +28,16 @@ param aiFoundryHubDescription string
 
 @description('Array of public IPv4 addresses or CIDR ranges that will be added to the Azure AI Foundry Hub allow‑list when `azureNetworkIsolation` is true.')
 param aiFoundryHubIpAllowList array = []
+
+@description('SKU for the Azure AI Search service. Defaults to standard.')
+@allowed([
+  'standard'
+  'standard2'
+  'standard3'
+  'storage_optimized_l1'
+  'storage_optimized_l2'
+])
+param aiSearchSku string = 'standard'
 
 @description('Id of the user or app to assign application roles')
 param principalId string
@@ -43,9 +57,6 @@ param createBastionHost bool = false
 
 @description('Disable API key authentication for AI Services and AI Search. Defaults to false.')
 param disableApiKeys bool = false
-
-@description('Enable purge protection on the Key Vault. When set to true the vault cannot be permanently deleted until purge protection is disabled. Defaults to false.')
-param keyVaultEnablePurgeProtection bool = false
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
@@ -351,7 +362,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
     acrSku: 'Premium'
     acrAdminUserEnabled: false
     publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
-    exportPolicyStatus: 'disabled'
+    exportPolicyStatus: azureNetworkIsolation ? 'enabled' : 'disabled'
     diagnosticSettings: [
       {
         metricCategories: [
@@ -399,7 +410,7 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
   params: {
     name: aiSearchName
     location: location
-    sku: 'standard'
+    sku: aiSearchSku
     diagnosticSettings: [
       {
         metricCategories: [
@@ -626,6 +637,8 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (createBa
 
 output RESOURCE_GROUP string = rg.name
 output RESOURCE_GROUP_ID string = rg.id
+output PRINCIPAL_ID string = principalId
+output PRINCIPAL_ID_TYPE string = principalIdType
 
 // Output the monitoring resources
 output LOG_ANALYTICS_WORKSPACE_NAME string = logAnalyticsWorkspace.outputs.name
