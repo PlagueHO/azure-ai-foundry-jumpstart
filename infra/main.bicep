@@ -611,6 +611,13 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
       }
     ] : []
     provisionNetworkNow: true
+    roleAssignments: !empty(principalId) ? [
+      {
+        roleDefinitionIdOrName: 'Azure AI Administrator'
+        principalType: principalIdType
+        principalId: principalId
+      }
+    ] : []
     systemDatastoresAuthMode: 'Identity'
     tags: tags
     workspaceHubConfig: {
