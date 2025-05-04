@@ -10,12 +10,53 @@ The following environment variables control the deployment behaviour of the Azur
 
 The configuration options are grouped into the following categories:
 
+- [Create Sample Data](#create-sample-data)
 - [Networking & Isolation](#networking--isolation)
 - [Azure AI Foundry Hub Configuration](#azure-ai-foundry-hub-configuration)
 - [Azure AI Search Service](#azure-ai-search-service)
 - [Identity & Access](#identity--access)
 - [Optional Infrastructure](#optional-infrastructure)
 - [Security](#security)
+
+## Create Sample Data
+
+These options control the creation of sample data and configuration in the Azure AI Foundry hub.
+
+### DEPLOY_SAMPLE_OPENAI_MODELS
+
+Deploy seme common OpenAI models into the Azure OpenAI Service connected to the Azure AI Foundry Hub.
+Default: `false`.
+
+This will deploy the following models into the Azure OpenAI Service. If the models aren't available in the selected region, or the quota is exceeded, the deployment will fail:
+
+| Model Name             | Version    | Deployment Type | TPM  |
+| ---------------------- | ---------- | --------------- | ---- |
+| gpt-4.1                | 2025-04-14 | Global Standard | 50K  |
+| gpt-4.1-mini           | 2025-04-14 | Global Standard | 100K |
+| gpt-4.1-nano           | 2025-04-14 | Global Standard | 100K |
+| gpt-4o                 | 2024-11-20 | Global Standard | 50K  |
+| gpt-4o-transcribe      | 2025-03-20 | Global Standard | 100K |
+| gpt-4o-mini            | 2024-07-18 | Global Standard | 100K |
+| gpt-4o-transcribe      | 2025-03-20 | Global Standard | 100K |
+| gpt-4o-mini-transcribe | 2025-03-20 | Global Standard | 100K |
+| o4-mini                | 2025-04-16 | Global Standard | 50K  |
+| text-embedding-3-large | 1          | Global Standard | 150K |
+
+The list of models, versions, quota and TPM are defined in the [infra/sample-openai-models.json](../infra/sample-openai-models.json) file. If you wish to define an alternate models, you can edit this file or alternatively set the [AZURE_OPENAI_MODELS](#azure-openai-models) environment variable.
+
+```powershell
+azd env set DEPLOY_SAMPLE_OPENAI_MODELS true
+```
+
+
+### DEPLOY_SAMPLE_DATA
+
+Upload sample data into the Azure Storage account connected to the Azure AI Foundry Hub.
+Default: `false`.
+
+```powershell
+azd env set DEPLOY_SAMPLE_DATA true
+```
 
 ## Networking & Isolation
 

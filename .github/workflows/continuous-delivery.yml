@@ -48,8 +48,10 @@ jobs:
         include:
           - name: isolated
             AZURE_NETWORK_ISOLATION: 'true'
+            DEPLOY_SAMPLE_OPENAI_MODELS: 'true'
           - name: public
             AZURE_NETWORK_ISOLATION: 'false'
+            DEPLOY_SAMPLE_OPENAI_MODELS: 'false'
     name: Test Template (${{ matrix.name }})
     uses: ./.github/workflows/test-template.yml
     with:
@@ -58,6 +60,7 @@ jobs:
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       AZURE_ENV_NAME: ${{ format('aifj-{0}-{1}-{2}', matrix.name, github.ref_name, github.run_id) }}
       AZURE_NETWORK_ISOLATION: ${{ matrix.AZURE_NETWORK_ISOLATION }}
+      DEPLOY_SAMPLE_OPENAI_MODELS: ${{ matrix.DEPLOY_SAMPLE_OPENAI_MODELS }}
     secrets:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}

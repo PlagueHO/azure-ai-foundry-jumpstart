@@ -58,6 +58,9 @@ param createBastionHost bool = false
 @description('Disable API key authentication for AI Services and AI Search. Defaults to false.')
 param disableApiKeys bool = false
 
+@description('Deploy the sample OpenAI model deployments listed in ./sample-openai-models.json.')
+param deploySampleOpenAiModels bool = false
+
 var abbrs = loadJsonContent('./abbreviations.json')
 
 // tags that should be applied to all resources.
@@ -484,6 +487,7 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
 }
 
 // ---------- AI SERVICES ----------
+var openAiSampleModels = loadJsonContent('./sample-openai-models.json')
 module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' = {
   name: 'ai-services-account-deployment'
   scope: rg
@@ -533,9 +537,13 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
       }
     ]
     sku: 'S0'
+    deployments: deploySampleOpenAiModels ? openAiSampleModels : []
     tags: tags
   }
 }
+
+// ---------- OPTIONAL SAMPLE OPENAI MODEL DEPLOYMENTS ----------
+// (previous sampleOpenAiModels module removed – now handled in aiServicesAccount)
 
 // ---------- AI FOUNDRY HUB ----------
 module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = {
@@ -556,11 +564,7 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
       {
         category: 'AIServices'
         connectionProperties: {
-          // TODO: Update the authType to 'ManagedIdentity'
-          authType: 'ApiKey'
-          credentials: {
-            key: 'key'
-          }
+          authType: 'AAD'
         }
         metadata: {
           ApiType: 'Azure'
@@ -613,7 +617,7 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
     provisionNetworkNow: true
     roleAssignments: !empty(principalId) ? [
       {
-        roleDefinitionIdOrName: 'Azure AI Administrator'
+        roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/b78c5d69-af96-48a3-bf8d-a8b4d589de94' // 'Azure AI Administrator'
         principalType: principalIdType
         principalId: principalId
       }

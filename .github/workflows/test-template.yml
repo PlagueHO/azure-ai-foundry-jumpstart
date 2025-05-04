@@ -24,6 +24,11 @@ on:
         required: false
         type: string
         default: 'false'
+      DEPLOY_SAMPLE_OPENAI_MODELS:
+        description: "Whether to deploy the sample OpenAI models"
+        required: false
+        type: string
+        default: 'false'
 
     secrets:
       AZURE_TENANT_ID:
@@ -49,6 +54,7 @@ jobs:
       AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
       # Optional azd parameters
       AZURE_NETWORK_ISOLATION: ${{ inputs.AZURE_NETWORK_ISOLATION }}
+      DEPLOY_SAMPLE_OPENAI_MODELS: ${{ inputs.DEPLOY_SAMPLE_OPENAI_MODELS }}
       AZURE_PRINCIPAL_ID_TYPE: 'ServicePrincipal'
 
     environment: ${{ inputs.ENVIRONMENT }}

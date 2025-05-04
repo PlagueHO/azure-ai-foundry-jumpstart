@@ -26,13 +26,9 @@ Before you begin, ensure you have the following prerequisites in place:
 
 - An active Azure subscription - [Create a free account](https://azure.microsoft.com/free/) if you don't have one.
 
-## Deploy to Azure
+### Deployment Methods
 
-You can deploy this solution accelerator using either the Azure Developer CLI or the Deploy to Azure button below.
-
-### Deployment Options
-
-You can deploy the application using one of the following options:
+You can deploy the application using one of the following methods:
 
 - [1. Azure Developer CLI](#1-azure-developer-cli)
 - [2. Azure Portal Deployment](#2-azure-portal-deployment)
@@ -68,7 +64,13 @@ Click on the Deploy to Azure button to deploy the Azure resources for this solut
 
 ## Configuration Options
 
-The complete list of environment variables can be found in the [Configuration Options](docs/CONFIGURATION_OPTIONS.md) document.
+You can configure the deployment by setting environment variables when using the Azure Developer CLI. The environment variables are set in the Azure Developer CLI using the `azd env set` command. For example:
+
+```powershell
+azd env set AZURE_NETWORK_ISOLATION false
+```
+
+A complete list of environment variables can be found in the [Configuration Options](docs/CONFIGURATION_OPTIONS.md) document.
 
 <!-- Badge reference links -->
 [ci-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-foundry-jumpstart/continuous-integration.yml?branch=main&label=CI
