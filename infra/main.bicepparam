@@ -24,3 +24,7 @@ param createBastionHost = toLower(readEnvironmentVariable('AZURE_CREATE_BASTION_
 param disableApiKeys = toLower(readEnvironmentVariable('AZURE_DISABLE_API_KEYS', 'false')) == 'true'
 param principalId = readEnvironmentVariable('AZURE_PRINCIPAL_ID', '')
 param principalIdType = toLower(readEnvironmentVariable('AZURE_PRINCIPAL_ID_TYPE', 'user')) == 'serviceprincipal' ? 'ServicePrincipal' : 'User'
+
+// Container registry parameters
+param containerRegistryResourceId = readEnvironmentVariable('AZURE_CONTAINER_REGISTRY_RESOURCE_ID', '')
+param containerRegistryDisabled   = toLower(readEnvironmentVariable('AZURE_CONTAINER_REGISTRY_DISABLED', 'false')) == 'true'

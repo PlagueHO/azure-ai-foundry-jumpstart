@@ -61,6 +61,12 @@ param disableApiKeys bool = false
 @description('Deploy the sample OpenAI model deployments listed in ./sample-openai-models.json.')
 param deploySampleOpenAiModels bool = false
 
+@description('Resource ID of an existing Azure Container Registry (ACR) to use instead of deploying a new one. When provided the registry module is skipped. If `azureNetworkIsolation` is true you must ensure the registry has the required private networking configuration.')
+param containerRegistryResourceId string = ''
+
+@description('Set to true to skip deploying **and** referencing any Azure Container Registry.')
+param containerRegistryDisabled bool = false
+
 var abbrs = loadJsonContent('./abbreviations.json')
 
 // tags that should be applied to all resources.
@@ -355,8 +361,8 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
   }
 }
 
-// ---------- CONTAINER REGISTRY ----------
-module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = {
+// ---------- CONTAINER REGISTRY ----------
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = if (!containerRegistryDisabled && empty(containerRegistryResourceId)) {
   name: 'container-registry-deployment'
   scope: rg
   params: {
@@ -392,6 +398,11 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
     ] : []
   }
 }
+
+// Effective ACR resource-id used by the hub ('' when disabled)
+var effectiveContainerRegistryResourceId = containerRegistryDisabled
+  ? ''
+  : (empty(containerRegistryResourceId) ? containerRegistry.outputs.resourceId : containerRegistryResourceId)
 
 // Create a user assigned managed identity for the Azure AI Search using Azure Verified Module (AVM)
 // This is needed to decouple the lifecycle of the Azure AI search service from the identity
@@ -559,7 +570,7 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
     associatedApplicationInsightsResourceId: applicationInsights.outputs.resourceId
     associatedKeyVaultResourceId: keyVault.outputs.resourceId
     associatedStorageAccountResourceId: storageAccount.outputs.resourceId
-    associatedContainerRegistryResourceId: containerRegistry.outputs.resourceId
+    associatedContainerRegistryResourceId: effectiveContainerRegistryResourceId
     connections: [
       {
         category: 'AIServices'
@@ -672,8 +683,10 @@ output STORAGE_ACCOUNT_SERVICE_ENDPOINTS object = storageAccount.outputs.service
 output KEY_VAULT_NAME string = keyVault.outputs.name
 output KEY_VAULT_RESOURCE_ID string = keyVault.outputs.resourceId
 output KEY_VAULT_ENDPOINT string = keyVault.outputs.uri
-output CONTAINER_REGISTRY_NAME string = containerRegistry.outputs.name
-output CONTAINER_REGISTRY_ID string = containerRegistry.outputs.resourceId
+output CONTAINER_REGISTRY_NAME string = (!containerRegistryDisabled && empty(containerRegistryResourceId)) ? containerRegistry.outputs.name : ''
+output CONTAINER_REGISTRY_ID   string = containerRegistryDisabled
+  ? ''
+  : (empty(containerRegistryResourceId) ? containerRegistry.outputs.resourceId : containerRegistryResourceId)
 output AI_SEARCH_NAME string = aiSearchService.outputs.name
 output AI_SEARCH_ID string = aiSearchService.outputs.resourceId
 output AI_SERVICES_NAME string = aiServicesAccount.outputs.name
