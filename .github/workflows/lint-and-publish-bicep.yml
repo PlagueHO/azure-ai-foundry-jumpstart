@@ -21,6 +21,6 @@ jobs:
       with:
         name: infrastructure_bicep
         path: |
-           ./infra/main.bicep
-           ./infra/abbreviations.json
+           ./infra/*.bicep
+           ./infra/*.json
            ./infra/res/
