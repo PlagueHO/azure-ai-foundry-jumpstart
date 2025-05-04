@@ -62,6 +62,10 @@ Click on the Deploy to Azure button to deploy the Azure resources for this solut
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FPlagueHO%2Fazure-ai-foundry-jumpstart%2Fmain%2Finfra%2Fmain.bicepparam)
 
+## Next Steps
+
+After the deployment is complete, you can access the Azure AI Foundry hub using the URL provided in the output of the deployment. You can also access the Azure AI Foundry hub using the Azure portal by navigating to the resource group created during the deployment.
+
 ## Configuration Options
 
 You can configure the deployment by setting environment variables when using the Azure Developer CLI. The environment variables are set in the Azure Developer CLI using the `azd env set` command. For example:

@@ -76,8 +76,8 @@ jobs:
         shell: pwsh
 
       - name: Provision Infrastructure
-        run: azd provision --no-prompt
+        run: azd provision --no-prompt --debug
           
       - name: Delete Infrastructure
         if: always()
-        run: azd down --no-prompt --purge --force
+        run: azd down --no-prompt --purge --force --debug
