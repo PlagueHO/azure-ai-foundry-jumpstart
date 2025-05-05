@@ -8,17 +8,18 @@
 
 ## Introduction
 
-The Azure AI Foundry Jumpstart Solution Accelerator deploys an [Azure AI Foundry environment](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/create-secure-ai-hub) and supporting services into your Azure subscription. This accelerator is designed to be used as a secure an for exploring and experimenting with Azure AI Foundry capabilities.
+The Azure AI Foundry Jumpstart Solution Accelerator deploys an [Azure AI Foundry environment](https://learn.microsoft.com/azure/ai-foundry/how-to/create-secure-ai-hub) and supporting services into your Azure subscription. This accelerator is designed to be used as a secure an for exploring and experimenting with Azure AI Foundry capabilities.
 
 This solution accelerator is intended to help getting started with Azure AI Foundry quickly and easily, while meeting security and well-architected framework best practices.
 
-### Zero-trust
+### Zero-trust with network isolation
 
-By default, this soltion accelerator deploys Azure AI Foundry and most of the supporting resources into a virtual network using private endpoints, disables public access and uses managed identities for services to authenticate to each other.
+By default, this soltion accelerator deploys Azure AI Foundry and most of the supporting resources into a *virtual network* using *private endpoints*, *disables public access* and uses *managed identities for services to authenticate* to each other. This aligns to [Microsoft's Secure Future Initiative](https://www.microsoft.com/trust-center/security/secure-future-initiative) and the [Zero Trust security model](https://learn.microsoft.com/security/zero-trust/).
 
-It automates the deployment of the services using the same approach as the instructions on [How to create a secure Azure AI Foundry hub and project with a managed virtual network](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/secure-data-playground) page.
+It automates the deployment of the services using the same approach as the instructions on [How to create a secure Azure AI Foundry hub and project with a managed virtual network](https://learn.microsoft.com/azure/ai-foundry/how-to/secure-data-playground) page.
 
-> Note: Zero-trust is the default configuration. But you can choose to deploy the resources without a virtual network and public endpoints if you prefer. See the [Deployment Options](#deployment-options) section for more details.
+> [!NOTE]
+> Zero-trust with network isolation is the default configuration for this solution accelerator. But you can choose to deploy the resources without a virtual network and public endpoints if you prefer. See the [Configuration Options](#configuration-options) section for more details.
 
 ## Prerequisites
 
@@ -38,7 +39,7 @@ You can deploy the application using one of the following methods:
 > [!IMPORTANT]
 > This section will create Azure resources and deploy the solution from your local environment using the Azure Developer CLI. You do not need to clone this repo to complete these steps.
 
-1. Download the [Azure Developer CLI](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/overview)
+1. Download the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/overview)
 1. If you have not cloned this repo, run `azd init -t PlagueHO/azure-ai-foundry-jumpstart`. If you have cloned this repo, just run 'azd init' from the repo root directory.
 1. Authenticate the Azure Developer CLI  by running `azd auth login`.
 
