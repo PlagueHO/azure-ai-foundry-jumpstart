@@ -114,7 +114,8 @@ azd env set AZURE_AI_FOUNDRY_HUB_DESCRIPTION "Sandbox hub for PoC work"
 ### AZURE_AI_SEARCH_SKU
 
 SKU tier for the Azure AI Search service.  
-Allowed: `standard` (default) | `standard2` | `standard3` | `storage_optimized_l1` | `storage_optimized_l2`.
+Allowed: `standard` | `standard2` | `standard3` | `storage_optimized_l1` | `storage_optimized_l2`.
+Default: `standard`.
 
 ```powershell
 azd env set AZURE_AI_SEARCH_SKU standard2
@@ -134,7 +135,8 @@ azd env set AZURE_PRINCIPAL_ID "00000000-0000-0000-0000-000000000000"
 ### AZURE_PRINCIPAL_ID_TYPE
 
 The type of identity in `AZURE_PRINCIPAL_ID`.
-Allowed: `user` (default) | `serviceprincipal`.
+Allowed: `user` | `serviceprincipal`.
+Default: `user`.
 
 ```powershell
 azd env set AZURE_PRINCIPAL_ID_TYPE serviceprincipal
@@ -145,6 +147,7 @@ azd env set AZURE_PRINCIPAL_ID_TYPE serviceprincipal
 ### AZURE_CREATE_BASTION_HOST
 
 Deploy an Azure Bastion host for secure RDP/SSH access (`true`).  
+
 Default: `false`.
 
 ```powershell
@@ -165,7 +168,6 @@ azd env set AZURE_CONTAINER_REGISTRY_RESOURCE_ID "/subscriptions/<subId>/resourc
 
 Skip deploying **and** associating any Azure Container Registry.  
 When `true`, `AZURE_CONTAINER_REGISTRY_RESOURCE_ID` is ignored and the AI Foundry Hub is created without an attached registry.
-
 Default: `false`.
 
 ```powershell

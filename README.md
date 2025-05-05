@@ -26,7 +26,7 @@ Before you begin, ensure you have the following prerequisites in place:
 
 - An active Azure subscription - [Create a free account](https://azure.microsoft.com/free/) if you don't have one.
 
-### Deployment Methods
+## Deploying the Solution Accelerator
 
 You can deploy the application using one of the following methods:
 
@@ -55,16 +55,27 @@ You can deploy the application using one of the following methods:
 
 ### 2. Azure Portal Deployment
 
-> [!WARNING]
-> This button will only create Azure resources. It will not populate any sample data.
-
 Click on the Deploy to Azure button to deploy the Azure resources for this solution accelerator.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FPlagueHO%2Fazure-ai-foundry-jumpstart%2Fmain%2Finfra%2Fmain.bicepparam)
 
+> [!NOTE]
+> This button will only create Azure resources. It will not populate any sample data.
+
 ## Next Steps
 
 After the deployment is complete, you can access the Azure AI Foundry hub using the URL provided in the output of the deployment. You can also access the Azure AI Foundry hub using the Azure portal by navigating to the resource group created during the deployment.
+
+## Deleting the Deployment
+
+If you used the Azure Developer CLI to deploy the solution accelerator, you can delete all the resources by running the following command:
+
+```powershell
+azd down
+```
+
+> [!WATNING]
+> This will delete all the resources created during the deployment, including any data or changes made since the deployment was created. So, before doing this, ensure you have backed up any important data or changes.
 
 ## Configuration Options
 
@@ -75,6 +86,18 @@ azd env set AZURE_NETWORK_ISOLATION false
 ```
 
 A complete list of environment variables can be found in the [Configuration Options](docs/CONFIGURATION_OPTIONS.md) document.
+
+## Features
+
+Some key features of the solution accelerator include:
+
+- **Azure Developer CLI**: The solution accelerator uses the Azure Developer CLI to deploy the Azure resources. The Azure Developer CLI is a command-line interface that simplifies the process of deploying Azure resources and applications. It provides a simple and consistent way to manage Azure resources using a command-line interface.
+- **Bicep Templates**: The solution accelerator uses Bicep templates to deploy the Azure resources. Bicep is a domain-specific language (DSL) that simplifies the process of deploying Azure resources. It is a more readable and maintainable alternative to JSON templates.
+- **Azure Verified Modules**: The solution accelerator uses [Azure verified modules](https://aka.ms/avm) to define the Azure resources and ensure best practices are being used. Azure verified modules are pre-built Bicep modules that are designed to be reusable and composable. They provide a consistent way to deploy Azure resources and are maintained by Microsoft.
+
+## Contributing
+
+TBC
 
 <!-- Badge reference links -->
 [ci-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-foundry-jumpstart/continuous-integration.yml?branch=main&label=CI

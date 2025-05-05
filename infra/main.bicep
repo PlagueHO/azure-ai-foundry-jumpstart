@@ -570,7 +570,7 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
     associatedApplicationInsightsResourceId: applicationInsights.outputs.resourceId
     associatedKeyVaultResourceId: keyVault.outputs.resourceId
     associatedStorageAccountResourceId: storageAccount.outputs.resourceId
-    associatedContainerRegistryResourceId: effectiveContainerRegistryResourceId
+    associatedContainerRegistryResourceId: !containerRegistryDisabled ? effectiveContainerRegistryResourceId : null
     connections: [
       {
         category: 'AIServices'
