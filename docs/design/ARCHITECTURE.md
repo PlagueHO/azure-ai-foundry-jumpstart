@@ -1,8 +1,12 @@
-# Azure AI Foundry Secure Hub – Architecture
+# Architecture
 
-This document describes the Azure resources deployed by [infra/main.bicep](infra/main.bicep), the Azure Verified Modules (AVM) used, and the network topology.
+This document describes the Azure resources deployed by [infra/main.bicep](infra/main.bicep), the Azure Verified Modules (AVM) used, and the network topology when deployed with network isolation.
 
-## High‑Level Architecture
+If this solution accelerator is deployed without network isolation, the networking resources are not deployed and public endpoints are enabled for all PaaS services.
+
+## Netowrk Isolation Mode
+
+### High‑Level Architecture
 
 | Layer | Resource | AVM Reference |
 |-------|----------|---------------|
@@ -15,12 +19,12 @@ This document describes the Azure resources deployed by [infra/main.bicep](infra
 |  | Azure AI Search (PE) | [avm/res/search/search-service](https://github.com/Azure/bicep-registry-modules/tree/main/modules/search/search-service) |
 | AI Services | Azure AI Services (Cognitive) (PE) | [avm/res/cognitive-services/account](https://github.com/Azure/bicep-registry-modules/tree/main/modules/cognitive-services/account) |
 |  | Azure AI Foundry Hub (ML Workspace) (PE) | [avm/res/machine-learning-services/workspace](https://github.com/Azure/bicep-registry-modules/tree/main/modules/machine-learning-services/workspace) |
-| Containers | Azure Container Registry (PE) | [avm/res/container-registry/registry](https://github.com/Azure/bicep-registry-modules/tree/main/modules/container-registry/registry) |
+| Containers (Optional) | Azure Container Registry (PE) | [avm/res/container-registry/registry](https://github.com/Azure/bicep-registry-modules/tree/main/modules/container-registry/registry) |
 | Access (optional) | Azure Bastion Host | [avm/res/network/bastion-host](https://github.com/Azure/bicep-registry-modules/tree/main/modules/network/bastion-host) |
 
 > **PE** – deployed with a private endpoint; public network access disabled where supported.
 
-## Virtual Network
+### Virtual Network
 
 | Subnet | Address‑Prefix | Purpose |
 |--------|----------------|---------|
@@ -32,7 +36,7 @@ This document describes the Azure resources deployed by [infra/main.bicep](infra
 
 All private endpoints are placed in their dedicated subnets, isolating traffic and enabling granular NSG rules if required.
 
-### Logical Network Topology
+#### Logical Network Topology
 
 The following diagram illustrates the logical network topology of the deployed resources. The `azd-env-name` tag is applied to all resources for traceability.
 
@@ -71,8 +75,7 @@ flowchart TB
 
 ## Security & Best Practices
 
-1. **Private Endpoints & DNS** – All PaaS services use private endpoints; matching Private DNS Zones are linked to the VNet.
-2. **Public Network Access** – Disabled for Search, Cognitive Services, Storage, ACR, ML Workspace.
-3. **RBAC & Purge Protection** – Key Vault enforces RBAC and purge protection.
-4. **Centralised Logging** – Diagnostic settings forward metrics/logs to Log Analytics.
-5. **Tagging** – Every resource inherits the `azd-env-name` tag for traceability.
+1. **Managed Identities** – API key authentication is not used. All resources use managed identities to authenticate to other Azure services.
+1. **Centralised Logging** – Diagnostic settings forward metrics/logs to Log Analytics.
+1. **Tagging** – Every resource inherits the `azd-env-name` tag for traceability.
+1. **Azure Verified Modules** – All resources are deployed using [Azure Verified Modules (AVM)](https://aka.ms/avm).
