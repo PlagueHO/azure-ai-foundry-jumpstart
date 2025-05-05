@@ -1,0 +1,38 @@
+id: d3f7e1c1-fc25-4d8c-9a6b-86f738c893e7
+created_at: 2023-10-04 14:23:57+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point-of-sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Some users are experiencing intermittent failures when accessing their
+  sales reports.
+severity: medium
+priority: P1
+status: investigating
+customer_name: Jane Peterson
+contact_email: jane.peterson@retailprosoft.com
+conversation_history:
+- role: customer
+  message: "We\u2019re seeing issues where our sales reports fail to load for some\
+    \ users, but it\u2019s intermittent."
+  timestamp: 2023-10-04 13:55:12+00:00
+- role: agent
+  message: Thanks for letting us know, Jane. Can you confirm if this issue is happening
+    for all users or just specific ones?
+  timestamp: 2023-10-04 13:57:45+00:00
+- role: customer
+  message: "It seems to be happening for specific users, but we haven\u2019t identified\
+    \ a pattern yet."
+  timestamp: 2023-10-04 14:00:20+00:00
+- role: agent
+  message: Understood. Are there any error messages shown when the reports fail to
+    load?
+  timestamp: 2023-10-04 14:05:10+00:00
+- role: customer
+  message: "Yes, they\u2019re seeing a generic \u201CFailed to retrieve data\u201D\
+    \ message."
+  timestamp: 2023-10-04 14:07:35+00:00
+- role: agent
+  message: "Thanks for the details. We\u2019ll investigate if this is related to backend\
+    \ API issues or a database query problem. I\u2019ll update you shortly."
+  timestamp: 2023-10-04 14:09:50+00:00
+generated_at: '2025-05-05T22:27:07.991064+00:00'

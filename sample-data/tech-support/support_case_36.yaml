@@ -1,0 +1,44 @@
+id: b0c4f3a8-4e2d-4a6b-bf72-8a2e3b9e5c9d
+created_at: 2023-10-24 14:17:32+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Backend API failures caused widespread POS outages.
+severity: critical
+priority: P4
+status: closed
+customer_name: Julia Harrison
+contact_email: julia.harrison@fakemail.com
+conversation_history:
+- role: customer
+  message: My POS systems are completely down; none of my stores can process sales
+    right now!
+  timestamp: 2023-10-24 13:45:02+00:00
+- role: agent
+  message: We're sorry to hear this, Julia. Let me check our system logs and see what's
+    happening with the backend APIs.
+  timestamp: 2023-10-24 13:46:30+00:00
+- role: customer
+  message: Please hurry; this is a massive disruption to my business.
+  timestamp: 2023-10-24 13:47:15+00:00
+- role: agent
+  message: We've identified an issue with the Azure App Service hosting the APIs.
+    It appears the service experienced a sudden resource outage. We're working on
+    scaling the resources and restoring functionality.
+  timestamp: 2023-10-24 13:55:48+00:00
+- role: customer
+  message: How long will this take? I need an ETA to inform my staff.
+  timestamp: 2023-10-24 13:57:10+00:00
+- role: agent
+  message: The issue has been resolved, Julia. The backend is fully operational again,
+    and your POS systems should be back online. Let me know if you encounter further
+    issues.
+  timestamp: 2023-10-24 14:10:22+00:00
+resolved_at: 2023-10-24 14:10:22+00:00
+resolution: The backend APIs were restored by scaling Azure App Service resources
+  after a sudden outage.
+area: backend
+is_bug: false
+root_cause: Resource exhaustion in Azure App Service caused by unexpected traffic
+  spikes.
+generated_at: '2025-05-05T22:29:49.005270+00:00'

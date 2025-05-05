@@ -1,0 +1,44 @@
+id: 8c4b43b2-3f9a-4a58-9a17-5c3b7e8d3b22
+created_at: 2023-10-06 14:22:10+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Backend API calls are failing intermittently for multiple customers.
+severity: critical
+priority: P4
+status: investigating
+customer_name: Sarah Mitchell
+contact_email: sarah.mitchell@fakemail.com
+conversation_history:
+- role: customer
+  message: Our customers are reporting intermittent issues when trying to complete
+    transactions. The system hangs and eventually returns an error.
+  timestamp: 2023-10-06 13:45:00+00:00
+- role: agent
+  message: Thank you for reporting this, Sarah. Can you confirm if the issue is affecting
+    all customers or only specific ones? Also, are there any error codes being shown?
+  timestamp: 2023-10-06 13:50:00+00:00
+- role: customer
+  message: It seems to be affecting most of our customers. The error message often
+    mentions a timeout, but some users reported seeing a '500 Internal Server Error.'
+  timestamp: 2023-10-06 13:55:00+00:00
+- role: agent
+  message: "Understood. We\u2019ll start investigating potential backend issues right\
+    \ away. Can you let us know if the front-end is behaving normally otherwise, or\
+    \ if there are any visual glitches or slowdowns?"
+  timestamp: 2023-10-06 14:00:00+00:00
+- role: customer
+  message: The front-end appears to be working fine. The issue seems isolated to transactions
+    failing, which I assume is related to the backend APIs.
+  timestamp: 2023-10-06 14:05:00+00:00
+- role: agent
+  message: "Thanks for confirming. We\u2019re escalating this as a critical issue\
+    \ and will begin a deep dive into the backend API logs and database performance.\
+    \ We\u2019ll keep you updated."
+  timestamp: 2023-10-06 14:10:00+00:00
+resolved_at: null
+resolution: null
+area: null
+is_bug: null
+root_cause: null
+generated_at: '2025-05-05T22:26:35.919333+00:00'

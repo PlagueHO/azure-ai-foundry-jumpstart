@@ -1,0 +1,37 @@
+id: 9bcb5d7b-3d2e-4d9f-9f64-72a7bf5c3f9e
+created_at: 2023-10-05 14:32:12+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Point of sale transactions failing intermittently across multiple customers.
+severity: critical
+priority: P2
+status: investigating
+customer_name: John Peterson
+contact_email: john.peterson@fakemail.com
+conversation_history:
+- role: customer
+  message: We're seeing intermittent failures in point of sale transactions across
+    several stores. This is causing major disruptions.
+  timestamp: 2023-10-05 13:45:01+00:00
+- role: agent
+  message: Thanks for reporting this, John. Can you confirm if this is happening for
+    all transactions or just specific types?
+  timestamp: 2023-10-05 13:48:15+00:00
+- role: customer
+  message: It's affecting all transactions, but we don't see a consistent pattern.
+    Errors seem random.
+  timestamp: 2023-10-05 13:50:47+00:00
+- role: agent
+  message: Understood. We're escalating this case due to its severity and have started
+    investigating. Are there any error messages or logs you can share?
+  timestamp: 2023-10-05 13:54:23+00:00
+- role: customer
+  message: "Yes, I\u2019ve forwarded logs to support@scanlonsoft.com. Let me know\
+    \ if you need anything else."
+  timestamp: 2023-10-05 14:02:11+00:00
+- role: agent
+  message: "Thank you, John. We\u2019ve received the logs and will update you as soon\
+    \ as we have more details from our engineering team."
+  timestamp: 2023-10-05 14:10:36+00:00
+generated_at: '2025-05-05T22:29:55.626803+00:00'

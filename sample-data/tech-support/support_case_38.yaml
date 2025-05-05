@@ -1,0 +1,55 @@
+id: 5f3c420b-6e79-4d32-8e30-6c6d2ff7abf5
+created_at: 2023-10-05 14:37:00+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Intermittent API timeout errors during peak traffic hours.
+severity: medium
+priority: P4
+status: resolved
+customer_name: Sarah Thompson
+contact_email: sarah.thompson@fakeemail.com
+conversation_history:
+- role: customer
+  message: "We're seeing intermittent timeout errors when using the platform during\
+    \ peak hours. It\u2019s affecting transactions."
+  timestamp: 2023-10-03 10:15:00+00:00
+- role: agent
+  message: Thank you for reaching out, Sarah. Let me gather more details. Are these
+    errors consistent or only during specific times?
+  timestamp: 2023-10-03 10:20:00+00:00
+- role: customer
+  message: They mostly occur during busy periods, like late afternoon. Morning hours
+    seem fine.
+  timestamp: 2023-10-03 10:25:00+00:00
+- role: agent
+  message: "Understood. This could be related to traffic spikes. I\u2019ll check the\
+    \ backend logs and monitor the API performance."
+  timestamp: 2023-10-03 10:30:00+00:00
+- role: customer
+  message: Appreciate it. Let me know if you need anything else from my side.
+  timestamp: 2023-10-03 10:35:00+00:00
+- role: agent
+  message: "I\u2019ve identified increased latency in the Azure App Service during\
+    \ peak hours. We\u2019ll optimize the scaling configuration and database query\
+    \ performance."
+  timestamp: 2023-10-04 09:45:00+00:00
+- role: customer
+  message: Great! Let me know once the fix is applied. Thanks for looking into this.
+  timestamp: 2023-10-04 09:50:00+00:00
+- role: agent
+  message: "We\u2019ve applied the fix by adjusting the scaling rules and optimizing\
+    \ the database queries. Can you confirm if the issue is resolved?"
+  timestamp: 2023-10-04 17:30:00+00:00
+- role: customer
+  message: "I\u2019ve tested the system during peak hours, and everything seems to\
+    \ be working fine now. Thanks for the quick resolution!"
+  timestamp: 2023-10-04 19:00:00+00:00
+resolved_at: 2023-10-04 19:00:00+00:00
+resolution: Adjusted Azure App Service scaling configuration and optimized database
+  queries to handle peak traffic.
+area: backend
+is_bug: true
+root_cause: Insufficient scaling rules in Azure App Service caused API timeout errors
+  during high traffic periods.
+generated_at: '2025-05-05T22:30:05.073178+00:00'

@@ -1,0 +1,5 @@
+# Runtime dependencies for generate-tech-support.py
+semantic-kernel>=1.29.0
+openai>=1.77.0
+python-dotenv>=1.1.0
+PyYAML>=6.0.2

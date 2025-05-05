@@ -1,0 +1,37 @@
+id: 0b6c0f2e-7d15-4f6b-9c09-2fbd5282f0a6
+created_at: 2023-10-06 14:35:00+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Point of sale system is failing to process transactions for all users.
+severity: critical
+priority: P1
+status: open
+customer_name: Laura Jensen
+contact_email: laura.jensen@fakeemail.com
+conversation_history:
+- role: customer
+  message: "We\u2019re unable to process any transactions on the platform. The payment\
+    \ screen just hangs indefinitely."
+  timestamp: 2023-10-06 14:20:00+00:00
+- role: agent
+  message: Thank you for reaching out, Laura. I understand this is critical. Are all
+    users experiencing this issue or just a subset?
+  timestamp: 2023-10-06 14:25:00+00:00
+- role: customer
+  message: "All users are affected across multiple locations. It\u2019s completely\
+    \ blocking operations right now."
+  timestamp: 2023-10-06 14:27:00+00:00
+- role: agent
+  message: "Understood, I\u2019ll escalate this to our engineering team immediately.\
+    \ Can you confirm if there are any error messages or logs visible on your end?"
+  timestamp: 2023-10-06 14:30:00+00:00
+- role: customer
+  message: "No error messages. It just hangs after entering payment information. We\u2019\
+    ve tried restarting devices but the issue persists."
+  timestamp: 2023-10-06 14:33:00+00:00
+- role: agent
+  message: "Thanks for confirming. We\u2019ll investigate on our end and update you\
+    \ shortly. I\u2019ve flagged this as critical in our system."
+  timestamp: 2023-10-06 14:35:00+00:00
+generated_at: '2025-05-05T22:26:21.144546+00:00'

@@ -1,0 +1,37 @@
+id: 8a3b9d54-4c1d-4a87-bc2b-3f91e6e7d7a2
+created_at: 2023-10-03 14:15:23+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Critical outage affecting all point-of-sale transactions.
+severity: critical
+priority: P1
+status: open
+customer_name: Julia Henderson
+contact_email: julia.henderson@fakemail.com
+conversation_history:
+- role: customer
+  message: Our point-of-sale system is completely down. None of our stores can process
+    transactions, and customers are leaving.
+  timestamp: 2023-10-03 14:10:45+00:00
+- role: agent
+  message: "I\u2019m really sorry to hear that. Can you confirm if you\u2019re seeing\
+    \ any error messages or unusual behavior in the system?"
+  timestamp: 2023-10-03 14:12:03+00:00
+- role: customer
+  message: "The frontend shows a \u201C500 Internal Server Error\u201D on the checkout\
+    \ page, and the backend API seems completely unresponsive."
+  timestamp: 2023-10-03 14:13:18+00:00
+- role: agent
+  message: "Thanks for confirming. This sounds like a backend issue. I\u2019ll escalate\
+    \ this to our engineering team immediately. I\u2019ll keep you updated."
+  timestamp: 2023-10-03 14:14:05+00:00
+- role: customer
+  message: Please do. This is causing huge losses for our business right now.
+  timestamp: 2023-10-03 14:14:50+00:00
+resolved_at: null
+resolution: null
+area: null
+is_bug: null
+root_cause: null
+generated_at: '2025-05-05T22:31:10.840610+00:00'

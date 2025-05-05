@@ -1,0 +1,48 @@
+id: 9e9d8f38-6b3a-4f39-89e2-9c2b5d78b4c0
+created_at: 2023-10-04 12:15:00+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Backend APIs were returning 500 errors, causing service outage for
+  multiple customers.
+severity: critical
+priority: P2
+status: closed
+customer_name: Emily Peterson
+contact_email: emily.peterson@fakemail.com
+conversation_history:
+- role: customer
+  message: Our point-of-sale system is completely down. None of our stores can process
+    transactions, and our staff are seeing "500 Internal Server Error" messages.
+  timestamp: 2023-10-04 11:00:00+00:00
+- role: agent
+  message: "We\u2019re sorry for the disruption. Let me check the system logs and\
+    \ determine the root cause of the issue."
+  timestamp: 2023-10-04 11:05:00+00:00
+- role: customer
+  message: Please resolve this as soon as possible. This is severely affecting our
+    operations and customer experience.
+  timestamp: 2023-10-04 11:10:00+00:00
+- role: agent
+  message: "We\u2019ve identified the issue as a misconfigured database connection\
+    \ string on the backend API services. We\u2019re working on deploying a fix now."
+  timestamp: 2023-10-04 11:25:00+00:00
+- role: customer
+  message: Thank you for the update. How long will it take to implement the fix?
+  timestamp: 2023-10-04 11:30:00+00:00
+- role: agent
+  message: The fix has been deployed and the services are now operational. Please
+    confirm everything is working on your end.
+  timestamp: 2023-10-04 11:50:00+00:00
+- role: customer
+  message: Confirmed. The system is back online and transactions are processing normally.
+    Thanks for the quick resolution.
+  timestamp: 2023-10-04 12:00:00+00:00
+resolved_at: 2023-10-04 11:50:00+00:00
+resolution: Updated the database connection string in the backend API configuration
+  and redeployed the affected services.
+area: backend
+is_bug: true
+root_cause: The database connection string had been inadvertently overwritten during
+  a recent deployment, causing the backend APIs to fail.
+generated_at: '2025-05-05T22:28:50.502525+00:00'

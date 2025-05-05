@@ -1,0 +1,60 @@
+id: 0fbd5b9b-1c93-4bfb-8a5e-3a2c9f6d5c8a
+created_at: 2023-10-28 14:32:00+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Users unable to process transactions intermittently.
+severity: medium
+priority: P4
+status: closed
+customer_name: Jane Doe
+contact_email: jane.doe@fakemail.com
+conversation_history:
+- role: customer
+  message: We're experiencing intermittent issues where transactions fail to process.
+    This has been happening for the past few days.
+  timestamp: 2023-10-25 09:15:00+00:00
+- role: agent
+  message: Thank you for bringing this to our attention, Jane. Can you confirm if
+    this is happening across all terminals or just specific ones?
+  timestamp: 2023-10-25 09:30:00+00:00
+- role: customer
+  message: It seems to be happening across all terminals, but only sporadically. There's
+    no clear pattern.
+  timestamp: 2023-10-25 09:45:00+00:00
+- role: agent
+  message: Understood. I'll escalate this to our engineering team to investigate further.
+    In the meantime, can you check if the issue correlates with specific times of
+    the day or high traffic periods?
+  timestamp: 2023-10-25 10:00:00+00:00
+- role: customer
+  message: "I've checked, and it doesn\u2019t seem to be tied to traffic or times.\
+    \ It feels random."
+  timestamp: 2023-10-25 10:15:00+00:00
+- role: agent
+  message: "Thanks for confirming. Our team has identified a possible backend timeout\
+    \ issue with the API calls to the database. We\u2019ll apply a fix and monitor\
+    \ the situation."
+  timestamp: 2023-10-26 12:00:00+00:00
+- role: customer
+  message: Great, let me know once the fix is applied so we can test it on our end.
+  timestamp: 2023-10-26 12:15:00+00:00
+- role: agent
+  message: The fix has been deployed as of 2023-10-27. Can you confirm if the issue
+    persists?
+  timestamp: 2023-10-27 10:00:00+00:00
+- role: customer
+  message: Everything seems to be working fine now. Thank you!
+  timestamp: 2023-10-27 16:45:00+00:00
+- role: agent
+  message: "Glad to hear that! I\u2019ll go ahead and close this ticket, but feel\
+    \ free to reach out if you experience any further issues."
+  timestamp: 2023-10-27 17:00:00+00:00
+resolved_at: 2023-10-27 17:00:00+00:00
+resolution: Backend timeout issue resolved with an API fix that improved database
+  query handling.
+area: backend
+is_bug: true
+root_cause: Backend API calls were timing out due to inefficient query execution under
+  certain conditions.
+generated_at: '2025-05-05T22:28:58.250084+00:00'

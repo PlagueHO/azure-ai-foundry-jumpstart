@@ -1,0 +1,45 @@
+id: 9d9a6e8b-3e67-4c3d-9b2f-6a1d9c7a8e4d
+created_at: 2023-11-03 14:22:45+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: API calls are failing intermittently, causing transaction disruptions.
+severity: high
+priority: P4
+status: investigating
+customer_name: Jane Doe
+contact_email: jane.doe@fakemail.com
+conversation_history:
+- role: customer
+  message: "We\u2019ve been experiencing intermittent failures when trying to process\
+    \ transactions through the point of sale system. Customers are getting error messages."
+  timestamp: 2023-11-03 13:45:12+00:00
+- role: agent
+  message: Sorry to hear about the issue, Jane. Can you confirm if the error is happening
+    consistently or only at certain times? Also, do you have any error codes or logs
+    to share?
+  timestamp: 2023-11-03 13:50:34+00:00
+- role: customer
+  message: "It seems to happen randomly, but more often during peak hours. The error\
+    \ code we\u2019re seeing is \"500 Internal Server Error.\" We don\u2019t have\
+    \ logs, but I can get our IT team to share more details if needed."
+  timestamp: 2023-11-03 13:57:21+00:00
+- role: agent
+  message: "Thanks for the details. This looks like it might be related to backend\
+    \ API performance. I\u2019ll escalate this to our engineering team to investigate\
+    \ further. Could you also confirm which version of the platform you\u2019re using?"
+  timestamp: 2023-11-03 14:02:46+00:00
+- role: customer
+  message: "We\u2019re using version 2.3.1. Let me know if you need any other information\
+    \ from our side."
+  timestamp: 2023-11-03 14:10:19+00:00
+- role: agent
+  message: "Thank you, Jane. We\u2019re looking into this now and will update you\
+    \ as soon as we have more information. I\u2019ve noted the version as well."
+  timestamp: 2023-11-03 14:16:03+00:00
+resolved_at: null
+resolution: null
+area: null
+is_bug: null
+root_cause: null
+generated_at: '2025-05-05T22:30:26.238808+00:00'

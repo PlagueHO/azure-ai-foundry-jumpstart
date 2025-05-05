@@ -1,0 +1,47 @@
+id: 0d2b3f07-4e61-4d8c-91c2-0f703c5b8e3e
+created_at: 2023-10-31 14:32:00+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Customers are unable to process transactions due to API timeout errors.
+severity: high
+priority: P4
+status: investigating
+customer_name: Emily Carter
+contact_email: emily.carter@smallbizretail.com
+conversation_history:
+- role: customer
+  message: We're experiencing issues with transactions failing; customers are seeing
+    an error message saying "Service Unavailable."
+  timestamp: 2023-10-31 13:50:00+00:00
+- role: agent
+  message: Thank you for reporting this issue, Emily. Are all users experiencing this,
+    or is it limited to certain locations or devices?
+  timestamp: 2023-10-31 13:55:00+00:00
+- role: customer
+  message: "It seems to be affecting all users across multiple stores. We\u2019ve\
+    \ had reports from three locations so far."
+  timestamp: 2023-10-31 14:00:00+00:00
+- role: agent
+  message: "Understood. I\u2019ll escalate this to our engineering team to investigate\
+    \ further. Do you have any logs or screenshots of the error message that could\
+    \ help us narrow this down?"
+  timestamp: 2023-10-31 14:05:00+00:00
+- role: customer
+  message: "Yes, I\u2019ve sent over a screenshot and the logs from one of our stores\
+    \ to support@scanlonsoft.com."
+  timestamp: 2023-10-31 14:10:00+00:00
+- role: agent
+  message: "Thanks for sending those over. I\u2019ll review the logs and update you\
+    \ as soon as we have more information. In the meantime, can you confirm if the\
+    \ issue started today or has been ongoing for a few days?"
+  timestamp: 2023-10-31 14:20:00+00:00
+- role: customer
+  message: It started this morning. Everything was working fine yesterday.
+  timestamp: 2023-10-31 14:25:00+00:00
+resolved_at: null
+resolution: null
+area: null
+is_bug: null
+root_cause: null
+generated_at: '2025-05-05T22:30:50.290013+00:00'

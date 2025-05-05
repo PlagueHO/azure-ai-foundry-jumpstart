@@ -1,0 +1,30 @@
+id: 8d5d7b7d-5f24-4e36-9b6e-8b9a7c1a5f69
+created_at: 2023-10-05 14:35:00+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Backend APIs are returning 500 errors, preventing point of sale transactions.
+severity: high
+priority: P1
+status: open
+customer_name: Jane Doe
+contact_email: jane.doe@fakemail.com
+conversation_history:
+- role: customer
+  message: "Our retail locations are unable to process transactions\u2014POS system\
+    \ is showing errors when trying to connect to the backend API."
+  timestamp: 2023-10-05 14:20:00+00:00
+- role: agent
+  message: "Thank you for reporting this, Jane. We\u2019re looking into the issue\
+    \ with the backend APIs now. Can you confirm if this is affecting all locations\
+    \ or just specific ones?"
+  timestamp: 2023-10-05 14:22:00+00:00
+- role: customer
+  message: "It\u2019s affecting all locations. Every attempt to process a transaction\
+    \ results in a \u201C500 Internal Server Error\u201D message."
+  timestamp: 2023-10-05 14:25:00+00:00
+- role: agent
+  message: "Understood. We\u2019re escalating this issue to our engineering team for\
+    \ immediate investigation. We\u2019ll keep you updated on progress."
+  timestamp: 2023-10-05 14:30:00+00:00
+generated_at: '2025-05-05T22:26:41.320105+00:00'

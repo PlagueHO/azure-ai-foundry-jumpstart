@@ -1,0 +1,36 @@
+id: 8b9f2c1e-4a3c-491e-8c71-4e1a9b1d8c52
+created_at: 2023-10-28 14:45:00+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Some users report intermittent delays during login.
+severity: low
+priority: P4
+status: investigating
+customer_name: Julia Reynolds
+contact_email: julia.reynolds@fakeshopmail.com
+conversation_history:
+- role: customer
+  message: Hi, some of our employees are experiencing delays when logging into the
+    system. It seems to happen randomly.
+  timestamp: 2023-10-28 13:30:00+00:00
+- role: agent
+  message: Thanks for reaching out, Julia. Are the delays consistent or do they vary
+    by user or time of day?
+  timestamp: 2023-10-28 13:35:00+00:00
+- role: customer
+  message: It seems random, but it only happens to a few users. Most logins are fine.
+  timestamp: 2023-10-28 13:40:00+00:00
+- role: agent
+  message: Got it. We'll check the backend logs for any anomalies during the reported
+    times. Are the affected users all using the same type of device or browser?
+  timestamp: 2023-10-28 13:50:00+00:00
+- role: customer
+  message: Not that I know of. They use a mix of devices, including Windows PCs and
+    iPads, mostly Chrome browsers.
+  timestamp: 2023-10-28 14:00:00+00:00
+- role: agent
+  message: Thanks for the details. We'll investigate the login performance and get
+    back to you shortly.
+  timestamp: 2023-10-28 14:10:00+00:00
+generated_at: '2025-05-05T22:30:58.577847+00:00'

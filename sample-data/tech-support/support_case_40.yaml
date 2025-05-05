@@ -1,0 +1,53 @@
+id: f57b5c5c-3c7e-4b36-9c78-3f2a7b6d8b3c
+created_at: 2023-10-02 15:45:00+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small business. React frontend, with
+  APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Backend APIs are intermittently failing, causing transaction errors
+  at point of sale.
+severity: high
+priority: P1
+status: closed
+customer_name: Johnathan Carter
+contact_email: johnathan.carter@fakemail.com
+conversation_history:
+- role: customer
+  message: Our point-of-sale system is throwing transaction errors for multiple customers.
+    This is seriously impacting our business operations!
+  timestamp: 2023-10-01 12:30:00+00:00
+- role: agent
+  message: Apologies for the inconvenience, Johnathan. Let me gather more details.
+    Are these errors consistent, or intermittent?
+  timestamp: 2023-10-01 12:35:00+00:00
+- role: customer
+  message: The errors seem to be intermittent, but they happen frequently enough to
+    disrupt sales. It started earlier today.
+  timestamp: 2023-10-01 12:40:00+00:00
+- role: agent
+  message: "Understood. Our logs indicate failures in the backend APIs hosted in Azure\
+    \ App Service. I\u2019ll escalate this issue and keep you updated."
+  timestamp: 2023-10-01 12:45:00+00:00
+- role: customer
+  message: "Please do. We can\u2019t keep losing sales like this. It\u2019s urgent!"
+  timestamp: 2023-10-01 12:50:00+00:00
+- role: agent
+  message: "The issue has been identified as a performance bottleneck in the backend.\
+    \ It\u2019s being fixed now. I\u2019ll confirm once resolved."
+  timestamp: 2023-10-01 15:00:00+00:00
+- role: customer
+  message: "Thank you. Please ensure it\u2019s resolved quickly."
+  timestamp: 2023-10-01 15:05:00+00:00
+- role: agent
+  message: The fix has been deployed and backend services are now stable. Please confirm
+    if the errors have stopped on your end.
+  timestamp: 2023-10-01 16:30:00+00:00
+- role: customer
+  message: Everything seems to be working fine now. Thanks for resolving this.
+  timestamp: 2023-10-01 16:45:00+00:00
+resolved_at: 2023-10-01 16:30:00+00:00
+resolution: Backend API performance issue was identified and resolved by optimizing
+  database query execution and scaling App Service resources.
+area: backend
+is_bug: true
+root_cause: Inefficient database queries caused API timeouts during high traffic periods.
+generated_at: '2025-05-05T22:30:19.485287+00:00'

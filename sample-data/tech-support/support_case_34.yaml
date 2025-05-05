@@ -1,0 +1,46 @@
+id: 8b9f3b2e-53a1-4a6c-8f48-9d3eefd3f2c6
+created_at: 2023-10-01 15:45:23+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Backend API timeout causing inability to process transactions.
+severity: high
+priority: P4
+status: resolved
+customer_name: Sarah Thompson
+contact_email: sarah.thompson@fakeshopmail.com
+conversation_history:
+- role: customer
+  message: We're unable to process transactions at all. The system keeps timing out
+    when we try to complete sales.
+  timestamp: 2023-10-01 14:30:12+00:00
+- role: agent
+  message: Thank you for reporting this, Sarah. Let me check the backend logs and
+    see if there are any issues with the APIs.
+  timestamp: 2023-10-01 14:32:45+00:00
+- role: customer
+  message: Okay, please let me know. This is impacting all our stores right now.
+  timestamp: 2023-10-01 14:34:10+00:00
+- role: agent
+  message: We've identified a high load issue on the Azure App Service hosting the
+    APIs. We're scaling up the service to handle the demand and will monitor for stability.
+  timestamp: 2023-10-01 14:50:08+00:00
+- role: customer
+  message: Thank you. How long will this take? Our operations are completely stalled.
+  timestamp: 2023-10-01 14:51:47+00:00
+- role: agent
+  message: The scaling process is complete, and the system is now stable. Please confirm
+    if you're able to process transactions again.
+  timestamp: 2023-10-01 15:10:22+00:00
+- role: customer
+  message: It's working now. We're able to process transactions again. Thanks for
+    resolving this quickly.
+  timestamp: 2023-10-01 15:15:03+00:00
+resolved_at: 2023-10-01 15:20:00+00:00
+resolution: The Azure App Service was experiencing high load, resulting in API timeouts.
+  Scaling up the service resolved the issue.
+area: backend
+is_bug: false
+root_cause: High traffic load exceeded the capacity of the current Azure App Service
+  configuration.
+generated_at: '2025-05-05T22:29:35.241774+00:00'

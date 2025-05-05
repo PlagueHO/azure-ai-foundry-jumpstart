@@ -1,0 +1,39 @@
+id: 8c3d7a3e-7f4e-44a9-b6da-9a2f7e1b682c
+created_at: 2023-10-03 14:20:45+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Intermittent failures observed in the point-of-sale API responses.
+severity: medium
+priority: P2
+status: investigating
+customer_name: Maria Gomez
+contact_email: maria.gomez@example.com
+conversation_history:
+- role: customer
+  message: We're seeing intermittent failures in the API responses for the point-of-sale
+    system. Sometimes it works fine, but other times, we get timeout errors.
+  timestamp: 2023-10-03 13:45:10+00:00
+- role: agent
+  message: Thank you for reporting this, Maria. Could you let us know when you started
+    noticing these issues and if there's a specific pattern to the failures?
+  timestamp: 2023-10-03 13:50:30+00:00
+- role: customer
+  message: "It started late yesterday evening. It seems random\u2014no particular\
+    \ time of day or action triggers it. We\u2019ve also checked our internet connection;\
+    \ it\u2019s stable."
+  timestamp: 2023-10-03 13:55:15+00:00
+- role: agent
+  message: "Understood. We\u2019re currently reviewing the API logs and the backend\
+    \ services to identify any anomalies. I\u2019ll keep you updated as we gather\
+    \ more information."
+  timestamp: 2023-10-03 14:00:42+00:00
+- role: customer
+  message: Okay, thank you. Please let me know if you need any additional details
+    from our side.
+  timestamp: 2023-10-03 14:05:20+00:00
+- role: agent
+  message: "Will do, Maria. I\u2019ll reach out if we need further input. We appreciate\
+    \ your patience while we investigate this."
+  timestamp: 2023-10-03 14:10:50+00:00
+generated_at: '2025-05-05T22:27:01.775469+00:00'

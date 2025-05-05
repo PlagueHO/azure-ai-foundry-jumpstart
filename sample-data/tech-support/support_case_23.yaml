@@ -1,0 +1,51 @@
+id: 8f2b4e3b-6b37-4e7f-a9c1-92c4a5b7e9d2
+created_at: 2023-10-06 14:32:45+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Backend API calls are failing, causing payment processing errors for
+  customers.
+severity: critical
+priority: P3
+status: closed
+customer_name: Jennifer Matthews
+contact_email: jennifer.matthews@fakemail.com
+conversation_history:
+- role: customer
+  message: Our customers are unable to process payments. The payment gateway is showing
+    errors, and receipts aren't being generated.
+  timestamp: 2023-10-06 12:10:23+00:00
+- role: agent
+  message: Thank you for reporting this. We will investigate immediately. Can you
+    confirm if this issue is consistent or intermittent?
+  timestamp: 2023-10-06 12:15:47+00:00
+- role: customer
+  message: It's consistent across all transactions. No payments are going through.
+  timestamp: 2023-10-06 12:18:32+00:00
+- role: agent
+  message: Understood. This appears to be a backend issue with the API. We're escalating
+    this to our engineering team for an urgent review.
+  timestamp: 2023-10-06 12:22:15+00:00
+- role: customer
+  message: Please keep us updated. This is causing major disruptions for our business.
+  timestamp: 2023-10-06 12:25:40+00:00
+- role: agent
+  message: The engineering team has identified the issue as a configuration error
+    in the Azure App Service affecting API authentication. A fix is being deployed
+    now.
+  timestamp: 2023-10-06 13:45:10+00:00
+- role: customer
+  message: Thank you. Please confirm once the fix is live and payments are working
+    again.
+  timestamp: 2023-10-06 13:50:27+00:00
+- role: agent
+  message: The fix has been deployed, and payment processing is confirmed to be operational
+    again. Let us know if you experience any further issues.
+  timestamp: 2023-10-06 14:20:14+00:00
+resolved_at: 2023-10-06 14:25:00+00:00
+resolution: Issue was caused by a misconfiguration in Azure App Service, which affected
+  API authentication. The configuration was corrected, and services were restored.
+area: backend
+is_bug: true
+root_cause: Misconfiguration of backend API authentication settings in Azure App Service.
+generated_at: '2025-05-05T22:28:14.810964+00:00'

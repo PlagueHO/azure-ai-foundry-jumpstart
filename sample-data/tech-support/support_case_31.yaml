@@ -1,0 +1,45 @@
+id: 5b7c3f2d-8c3a-4d1c-b9a3-2e9c4f2e3a6a
+created_at: 2023-10-26 14:22:00+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Customer unable to generate monthly sales report due to timeout error.
+severity: low
+priority: P4
+status: closed
+customer_name: Sandra Reeves
+contact_email: sandra.reeves@example.com
+conversation_history:
+- role: customer
+  message: I'm trying to generate my monthly sales report, but I keep getting a timeout
+    error. Can you help?
+  timestamp: 2023-10-24 09:15:00+00:00
+- role: agent
+  message: Hi Sandra, thanks for reaching out! Let me check the backend logs to see
+    if there's any issue causing the timeout.
+  timestamp: 2023-10-24 09:17:00+00:00
+- role: customer
+  message: Okay, thank you. This has happened a couple of times before, but it usually
+    resolves itself.
+  timestamp: 2023-10-24 09:18:30+00:00
+- role: agent
+  message: "I\u2019ve checked the logs, and it seems the query is taking longer than\
+    \ expected due to high data volume. I recommend filtering by a smaller date range\
+    \ or reducing the query complexity. Can you try that and let me know?"
+  timestamp: 2023-10-24 09:25:00+00:00
+- role: customer
+  message: I tried filtering by week instead of the whole month, and it worked. Thanks
+    for the suggestion!
+  timestamp: 2023-10-24 09:30:00+00:00
+- role: agent
+  message: Glad to hear it worked! I'll escalate this internally to optimize the report
+    generation process for larger datasets.
+  timestamp: 2023-10-24 09:32:00+00:00
+resolved_at: 2023-10-24 09:32:00+00:00
+resolution: Suggested the customer to reduce query complexity by filtering date ranges,
+  which resolved the timeout issue.
+area: backend
+is_bug: false
+root_cause: Query timeout due to high data volume when generating reports for large
+  date ranges.
+generated_at: '2025-05-05T22:29:12.820618+00:00'

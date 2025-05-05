@@ -1,0 +1,54 @@
+id: 7b4a5f8c-3c3a-4e3f-9f1e-1d8a9e6c5c42
+created_at: 2023-10-10 14:30:00+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Backend API outage caused transaction failures.
+severity: high
+priority: P3
+status: resolved
+customer_name: Jessica Carter
+contact_email: jessica.carter@fakemail.com
+conversation_history:
+- role: customer
+  message: "We\u2019re experiencing transaction failures across all our stores. The\
+    \ POS system is returning errors when trying to process payments."
+  timestamp: 2023-10-10 13:55:00+00:00
+- role: agent
+  message: Thank you for reporting this, Jessica. Let me investigate the issue. Can
+    you confirm if all stores are affected or just a subset?
+  timestamp: 2023-10-10 14:00:00+00:00
+- role: customer
+  message: All stores are affected. Transactions fail immediately, and the error says
+    "Unable to connect to server."
+  timestamp: 2023-10-10 14:05:00+00:00
+- role: agent
+  message: "Understood. This appears to be a backend issue. I\u2019ll check the API\
+    \ server logs and Azure App Service health metrics. I\u2019ll update you shortly."
+  timestamp: 2023-10-10 14:10:00+00:00
+- role: customer
+  message: Okay, please let me know as soon as possible. This is severely impacting
+    our business operations.
+  timestamp: 2023-10-10 14:15:00+00:00
+- role: agent
+  message: "We\u2019ve identified the issue. One of the backend API services was experiencing\
+    \ a high memory usage spike, causing it to crash repeatedly. The service has been\
+    \ restarted, and a hotfix has been applied to prevent further crashes."
+  timestamp: 2023-10-10 14:25:00+00:00
+- role: customer
+  message: "Thank you. I\u2019ve tested the system, and transactions are working again.\
+    \ Please ensure this doesn\u2019t happen again."
+  timestamp: 2023-10-10 14:28:00+00:00
+- role: agent
+  message: "You\u2019re welcome, Jessica. We\u2019ll continue monitoring the system\
+    \ closely, and a permanent fix will be deployed during off-peak hours. Let me\
+    \ know if you encounter any further issues."
+  timestamp: 2023-10-10 14:29:00+00:00
+resolved_at: 2023-10-10 14:30:00+00:00
+resolution: Restarted the affected API service and applied a hotfix to mitigate high
+  memory usage spikes.
+area: backend
+is_bug: true
+root_cause: High memory usage in the backend API service caused repeated crashes,
+  leading to transaction failures.
+generated_at: '2025-05-05T22:27:28.474446+00:00'

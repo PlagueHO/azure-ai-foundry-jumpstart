@@ -1,0 +1,47 @@
+id: 7e3f4c19-8d2f-4d74-a45a-3f6a217f6b91
+created_at: 2023-10-04 10:15:00+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small business. React frontend, with
+  APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Backend API outages were causing service disruptions for all customers.
+severity: critical
+priority: P4
+status: resolved
+customer_name: Sarah Johnston
+contact_email: sarah.johnston@fakeemail.com
+conversation_history:
+- role: customer
+  message: Our point-of-sale systems are completely down, and none of the transactions
+    are processing. This is affecting all our stores!
+  timestamp: 2023-10-04 10:00:00+00:00
+- role: agent
+  message: "We\u2019re sorry to hear about the disruption. Let me check the system\
+    \ logs to identify the issue. I\u2019ll update you shortly."
+  timestamp: 2023-10-04 10:05:00+00:00
+- role: customer
+  message: Please hurry! This is critical for our business operations.
+  timestamp: 2023-10-04 10:07:00+00:00
+- role: agent
+  message: "We\u2019ve identified a problem with the backend API hosted on Azure App\
+    \ Service. There was an unexpected increase in traffic that caused throttling.\
+    \ We\u2019re working on deploying a fix now."
+  timestamp: 2023-10-04 10:20:00+00:00
+- role: customer
+  message: Do you have an estimated time for resolution? We need this fixed immediately.
+  timestamp: 2023-10-04 10:22:00+00:00
+- role: agent
+  message: The fix has been deployed successfully, and services should be back to
+    normal. Can you confirm if your systems are operational now?
+  timestamp: 2023-10-04 10:30:00+00:00
+- role: customer
+  message: Yes, everything seems to be working again. Thank you for resolving this
+    quickly.
+  timestamp: 2023-10-04 10:35:00+00:00
+resolved_at: 2023-10-04 10:30:00+00:00
+resolution: The issue was caused by throttling due to unexpected traffic spikes on
+  the backend API. Scaling configurations were adjusted to prevent future occurrences.
+area: backend
+is_bug: false
+root_cause: Misconfigured scaling settings in Azure App Service led to throttling
+  during unexpected traffic spikes.
+generated_at: '2025-05-05T22:28:29.671356+00:00'
