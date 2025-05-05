@@ -57,7 +57,7 @@ You can deploy the application using one of the following methods:
 
 Click on the Deploy to Azure button to deploy the Azure resources for this solution accelerator.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FPlagueHO%2Fazure-ai-foundry-jumpstart%2Fmain%2Finfra%2Fmain.bicepparam)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FPlagueHO%2Fazure-ai-foundry-jumpstart%2Fmain%2Finfra%2Fmain.bicep)
 
 > [!NOTE]
 > This button will only create Azure resources. It will not populate any sample data.
@@ -74,7 +74,7 @@ If you used the Azure Developer CLI to deploy the solution accelerator, you can 
 azd down
 ```
 
-> [!WATNING]
+> [!WARNING]
 > This will delete all the resources created during the deployment, including any data or changes made since the deployment was created. So, before doing this, ensure you have backed up any important data or changes.
 
 ## Configuration Options
