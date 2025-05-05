@@ -553,9 +553,6 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
   }
 }
 
-// ---------- OPTIONAL SAMPLE OPENAI MODEL DEPLOYMENTS ----------
-// (previous sampleOpenAiModels module removed – now handled in aiServicesAccount)
-
 // ---------- AI FOUNDRY HUB ----------
 module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = {
   name: 'ai-foundry-hub-workspace-deployment'
