@@ -539,11 +539,19 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
         principalType: 'ServicePrincipal'
         principalId: aiSearchUserAssignedIdentity.outputs.principalId
       }
-      {
-        roleDefinitionIdOrName: 'Contributor'
-        principalType: principalIdType
-        principalId: principalId
-      }
+      // Developer role assignments
+      ...(!empty(principalId) ? [
+        {
+          roleDefinitionIdOrName: 'Contributor'
+          principalType: principalIdType
+          principalId: principalId
+        }
+        {
+          roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
+          principalType: principalIdType
+          principalId: principalId
+        }
+      ] : [])
     ]
     sku: 'S0'
     deployments: deploySampleOpenAiModels ? openAiSampleModels : []
