@@ -1,0 +1,21 @@
+**Case ID:** 6a75c09c-0236-4dd0-b64e-9da94a322b99  
+**Created At:** 2025-05-06T06:08:48.662232+00:00  
+**System Description:** ScanlonSoft Retail Solution. A SaaS platform running in Azure providing point-of-sale retail software to small businesses. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.  
+**Issue Summary:** Users are unable to apply discounts during checkout.  
+**Severity:** Medium  
+**Priority:** P1  
+**Status:** Open  
+**Customer Name:** John Peterson  
+**Contact Email:** john.peterson@samplemail.com  
+
+**Conversation History:**  
+- **2025-05-06T06:15:00+00:00** [customer] "Hi, we're experiencing an issue where discounts cannot be applied during checkout. This is affecting our ability to close sales."  
+- **2025-05-06T06:20:00+00:00** [agent] "Thank you for reporting this, John. Can you confirm if this issue occurs for all items or just specific ones? Also, are there any error messages or unusual behavior when you attempt to apply the discount?"  
+- **2025-05-06T06:25:00+00:00** [customer] "It seems to be affecting all items. There's no error message, but the discount field doesn’t apply any changes to the total price."  
+- **2025-05-06T06:30:00+00:00** [agent] "Understood. This sounds like a potential issue with the frontend functionality. I’ll escalate this to our engineering team for further investigation. In the meantime, can you let me know which browser and version you’re using?"  
+- **2025-05-06T06:35:00+00:00** [customer] "We’re using Google Chrome, version 112.0.5615.138."  
+- **2025-05-06T06:40:00+00:00** [agent] "Thanks for the details. I’ll update the case and keep you informed as the team investigates the issue. I’ll also check if there are any workarounds you can use in the meantime."  
+
+**Area:** Frontend  
+**Is Bug:** True
+Generated At: 2025-05-06T06:08:55.061675+00:00

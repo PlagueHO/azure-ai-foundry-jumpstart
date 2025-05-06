@@ -436,7 +436,7 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
     ]
     disableLocalAuth: disableApiKeys
     managedIdentities: {
-      systemAssigned: false
+      systemAssigned: true
       userAssignedResourceIds: [
         aiSearchUserAssignedIdentity.outputs.resourceId
       ]

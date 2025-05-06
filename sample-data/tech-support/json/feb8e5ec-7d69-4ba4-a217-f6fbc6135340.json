@@ -1,0 +1,59 @@
+{
+  "case_id": "feb8e5ec-7d69-4ba4-a217-f6fbc6135340",
+  "created_at": "2025-05-06T06:14:33.644892+00:00",
+  "system_description": "ScanlonSoft Retail Solution. A SaaS platform running in Azure that provides point of sale retail software to small business. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.",
+  "issue_summary": "Customer unable to reset password via frontend.",
+  "severity": "low",
+  "priority": "P1",
+  "status": "resolved",
+  "customer_name": "Julie Monroe",
+  "contact_email": "julie.monroe@example.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Hi, I\u2019m trying to reset my password but the link sent to my email doesn\u2019t seem to work.",
+      "timestamp": "2025-05-06T06:10:00+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Thanks for reaching out, Julie. Can you confirm if you\u2019re clicking the link directly from your email or copying and pasting it into your browser?",
+      "timestamp": "2025-05-06T06:11:45+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "I clicked it directly, but it just takes me to a blank page.",
+      "timestamp": "2025-05-06T06:12:20+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Got it. It sounds like there might be a caching issue. Can you try clearing your browser cache and clicking the link again?",
+      "timestamp": "2025-05-06T06:13:10+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "I cleared my cache and tried again, but it\u2019s still not working.",
+      "timestamp": "2025-05-06T06:14:00+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Understood. Let me check the reset link on our end to see if there\u2019s an issue. I\u2019ll resend a new link shortly.",
+      "timestamp": "2025-05-06T06:14:45+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Thanks, I got the new link and it worked. I was able to reset my password!",
+      "timestamp": "2025-05-06T06:18:00+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Great to hear! Please let us know if you encounter any further issues.",
+      "timestamp": "2025-05-06T06:18:30+00:00"
+    }
+  ],
+  "resolved_at": "2025-05-06T06:18:30+00:00",
+  "resolution": "Resent the password reset link, which resolved the issue.",
+  "area": "backend",
+  "is_bug": "false",
+  "root_cause": "Original reset link expired prematurely due to incorrect timestamp configuration.",
+  "generated_at": "2025-05-06T06:14:45.590552+00:00"
+}

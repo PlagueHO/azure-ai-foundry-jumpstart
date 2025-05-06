@@ -1,0 +1,49 @@
+case_id: 80aac22d-fed1-4f3c-a479-f5fd601f3853
+created_at: 2025-05-06 06:18:24.694387+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Backend API intermittently returns 500 errors during peak business
+  hours.
+severity: medium
+priority: P1
+status: resolved
+customer_name: Jane Doe
+contact_email: jane.doe@example.com
+conversation_history:
+- role: customer
+  message: Our POS system is showing 'Service Unavailable' for some transactions during
+    busy times. This is causing delays for our customers.
+  timestamp: 2025-05-06 06:20:12.123456+00:00
+- role: agent
+  message: "Thank you for reporting this, Jane. We\u2019ll investigate the issue and\
+    \ keep you updated. Could you provide specific timestamps of when the errors occurred?"
+  timestamp: 2025-05-06 06:24:37.987654+00:00
+- role: customer
+  message: Sure, the errors occurred yesterday around 5:30 PM and again this morning
+    at 9:15 AM.
+  timestamp: 2025-05-06 06:30:01.234567+00:00
+- role: agent
+  message: "Thanks for the information. We\u2019re seeing elevated 500 error rates\
+    \ in our logs during those times. We suspect it\u2019s related to a database connection\
+    \ pool issue. I\u2019ll update you once we have a fix in place."
+  timestamp: 2025-05-06 06:38:45.345678+00:00
+- role: customer
+  message: "Okay, thanks for looking into it. Please let me know when it\u2019s resolved."
+  timestamp: 2025-05-06 06:42:16.456789+00:00
+- role: agent
+  message: "We\u2019ve identified the root cause and deployed a fix to optimize the\
+    \ database connection pool settings. The errors should no longer occur. Can you\
+    \ confirm the system is working as expected?"
+  timestamp: 2025-05-06 07:15:03.567890+00:00
+- role: customer
+  message: Yes, everything seems to be working fine now. Thank you for the quick response!
+  timestamp: 2025-05-06 07:20:45.678901+00:00
+resolved_at: 2025-05-06 07:15:03.567890+00:00
+resolution: Optimized database connection pool settings to handle peak traffic load
+  more effectively.
+area: backend
+is_bug: true
+root_cause: Database connection pool settings were not adequately configured to handle
+  high traffic volumes, leading to 500 errors during peak hours.
+generated_at: '2025-05-06T06:18:33.117630+00:00'

@@ -1,0 +1,56 @@
+case_id: 714fe408-2d8f-43cf-b9fe-32a040e0b1c9
+created_at: 2025-05-06 05:56:33.171557+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point-of-sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Backend API outage causing critical disruption to point-of-sale functionality.
+severity: critical
+priority: P4
+status: resolved
+customer_name: Emily Carter
+contact_email: emily.carter@fakeemail.com
+conversation_history:
+- role: customer
+  message: Our retail locations are completely unable to process transactions. The
+    point-of-sale system is throwing API errors on every request.
+  timestamp: 2025-05-06 05:58:12+00:00
+- role: agent
+  message: "Thank you for reporting this, Emily. We\u2019re investigating the issue\
+    \ now. Can you confirm if all locations are affected?"
+  timestamp: 2025-05-06 06:02:45+00:00
+- role: customer
+  message: Yes, all locations are reporting the same problem. The error message mentions
+    a "500 Internal Server Error" from the backend API.
+  timestamp: 2025-05-06 06:05:31+00:00
+- role: agent
+  message: "Understood. It appears the issue is related to the backend API. I\u2019\
+    m escalating this to our engineering team for immediate investigation."
+  timestamp: 2025-05-06 06:08:14+00:00
+- role: customer
+  message: Please keep me updated. This is causing significant business disruption.
+  timestamp: 2025-05-06 06:10:52+00:00
+- role: agent
+  message: The engineering team has identified the issue as a misconfiguration in
+    the Azure App Service deployment. A fix is being implemented now, and services
+    should be restored shortly.
+  timestamp: 2025-05-06 06:25:39+00:00
+- role: customer
+  message: Thank you. Please confirm once the fix is applied and functionality is
+    restored.
+  timestamp: 2025-05-06 06:30:11+00:00
+- role: agent
+  message: The fix has been successfully deployed. All backend services are operational,
+    and point-of-sale functionality has been restored. Please verify on your end.
+  timestamp: 2025-05-06 06:45:27+00:00
+- role: customer
+  message: "I\u2019ve tested the system, and everything seems to be working now. Thank\
+    \ you for the quick resolution."
+  timestamp: 2025-05-06 06:50:59+00:00
+resolved_at: 2025-05-06 06:45:27+00:00
+resolution: Issue was caused by a misconfiguration in the Azure App Service deployment.
+  The configuration was corrected, restoring backend API functionality.
+area: backend
+is_bug: true
+root_cause: A misconfigured Azure App Service deployment caused the backend API to
+  fail, resulting in a 500 Internal Server Error.
+generated_at: '2025-05-06T05:56:42.872515+00:00'

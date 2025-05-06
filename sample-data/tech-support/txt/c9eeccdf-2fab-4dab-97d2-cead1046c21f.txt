@@ -1,0 +1,24 @@
+**Case ID:** c9eeccdf-2fab-4dab-97d2-cead1046c21f  
+**Created At:** 2025-05-06T06:10:13.861853+00:00  
+**System Description:** ScanlonSoft Retail Solution. A SaaS platform running in Azure that provides point-of-sale retail software to small businesses. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.  
+**Issue Summary:** Checkout screen fails to load for multiple users during peak hours.  
+**Severity:** High  
+**Priority:** P2  
+**Status:** Closed  
+**Customer Name:** Michael Adams  
+**Contact Email:** michael.adams@fakemail.com  
+
+**Conversation History:**  
+- **2025-05-06T06:15:23+00:00** [customer] "The checkout screen isn't loading for my staff, and this happens every day during busy hours. This is causing major disruptions in sales."  
+- **2025-05-06T06:20:11+00:00** [agent] "Thank you for bringing this to our attention, Michael. I understand how critical this is for your business. We'll investigate this issue immediately."  
+- **2025-05-06T07:02:45+00:00** [agent] "Michael, we’ve identified that the issue is related to high backend API latency under peak load. We’re working on mitigating this and will update you shortly."  
+- **2025-05-06T07:45:20+00:00** [customer] "Thanks for the update. Please let me know as soon as it’s resolved. We need this fixed urgently."  
+- **2025-05-06T08:30:33+00:00** [agent] "Michael, the issue has been resolved. We optimized API response times by increasing database connection pooling and scaling the App Service plan to handle higher traffic. Please confirm if everything is working as expected now."  
+- **2025-05-06T08:45:12+00:00** [customer] "Yes, it’s working now. Thanks for your help!"  
+
+**Resolved At:** 2025-05-06T08:30:33+00:00  
+**Resolution:** Backend API latency was resolved by increasing database connection pooling and scaling the App Service plan to handle high traffic during peak hours.  
+**Area:** backend  
+**Is Bug:** True  
+**Root Cause:** The backend API was experiencing latency due to insufficient database connection pooling and under-provisioned App Service resources during peak usage.
+Generated At: 2025-05-06T06:10:27.728751+00:00

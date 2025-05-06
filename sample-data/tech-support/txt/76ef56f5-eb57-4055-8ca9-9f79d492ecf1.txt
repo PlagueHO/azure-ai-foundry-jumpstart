@@ -1,0 +1,41 @@
+**Case ID:** 76ef56f5-eb57-4055-8ca9-9f79d492ecf1  
+**Created At:** 2025-05-06T06:04:53.577424+00:00  
+**System Description:** ScanlonSoft Retail Solution. A SaaS platform running in Azure that provides point-of-sale retail software to small businesses. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.  
+**Issue Summary:** Checkout functionality fails for all users, preventing transactions.  
+**Severity:** High  
+**Priority:** P2  
+**Status:** Investigating  
+**Customer Name:** Andrew Mallory  
+**Contact Email:** andrew.mallory@realisticmail.com  
+
+### Conversation History:  
+- **[2025-05-06T05:55:12+00:00] [customer]**  
+  Hi, we're seeing issues at all of our stores where the checkout process is not working. This is affecting all users across multiple locations.  
+
+- **[2025-05-06T06:06:45+00:00] [agent]**  
+  Hi Andrew, thank you for bringing this to our attention. We're sorry you're experiencing this issue. To confirm, is the checkout button unresponsive, or do you see an error message when trying to complete transactions?  
+
+- **[2025-05-06T06:08:10+00:00] [customer]**  
+  There's an error message: "Unable to process transaction. Please try again later." This happens every time we attempt to finalize a sale.  
+
+- **[2025-05-06T06:12:24+00:00] [agent]**  
+  Understood. I’ve escalated this issue internally given its severity. In the meantime, could you confirm if any recent updates were made to your account or system configurations?  
+
+- **[2025-05-06T06:14:37+00:00] [customer]**  
+  No, we haven’t made any changes recently. Everything was working fine until early this morning.  
+
+- **[2025-05-06T06:19:03+00:00] [agent]**  
+  Thanks for confirming. We’re running diagnostics on our end to identify the root cause. Could you provide approximate timestamps for when the issue first started occurring?  
+
+- **[2025-05-06T06:21:11+00:00] [customer]**  
+  Sure, the first reports came in around 4:30 AM UTC.  
+
+- **[2025-05-06T06:25:46+00:00] [agent]**  
+  Got it, thank you. Based on initial checks, this may be related to backend API connectivity issues. We’re continuing to investigate and will keep you updated.  
+
+**Resolved At:** (not resolved yet)  
+**Resolution:** (not resolved yet)  
+**Area:** Backend  
+**Is Bug:** True  
+**Root Cause:** (not identified yet)
+Generated At: 2025-05-06T06:05:00.897427+00:00

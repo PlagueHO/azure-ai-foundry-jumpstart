@@ -1,0 +1,26 @@
+Case ID: b87387c5-9fd4-4c8d-bd62-2d3d3fcb2df1  
+Created At: 2025-05-06T06:09:58.352266+00:00  
+System Description: ScanlonSoft Retail Solution. A SaaS platform running in Azure that provides point-of-sale retail software to small businesses. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.  
+
+**Issue Summary:** Checkout process in the ScanlonSoft POS system is failing, preventing all customer transactions.  
+
+**Severity:** Critical  
+**Priority:** P4  
+**Status:** Investigating  
+**Customer Name:** Jane Doe  
+**Contact Email:** janedoe@fakemail.com  
+
+**Conversation History:**  
+- (2025-05-06T06:12:45+00:00) [customer] "We’re unable to process transactions at checkout. Customers cannot complete purchases, and this is affecting our business significantly."  
+- (2025-05-06T06:14:30+00:00) [agent] "Thank you for reporting this, Jane. We understand the urgency of this issue and are investigating immediately. Could you confirm if this is happening for all transactions or only specific payment methods?"  
+- (2025-05-06T06:16:22+00:00) [customer] "It’s happening for all transactions, regardless of payment method. The system displays an error: ‘Unable to complete transaction. Please try again later.’"  
+- (2025-05-06T06:18:50+00:00) [agent] "Thanks for the details. We’re escalating this case and checking the logs for the backend APIs and database. We’ll update you shortly."  
+- (2025-05-06T06:23:10+00:00) [customer] "Okay, please resolve this as soon as possible. This issue is costing us revenue."  
+- (2025-05-06T06:25:45+00:00) [agent] "Understood, Jane. We’ve identified some anomalies in the backend API logs and are running diagnostics on the database. We’ll keep you informed as soon as we have a clearer picture."  
+
+**Resolved At:** (omit, case not yet resolved)  
+**Resolution:** (omit, case not yet resolved)  
+**Area:** backend  
+**Is Bug:** true  
+**Root Cause:** (omit, case not yet resolved)
+Generated At: 2025-05-06T06:10:05.857182+00:00

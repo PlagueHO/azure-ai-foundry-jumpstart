@@ -1,0 +1,49 @@
+case_id: f7d4bec2-6bd7-4f3e-ba9c-a02a5b574cc0
+created_at: 2025-05-06 06:18:58.287319+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small business. React frontend, with
+  APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Backend API outage causing transaction failures.
+severity: critical
+priority: P2
+status: closed
+customer_name: Jane Doe
+contact_email: jane.doe@fakemail.com
+conversation_history:
+- role: customer
+  message: Our point of sale system is unable to process any transactions. It says
+    "API request failed."
+  timestamp: 2025-05-06 06:20:00+00:00
+- role: agent
+  message: Thank you for reporting this issue, Jane. We are investigating the API
+    connectivity problem and will update you shortly.
+  timestamp: 2025-05-06 06:25:00+00:00
+- role: customer
+  message: This is severely impacting our business. We need a resolution ASAP.
+  timestamp: 2025-05-06 06:30:00+00:00
+- role: agent
+  message: We understand the urgency, Jane. The issue has been identified as a misconfigured
+    scaling rule in the Azure App Service. Our engineers are applying the fix now.
+  timestamp: 2025-05-06 06:40:00+00:00
+- role: customer
+  message: Please confirm once the issue is resolved.
+  timestamp: 2025-05-06 06:45:00+00:00
+- role: agent
+  message: The scaling rule has been corrected, and the API service is now fully operational.
+    Can you confirm if transactions are processing correctly on your end?
+  timestamp: 2025-05-06 06:50:00+00:00
+- role: customer
+  message: Yes, transactions are working again. Thank you for resolving this.
+  timestamp: 2025-05-06 06:55:00+00:00
+- role: agent
+  message: "You\u2019re welcome, Jane. Apologies for the disruption. Please reach\
+    \ out if you experience any further issues."
+  timestamp: 2025-05-06 07:00:00+00:00
+resolved_at: 2025-05-06 07:00:00+00:00
+resolution: The issue was caused by a misconfigured scaling rule in Azure App Service,
+  which led to the backend API being unable to handle incoming requests. The configuration
+  was corrected, restoring full functionality.
+area: backend
+is_bug: true
+root_cause: Misconfigured scaling rule in Azure App Service caused backend API outage.
+generated_at: '2025-05-06T06:19:06.898317+00:00'

@@ -1,0 +1,44 @@
+### Case Details
+
+**Case ID:** 709ece28-9836-4c46-9d56-8c6b6fdf634f  
+**Created At:** 2025-05-06T06:09:17.497591+00:00  
+**System Description:** ScanlonSoft Retail Solution. A SaaS platform running in Azure that provides point-of-sale retail software to small businesses. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.  
+**Issue Summary:** Some users are unable to process payments at checkout due to a "Payment service unavailable" error on the frontend.  
+**Severity:** Medium  
+**Priority:** P1  
+**Status:** Investigating  
+**Customer Name:** Jane Doe  
+**Contact Email:** jane.doe@fakemail.com  
+
+---
+
+### **Conversation History**
+
+- **2025-05-06T06:12:33+00:00** [customer]  
+  Hi, we're facing issues with payment processing at checkout. Several customers are reporting they see a "Payment service unavailable" error.  
+
+- **2025-05-06T06:15:45+00:00** [agent]  
+  Hi Jane, thank you for bringing this to our attention. Can you confirm if this is affecting all your stores or just specific ones?  
+
+- **2025-05-06T06:18:22+00:00** [customer]  
+  It seems to be affecting all our stores. We checked with other managers, and the error is consistent across locations.  
+
+- **2025-05-06T06:21:37+00:00** [agent]  
+  Understood. We're investigating the issue now. Can you let us know if this started recently or has been ongoing for some time?  
+
+- **2025-05-06T06:25:10+00:00** [customer]  
+  It started this morning at around 6:00 AM UTC. Everything was working fine yesterday.  
+
+- **2025-05-06T06:29:43+00:00** [agent]  
+  Thank you for the details. We've identified that the error originates from the payment processing API. We're checking logs and service metrics to pinpoint the issue. We'll update you shortly.  
+
+- **2025-05-06T06:45:12+00:00** [customer]  
+  Appreciate the quick response. Let me know if you need any additional information from our side.  
+
+---
+
+### **Additional Information**
+
+**Area:** Backend  
+**Is Bug:** True
+Generated At: 2025-05-06T06:09:24.920405+00:00

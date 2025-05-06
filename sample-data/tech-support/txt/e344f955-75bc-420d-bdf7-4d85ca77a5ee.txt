@@ -1,0 +1,26 @@
+Case ID: e344f955-75bc-420d-bdf7-4d85ca77a5ee  
+Created At: 2025-05-06T06:05:00.898222+00:00  
+System Description: ScanlonSoft Retail Solution. A SaaS platform running in Azure that provides point of sale retail software to small businesses. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.  
+Issue Summary: Point-of-sale transactions are failing for all users.  
+Severity: critical  
+Priority: P2  
+Status: open  
+Customer Name: Maria Johnson  
+Contact Email: maria.johnson@realisticemail.com  
+
+Conversation History:  
+- (2025-05-06T06:10:00+00:00) [customer] "Our staff cannot process any point-of-sale transactions. We're seeing errors on the payment screen, and our customers are leaving frustrated. Please help us urgently!"  
+- (2025-05-06T06:15:00+00:00) [agent] "Thank you for reaching out, Maria. We're sorry to hear about this disruption. Could you please share a screenshot or the exact error message you're seeing on the payment screen?"  
+- (2025-05-06T06:20:00+00:00) [customer] "The error message says: 'Unable to connect to payment gateway. Please try again later.' We also noticed the system is running slower than usual."  
+- (2025-05-06T06:25:00+00:00) [agent] "Thank you for the details, Maria. This appears to be an issue with the backend service communicating with the payment gateway. We're escalating this to our engineering team for immediate investigation."  
+- (2025-05-06T06:30:00+00:00) [customer] "Please let me know how long this will take. We're losing business with every passing minute."  
+- (2025-05-06T06:35:00+00:00) [agent] "We understand the urgency of the situation, Maria. Our engineering team is actively working on this. We'll keep you updated every 30 minutes until the issue is resolved."  
+- (2025-05-06T07:05:00+00:00) [agent] "Update: Our team has identified a potential issue with the backend API's connection to the payment gateway. They're working on implementing a fix right now."  
+- (2025-05-06T07:10:00+00:00) [customer] "Thank you for the update. Please keep us posted."  
+
+Resolved At: N/A  
+Resolution: N/A  
+Area: backend  
+Is Bug: true  
+Root Cause: N/A
+Generated At: 2025-05-06T06:05:10.212856+00:00

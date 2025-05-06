@@ -1,0 +1,59 @@
+{
+  "case_id": "9eba4052-163c-4957-83aa-5951db555821",
+  "created_at": "2025-05-06T06:13:44.945814+00:00",
+  "system_description": "ScanlonSoft Retail Solution. A SaaS platform running in Azure that provides point of sale retail software to small businesses. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.",
+  "issue_summary": "API outage prevented transactions from being processed.",
+  "severity": "high",
+  "priority": "P4",
+  "status": "resolved",
+  "customer_name": "James Peterson",
+  "contact_email": "james.peterson@fakeshop.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "None of our transactions are going through. The system keeps throwing errors when trying to process sales.",
+      "timestamp": "2025-05-06T06:14:22+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Thank you for reaching out, James. Can you confirm if the error is consistent across all transactions, or is it isolated to certain payment methods?",
+      "timestamp": "2025-05-06T06:16:35+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "It's happening across all transactions\u2014credit card, cash, everything. None of them are working.",
+      "timestamp": "2025-05-06T06:18:09+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Understood. It sounds like there may be an issue with our backend APIs. Let me escalate this to our engineering team right away.",
+      "timestamp": "2025-05-06T06:20:41+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Okay, please let me know as soon as there's an update. This is causing a major disruption for us.",
+      "timestamp": "2025-05-06T06:22:03+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Hi James, the engineering team has identified the issue\u2014a misconfigured database connection pool. They've applied a fix, and the system should now be operational. Can you try processing a transaction to confirm?",
+      "timestamp": "2025-05-06T06:55:27+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "I just tried, and transactions are going through again. Thank you for fixing this quickly!",
+      "timestamp": "2025-05-06T07:01:15+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "You're welcome, James. We're sorry for the disruption caused and appreciate your patience. Let us know if you encounter any further issues.",
+      "timestamp": "2025-05-06T07:03:50+00:00"
+    }
+  ],
+  "resolved_at": "2025-05-06T07:01:15+00:00",
+  "resolution": "Engineering team fixed a misconfigured database connection pool, restoring API functionality.",
+  "area": "backend",
+  "is_bug": true,
+  "root_cause": "Misconfigured database connection pool caused backend APIs to fail during transaction processing.",
+  "generated_at": "2025-05-06T06:13:54.223718+00:00"
+}

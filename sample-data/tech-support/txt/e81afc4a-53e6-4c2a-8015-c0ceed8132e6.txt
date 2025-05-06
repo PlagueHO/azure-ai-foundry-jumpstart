@@ -1,0 +1,22 @@
+**Case ID:** e81afc4a-53e6-4c2a-8015-c0ceed8132e6  
+**Created At:** 2025-05-06T06:10:34.421848+00:00  
+**System Description:** ScanlonSoft Retail Solution. A SaaS platform running in Azure that provides point-of-sale retail software to small businesses. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.  
+**Issue Summary:** Users are unable to reset their passwords via the frontend.  
+**Severity:** Medium  
+**Priority:** P3  
+**Status:** Open  
+**Customer Name:** Alice Carter  
+**Contact Email:** alice.carter@fakesoftmail.com  
+
+**Conversation History:**  
+- **2025-05-06T06:15:12+00:00** [customer] "Hi, I'm having trouble resetting my password on your platform. After I click 'Forgot Password' and enter my email, I don't receive the reset email."  
+- **2025-05-06T06:22:45+00:00** [agent] "Hi Alice, thank you for reaching out. Could you confirm the email address you're using for your account, just to ensure there are no typos?"  
+- **2025-05-06T06:25:33+00:00** [customer] "Yes, the email is alice.carter@fakesoftmail.com. I've triple-checked the spelling."  
+- **2025-05-06T06:30:47+00:00** [agent] "Thanks, Alice. Let me investigate this issue for you. I'll check if the reset email is being triggered from our system and whether there are any errors in our logs."  
+- **2025-05-06T07:10:15+00:00** [agent] "Alice, I’ve reviewed the logs, and it appears the password reset email is not being sent due to an error in our email service integration. Our team is working on this now. I’ll keep you updated."  
+- **2025-05-06T07:15:42+00:00** [customer] "Alright, thank you. I appreciate the update."  
+- **2025-05-06T07:30:00+00:00** [agent] "We’ve identified the issue and are deploying a fix. This should resolve the email delivery problem within the next few hours. I’ll confirm once everything is working."  
+
+**Area:** Backend  
+**Is Bug:** True
+Generated At: 2025-05-06T06:10:42.455947+00:00

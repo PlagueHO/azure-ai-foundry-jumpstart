@@ -1,0 +1,47 @@
+**Case ID:** ccdf0a91-549c-428c-8d5d-0615a22f7c79  
+**Created At:** 2025-05-06T06:08:18.572475+00:00  
+**System Description:** ScanlonSoft Retail Solution. A SaaS platform running in Azure that provides point of sale retail software to small businesses. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.  
+**Issue Summary:** Customers unable to process transactions due to repeated API timeout errors.  
+**Severity:** Critical  
+**Priority:** P3  
+**Status:** Resolved  
+**Customer Name:** Sarah Jenkins  
+**Contact Email:** sarah.jenkins@fakeemail.com  
+
+### Conversation History:
+- **2025-05-06T06:15:32+00:00 [customer]**  
+  Hi, we're unable to process transactions at all. The system keeps throwing "API timeout" errors. This is impacting our business operations. Please assist urgently!  
+
+- **2025-05-06T06:20:45+00:00 [agent]**  
+  Hi Sarah, thanks for reaching out. We understand how critical this is. Our team is investigating the issue. I'll update you shortly.  
+
+- **2025-05-06T06:35:12+00:00 [agent]**  
+  Sarah, we've identified the issue as a backend API latency problem caused by high database query loads. We're working on a fix and will keep you posted.  
+
+- **2025-05-06T06:45:59+00:00 [customer]**  
+  Thanks for the update. Please let us know as soon as the issue is resolved. This downtime is affecting sales.  
+
+- **2025-05-06T07:10:23+00:00 [agent]**  
+  Good news, Sarah! We've deployed a temporary fix to optimize database query performance. Could you check if transactions are processing now?  
+
+- **2025-05-06T07:15:47+00:00 [customer]**  
+  It's working again! Thanks for resolving this quickly.  
+
+- **2025-05-06T07:20:02+00:00 [agent]**  
+  You're welcome, Sarah! We'll continue monitoring the system to ensure stability. Let us know if you encounter any further issues.  
+
+### Resolved At:  
+2025-05-06T07:20:02+00:00  
+
+### Resolution:  
+The issue was resolved by optimizing database queries to reduce backend API latency. A temporary fix was deployed to handle the load while further analysis is conducted for a permanent solution.  
+
+### Area:  
+Backend  
+
+### Is Bug:  
+True  
+
+### Root Cause:  
+High database query load due to inefficient query structure caused the backend APIs to timeout under peak usage.
+Generated At: 2025-05-06T06:08:26.579818+00:00

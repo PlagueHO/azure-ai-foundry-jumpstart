@@ -1,0 +1,21 @@
+**Case ID:** fdde1961-2190-4373-a1df-f01312cf276f  
+**Created At:** 2025-05-06T06:08:42.347039+00:00  
+**System Description:** ScanlonSoft Retail Solution. A SaaS platform running in Azure that provides point-of-sale retail software to small businesses. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.  
+**Issue Summary:** Customers are unable to process transactions due to intermittent API failures.  
+**Severity:** High  
+**Priority:** P2  
+**Status:** Investigating  
+**Customer Name:** John Carter  
+**Contact Email:** john.carter@sampleemail.com  
+
+**Conversation History:**  
+- (2025-05-06T06:12:14+00:00) [customer] I'm unable to process transactions at my store. My staff is reporting API errors on the point-of-sale system.  
+- (2025-05-06T06:15:09+00:00) [agent] Thank you for reporting this, John. We're investigating the issue. Can you confirm if the errors are consistent or intermittent?  
+- (2025-05-06T06:16:32+00:00) [customer] The errors are intermittent. Sometimes it works, but then it fails again within minutes.  
+- (2025-05-06T06:18:50+00:00) [agent] Understood. Could you provide a screenshot or error message details? This will help us narrow down the issue.  
+- (2025-05-06T06:20:04+00:00) [customer] Sure, I’m seeing a 500 Internal Server Error on the transaction screen. I’ll send over a screenshot shortly.  
+- (2025-05-06T06:23:31+00:00) [agent] Got it, John. We've identified that the API backend may be experiencing intermittent failures. Our team is actively investigating.  
+
+**Area:** Backend  
+**Is Bug:** True
+Generated At: 2025-05-06T06:08:48.657404+00:00

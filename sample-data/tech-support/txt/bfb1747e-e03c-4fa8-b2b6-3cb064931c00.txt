@@ -1,0 +1,24 @@
+**Case ID:** bfb1747e-e03c-4fa8-b2b6-3cb064931c00  
+**Created At:** 2025-05-06T06:05:10.214727+00:00  
+**System Description:** ScanlonSoft Retail Solution. A SaaS platform running in Azure that provides point-of-sale retail software to small businesses. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.  
+**Issue Summary:** Customer unable to update product details in the inventory management interface.  
+**Severity:** Low  
+**Priority:** P3  
+**Status:** Closed  
+**Customer Name:** Jennifer Carter  
+**Contact Email:** jcarter@fakemail.com  
+
+**Conversation History:**  
+- 2025-05-06T06:15:43+00:00 [customer] I’m having trouble updating product details in the inventory section. The “Save” button doesn’t seem to work—it just stays grayed out. Can you help?  
+- 2025-05-06T06:20:12+00:00 [agent] Hi Jennifer, thanks for reaching out! It sounds like this might be an issue with the frontend. Could you confirm which browser you’re using and let me know if clearing your cache helps?  
+- 2025-05-06T06:26:47+00:00 [customer] I’m using Chrome, latest version. I cleared the cache, but the “Save” button is still grayed out.  
+- 2025-05-06T06:32:11+00:00 [agent] Thanks for the update. I’ll escalate this to our engineering team to investigate further. In the meantime, could you try accessing the platform using a different browser, like Firefox or Edge, to see if the issue persists?  
+- 2025-05-06T06:50:29+00:00 [customer] Sure, I tried Firefox, and the issue doesn’t happen there. The “Save” button works fine.  
+- 2025-05-06T07:05:14+00:00 [agent] That’s helpful information, Jennifer. It seems the issue is specific to Chrome. I’ve flagged this for our team, and we’ll follow up once we have a fix. For now, using Firefox as a workaround should keep things running smoothly. Thanks for your patience!  
+
+**Resolved At:** 2025-05-07T10:12:00+00:00  
+**Resolution:** Engineering identified and resolved a bug in the React frontend that caused the “Save” button to remain disabled under specific conditions in Chrome. A patch was deployed to production, and Jennifer confirmed the issue is resolved.  
+**Area:** Frontend  
+**Is Bug:** True  
+**Root Cause:** A frontend state management error caused the “Save” button to incorrectly render as disabled in Chrome due to a browser-specific rendering quirk.
+Generated At: 2025-05-06T06:05:18.442948+00:00

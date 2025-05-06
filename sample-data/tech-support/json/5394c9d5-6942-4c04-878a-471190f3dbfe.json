@@ -1,0 +1,49 @@
+{
+  "case_id": "5394c9d5-6942-4c04-878a-471190f3dbfe",
+  "created_at": "2025-05-06T06:12:44.083393+00:00",
+  "system_description": "ScanlonSoft Retail Solution. A SaaS platform running in Azure that provide point of sale retail software to small business. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.",
+  "issue_summary": "Customer unable to access reports due to incorrect permissions.",
+  "severity": "low",
+  "priority": "P1",
+  "status": "resolved",
+  "customer_name": "Julia Thompson",
+  "contact_email": "julia.thompson@example.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Hi, I'm unable to access the sales reports in the admin panel. It says I don't have permission.",
+      "timestamp": "2025-05-06T06:14:12+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Hello Julia, thank you for bringing this to our attention. Let me check your account permissions to ensure everything is set up correctly.",
+      "timestamp": "2025-05-06T06:16:20+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Thanks! Just to confirm, I should have admin access, right?",
+      "timestamp": "2025-05-06T06:17:45+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Yes, that's correct. I've reviewed your account and see that admin permissions weren't properly assigned during the setup. I\u2019ve corrected that now. Can you try accessing the reports again?",
+      "timestamp": "2025-05-06T06:20:10+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "It works now, thank you! Appreciate the quick fix.",
+      "timestamp": "2025-05-06T06:22:30+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "You're welcome, Julia! Let us know if you need further assistance. Have a great day!",
+      "timestamp": "2025-05-06T06:23:45+00:00"
+    }
+  ],
+  "resolved_at": "2025-05-06T06:23:45+00:00",
+  "resolution": "Updated user permissions to include admin access, resolving the issue.",
+  "area": "backend",
+  "is_bug": "false",
+  "root_cause": "User permissions were not correctly assigned during initial account setup.",
+  "generated_at": "2025-05-06T06:12:52.402423+00:00"
+}

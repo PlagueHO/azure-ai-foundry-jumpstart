@@ -23,6 +23,8 @@ import asyncio  # <-- new
 import random  # random value generation
 import logging
 from typing import Final, Tuple
+import json
+import uuid
 
 import yaml
 from dotenv import load_dotenv
@@ -74,6 +76,13 @@ parser.add_argument(
     default=Path.cwd() / "output",
     help="Folder where YAML files will be written (defaults to ./output).",
 )
+parser.add_argument(
+    "-f",
+    "--format",
+    choices=["yaml", "json", "text"],
+    default="yaml",
+    help="Output file format (yaml|json|text). Defaults to yaml.",
+)
 args = parser.parse_args()
 
 args.output.mkdir(parents=True, exist_ok=True)
@@ -117,10 +126,12 @@ def _create_prompt_function(kernel: sk.Kernel, template: str, *, max_tokens: int
         template=template,
         # Single required input variable
         input_variables=[
-            { "name": "system_description", "description": "Target system description", "is_required": True },
-            { "name": "status",              "description": "Case status",                "is_required": True },
-            { "name": "severity",            "description": "Case severity",              "is_required": True },
-            { "name": "priority",            "description": "Case priority",              "is_required": True },
+            { "name": "system_description", "description": "Target system description",  "is_required": True },
+            { "name": "status",             "description": "Case status",                "is_required": True },
+            { "name": "severity",           "description": "Case severity",              "is_required": True },
+            { "name": "priority",           "description": "Case priority",              "is_required": True },
+            { "name": "case_id",            "description": "Pre-generated UUID",         "is_required": True },
+            { "name": "created_at",         "description": "Pre-generated ISO-timestamp","is_required": True },
         ],
         execution_settings={
             "azure_open_ai": {
@@ -148,21 +159,24 @@ def _create_prompt_function(kernel: sk.Kernel, template: str, *, max_tokens: int
 
 
 # -------------------------------------------------------------------------
-# Prompt template
+# Prompt templates per format
 # -------------------------------------------------------------------------
-SYSTEM_PROMPT = """
+def _build_prompt(output_format: str) -> str:
+    base = """
 You are a helpful support agent generating realistic technical support cases.
 The status of this case is :{{$status}}
 The severity of this case is :{{$severity}}
 The priority of this case is :{{$priority}}
+"""
+    if output_format == "yaml":
+        return base + """
 Output MUST be valid YAML. Do not wrap in markdown.
 
 Create a support case for the following system:
 - {{$system_description}}
 
-Each YAML file must contain:
-id: UUID v4
-created_at: ISO 8601 timestamp
+case_id: {{$case_id}}
+created_at: {{$created_at}}
 system_description: echo back the description
 issue_summary: single sentence summary
 severity: one of [critical, high, medium, low]
@@ -174,7 +188,7 @@ conversation_history:
   - role: customer|agent
     message: text
     timestamp: ISO 8601
-resolved_at: ISO 8601 timestamp (optional, only if status is closed)
+resolved_at: ISO 8601 timestamp (optional, only if status is closed, must be after created_at)
 resolution: text (optional, only if status is resolved or closed)
 area: one of [frontend, backend, database, network, other] (optional, only if status is resolved or closed)
 is_bug: true|false (optional, only if status is resolved or closed)
@@ -184,7 +198,61 @@ The conversation_history should contain at least 3 but no more than 10 messages,
 
 Return ONLY the YAML. DO NOT INCLUDE ANY OTHER TEXT. DO NOT INCLUDE ```yaml OR ANY OTHER MARKUP.
 """
+    if output_format == "json":
+        return base + """
+Output MUST be valid JSON. Do not wrap in markdown.
 
+{
+  "case_id": "{{$case_id}}",
+  "created_at": "{{$created_at}}",
+  "system_description": "{{$system_description}}",
+  "issue_summary": "single sentence summary",
+  "severity": "one of [critical, high, medium, low]",
+  "priority": "P1..P4",
+  "status": "one of [open, investigating, resolved, closed]",
+  "customer_name": "realistic name",
+  "contact_email": "realistic but fake email",
+  "conversation_history": [
+    {
+      "role": "customer|agent",
+      "message": "text",
+      "timestamp": "ISO 8601"
+    }
+  ],
+  "resolved_at": "ISO 8601 timestamp (optional, only if status is closed, must be after created_at))",
+  "resolution": "text (optional, only if status is resolved or closed)",
+  "area": "one of [frontend, backend, database, network, other] (optional, only if status is resolved or closed)",
+  "is_bug": "true|false (optional, only if status is resolved or closed)",
+  "root_cause": "text (optional, only if status is resolved or closed)"
+}
+
+The conversation_history should contain at least 3 but no more than 10 messages, alternating between customer and agent.
+
+Return ONLY the JSON. DO NOT INCLUDE ANY OTHER TEXT. DO NOT INCLUDE ```json OR ANY OTHER MARKUP.
+"""
+    # TEXT (free-form)
+    return base + """
+Case ID: {{$case_id}}
+Created At: {{$created_at}}
+System Description: {{$system_description}}
+Issue Summary: single sentence summary
+Severity: {{$severity}}
+Priority: {{$priority}}
+Status: {{$status}}
+Customer Name: realistic name
+Contact Email: realistic but fake email
+Conversation History:
+  - (ISO 8601) [customer] message text
+  - (ISO 8601) [agent]    message text
+  - repeat 3-10 lines alternating roles
+Resolved At: ISO 8601 (omit if not resolved/closed, must be after created_at))
+Resolution: text (omit if not resolved/closed)
+Area: frontend|backend|database|network|other (omit if not resolved/closed)
+Is Bug: true|false (omit if not resolved/closed)
+Root Cause: text (omit if not resolved/closed)
+"""
+
+SYSTEM_PROMPT = _build_prompt(args.format)
 prompt = _create_prompt_function(kernel, SYSTEM_PROMPT, max_tokens=1000)
 
 # -------------------------------------------------------------------------
@@ -220,28 +288,39 @@ def _random_attributes() -> Tuple[str, str, str]:
 # -------------------------------------------------------------------------
 def generate_cases(count: int, out_dir: Path, system_description: str) -> None:
     required = {
-        "id", "created_at", "system_description", "issue_summary",
+        "case_id", "created_at", "system_description", "issue_summary",
         "severity", "priority", "status", "customer_name",
         "contact_email", "conversation_history",
     }
-
     for idx in range(1, count + 1):
         status_choice, severity_choice, priority_choice = _random_attributes()
+        case_id: str = str(uuid.uuid4())
+        created_at: str = _dt.datetime.now(_dt.timezone.utc).isoformat()
 
-        for attempt in range(1, 4):  # up to 3 retries
-            yaml_raw: str = prompt(
+        for attempt in range(1, 4):
+            # ---------- invoke LLM ----------
+            output: str = prompt(
                 system_description=system_description,
                 status=status_choice,
                 severity=severity_choice,
                 priority=priority_choice,
+                case_id=case_id,
+                created_at=created_at,
             )
+
+            # ---------- deserialize when needed ----------
+            if args.format == "yaml":
+                case_data = yaml.safe_load(output)
+            elif args.format == "json":
+                case_data = json.loads(output)
+            else:  # text – no structured validation
+                case_data = None
+
             try:
-                case_data = yaml.safe_load(yaml_raw)
-
-                if not required.issubset(case_data):
-                    missing = required - set(case_data)
-                    raise ValueError(f"missing fields: {', '.join(missing)}")
-
+                if args.format != "text":
+                    if not required.issubset(case_data):
+                        missing = required - set(case_data)
+                        raise ValueError(f"missing fields: {', '.join(missing)}")
                 break  # success
             except Exception as ex:
                 if attempt < 3:
@@ -249,11 +328,19 @@ def generate_cases(count: int, out_dir: Path, system_description: str) -> None:
                 else:
                     raise
 
-        case_data["generated_at"] = _dt.datetime.now(_dt.timezone.utc).isoformat()
+        generated_at = _dt.datetime.now(_dt.timezone.utc).isoformat()
+        if case_data is not None:
+            case_data["generated_at"] = generated_at
 
-        out_file = out_dir / f"support_case_{idx}.yaml"
+        ext = {"yaml": "yaml", "json": "json", "text": "txt"}[args.format]
+        out_file = out_dir / f"{case_id}.{ext}"
         with out_file.open("w", encoding="utf-8") as fp:
-            yaml.safe_dump(case_data, fp, sort_keys=False)
+            if args.format == "yaml":
+                yaml.safe_dump(case_data, fp, sort_keys=False)
+            elif args.format == "json":
+                json.dump(case_data, fp, indent=2)
+            else:  # text
+                fp.write(f"{output.strip()}\nGenerated At: {generated_at}\n")
 
         logger.info("%s✔ Generated %s%s", Fore.GREEN, out_file, Style.RESET_ALL)
 

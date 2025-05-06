@@ -1,0 +1,49 @@
+{
+  "case_id": "9e089f22-4b80-4952-963a-5636b7f3cd26",
+  "created_at": "2025-05-06T06:12:52.403689+00:00",
+  "system_description": "ScanlonSoft Retail Solution. A SaaS platform running in Azure that provides point of sale retail software to small business. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.",
+  "issue_summary": "Customer reported intermittent slowness in loading the inventory page.",
+  "severity": "low",
+  "priority": "P2",
+  "status": "closed",
+  "customer_name": "Sarah Mitchell",
+  "contact_email": "sarah.mitchell@fakeemail.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Hi, I noticed the inventory page loads very slowly sometimes. Can you check?",
+      "timestamp": "2025-05-06T06:15:10+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Thanks for reporting this, Sarah. I'll look into it. Can you tell me how often this happens?",
+      "timestamp": "2025-05-06T06:20:45+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "It happens maybe once or twice a day, usually during busy hours.",
+      "timestamp": "2025-05-06T06:25:10+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Understood. I'll check the logs and monitor performance during peak times. I'll update you shortly.",
+      "timestamp": "2025-05-06T06:30:00+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Hi Sarah, we identified a minor issue with the database indexing that could cause occasional delays. We've optimized the indexes, which should resolve the slowness.",
+      "timestamp": "2025-05-06T08:45:20+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Thanks for the update! I'll keep an eye on it and let you know if the issue persists.",
+      "timestamp": "2025-05-06T08:50:00+00:00"
+    }
+  ],
+  "resolved_at": "2025-05-06T08:45:20+00:00",
+  "resolution": "Optimized database indexing to address intermittent slowness.",
+  "area": "database",
+  "is_bug": "true",
+  "root_cause": "Improper indexing in the database caused slower query execution during peak times.",
+  "generated_at": "2025-05-06T06:12:59.614648+00:00"
+}

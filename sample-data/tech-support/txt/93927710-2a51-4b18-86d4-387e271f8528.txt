@@ -1,0 +1,26 @@
+**Case ID:** 93927710-2a51-4b18-86d4-387e271f8528  
+**Created At:** 2025-05-06T06:09:38.468462+00:00  
+**System Description:** ScanlonSoft Retail Solution. A SaaS platform running in Azure that provides point-of-sale retail software to small businesses. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.  
+**Issue Summary:** Customers unable to complete checkout due to repeated frontend errors.  
+**Severity:** Critical  
+**Priority:** P2  
+**Status:** Closed  
+**Customer Name:** John Peterson  
+**Contact Email:** john.peterson@fakeemail.com  
+
+**Conversation History:**  
+- (2025-05-06T06:11:20+00:00) [customer] "Our customers are reporting that they cannot complete checkout. The error 'Payment gateway not accessible' keeps appearing. This is impacting all transactions."  
+- (2025-05-06T06:15:45+00:00) [agent] "Thank you for reporting this, John. We are investigating the issue with urgency. I'll provide an update shortly."  
+- (2025-05-06T06:30:10+00:00) [agent] "We've identified that the issue seems to be originating from a failed API call to the payment gateway integration. We're working on resolving this now."  
+- (2025-05-06T06:45:25+00:00) [customer] "Please prioritize this—our business cannot process transactions at the moment."  
+- (2025-05-06T07:05:42+00:00) [agent] "Understood, John. We've deployed a hotfix to address the API error. Please confirm if checkout is functioning correctly now."  
+- (2025-05-06T07:20:15+00:00) [customer] "Looks like everything is back to normal. Customers can complete transactions without errors. Thank you!"  
+- (2025-05-06T07:25:30+00:00) [agent] "Thank you for confirming. We'll monitor the system for stability over the next 24 hours. Please let us know if you encounter any further issues."
+
+**Resolved At:** 2025-05-06T07:25:30+00:00  
+**Resolution:** A hotfix was deployed to resolve an API error in the payment gateway integration. The issue was caused by misconfigured headers in the API call, which were rejected by the payment gateway’s authentication mechanism.  
+
+**Area:** Backend  
+**Is Bug:** True  
+**Root Cause:** Misconfigured headers in the backend API call to the payment gateway resulted in failed authentication.
+Generated At: 2025-05-06T06:09:47.903644+00:00

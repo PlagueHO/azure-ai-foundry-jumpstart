@@ -1,0 +1,44 @@
+{
+  "case_id": "80431aa2-3cef-449f-8dde-a864a127ddac",
+  "created_at": "2025-05-06T05:57:31.564824+00:00",
+  "system_description": "ScanlonSoft Retail Solution. A SaaS platform running in Azure that provides point of sale retail software to small businesses. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.",
+  "issue_summary": "Customer unable to view recent transaction history in the dashboard.",
+  "severity": "low",
+  "priority": "P1",
+  "status": "open",
+  "customer_name": "Jane Doe",
+  "contact_email": "jane.doe@example.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Hi, I noticed I can\u2019t see the recent transactions on the dashboard anymore. It was working yesterday.",
+      "timestamp": "2025-05-06T05:42:10+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Hello Jane, thank you for reaching out. Let me check if there are any ongoing issues with the dashboard functionality.",
+      "timestamp": "2025-05-06T05:45:03+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Okay, please let me know what you find. My team relies on this feature daily.",
+      "timestamp": "2025-05-06T05:46:19+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "I\u2019ve confirmed there are no widespread issues reported. Can you try refreshing the page or clearing your browser cache? Sometimes that resolves display problems.",
+      "timestamp": "2025-05-06T05:49:51+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "I tried refreshing and clearing the cache, but the issue persists. Could it be something on the backend?",
+      "timestamp": "2025-05-06T05:52:34+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Thanks for trying that. I\u2019ll escalate this to our backend team for further investigation. I\u2019ll keep you updated.",
+      "timestamp": "2025-05-06T05:55:07+00:00"
+    }
+  ],
+  "generated_at": "2025-05-06T05:57:40.863470+00:00"
+}

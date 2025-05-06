@@ -1,0 +1,38 @@
+Case ID: d202b5b7-1ada-4fa0-9989-2bf6fddaee44  
+Created At: 2025-05-06T06:04:46.130297+00:00  
+System Description: ScanlonSoft Retail Solution. A SaaS platform running in Azure that provides point-of-sale retail software to small businesses. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.  
+Issue Summary: Slow loading times on the product search screen.  
+Severity: medium  
+Priority: P3  
+Status: investigating  
+Customer Name: Janet Harris  
+Contact Email: janet.harris@realisticretail.com  
+
+### Conversation History:
+- **2025-05-06T07:12:10+00:00 [customer]**  
+  Hi, we're noticing that the product search screen in the point-of-sale interface is taking much longer to load than usual. This started happening yesterday afternoon. Can you help?  
+
+- **2025-05-06T07:30:48+00:00 [agent]**  
+  Hi Janet, thank you for reporting this issue. Can you confirm if this is affecting all users or just specific ones? Also, are there any error messages, or does the search eventually load?  
+
+- **2025-05-06T07:45:22+00:00 [customer]**  
+  It seems to be affecting all users across multiple stores. There are no error messages, but the search results take about 20-30 seconds to appear, which is unusual.  
+
+- **2025-05-06T08:05:12+00:00 [agent]**  
+  Understood. We'll begin investigating this issue. I’ll check if there are any performance anomalies in our logs for the product search API. I’ll update you as soon as I have more information.  
+
+- **2025-05-06T09:20:45+00:00 [customer]**  
+  Thanks. Just let us know if you need any additional information from our side.  
+
+- **2025-05-06T10:02:30+00:00 [agent]**  
+  Thanks, Janet. For now, can you provide us with approximate timestamps for when users first noticed the slowdown? This will help us narrow down our log analysis.  
+
+- **2025-05-06T10:25:17+00:00 [customer]**  
+  Sure, the slowdown started around 3:30 PM UTC yesterday, May 5.  
+
+- **2025-05-06T11:10:00+00:00 [agent]**  
+  Great, thank you. We’re currently analyzing logs and database performance metrics around that timeframe. We’ll follow up shortly.  
+
+Area: backend  
+Is Bug: true
+Generated At: 2025-05-06T06:04:53.576666+00:00

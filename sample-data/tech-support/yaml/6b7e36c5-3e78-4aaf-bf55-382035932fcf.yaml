@@ -1,0 +1,54 @@
+case_id: 6b7e36c5-3e78-4aaf-bf55-382035932fcf
+created_at: 2025-05-06 06:20:14.967355+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Critical outage affecting point of sale functionality across multiple
+  customers.
+severity: high
+priority: P1
+status: closed
+customer_name: John Peterson
+contact_email: john.peterson@example.com
+conversation_history:
+- role: customer
+  message: Our retail locations can't process transactions. The point of sale system
+    is completely down!
+  timestamp: 2025-05-06 06:18:30+00:00
+- role: agent
+  message: "We\u2019re sorry for the inconvenience, John. Let me investigate this\
+    \ issue right away. Can you confirm if all locations are affected?"
+  timestamp: 2025-05-06 06:21:15+00:00
+- role: customer
+  message: Yes, all our locations are reporting the same problem. None of them can
+    access the POS system.
+  timestamp: 2025-05-06 06:23:40+00:00
+- role: agent
+  message: "Understood. This appears to be a system-wide issue. I\u2019m escalating\
+    \ this to our engineering team now and will keep you updated."
+  timestamp: 2025-05-06 06:25:12+00:00
+- role: customer
+  message: "Thank you. Please resolve this quickly\u2014we\u2019re losing sales every\
+    \ minute."
+  timestamp: 2025-05-06 06:27:45+00:00
+- role: agent
+  message: "The engineering team has identified a database connectivity issue. They\
+    \ are actively working to restore service. I\u2019ll update you once we have a\
+    \ resolution."
+  timestamp: 2025-05-06 06:35:20+00:00
+- role: customer
+  message: Okay, please keep me posted.
+  timestamp: 2025-05-06 06:36:55+00:00
+- role: agent
+  message: The issue has been resolved. The database connectivity was restored, and
+    all services are operational. Please confirm if everything is working on your
+    end.
+  timestamp: 2025-05-06 07:10:22+00:00
+resolved_at: 2025-05-06 07:10:22+00:00
+resolution: Engineering team resolved a database connectivity issue causing the outage.
+  Services have been restored and verified operational.
+area: database
+is_bug: false
+root_cause: Temporary network misconfiguration in Azure led to loss of connectivity
+  between the App Service backend and the Azure SQL Database.
+generated_at: '2025-05-06T06:20:23.923067+00:00'

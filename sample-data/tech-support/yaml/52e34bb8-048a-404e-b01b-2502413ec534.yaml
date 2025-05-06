@@ -1,0 +1,42 @@
+case_id: 52e34bb8-048a-404e-b01b-2502413ec534
+created_at: 2025-05-06 05:56:24.908591+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: User unable to access a specific report in the analytics section.
+severity: low
+priority: P3
+status: closed
+customer_name: Emily Carson
+contact_email: emily.carson@fakemail.com
+conversation_history:
+- role: customer
+  message: Hi, I'm having trouble accessing the sales report for April in the analytics
+    section. It just shows an error saying "Unable to load data."
+  timestamp: 2025-05-06 06:01:32+00:00
+- role: agent
+  message: Hi Emily, thank you for reaching out. Could you let me know if this issue
+    is happening for other reports or just the April sales report?
+  timestamp: 2025-05-06 06:03:45+00:00
+- role: customer
+  message: It's just the April sales report. Other reports seem to load fine.
+  timestamp: 2025-05-06 06:05:12+00:00
+- role: agent
+  message: "Thanks for confirming. I\u2019ll check the backend logs for any errors\
+    \ related to that specific report and get back to you shortly."
+  timestamp: 2025-05-06 06:06:48+00:00
+- role: agent
+  message: "Hi Emily, we found the issue. There was a missing data entry for April\
+    \ in the database causing the report to fail. We\u2019ve corrected this, and the\
+    \ report should now load without issues. Could you verify on your side?"
+  timestamp: 2025-05-06 06:45:10+00:00
+- role: customer
+  message: "I checked, and it\u2019s working now. Thank you for your help!"
+  timestamp: 2025-05-06 06:50:32+00:00
+resolved_at: 2025-05-06 06:45:10+00:00
+resolution: Missing data entry for April in the database was identified and corrected.
+area: database
+is_bug: true
+root_cause: A specific data entry for April was missing, causing the report query
+  to fail.
+generated_at: '2025-05-06T05:56:33.168537+00:00'

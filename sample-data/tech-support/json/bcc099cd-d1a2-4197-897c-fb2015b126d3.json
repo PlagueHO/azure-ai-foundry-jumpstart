@@ -1,0 +1,49 @@
+{
+  "case_id": "bcc099cd-d1a2-4197-897c-fb2015b126d3",
+  "created_at": "2025-05-06T06:14:53.030903+00:00",
+  "system_description": "ScanlonSoft Retail Solution. A SaaS platform running in Azure that provide point of sale retail software to small business. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.",
+  "issue_summary": "Customer unable to access sales reports page.",
+  "severity": "low",
+  "priority": "P4",
+  "status": "resolved",
+  "customer_name": "Evelyn Carter",
+  "contact_email": "evelyn.carter@example.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Hi, I'm having trouble accessing the sales reports page on your platform. It just keeps loading indefinitely.",
+      "timestamp": "2025-05-06T06:10:22+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Hello Evelyn, thank you for reaching out! I'll look into this for you. Can you confirm if you're seeing any error messages or if it's just a loading spinner?",
+      "timestamp": "2025-05-06T06:11:45+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "No error messages, just the loading spinner. I\u2019ve tried refreshing the page, but it didn\u2019t help.",
+      "timestamp": "2025-05-06T06:12:12+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Thanks for confirming. This might be related to cached data in your browser. Could you try clearing your browser cache or using an incognito window to access the page?",
+      "timestamp": "2025-05-06T06:13:03+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "I cleared the cache and tried in incognito mode, and now the sales reports page loads correctly. Thank you for the help!",
+      "timestamp": "2025-05-06T06:14:32+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "You're welcome, Evelyn! I'm glad that worked. Please feel free to reach out if you encounter any other issues.",
+      "timestamp": "2025-05-06T06:15:10+00:00"
+    }
+  ],
+  "resolved_at": "2025-05-06T06:15:10+00:00",
+  "resolution": "Customer cleared browser cache, resolving the issue with the loading spinner.",
+  "area": "frontend",
+  "is_bug": false,
+  "root_cause": "Browser cache was causing an outdated script to interfere with the page loading.",
+  "generated_at": "2025-05-06T06:15:01.722694+00:00"
+}

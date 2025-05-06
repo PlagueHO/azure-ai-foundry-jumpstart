@@ -1,0 +1,44 @@
+{
+  "case_id": "99993803-c565-4ae0-93e9-8a3231ef670b",
+  "created_at": "2025-05-06T06:14:02.892630+00:00",
+  "system_description": "ScanlonSoft Retail Solution. A SaaS platform running in Azure that provides point of sale retail software to small businesses. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.",
+  "issue_summary": "Intermittent errors when accessing sales reports.",
+  "severity": "medium",
+  "priority": "P2",
+  "status": "investigating",
+  "customer_name": "Jamie Reynolds",
+  "contact_email": "jamie.reynolds@example.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "I'm getting an error when trying to access sales reports on your platform. It happens sometimes, not always.",
+      "timestamp": "2025-05-06T05:50:00+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Thanks for reaching out, Jamie. Could you provide the exact error message you're seeing or any screenshots? That will help us investigate.",
+      "timestamp": "2025-05-06T06:00:00+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Sure, the error says 'Unable to retrieve data. Please try again later.' I've attached a screenshot to this email.",
+      "timestamp": "2025-05-06T06:05:00+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Got it, thanks. This might be related to a backend or database issue. We're looking into it and will keep you updated.",
+      "timestamp": "2025-05-06T06:15:00+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Appreciate it. Let me know if you need anything else from my side.",
+      "timestamp": "2025-05-06T06:20:00+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Will do, Jamie. We\u2019ll follow up shortly with more details once we\u2019ve pinpointed the issue.",
+      "timestamp": "2025-05-06T06:25:00+00:00"
+    }
+  ],
+  "generated_at": "2025-05-06T06:14:10.770846+00:00"
+}

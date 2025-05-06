@@ -1,0 +1,47 @@
+case_id: d4262f74-954b-42ab-9a04-42ba4f441658
+created_at: 2025-05-06 06:20:23.928911+00:00
+system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Unable to process transactions due to API errors.
+severity: medium
+priority: P2
+status: resolved
+customer_name: John Peterson
+contact_email: john.peterson@example.com
+conversation_history:
+- role: customer
+  message: Hi, I'm having issues with the point-of-sale system. Transactions are failing,
+    and my staff is unable to complete sales.
+  timestamp: 2025-05-06 06:22:45+00:00
+- role: agent
+  message: Thank you for reaching out, John. Can you confirm if you're seeing any
+    error messages or codes when transactions fail?
+  timestamp: 2025-05-06 06:25:12+00:00
+- role: customer
+  message: Yes, the error says "503 Service Unavailable" when trying to process payments.
+  timestamp: 2025-05-06 06:27:34+00:00
+- role: agent
+  message: Understood. It seems like there might be an issue with the backend API.
+    Let me investigate this and get back to you shortly.
+  timestamp: 2025-05-06 06:30:18+00:00
+- role: customer
+  message: Okay, please let me know as soon as possible. This is impacting our daily
+    operations.
+  timestamp: 2025-05-06 06:31:47+00:00
+- role: agent
+  message: Hi John, the issue was traced to an intermittent outage in our Azure App
+    Service hosting the API. We've applied a fix, and service is back online. Can
+    you confirm if transactions are now processing successfully?
+  timestamp: 2025-05-06 07:15:03+00:00
+- role: customer
+  message: Yes, it's working now. Thank you for resolving this quickly.
+  timestamp: 2025-05-06 07:17:22+00:00
+resolved_at: 2025-05-06 07:15:03+00:00
+resolution: The issue was caused by an intermittent outage in the Azure App Service
+  hosting the backend API. A fix was applied to stabilize the service.
+area: backend
+is_bug: false
+root_cause: Temporary outage in Azure App Service caused by high traffic loads, leading
+  to degraded performance and 503 errors.
+generated_at: '2025-05-06T06:20:32.215175+00:00'

@@ -1,0 +1,24 @@
+Case ID: 25dd7f8b-66e5-4e57-9ffd-fbef98a1b6e8  
+Created At: 2025-05-06T06:05:18.445062+00:00  
+System Description: ScanlonSoft Retail Solution. A SaaS platform running in Azure that provides point-of-sale retail software to small businesses. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.  
+Issue Summary: Customers unable to process transactions due to system errors.  
+Severity: critical  
+Priority: P3  
+Status: closed  
+Customer Name: Jonathan Carter  
+Contact Email: jonathan.carter@fakemail.com  
+
+Conversation History:  
+  - 2025-05-06T06:10:23.111+00:00 [customer] I’m unable to process transactions on the platform. My store operations are completely halted. This is urgent!  
+  - 2025-05-06T06:12:45.223+00:00 [agent] Hi Jonathan, I understand how critical this is. Can you confirm if you’re seeing any specific error messages or behavior?  
+  - 2025-05-06T06:15:08.334+00:00 [customer] Yes, I’m getting a “500 Internal Server Error” when I try to finalize a sale. Also, the system is extremely slow.  
+  - 2025-05-06T06:17:50.445+00:00 [agent] Thanks for the details. I’m escalating this to our engineering team right away. I’ll keep you updated.  
+  - 2025-05-06T07:45:12.556+00:00 [agent] Hi Jonathan, the engineering team identified a backend issue. A fix is being deployed. You should see improvements shortly.  
+  - 2025-05-06T08:30:24.667+00:00 [customer] Transactions are now processing, and the system is running smoothly. Thank you for resolving this quickly.  
+
+Resolved At: 2025-05-06T08:25:00.000+00:00  
+Resolution: The issue was caused by a misconfiguration in the backend API, leading to high latency and server errors. The engineering team corrected the configuration and restarted the affected services.  
+Area: backend  
+Is Bug: true  
+Root Cause: A misconfigured API endpoint caused excessive resource consumption, resulting in server errors and slow performance.
+Generated At: 2025-05-06T06:05:25.959700+00:00

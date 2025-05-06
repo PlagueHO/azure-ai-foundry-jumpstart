@@ -1,0 +1,44 @@
+{
+  "case_id": "e63039de-c8bb-4e59-af8b-b5e61ccd3d50",
+  "created_at": "2025-05-06T06:13:54.224815+00:00",
+  "system_description": "ScanlonSoft Retail Solution. A SaaS platform running in Azure that provide point of sale retail software to small business. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database.",
+  "issue_summary": "Point of sale transactions failing intermittently.",
+  "severity": "high",
+  "priority": "P4",
+  "status": "open",
+  "customer_name": "John Peterson",
+  "contact_email": "john.peterson@fakemail.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "We are experiencing issues where some point of sale transactions are failing with 'Server Error' messages.",
+      "timestamp": "2025-05-06T06:15:00+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Thank you for reporting this, John. Can you confirm if this issue is affecting all transactions or just some of them?",
+      "timestamp": "2025-05-06T06:16:45+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "It's intermittent. Some transactions go through, while others fail. It seems random.",
+      "timestamp": "2025-05-06T06:18:12+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Understood. Are there any error codes or specific details provided on the 'Server Error' message?",
+      "timestamp": "2025-05-06T06:19:30+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "No, it just says 'Server Error' without any additional details.",
+      "timestamp": "2025-05-06T06:20:50+00:00"
+    },
+    {
+      "role": "agent",
+      "message": "Thanks for confirming. I will escalate this to our backend team for further investigation. We will update you shortly.",
+      "timestamp": "2025-05-06T06:22:30+00:00"
+    }
+  ],
+  "generated_at": "2025-05-06T06:14:02.891785+00:00"
+}
