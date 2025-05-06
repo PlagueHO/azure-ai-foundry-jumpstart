@@ -67,6 +67,9 @@ param containerRegistryResourceId string = ''
 @description('Set to true to skip deploying **and** referencing any Azure Container Registry.')
 param containerRegistryDisabled bool = false
 
+@description('Enable Hierarchical Namespace on the Storage Account (Data-Lake Gen2). Defaults to false.')
+param storageAccountEnableHierarchicalNamespace bool = false
+
 var abbrs = loadJsonContent('./abbreviations.json')
 
 // tags that should be applied to all resources.
@@ -299,7 +302,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
-    enableHierarchicalNamespace: false
+    enableHierarchicalNamespace: storageAccountEnableHierarchicalNamespace
     enableNfsV3: false
     enableSftp: false
     largeFileSharesState: 'Enabled'

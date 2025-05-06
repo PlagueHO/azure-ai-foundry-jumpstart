@@ -174,6 +174,15 @@ Default: `false`.
 azd env set AZURE_CONTAINER_REGISTRY_DISABLED true
 ```
 
+### AZURE_STORAGE_ENABLE_HIERARCHICAL_NAMESPACE
+
+Enable Hierarchical Namespace (Data-Lake Gen2) on the deployment’s Storage Account (`true`).  
+Default: `false`.
+
+```powershell
+azd env set AZURE_STORAGE_ENABLE_HIERARCHICAL_NAMESPACE true
+```
+
 ## Security
 
 ### AZURE_KEYVAULT_ENABLE_PURGE_PROTECTION
