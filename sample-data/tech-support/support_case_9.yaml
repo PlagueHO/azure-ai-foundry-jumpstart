@@ -1,30 +1,36 @@
-id: 8d5d7b7d-5f24-4e36-9b6e-8b9a7c1a5f69
-created_at: 2023-10-05 14:35:00+00:00
+id: 5c4e6c2d-8c7b-4e3b-9f93-9ad1e8c1e9b8
+created_at: 2023-10-05 14:30:00+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
   that provides point of sale retail software to small businesses. React frontend,
   with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Backend APIs are returning 500 errors, preventing point of sale transactions.
+issue_summary: Point of Sale system fails to process transactions intermittently.
 severity: high
-priority: P1
+priority: P2
 status: open
-customer_name: Jane Doe
-contact_email: jane.doe@fakemail.com
+customer_name: Sarah Whitman
+contact_email: sarah.whitman@retailtest.com
 conversation_history:
 - role: customer
-  message: "Our retail locations are unable to process transactions\u2014POS system\
-    \ is showing errors when trying to connect to the backend API."
+  message: Our Point of Sale system is intermittently failing to process transactions,
+    causing disruptions in our store operations.
+  timestamp: 2023-10-05 13:55:00+00:00
+- role: agent
+  message: I'm sorry to hear about this issue, Sarah. Can you provide more details
+    about when this occurs and any error messages you're seeing?
+  timestamp: 2023-10-05 14:05:00+00:00
+- role: customer
+  message: "It seems to happen during peak hours, around 11 AM to 1 PM. We get a \"\
+    Transaction Failed\" message, but there\u2019s no specific error code."
+  timestamp: 2023-10-05 14:10:00+00:00
+- role: agent
+  message: Thanks for the details. This may be related to backend API performance
+    during high traffic. Let me check the logs and system metrics for that timeframe.
+  timestamp: 2023-10-05 14:15:00+00:00
+- role: customer
+  message: Okay, please let me know if you find anything. This is impacting our sales.
   timestamp: 2023-10-05 14:20:00+00:00
 - role: agent
-  message: "Thank you for reporting this, Jane. We\u2019re looking into the issue\
-    \ with the backend APIs now. Can you confirm if this is affecting all locations\
-    \ or just specific ones?"
-  timestamp: 2023-10-05 14:22:00+00:00
-- role: customer
-  message: "It\u2019s affecting all locations. Every attempt to process a transaction\
-    \ results in a \u201C500 Internal Server Error\u201D message."
+  message: "Understood, Sarah. I\u2019ve escalated this to our backend team to investigate\
+    \ further. I\u2019ll keep you updated as soon as we identify the issue."
   timestamp: 2023-10-05 14:25:00+00:00
-- role: agent
-  message: "Understood. We\u2019re escalating this issue to our engineering team for\
-    \ immediate investigation. We\u2019ll keep you updated on progress."
-  timestamp: 2023-10-05 14:30:00+00:00
-generated_at: '2025-05-05T22:26:41.320105+00:00'
+generated_at: '2025-05-06T00:22:05.659402+00:00'

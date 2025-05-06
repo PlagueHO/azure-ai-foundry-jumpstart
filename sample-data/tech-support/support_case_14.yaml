@@ -1,37 +1,43 @@
-id: 8f3b9c56-9d17-4d99-8e12-df3f4c1e19fc
-created_at: 2023-10-03 12:45:00+00:00
+id: 8e3b2d88-6f6b-4c74-9c1d-8b8e4f5a7b8a
+created_at: 2023-10-06 14:23:45+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
   that provides point of sale retail software to small businesses. React frontend,
   with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Users are unable to generate sales reports via the backend API.
-severity: low
-priority: P2
+issue_summary: Users are experiencing intermittent failures when processing transactions.
+severity: medium
+priority: P1
 status: open
-customer_name: Jane Peterson
-contact_email: jane.peterson@fakemail.com
+customer_name: John Doe
+contact_email: john.doe@example.com
 conversation_history:
 - role: customer
-  message: Hi, we're having trouble generating sales reports from the platform. It
-    says "Error fetching data" every time we try.
-  timestamp: 2023-10-03 12:30:00+00:00
+  message: Our cashiers are reporting that some transactions aren't going through.
+    It happens randomly and seems to resolve itself after a few minutes.
+  timestamp: 2023-10-06 13:58:12+00:00
 - role: agent
-  message: Thanks for reaching out, Jane. Can you confirm if this issue is affecting
-    all reports or just specific types?
-  timestamp: 2023-10-03 12:32:00+00:00
+  message: Thanks for reporting this, John. Can you confirm if this is happening across
+    all locations or just specific ones?
+  timestamp: 2023-10-06 14:00:25+00:00
 - role: customer
-  message: It seems to be affecting all reports. We've tried daily, weekly, and custom
-    ranges, but none work.
-  timestamp: 2023-10-03 12:35:00+00:00
+  message: It seems to be affecting multiple locations, but not all of them at the
+    same time.
+  timestamp: 2023-10-06 14:05:47+00:00
 - role: agent
-  message: Got it. Can you let me know if you've noticed any other issues with the
-    platform recently, or is this isolated to reports?
-  timestamp: 2023-10-03 12:38:00+00:00
+  message: Understood. Are there any error messages being displayed on the cash registers
+    or in the backend logs?
+  timestamp: 2023-10-06 14:07:12+00:00
 - role: customer
-  message: No, everything else seems fine. Transactions and inventory management are
-    working without issues.
-  timestamp: 2023-10-03 12:40:00+00:00
+  message: The cash registers show a 'Transaction Failed' message, and our IT team
+    noted some timeout errors in the backend logs related to the API service.
+  timestamp: 2023-10-06 14:10:33+00:00
 - role: agent
-  message: Thanks for the clarification. We'll investigate the backend APIs responsible
-    for generating reports and update you shortly.
-  timestamp: 2023-10-03 12:42:00+00:00
-generated_at: '2025-05-05T22:27:13.912442+00:00'
+  message: Thanks for the details. We'll begin investigating the Azure App Service
+    logs and check if there are any performance issues causing these timeouts. I'll
+    keep you updated as we progress.
+  timestamp: 2023-10-06 14:15:22+00:00
+resolved_at: null
+resolution: null
+area: null
+is_bug: null
+root_cause: null
+generated_at: '2025-05-06T00:22:39.119411+00:00'

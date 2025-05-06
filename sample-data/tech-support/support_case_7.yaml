@@ -1,58 +1,41 @@
-id: 9f9c1b4c-5a22-45a5-9b8c-e5b8c7f6e2d6
-created_at: 2023-03-15 10:45:32+00:00
+id: 7c8f3b47-9c3b-4f0b-8e47-3c2f8a6d7e74
+created_at: 2023-10-02 10:15:25+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
-  that provides point of sale retail software to small business. React frontend, with
-  APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Backend API calls are failing, causing point of sale transactions to
-  halt.
-severity: critical
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Backend APIs are intermittently failing, causing disruptions in point-of-sale
+  transactions.
+severity: high
 priority: P4
-status: closed
-customer_name: Jessica Palmer
-contact_email: jessica.palmer@retailtestmail.com
+status: open
+customer_name: Jamie Peterson
+contact_email: jamie.peterson@fakemail.com
 conversation_history:
 - role: customer
-  message: Our point of sale system is down, and none of the transactions are processing.
-    The error seems to be related to backend APIs. This is causing a complete halt
-    in business operations.
-  timestamp: 2023-03-15 10:00:18+00:00
+  message: "Our point-of-sale system is experiencing intermittent API failures. Transactions\
+    \ are failing randomly, and it\u2019s causing major disruptions for our customers."
+  timestamp: 2023-10-02 09:45:00+00:00
 - role: agent
-  message: Thank you for reporting this, Jessica. We understand the urgency of this
-    situation. Let me gather more details to assist you. Are you seeing specific error
-    messages or codes when attempting transactions?
-  timestamp: 2023-03-15 10:03:45+00:00
+  message: "I\u2019m sorry to hear about this, Jamie. Could you provide more details\
+    \ on the error messages or logs you are seeing? This will help us narrow down\
+    \ the issue."
+  timestamp: 2023-10-02 09:50:00+00:00
 - role: customer
-  message: Yes, we're seeing 500 Internal Server Error responses on all API calls,
-    and the error logs mention issues connecting to the database.
-  timestamp: 2023-03-15 10:07:12+00:00
+  message: The error is "500 Internal Server Error" when the system tries to process
+    transactions. It seems to happen every few minutes.
+  timestamp: 2023-10-02 09:55:00+00:00
 - role: agent
-  message: Understood. This appears to be a backend issue, potentially with the database
-    connection. I will escalate this to our engineering team immediately and keep
-    you updated.
-  timestamp: 2023-03-15 10:10:30+00:00
+  message: "Thank you for the details. This sounds like a backend issue. I\u2019ll\
+    \ escalate this to our engineering team for immediate investigation. In the meantime,\
+    \ could you confirm if the issue affects all transactions or only specific ones?"
+  timestamp: 2023-10-02 10:00:00+00:00
 - role: customer
-  message: Please do. This issue is affecting all our stores, and we need a resolution
-    as quickly as possible.
-  timestamp: 2023-03-15 10:13:50+00:00
-- role: agent
-  message: "Jessica, the engineering team has identified a misconfiguration in the\
-    \ Azure SQL Database firewall settings that was blocking API connections. They\u2019\
-    ve applied a fix, and we are validating it now. I will confirm once resolved."
-  timestamp: 2023-03-15 10:40:05+00:00
-- role: customer
-  message: Thank you for the update. Please confirm once everything is back to normal.
-  timestamp: 2023-03-15 10:42:10+00:00
-- role: agent
-  message: The issue has been resolved. The database firewall settings have been corrected,
-    and all backend API calls are now functioning. Please verify from your end and
-    let us know if you encounter any further issues.
-  timestamp: 2023-03-15 10:55:22+00:00
-resolved_at: 2023-03-15 10:55:22+00:00
-resolution: The Azure SQL Database firewall settings were misconfigured, blocking
-  API connections. The settings were corrected, and backend functionality has been
-  restored.
-area: database
-is_bug: true
-root_cause: Misconfigured firewall settings in the Azure SQL Database prevented API
-  connections, causing backend failures.
-generated_at: '2025-05-05T22:26:29.799312+00:00'
+  message: "It seems to affect all transactions randomly. There\u2019s no specific\
+    \ pattern we\u2019ve noticed so far."
+  timestamp: 2023-10-02 10:05:00+00:00
+resolved_at: null
+resolution: null
+area: null
+is_bug: null
+root_cause: null
+generated_at: '2025-05-06T00:21:52.241587+00:00'

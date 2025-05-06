@@ -1,44 +1,43 @@
-id: 8c4b43b2-3f9a-4a58-9a17-5c3b7e8d3b22
-created_at: 2023-10-06 14:22:10+00:00
+id: 13e5b7a3-f6d5-4c88-9b6d-8b1f3a2f91a8
+created_at: 2023-10-31 14:23:00+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
   that provides point of sale retail software to small businesses. React frontend,
   with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Backend API calls are failing intermittently for multiple customers.
-severity: critical
-priority: P4
-status: investigating
-customer_name: Sarah Mitchell
-contact_email: sarah.mitchell@fakemail.com
+issue_summary: POS transactions are failing with "Service Unavailable" errors intermittently.
+severity: high
+priority: P3
+status: open
+customer_name: Emily Carter
+contact_email: emily.carter@fakemail.com
 conversation_history:
 - role: customer
-  message: Our customers are reporting intermittent issues when trying to complete
-    transactions. The system hangs and eventually returns an error.
-  timestamp: 2023-10-06 13:45:00+00:00
+  message: We're having an issue where POS transactions are failing intermittently
+    with "Service Unavailable" errors. This is causing major disruption to our sales.
+  timestamp: 2023-10-31 13:45:00+00:00
 - role: agent
-  message: Thank you for reporting this, Sarah. Can you confirm if the issue is affecting
-    all customers or only specific ones? Also, are there any error codes being shown?
-  timestamp: 2023-10-06 13:50:00+00:00
+  message: Thank you for reporting this, Emily. Can you confirm if this is happening
+    across all your locations or just specific ones?
+  timestamp: 2023-10-31 13:50:00+00:00
 - role: customer
-  message: It seems to be affecting most of our customers. The error message often
-    mentions a timeout, but some users reported seeing a '500 Internal Server Error.'
-  timestamp: 2023-10-06 13:55:00+00:00
+  message: It's happening across all our locations, and it seems random. Sometimes
+    it works fine, but other times it fails repeatedly.
+  timestamp: 2023-10-31 13:55:00+00:00
 - role: agent
-  message: "Understood. We\u2019ll start investigating potential backend issues right\
-    \ away. Can you let us know if the front-end is behaving normally otherwise, or\
-    \ if there are any visual glitches or slowdowns?"
-  timestamp: 2023-10-06 14:00:00+00:00
+  message: "Understood. I\u2019ll escalate this issue to our backend team for further\
+    \ investigation. In the meantime, can you provide any specific error codes or\
+    \ logs from your end that might help us identify the cause?"
+  timestamp: 2023-10-31 14:00:00+00:00
 - role: customer
-  message: The front-end appears to be working fine. The issue seems isolated to transactions
-    failing, which I assume is related to the backend APIs.
-  timestamp: 2023-10-06 14:05:00+00:00
+  message: "I\u2019ve attached a few logs to this email showing the error messages.\
+    \ Let me know if you need anything else."
+  timestamp: 2023-10-31 14:10:00+00:00
 - role: agent
-  message: "Thanks for confirming. We\u2019re escalating this as a critical issue\
-    \ and will begin a deep dive into the backend API logs and database performance.\
-    \ We\u2019ll keep you updated."
-  timestamp: 2023-10-06 14:10:00+00:00
+  message: "Thanks for the logs. I see repeated 503 errors, which may point to a problem\
+    \ with the backend API services. We\u2019ll investigate further and keep you updated."
+  timestamp: 2023-10-31 14:15:00+00:00
 resolved_at: null
 resolution: null
 area: null
 is_bug: null
 root_cause: null
-generated_at: '2025-05-05T22:26:35.919333+00:00'
+generated_at: '2025-05-06T00:21:59.296417+00:00'

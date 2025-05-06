@@ -21,6 +21,8 @@ import os
 from pathlib import Path
 import asyncio  # <-- new
 import random  # random value generation
+import logging
+from typing import Final, Tuple
 
 import yaml
 from dotenv import load_dotenv
@@ -28,6 +30,7 @@ import semantic_kernel as sk
 from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
 from semantic_kernel.prompt_template import PromptTemplateConfig
 from semantic_kernel.functions.kernel_function import KernelFunction
+from colorama import Fore, Style
 
 # -------------------------------------------------------------------------
 # Security – never print secrets
@@ -185,56 +188,78 @@ Return ONLY the YAML. DO NOT INCLUDE ANY OTHER TEXT. DO NOT INCLUDE ```yaml OR A
 prompt = _create_prompt_function(kernel, SYSTEM_PROMPT, max_tokens=1000)
 
 # -------------------------------------------------------------------------
-# Generation loop
+# Logging (replace noisy prints) – adjustable via LOG_LEVEL env-var
 # -------------------------------------------------------------------------
-required = {
-    "id",
-    "created_at",
-    "system_description",
-    "issue_summary",
-    "severity",
-    "priority",
-    "status",
-    "customer_name",
-    "contact_email",
-    "conversation_history",
-}
+import colorama
+colorama.init(autoreset=True)
+logging.basicConfig(
+    level=os.getenv("LOG_LEVEL", "INFO"),
+    format="%(levelname)s: %(message)s",
+)
+logger = logging.getLogger(__name__)
 
-for i in range(1, args.count + 1):
-    # ---------------------------------------------------------------------
-    # Random attributes for this support case
-    # ---------------------------------------------------------------------
-    status_choice   = random.choice(["open", "investigating", "resolved", "closed"])
-    severity_choice = random.choice(["critical", "high", "medium", "low"])
-    priority_choice = f"P{random.randint(1,4)}"
+# -------------------------------------------------------------------------
+# Random attribute helpers
+# -------------------------------------------------------------------------
+STATUS_OPTIONS:   Final[list[str]] = ["open", "investigating", "resolved", "closed"]
+SEVERITY_OPTIONS: Final[list[str]] = ["critical", "high", "medium", "low"]
+PRIORITY_OPTIONS: Final[list[str]] = ["P1", "P2", "P3", "P4"]
 
-    for attempt in range(1, 4):  # retry up to 3 times
-        yaml_raw: str = prompt(
-            system_description=args.system_description,
-            status=status_choice,
-            severity=severity_choice,
-            priority=priority_choice,
-        )
-        try:
-            case_data = yaml.safe_load(yaml_raw)
 
-            # Validate required fields
-            if not required.issubset(case_data):
-                missing = required - set(case_data)
-                raise ValueError(f"Generated case is missing fields: {', '.join(missing)}")
+def _random_attributes() -> Tuple[str, str, str]:
+    """Return a random (status, severity, priority) tuple."""
+    return (
+        random.choice(STATUS_OPTIONS),
+        random.choice(SEVERITY_OPTIONS),
+        random.choice(PRIORITY_OPTIONS),
+    )
 
-            break  # success => exit retry loop
-        except Exception as ex:
-            if attempt < 3:
-                print(f"⚠️  Attempt {attempt} failed (will retry): {ex}")
-                continue
-            raise  # re-throw on final failure
 
-    # Overwrite timestamp so files reflect generation time (Operational excellence)
-    case_data["generated_at"] = _dt.datetime.now(_dt.timezone.utc).isoformat()
+# -------------------------------------------------------------------------
+# Generation loop wrapped in a function for testability
+# -------------------------------------------------------------------------
+def generate_cases(count: int, out_dir: Path, system_description: str) -> None:
+    required = {
+        "id", "created_at", "system_description", "issue_summary",
+        "severity", "priority", "status", "customer_name",
+        "contact_email", "conversation_history",
+    }
 
-    out_file = args.output / f"support_case_{i}.yaml"
-    with out_file.open("w", encoding="utf-8") as fp:
-        yaml.safe_dump(case_data, fp, sort_keys=False)
+    for idx in range(1, count + 1):
+        status_choice, severity_choice, priority_choice = _random_attributes()
 
-    print(f"✔ Generated {out_file}")
+        for attempt in range(1, 4):  # up to 3 retries
+            yaml_raw: str = prompt(
+                system_description=system_description,
+                status=status_choice,
+                severity=severity_choice,
+                priority=priority_choice,
+            )
+            try:
+                case_data = yaml.safe_load(yaml_raw)
+
+                if not required.issubset(case_data):
+                    missing = required - set(case_data)
+                    raise ValueError(f"missing fields: {', '.join(missing)}")
+
+                break  # success
+            except Exception as ex:
+                if attempt < 3:
+                    logger.warning(f"Attempt {attempt}/3 failed – retrying: {ex}")
+                else:
+                    raise
+
+        case_data["generated_at"] = _dt.datetime.now(_dt.timezone.utc).isoformat()
+
+        out_file = out_dir / f"support_case_{idx}.yaml"
+        with out_file.open("w", encoding="utf-8") as fp:
+            yaml.safe_dump(case_data, fp, sort_keys=False)
+
+        logger.info("%s✔ Generated %s%s", Fore.GREEN, out_file, Style.RESET_ALL)
+
+
+# -------------------------------------------------------------------------
+# Entry point
+# -------------------------------------------------------------------------
+if __name__ == "__main__":
+    generate_cases(args.count, args.output, args.system_description)

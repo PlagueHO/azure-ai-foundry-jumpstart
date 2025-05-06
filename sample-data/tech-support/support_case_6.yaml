@@ -1,37 +1,53 @@
-id: 0b6c0f2e-7d15-4f6b-9c09-2fbd5282f0a6
-created_at: 2023-10-06 14:35:00+00:00
+id: 8e1f2c5b-4b36-4f2d-9a7c-5d0b1e6f8c76
+created_at: 2023-10-05 14:22:00+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
   that provides point of sale retail software to small businesses. React frontend,
   with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Point of sale system is failing to process transactions for all users.
-severity: critical
-priority: P1
-status: open
-customer_name: Laura Jensen
-contact_email: laura.jensen@fakeemail.com
+issue_summary: Backend API timeout impacting sales transactions.
+severity: high
+priority: P4
+status: closed
+customer_name: Rachel Simmons
+contact_email: rachel.simmons@example.com
 conversation_history:
 - role: customer
-  message: "We\u2019re unable to process any transactions on the platform. The payment\
-    \ screen just hangs indefinitely."
-  timestamp: 2023-10-06 14:20:00+00:00
+  message: Our point of sale system is not processing transactions. It's showing an
+    error about an API timeout. This is really impacting our business.
+  timestamp: 2023-10-05 12:45:00+00:00
 - role: agent
-  message: Thank you for reaching out, Laura. I understand this is critical. Are all
-    users experiencing this issue or just a subset?
-  timestamp: 2023-10-06 14:25:00+00:00
+  message: Thank you for reaching out, Rachel. Let me check the system logs to see
+    if there are any indications of an issue with the backend APIs.
+  timestamp: 2023-10-05 12:50:00+00:00
 - role: customer
-  message: "All users are affected across multiple locations. It\u2019s completely\
-    \ blocking operations right now."
-  timestamp: 2023-10-06 14:27:00+00:00
+  message: Okay, but this is urgent. We're losing sales because customers can't check
+    out.
+  timestamp: 2023-10-05 12:55:00+00:00
 - role: agent
-  message: "Understood, I\u2019ll escalate this to our engineering team immediately.\
-    \ Can you confirm if there are any error messages or logs visible on your end?"
-  timestamp: 2023-10-06 14:30:00+00:00
+  message: We found unusually high latency in the backend API hosted on Azure App
+    Service. We're escalating this to our engineering team to investigate further.
+  timestamp: 2023-10-05 13:10:00+00:00
 - role: customer
-  message: "No error messages. It just hangs after entering payment information. We\u2019\
-    ve tried restarting devices but the issue persists."
-  timestamp: 2023-10-06 14:33:00+00:00
+  message: Please make sure this is resolved quickly. We can't afford to be down much
+    longer.
+  timestamp: 2023-10-05 13:15:00+00:00
 - role: agent
-  message: "Thanks for confirming. We\u2019ll investigate on our end and update you\
-    \ shortly. I\u2019ve flagged this as critical in our system."
-  timestamp: 2023-10-06 14:35:00+00:00
-generated_at: '2025-05-05T22:26:21.144546+00:00'
+  message: The engineering team identified a misconfigured scaling rule for the backend
+    API service. This has been corrected, and the system is now processing transactions
+    normally.
+  timestamp: 2023-10-05 13:45:00+00:00
+- role: customer
+  message: Great, thank you for resolving this. We'll monitor the system to ensure
+    everything remains stable.
+  timestamp: 2023-10-05 13:50:00+00:00
+- role: agent
+  message: You're welcome, Rachel. Please let us know if you experience any further
+    issues. Have a great day!
+  timestamp: 2023-10-05 13:55:00+00:00
+resolved_at: 2023-10-05 14:00:00+00:00
+resolution: Misconfigured scaling rule for Azure App Service was corrected, restoring
+  normal functionality to backend APIs.
+area: backend
+is_bug: true
+root_cause: Scaling rule for the backend API service was set too conservatively, causing
+  timeouts under high traffic.
+generated_at: '2025-05-06T00:21:46.596470+00:00'

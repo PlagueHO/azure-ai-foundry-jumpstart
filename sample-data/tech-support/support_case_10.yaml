@@ -1,51 +1,50 @@
-id: 3d59f1b1-9c68-4c71-a0b7-8d4e96f28b09
-created_at: 2023-10-09 13:45:00+00:00
+id: 08c7e4e6-2a5b-4e62-b5a0-9f1b1f5e6f7d
+created_at: 2023-10-28 14:45:00+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
   that provides point of sale retail software to small businesses. React frontend,
   with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Backend API timeout affecting transaction processing.
-severity: medium
-priority: P4
-status: closed
-customer_name: Maria Henderson
-contact_email: maria.henderson@fakemail.com
+issue_summary: Intermittent backend API failures impacting point-of-sale transactions.
+severity: high
+priority: P3
+status: resolved
+customer_name: Jessica Palmer
+contact_email: jessica.palmer@fakeemail.com
 conversation_history:
 - role: customer
-  message: We're seeing intermittent transaction failures in our point-of-sale system.
-    It says "API timeout" when processing payments.
-  timestamp: 2023-10-08 10:05:00+00:00
+  message: We're experiencing intermittent failures with the point-of-sale transactions;
+    some requests are timing out.
+  timestamp: 2023-10-28 13:20:00+00:00
 - role: agent
-  message: Thanks for reaching out, Maria. We'll investigate this issue. Can you confirm
-    if this is happening across all devices or just specific ones?
-  timestamp: 2023-10-08 10:10:00+00:00
+  message: Thanks for reporting this, Jessica. We're investigating the issue; it seems
+    to be related to backend API performance. Can you confirm if this is affecting
+    all locations or just specific ones?
+  timestamp: 2023-10-28 13:35:00+00:00
 - role: customer
-  message: It's happening across all devices in our store. It started yesterday afternoon.
-  timestamp: 2023-10-08 10:15:00+00:00
+  message: It appears to be affecting all locations. Some transactions process fine,
+    while others fail to complete.
+  timestamp: 2023-10-28 13:40:00+00:00
 - role: agent
-  message: Understood. We're checking the backend logs to identify the cause of these
-    timeouts. We'll update you shortly.
-  timestamp: 2023-10-08 10:20:00+00:00
+  message: Understood. We've identified elevated error rates on the backend APIs and
+    are working on a resolution. We'll keep you updated.
+  timestamp: 2023-10-28 13:55:00+00:00
 - role: customer
-  message: "Thank you. Please let us know as soon as you find something, as it\u2019\
-    s affecting customer experience."
-  timestamp: 2023-10-08 10:25:00+00:00
+  message: "Thank you. Please resolve this as quickly as possible\u2014it\u2019s impacting\
+    \ sales."
+  timestamp: 2023-10-28 14:00:00+00:00
 - role: agent
-  message: We've identified a temporary spike in database query latency that caused
-    the API timeouts. We've optimized the queries and increased database scaling.
-    Please test and confirm if the issue is resolved.
-  timestamp: 2023-10-08 13:30:00+00:00
+  message: We've deployed a hotfix to address the issue. Can you confirm if transactions
+    are now processing successfully?
+  timestamp: 2023-10-28 14:20:00+00:00
 - role: customer
-  message: Testing now... Transactions are working fine again. Thank you for resolving
-    this so quickly.
-  timestamp: 2023-10-08 13:45:00+00:00
-- role: agent
-  message: You're welcome, Maria! Let us know if you encounter any further issues.
-    Have a great day.
-  timestamp: 2023-10-08 13:50:00+00:00
-resolved_at: 2023-10-08 13:50:00+00:00
-resolution: Increased database scaling and optimized query performance to resolve
-  API timeouts.
-area: database
-is_bug: false
-root_cause: Temporary spike in database query latency caused by high transaction volume.
-generated_at: '2025-05-05T22:26:48.285216+00:00'
+  message: Yes, transactions seem to be working fine now. Thank you for the quick
+    response.
+  timestamp: 2023-10-28 14:35:00+00:00
+resolved_at: 2023-10-28 14:40:00+00:00
+resolution: A misconfigured connection pool in the backend API was causing intermittent
+  timeouts. The issue was resolved by optimizing database connection settings and
+  restarting the affected services.
+area: backend
+is_bug: true
+root_cause: Misconfigured connection pool settings in the backend API led to intermittent
+  transaction failures.
+generated_at: '2025-05-06T00:22:12.685157+00:00'

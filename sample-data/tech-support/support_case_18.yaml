@@ -1,38 +1,41 @@
-id: 7f8c0a43-3c57-4a99-a22e-8e8fbb5c2d38
-created_at: 2023-10-09 14:12:00+00:00
+id: 4b1c7c6f-5d6a-4f1a-8b2b-6a8c9e3f6d3b
+created_at: 2023-10-03 14:23:45+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
-  that provides point of sale retail software to small business. React frontend, with
-  APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Occasional timeout errors during checkout.
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Customer reports intermittent issues with accessing the dashboard.
 severity: low
-priority: P3
-status: investigating
-customer_name: Jennifer Hart
-contact_email: jhart@smallbizmart.com
+priority: P2
+status: open
+customer_name: Emily Johnson
+contact_email: emily.johnson@fakemail.com
 conversation_history:
 - role: customer
-  message: "We\u2019ve been seeing occasional timeout errors when processing checkouts.\
-    \ It\u2019s not happening all the time, but it\u2019s disruptive when it does."
-  timestamp: 2023-10-09 13:45:00+00:00
+  message: Hi, I've been having trouble accessing the dashboard. It sometimes loads
+    really slowly or gives me a timeout error.
+  timestamp: 2023-10-03 13:45:00+00:00
 - role: agent
-  message: Thanks for bringing this up, Jennifer. Can you confirm if this issue is
-    affecting all users or just specific ones? Also, does it happen at a particular
-    time or randomly?
-  timestamp: 2023-10-09 13:50:00+00:00
+  message: "Thanks for reaching out, Emily. Can you confirm if this happens at a specific\
+    \ time of day or if it\u2019s random?"
+  timestamp: 2023-10-03 13:50:00+00:00
 - role: customer
-  message: "It seems to be random, and it\u2019s affecting multiple users\u2014not\
-    \ just one. I\u2019ve checked with my staff, and there doesn\u2019t seem to be\
-    \ any pattern."
-  timestamp: 2023-10-09 13:55:00+00:00
+  message: It seems random, but I noticed it happens more often in the afternoon.
+  timestamp: 2023-10-03 13:55:00+00:00
 - role: agent
-  message: "Understood. We\u2019ll start by reviewing the logs in Azure App Service\
-    \ to identify any anomalies during the checkout process. I\u2019ll update you\
-    \ once we gather more information."
-  timestamp: 2023-10-09 14:00:00+00:00
+  message: "Got it. I\u2019ll check the backend logs around those times to see if\
+    \ there are any spikes in resource usage or errors. In the meantime, can you clear\
+    \ your browser cache and try again?"
+  timestamp: 2023-10-03 14:00:00+00:00
 - role: customer
-  message: Okay, let me know if you need any additional details from our side.
-  timestamp: 2023-10-09 14:05:00+00:00
+  message: I cleared the cache and tried again, but the issue is still happening occasionally.
+  timestamp: 2023-10-03 14:15:00+00:00
 - role: agent
-  message: Will do. Thanks for your patience while we investigate this issue.
-  timestamp: 2023-10-09 14:10:00+00:00
-generated_at: '2025-05-05T22:27:41.455844+00:00'
+  message: "Thanks for confirming. I\u2019ll escalate this to the backend team for\
+    \ further investigation. We\u2019ll keep you updated."
+  timestamp: 2023-10-03 14:20:00+00:00
+resolved_at: null
+resolution: null
+area: null
+is_bug: null
+root_cause: null
+generated_at: '2025-05-06T00:23:05.695092+00:00'
