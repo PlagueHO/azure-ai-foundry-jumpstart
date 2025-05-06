@@ -1,44 +1,54 @@
-id: 1f8b9d3e-74b7-4f3e-bc8c-8c3d2f4e5cf6
-created_at: 2023-10-04 10:35:00+00:00
+id: 7c9f87e1-8b5f-45c3-9d1c-7e2e627b1b8d
+created_at: 2023-10-05 09:34:12+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
-  that provides point of sale retail software to small business. React frontend, with
-  APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Customer experiencing slow loading times on product catalog page.
-severity: low
-priority: P4
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Intermittent timeout errors when accessing inventory data.
+severity: medium
+priority: P1
 status: resolved
-customer_name: Evelyn Harper
-contact_email: evelyn.harper@fakemail.com
+customer_name: Sarah Jennings
+contact_email: sjennings@fakemail.com
 conversation_history:
 - role: customer
-  message: Hi, the product catalog page is loading very slowly for my team. It takes
-    over 10 seconds to display the results.
-  timestamp: 2023-10-04 09:50:00+00:00
+  message: We're seeing intermittent timeout errors when trying to access inventory
+    data through the platform. It seems to happen more during peak business hours.
+  timestamp: 2023-10-04 14:22:45+00:00
 - role: agent
-  message: Thanks for letting us know, Evelyn. Could you confirm if this issue is
-    occurring for all users or just specific ones? Also, which browser are you using?
-  timestamp: 2023-10-04 09:52:00+00:00
+  message: Thank you for reporting this, Sarah. We'll investigate the issue right
+    away. Can you confirm if this is happening for all users or just specific ones?
+  timestamp: 2023-10-04 14:30:12+00:00
 - role: customer
-  message: "It seems to be affecting all users, and we\u2019ve tried on both Chrome\
-    \ and Firefox. Same result on both."
-  timestamp: 2023-10-04 09:55:00+00:00
+  message: "It\u2019s happening for all users at multiple locations. It seems like\
+    \ the issue is on the backend or database side."
+  timestamp: 2023-10-04 14:35:18+00:00
 - role: agent
-  message: "Understood. I\u2019ll check the backend logs and performance metrics for\
-    \ the APIs serving the catalog page. I\u2019ll get back to you shortly."
-  timestamp: 2023-10-04 09:57:00+00:00
-- role: agent
-  message: "We\u2019ve identified some inefficient queries in the Azure SQL Database\
-    \ linked to the product catalog. Optimizations have been applied, and the page\
-    \ is now loading within 2-3 seconds. Can you verify on your end?"
-  timestamp: 2023-10-04 10:30:00+00:00
+  message: "Understood. We\u2019re seeing some signs of high query latency in the\
+    \ database logs during peak hours. Let me check if we can optimize this."
+  timestamp: 2023-10-04 14:40:07+00:00
 - role: customer
-  message: "Yes, it\u2019s much faster now. Thanks for the quick fix!"
-  timestamp: 2023-10-04 10:32:00+00:00
-resolved_at: 2023-10-04 10:33:00+00:00
-resolution: The issue was caused by inefficient SQL queries in the database. Query
-  optimizations improved performance significantly.
+  message: Okay, thanks. Please let us know as soon as you find anything. This is
+    impacting our operations significantly.
+  timestamp: 2023-10-04 14:50:20+00:00
+- role: agent
+  message: "We\u2019ve identified inefficient indexing on the inventory table. We\u2019\
+    ve applied updates to the database indexes and optimized the affected query. The\
+    \ changes should resolve the issue."
+  timestamp: 2023-10-04 16:12:45+00:00
+- role: customer
+  message: "Thanks for the update! I\u2019ve checked with the team, and the platform\
+    \ seems to be working fine now. No timeout errors so far."
+  timestamp: 2023-10-04 16:50:33+00:00
+- role: agent
+  message: "Glad to hear that, Sarah. We\u2019ll continue monitoring the system over\
+    \ the next 24 hours to ensure stability. Let us know if you experience further\
+    \ issues."
+  timestamp: 2023-10-04 17:05:10+00:00
+resolved_at: 2023-10-04 17:05:10+00:00
+resolution: Updated database indexing and optimized affected queries to reduce latency
+  during peak hours.
 area: database
 is_bug: true
-root_cause: Inefficient SQL queries caused delays in loading data for the product
-  catalog page.
-generated_at: '2025-05-05T22:27:47.758552+00:00'
+root_cause: Inefficient indexing on the inventory table caused query latency to spike
+  during high traffic periods.
+generated_at: '2025-05-06T00:23:28.281075+00:00'

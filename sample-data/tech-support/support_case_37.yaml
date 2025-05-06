@@ -1,37 +1,37 @@
-id: 9bcb5d7b-3d2e-4d9f-9f64-72a7bf5c3f9e
-created_at: 2023-10-05 14:32:12+00:00
+id: 4c2f9c61-8e07-4a5b-b0c9-a1d5b9e3f5a2
+created_at: 2023-10-05 14:45:00+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
   that provides point of sale retail software to small businesses. React frontend,
   with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Point of sale transactions failing intermittently across multiple customers.
-severity: critical
-priority: P2
+issue_summary: Backend API calls are failing intermittently for multiple customers.
+severity: high
+priority: P4
 status: investigating
-customer_name: John Peterson
-contact_email: john.peterson@fakemail.com
+customer_name: Julia Henderson
+contact_email: julia.henderson@fakeemail.com
 conversation_history:
 - role: customer
-  message: We're seeing intermittent failures in point of sale transactions across
-    several stores. This is causing major disruptions.
-  timestamp: 2023-10-05 13:45:01+00:00
+  message: We are experiencing frequent issues where API calls from the point-of-sale
+    system are failing. This is affecting our ability to process transactions.
+  timestamp: 2023-10-05 13:30:00+00:00
 - role: agent
-  message: Thanks for reporting this, John. Can you confirm if this is happening for
-    all transactions or just specific types?
-  timestamp: 2023-10-05 13:48:15+00:00
+  message: "Thank you for reporting this. We\u2019ll start investigating the issue.\
+    \ Can you confirm if this is happening across all locations or just specific ones?"
+  timestamp: 2023-10-05 13:45:00+00:00
 - role: customer
-  message: It's affecting all transactions, but we don't see a consistent pattern.
-    Errors seem random.
-  timestamp: 2023-10-05 13:50:47+00:00
+  message: "It\u2019s happening across all our locations, and it seems to be intermittent.\
+    \ Sometimes the system works fine, but then it fails without warning."
+  timestamp: 2023-10-05 14:00:00+00:00
 - role: agent
-  message: Understood. We're escalating this case due to its severity and have started
-    investigating. Are there any error messages or logs you can share?
-  timestamp: 2023-10-05 13:54:23+00:00
+  message: Understood. Are you seeing any specific error messages, or is the system
+    just timing out?
+  timestamp: 2023-10-05 14:15:00+00:00
 - role: customer
-  message: "Yes, I\u2019ve forwarded logs to support@scanlonsoft.com. Let me know\
-    \ if you need anything else."
-  timestamp: 2023-10-05 14:02:11+00:00
+  message: "It\u2019s mostly timeout errors, but occasionally we see \u201C500 Internal\
+    \ Server Error.\u201D"
+  timestamp: 2023-10-05 14:30:00+00:00
 - role: agent
-  message: "Thank you, John. We\u2019ve received the logs and will update you as soon\
-    \ as we have more details from our engineering team."
-  timestamp: 2023-10-05 14:10:36+00:00
-generated_at: '2025-05-05T22:29:55.626803+00:00'
+  message: "Thank you for the details. We\u2019re escalating this to our backend team\
+    \ and will update you as soon as we have more information."
+  timestamp: 2023-10-05 14:45:00+00:00
+generated_at: '2025-05-06T00:25:35.960337+00:00'

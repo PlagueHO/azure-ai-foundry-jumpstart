@@ -1,48 +1,38 @@
-id: 4e2b3c54-8a31-4e63-9cdd-94c7df3f9a1a
-created_at: 2023-10-06 14:23:45+00:00
+id: 4c5f6a97-6d78-4b2a-9e3a-1f7d8e0a7f44
+created_at: 2023-10-06 14:35:00+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
   that provides point of sale retail software to small businesses. React frontend,
   with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Users reported intermittent failures when processing transactions.
-severity: medium
-priority: P4
-status: closed
-customer_name: Sarah Whitman
-contact_email: sarah.whitman@example.com
+issue_summary: Intermittent slowness reported when accessing the product catalog.
+severity: low
+priority: P3
+status: investigating
+customer_name: Sarah McAllister
+contact_email: sarah.mcallister@fakemail.com
 conversation_history:
 - role: customer
-  message: We're seeing intermittent failures when processing transactions. Customers
-    are reporting issues completing their purchases.
-  timestamp: 2023-10-05 09:15:34+00:00
+  message: "Hi, we\u2019re noticing occasional delays when accessing the product catalog.\
+    \ It\u2019s not consistent but happens a few times a day."
+  timestamp: 2023-10-06 13:50:00+00:00
 - role: agent
-  message: Thanks for reaching out, Sarah. Are these failures happening consistently
-    or only at certain times? Also, are there any specific error messages being displayed?
-  timestamp: 2023-10-05 09:20:47+00:00
+  message: Thanks for reaching out, Sarah. Just to confirm, are you experiencing this
+    issue on all devices or specific ones?
+  timestamp: 2023-10-06 14:00:00+00:00
 - role: customer
-  message: It seems to be random, but mostly during peak hours. The error message
-    says "Transaction could not be processed. Please try again later."
-  timestamp: 2023-10-05 09:25:12+00:00
+  message: It seems to be happening across all devices in the store, including the
+    tablets and desktop POS systems.
+  timestamp: 2023-10-06 14:10:00+00:00
 - role: agent
-  message: Understood. This might be related to backend load or database performance.
-    I'll escalate this to our engineering team for further investigation.
-  timestamp: 2023-10-05 09:30:08+00:00
+  message: Understood. Are there specific times when this occurs, or does it appear
+    random?
+  timestamp: 2023-10-06 14:20:00+00:00
 - role: customer
-  message: Great, thank you. Please let us know once you have more details or a resolution.
-  timestamp: 2023-10-05 09:33:21+00:00
-- role: agent
-  message: We've identified the root cause as a temporary spike in database connection
-    limits during peak hours. The engineering team has implemented a fix by optimizing
-    the query logic and increasing database connection pool limits.
-  timestamp: 2023-10-06 11:45:03+00:00
-- role: customer
-  message: That's good to hear. We'll monitor the system and let you know if the issue
-    reoccurs. Thanks for the quick resolution!
-  timestamp: 2023-10-06 11:50:15+00:00
-resolved_at: 2023-10-06 11:45:03+00:00
-resolution: Database connection pool limits were increased, and query logic was optimized
-  to handle peak loads effectively.
-area: database
-is_bug: true
-root_cause: Insufficient database connection pool limits during peak transaction hours
-  led to intermittent failures.
-generated_at: '2025-05-05T22:30:40.398908+00:00'
+  message: It feels random, but more noticeable during busy hours. Could it be related
+    to higher traffic?
+  timestamp: 2023-10-06 14:30:00+00:00
+resolved_at: null
+resolution: null
+area: null
+is_bug: null
+root_cause: null
+generated_at: '2025-05-06T00:26:13.967814+00:00'

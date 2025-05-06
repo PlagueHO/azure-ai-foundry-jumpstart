@@ -1,47 +1,45 @@
-id: 0d2b3f07-4e61-4d8c-91c2-0f703c5b8e3e
-created_at: 2023-10-31 14:32:00+00:00
+id: 8b6f5c9c-3fcd-4a91-8dc1-4b8a2bdb8ca4
+created_at: 2023-10-12 14:35:00+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
-  that provides point of sale retail software to small businesses. React frontend,
-  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Customers are unable to process transactions due to API timeout errors.
-severity: high
-priority: P4
-status: investigating
+  that provides point of sale retail software to small business. React frontend, with
+  APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Backend API downtime causing transaction failures.
+severity: critical
+priority: P3
+status: closed
 customer_name: Emily Carter
-contact_email: emily.carter@smallbizretail.com
+contact_email: emily.carter@fakesolutions.com
 conversation_history:
 - role: customer
-  message: We're experiencing issues with transactions failing; customers are seeing
-    an error message saying "Service Unavailable."
-  timestamp: 2023-10-31 13:50:00+00:00
+  message: Our POS system is unable to process transactions. All APIs seem to be down.
+  timestamp: 2023-10-12 13:00:00+00:00
 - role: agent
-  message: Thank you for reporting this issue, Emily. Are all users experiencing this,
-    or is it limited to certain locations or devices?
-  timestamp: 2023-10-31 13:55:00+00:00
+  message: Thank you for reporting this issue, Emily. We'll investigate immediately.
+    Can you confirm if all your endpoints are affected or just specific ones?
+  timestamp: 2023-10-12 13:10:00+00:00
 - role: customer
-  message: "It seems to be affecting all users across multiple stores. We\u2019ve\
-    \ had reports from three locations so far."
-  timestamp: 2023-10-31 14:00:00+00:00
+  message: It looks like every endpoint is failing. Our cashiers can't complete sales,
+    and customers are leaving.
+  timestamp: 2023-10-12 13:15:00+00:00
 - role: agent
-  message: "Understood. I\u2019ll escalate this to our engineering team to investigate\
-    \ further. Do you have any logs or screenshots of the error message that could\
-    \ help us narrow this down?"
-  timestamp: 2023-10-31 14:05:00+00:00
+  message: Understood. We've identified an outage in the backend API hosted on Azure
+    App Service. We're working with Azure support to resolve this as quickly as possible.
+  timestamp: 2023-10-12 13:30:00+00:00
 - role: customer
-  message: "Yes, I\u2019ve sent over a screenshot and the logs from one of our stores\
-    \ to support@scanlonsoft.com."
-  timestamp: 2023-10-31 14:10:00+00:00
+  message: Please keep us updated. This is seriously impacting our business.
+  timestamp: 2023-10-12 13:35:00+00:00
 - role: agent
-  message: "Thanks for sending those over. I\u2019ll review the logs and update you\
-    \ as soon as we have more information. In the meantime, can you confirm if the\
-    \ issue started today or has been ongoing for a few days?"
-  timestamp: 2023-10-31 14:20:00+00:00
+  message: The issue has been resolved. The backend API was affected by a misconfiguration
+    during a recent deployment. Services are now restored. Please verify on your end.
+  timestamp: 2023-10-12 14:30:00+00:00
 - role: customer
-  message: It started this morning. Everything was working fine yesterday.
-  timestamp: 2023-10-31 14:25:00+00:00
-resolved_at: null
-resolution: null
-area: null
-is_bug: null
-root_cause: null
-generated_at: '2025-05-05T22:30:50.290013+00:00'
+  message: Everything seems to be working again. Thank you for the quick resolution.
+  timestamp: 2023-10-12 14:35:00+00:00
+resolved_at: 2023-10-12 14:30:00+00:00
+resolution: Backend API downtime resolved by correcting a misconfiguration in Azure
+  App Service deployment settings.
+area: backend
+is_bug: true
+root_cause: Deployment process introduced a misconfiguration in the Azure App Service
+  settings, causing API downtime.
+generated_at: '2025-05-06T00:26:21.877678+00:00'

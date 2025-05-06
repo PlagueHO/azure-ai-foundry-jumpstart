@@ -1,44 +1,51 @@
-id: 3c76b0ac-5d02-43a8-9b9d-6b6f6f49112b
-created_at: 2023-11-02 14:25:00+00:00
+id: c2439c7b-0d44-4b9c-91e6-2b3e1c9d2c87
+created_at: 2023-10-12 08:45:00+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
   that provides point of sale retail software to small businesses. React frontend,
   with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: User experiencing intermittent slow loading times on the point-of-sale
-  screen.
-severity: low
+issue_summary: Backend APIs were returning 500 errors, causing point-of-sale disruptions.
+severity: high
 priority: P2
-status: open
-customer_name: Taylor Morris
-contact_email: taylor.morris@fakeemail.com
+status: resolved
+customer_name: Jennifer Adler
+contact_email: jennifer.adler@retailco.fakeemail.com
 conversation_history:
 - role: customer
-  message: "Hi, my POS system sometimes takes a long time to load the checkout screen.\
-    \ It doesn\u2019t happen all the time, but it\u2019s noticeable during peak hours."
-  timestamp: 2023-11-02 13:45:00+00:00
+  message: "Our point-of-sale systems are throwing errors and we can\u2019t process\
+    \ transactions. Please help!"
+  timestamp: 2023-10-12 08:30:00+00:00
 - role: agent
-  message: "Thanks for reaching out, Taylor. I\u2019ll need a bit more information\
-    \ to investigate. Could you confirm if this happens on specific devices or browsers?"
-  timestamp: 2023-11-02 13:50:00+00:00
+  message: "I\u2019m sorry to hear that, Jennifer. Let me investigate the issue immediately.\
+    \ Can you confirm if you\u2019re seeing a specific error code?"
+  timestamp: 2023-10-12 08:32:00+00:00
 - role: customer
-  message: "It happens across all devices, but we mainly use Chrome. I haven\u2019\
-    t checked other browsers yet."
-  timestamp: 2023-11-02 13:55:00+00:00
+  message: Yes, the error is "500 Internal Server Error" when the system tries to
+    connect to the backend.
+  timestamp: 2023-10-12 08:33:00+00:00
 - role: agent
-  message: Understood. Do you notice any error messages or just slow loading? Also,
-    could you let me know roughly what time the peak hours are for your business?
-  timestamp: 2023-11-02 14:00:00+00:00
+  message: "Thanks for the details. It looks like the issue is with the backend APIs.\
+    \ I\u2019ll escalate this to our engineering team for a quick resolution."
+  timestamp: 2023-10-12 08:35:00+00:00
 - role: customer
-  message: "No error messages, just slower loading. Peak hours are usually 4 PM to\
-    \ 6 PM. It\u2019s during those times that it\u2019s most noticeable."
-  timestamp: 2023-11-02 14:05:00+00:00
+  message: Please hurry. This is affecting all our stores!
+  timestamp: 2023-10-12 08:36:00+00:00
 - role: agent
-  message: "Thanks for the details. I\u2019ll start investigating if there\u2019s\
-    \ a performance bottleneck during higher traffic periods. I\u2019ll update you\
-    \ as soon as I have more information."
-  timestamp: 2023-11-02 14:10:00+00:00
-resolved_at: null
-resolution: null
-area: null
-is_bug: null
-root_cause: null
-generated_at: '2025-05-05T22:31:04.643691+00:00'
+  message: "Our engineering team has identified the root cause as an Azure App Service\
+    \ configuration issue. They\u2019re deploying a fix right now."
+  timestamp: 2023-10-12 08:40:00+00:00
+- role: customer
+  message: Thank you. Let me know once the fix is applied.
+  timestamp: 2023-10-12 08:41:00+00:00
+- role: agent
+  message: The fix has been deployed, and services have returned to normal. Can you
+    confirm that everything is working on your end?
+  timestamp: 2023-10-12 08:50:00+00:00
+- role: customer
+  message: Yes, everything is back to normal now. Thank you for the quick response!
+  timestamp: 2023-10-12 08:55:00+00:00
+resolved_at: 2023-10-12 08:50:00+00:00
+resolution: Azure App Service configuration was corrected to resolve the 500 errors.
+area: backend
+is_bug: true
+root_cause: Misconfigured application settings in Azure App Service caused API failures.
+generated_at: '2025-05-06T00:26:35.391925+00:00'

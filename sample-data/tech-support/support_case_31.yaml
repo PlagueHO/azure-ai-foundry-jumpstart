@@ -1,45 +1,44 @@
-id: 5b7c3f2d-8c3a-4d1c-b9a3-2e9c4f2e3a6a
-created_at: 2023-10-26 14:22:00+00:00
+id: 1c0e7f43-9c1e-4b9c-bb8b-3e1a5f5c2d8e
+created_at: 2023-10-03 14:35:00+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
-  that provides point of sale retail software to small businesses. React frontend,
-  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Customer unable to generate monthly sales report due to timeout error.
-severity: low
+  that provides point of sale retail software to small business. React frontend, with
+  APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Backend API outage causing transaction failures for customers.
+severity: critical
 priority: P4
 status: closed
-customer_name: Sandra Reeves
-contact_email: sandra.reeves@example.com
+customer_name: Jamie Peterson
+contact_email: jamie.peterson@fakemail.com
 conversation_history:
 - role: customer
-  message: I'm trying to generate my monthly sales report, but I keep getting a timeout
-    error. Can you help?
-  timestamp: 2023-10-24 09:15:00+00:00
+  message: Our point-of-sale system is completely down. Transactions are failing and
+    customers can't check out!
+  timestamp: 2023-10-03 14:10:00+00:00
 - role: agent
-  message: Hi Sandra, thanks for reaching out! Let me check the backend logs to see
-    if there's any issue causing the timeout.
-  timestamp: 2023-10-24 09:17:00+00:00
+  message: I understand how critical this is. Let me check the system logs and get
+    back to you shortly.
+  timestamp: 2023-10-03 14:12:00+00:00
 - role: customer
-  message: Okay, thank you. This has happened a couple of times before, but it usually
-    resolves itself.
-  timestamp: 2023-10-24 09:18:30+00:00
+  message: "Please hurry\u2014this is affecting all our stores, and we're losing sales\
+    \ by the minute!"
+  timestamp: 2023-10-03 14:15:00+00:00
 - role: agent
-  message: "I\u2019ve checked the logs, and it seems the query is taking longer than\
-    \ expected due to high data volume. I recommend filtering by a smaller date range\
-    \ or reducing the query complexity. Can you try that and let me know?"
-  timestamp: 2023-10-24 09:25:00+00:00
+  message: We've identified an issue with the backend API hosted on Azure App Service.
+    It appears to be related to a misconfigured deployment. We're rolling back the
+    changes now.
+  timestamp: 2023-10-03 14:25:00+00:00
 - role: customer
-  message: I tried filtering by week instead of the whole month, and it worked. Thanks
-    for the suggestion!
-  timestamp: 2023-10-24 09:30:00+00:00
+  message: Thank you. Please confirm once the system is back up. This is urgent.
+  timestamp: 2023-10-03 14:28:00+00:00
 - role: agent
-  message: Glad to hear it worked! I'll escalate this internally to optimize the report
-    generation process for larger datasets.
-  timestamp: 2023-10-24 09:32:00+00:00
-resolved_at: 2023-10-24 09:32:00+00:00
-resolution: Suggested the customer to reduce query complexity by filtering date ranges,
-  which resolved the timeout issue.
+  message: The rollback is complete, and the backend API is operational again. Transactions
+    should now be processing correctly.
+  timestamp: 2023-10-03 14:32:00+00:00
+resolved_at: 2023-10-03 14:35:00+00:00
+resolution: The issue was caused by a misconfigured deployment on the backend API.
+  A rollback restored functionality.
 area: backend
-is_bug: false
-root_cause: Query timeout due to high data volume when generating reports for large
-  date ranges.
-generated_at: '2025-05-05T22:29:12.820618+00:00'
+is_bug: true
+root_cause: A deployment configuration error caused the backend API to fail, disrupting
+  transaction processing.
+generated_at: '2025-05-06T00:24:51.905320+00:00'

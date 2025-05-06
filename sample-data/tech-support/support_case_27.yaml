@@ -1,38 +1,36 @@
-id: 4b9e9d8d-73b6-4f9f-a3d1-2e7e8a2fc2b5
-created_at: 2023-10-26 10:15:00+00:00
+id: 75d1e49b-e6a9-4a97-8b7d-47c5b1d0f50f
+created_at: 2023-10-28 14:32:05+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
   that provides point of sale retail software to small businesses. React frontend,
   with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Users are experiencing intermittent errors when saving transactions.
-severity: medium
+issue_summary: Backend APIs are intermittently failing, causing point of sale outages
+  for customers.
+severity: high
 priority: P3
-status: investigating
-customer_name: Michael Carter
-contact_email: michael.carter@example.com
+status: open
+customer_name: James Whitaker
+contact_email: james.whitaker@fakeemail.com
 conversation_history:
 - role: customer
-  message: Hi, we're seeing some errors when our team tries to save transactions in
-    the system. It happens randomly.
-  timestamp: 2023-10-25 15:30:00+00:00
+  message: Our point of sale system has been experiencing intermittent outages since
+    this morning. Transactions fail randomly, and customers are getting frustrated.
+  timestamp: 2023-10-28 13:45:00+00:00
 - role: agent
-  message: Thanks for reaching out, Michael. Can you confirm if this issue is occurring
-    for all users or just specific ones? Also, are there any error messages displayed?
-  timestamp: 2023-10-25 15:45:00+00:00
+  message: Thank you for reaching out, James. I understand how urgent this issue is.
+    Are you seeing any error messages, or is it just failing silently?
+  timestamp: 2023-10-28 14:00:00+00:00
 - role: customer
-  message: It seems to be affecting multiple users, but not everyone. The error message
-    says, "Unable to save transaction. Please try again later."
-  timestamp: 2023-10-25 16:00:00+00:00
+  message: "Yes, we\u2019re seeing \"API request timeout\" errors popping up intermittently.\
+    \ It doesn\u2019t seem consistent, but it\u2019s happening often enough to disrupt\
+    \ operations."
+  timestamp: 2023-10-28 14:10:00+00:00
 - role: agent
-  message: "Got it. We\u2019ll start investigating the logs and database for potential\
-    \ causes. Could you let us know if there were any recent changes to your system\
-    \ or setup?"
-  timestamp: 2023-10-25 16:15:00+00:00
+  message: "Understood, James. This sounds like an issue with the backend APIs. I\u2019\
+    ll escalate this internally and start investigating immediately. I\u2019ll keep\
+    \ you updated on any findings."
+  timestamp: 2023-10-28 14:15:00+00:00
 - role: customer
-  message: "No, there haven\u2019t been any recent changes on our end. The issue started\
-    \ yesterday afternoon."
-  timestamp: 2023-10-25 16:30:00+00:00
-- role: agent
-  message: "Thanks for the information. We\u2019ll check the backend and database\
-    \ performance around that time. We\u2019ll update you as soon as we find anything."
-  timestamp: 2023-10-25 16:45:00+00:00
-generated_at: '2025-05-05T22:28:42.107374+00:00'
+  message: "Appreciate the quick response. Please let me know as soon as you have\
+    \ more information\u2014we\u2019re losing sales because of this."
+  timestamp: 2023-10-28 14:25:00+00:00
+generated_at: '2025-05-06T00:24:24.965434+00:00'

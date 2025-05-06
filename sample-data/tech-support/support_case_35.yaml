@@ -1,37 +1,47 @@
-id: 3b4e2c7c-7d43-4c59-ae77-4ed2f7c9c7f0
-created_at: 2023-10-12 14:23:45+00:00
+id: 7f1c2d8d-8a9e-4b3d-9b0c-223e6a8b9f34
+created_at: 2023-10-05 14:30:00+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
   that provides point of sale retail software to small businesses. React frontend,
   with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Intermittent slow response times for POS transactions.
-severity: low
-priority: P2
-status: open
-customer_name: Sarah Holden
-contact_email: sarah.holden@fakeshopmail.com
+issue_summary: Point of sale system failed to process transactions for multiple customers.
+severity: high
+priority: P4
+status: closed
+customer_name: Sarah Thompson
+contact_email: sarah.thompson@fakemail.com
 conversation_history:
 - role: customer
-  message: We're noticing occasional delays in processing POS transactions. It happens
-    randomly and slows down customer checkout.
-  timestamp: 2023-10-12 13:55:12+00:00
+  message: Our customers are unable to complete transactions at the point of sale.
+    The system is throwing errors when trying to process payments.
+  timestamp: 2023-10-05 12:00:00+00:00
 - role: agent
-  message: Thank you for reporting this, Sarah. Can you confirm if this issue is affecting
-    all your locations or just specific ones?
-  timestamp: 2023-10-12 14:00:47+00:00
+  message: Thank you for reporting this issue, Sarah. Can you confirm if the error
+    appears for all transactions or just specific ones?
+  timestamp: 2023-10-05 12:10:00+00:00
 - role: customer
-  message: It seems to be happening across all our locations, but not consistently.
-    We haven't identified a pattern yet.
-  timestamp: 2023-10-12 14:05:33+00:00
+  message: It seems to affect all transactions at the moment. None of the payments
+    are going through.
+  timestamp: 2023-10-05 12:15:00+00:00
 - role: agent
-  message: Understood. Are you experiencing any error messages, or is it just the
-    slow response? Also, have there been any recent changes in your network setup?
-  timestamp: 2023-10-12 14:10:58+00:00
+  message: Understood. We are escalating this issue to our backend team to investigate
+    the payment processing errors. We'll keep you updated.
+  timestamp: 2023-10-05 12:20:00+00:00
 - role: customer
-  message: No error messages, just delays. And there haven't been any changes to our
-    network setup recently.
-  timestamp: 2023-10-12 14:15:21+00:00
+  message: Please do. This is severely impacting our business operations.
+  timestamp: 2023-10-05 12:25:00+00:00
 - role: agent
-  message: "Thanks for confirming. We'll check the backend APIs and database performance\
-    \ logs to identify any bottlenecks. I\u2019ll update you shortly."
-  timestamp: 2023-10-12 14:20:02+00:00
-generated_at: '2025-05-05T22:29:42.482156+00:00'
+  message: The issue has been identified and resolved. Payment processing should now
+    function normally. Can you confirm if everything is working on your end?
+  timestamp: 2023-10-05 14:00:00+00:00
+- role: customer
+  message: Yes, transactions are processing correctly now. Thank you for fixing this.
+  timestamp: 2023-10-05 14:10:00+00:00
+resolved_at: 2023-10-05 14:30:00+00:00
+resolution: The issue was caused by an expired database query execution plan, which
+  led to payment processing failures. The plan was refreshed, and normal operations
+  resumed.
+area: database
+is_bug: true
+root_cause: Expired execution plan in Azure SQL Database caused transaction processing
+  failures.
+generated_at: '2025-05-06T00:25:23.534515+00:00'

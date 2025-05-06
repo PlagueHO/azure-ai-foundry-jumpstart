@@ -1,54 +1,38 @@
-id: 73c2c6f1-b8e4-4a4e-9f8f-8d42a0c3e6e3
-created_at: 2023-10-05 14:20:31+00:00
+id: 7b8d3a5f-8e1b-4d96-9a4d-9f3b16c0f4ea
+created_at: 2023-10-05 14:23:00+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
   that provides point of sale retail software to small businesses. React frontend,
   with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: API outage causing transaction failures.
-severity: critical
-priority: P2
-status: resolved
-customer_name: Diane Peterson
-contact_email: diane.peterson@fakeemail.com
+issue_summary: Intermittent failures in backend API requests affecting point of sale
+  transactions.
+severity: medium
+priority: P1
+status: open
+customer_name: Sarah McIntyre
+contact_email: sarah.mcintyre@fakemail.com
 conversation_history:
 - role: customer
-  message: Our point-of-sale system is completely down; none of our transactions are
-    processing!
-  timestamp: 2023-10-05 13:35:00+00:00
-- role: agent
-  message: We're sorry you're experiencing this issue. Can you confirm if you're seeing
-    any error messages or codes on your end?
-  timestamp: 2023-10-05 13:40:00+00:00
-- role: customer
-  message: Yes, it's saying "500 Internal Server Error" whenever we try to finalize
-    a transaction.
-  timestamp: 2023-10-05 13:42:00+00:00
-- role: agent
-  message: Thank you for confirming. It seems the issue is with the backend API hosted
-    on Azure. We are escalating this to our engineering team for immediate investigation.
+  message: We've noticed that some transactions are failing randomly. Customers are
+    reporting errors at checkout.
   timestamp: 2023-10-05 13:45:00+00:00
-- role: customer
-  message: Please hurry; this downtime is costing us sales during peak hours!
-  timestamp: 2023-10-05 13:47:00+00:00
 - role: agent
-  message: The engineering team has identified the issue as a configuration problem
-    in the Azure App Service. A fix is being deployed now, and we will update you
-    as soon as it's resolved.
-  timestamp: 2023-10-05 14:00:00+00:00
+  message: Thank you for bringing this to our attention, Sarah. Can you confirm if
+    the errors are consistent or intermittent?
+  timestamp: 2023-10-05 13:50:00+00:00
 - role: customer
-  message: Thanks for the update. How long will the fix take?
+  message: The errors seem to be intermittent. Some transactions go through, but others
+    fail with a "500 Internal Server Error."
+  timestamp: 2023-10-05 13:52:00+00:00
+- role: agent
+  message: Understood. Are there specific times or patterns when this issue occurs?
+    Also, can you provide examples of affected transaction IDs?
+  timestamp: 2023-10-05 13:58:00+00:00
+- role: customer
+  message: It happens sporadically throughout the day. I'll send over a list of affected
+    transaction IDs shortly.
   timestamp: 2023-10-05 14:05:00+00:00
 - role: agent
-  message: The deployment is complete, and the API is now fully operational. Can you
-    confirm if transactions are processing correctly on your end?
-  timestamp: 2023-10-05 14:15:00+00:00
-- role: customer
-  message: Yes, everything seems to be working now. Thank you for the quick response.
-  timestamp: 2023-10-05 14:18:00+00:00
-resolved_at: 2023-10-05 14:20:00+00:00
-resolution: The issue was caused by a misconfiguration in the Azure App Service, which
-  has been corrected. All systems are now operational.
-area: backend
-is_bug: true
-root_cause: A misconfigured environment setting in the Azure App Service caused the
-  backend API to fail, resulting in transaction processing errors.
-generated_at: '2025-05-05T22:28:01.198886+00:00'
+  message: Thanks, Sarah. We'll begin investigating this issue and keep you updated
+    on our progress.
+  timestamp: 2023-10-05 14:10:00+00:00
+generated_at: '2025-05-06T00:23:41.447133+00:00'

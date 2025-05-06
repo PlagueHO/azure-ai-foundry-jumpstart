@@ -1,45 +1,46 @@
-id: 5e3fbb69-1c4d-4b68-9a7f-365eb7d7a5b1
-created_at: 2023-10-06 12:45:00+00:00
+id: 9e7f4bde-2c21-4e5a-92b2-5ea7e4b8a9d3
+created_at: 2023-10-30 13:24:45+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
   that provides point of sale retail software to small businesses. React frontend,
   with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Azure SQL Database experienced downtime, causing critical transaction
-  failures.
-severity: critical
+issue_summary: Backend API calls were failing due to database connectivity issues.
+severity: high
 priority: P3
 status: resolved
-customer_name: John Doe
-contact_email: john.doe@example.com
+customer_name: Laura Jennings
+contact_email: laura.jennings@fakemail.com
 conversation_history:
 - role: customer
-  message: Our retail system is completely down, and none of our point-of-sale systems
-    are processing transactions. This is urgent!
-  timestamp: 2023-10-06 12:47:00+00:00
+  message: Our point-of-sale system is experiencing errors when processing transactions.
+    The error message says "Unable to connect to the server."
+  timestamp: 2023-10-30 12:00:00+00:00
 - role: agent
-  message: We understand the urgency, John. Let me check the system logs and Azure
-    health metrics to identify the issue.
-  timestamp: 2023-10-06 12:49:00+00:00
+  message: Thank you for reporting this, Laura. Let me check the backend logs to see
+    what might be causing the issue.
+  timestamp: 2023-10-30 12:05:00+00:00
 - role: customer
-  message: Please do it quickly. We are losing business by the minute.
-  timestamp: 2023-10-06 12:50:00+00:00
+  message: Okay, please let us know ASAP. This is impacting our ability to process
+    sales during peak hours.
+  timestamp: 2023-10-30 12:10:00+00:00
 - role: agent
-  message: It appears there was a temporary outage in the Azure SQL Database service
-    affecting your instance. We are working on mitigation and will update you shortly.
-  timestamp: 2023-10-06 12:55:00+00:00
+  message: We've identified a database connectivity issue due to a misconfigured firewall
+    rule in Azure. We're working on resolving it now.
+  timestamp: 2023-10-30 12:25:00+00:00
 - role: customer
-  message: How long will it take? This is severely impacting our operations.
-  timestamp: 2023-10-06 12:56:00+00:00
+  message: Got it. How long will it take to fix? This is urgent for us.
+  timestamp: 2023-10-30 12:30:00+00:00
 - role: agent
-  message: The Azure SQL Database instance has been restored, and all services are
-    back online. Please verify the system functionality on your end.
-  timestamp: 2023-10-06 13:15:00+00:00
+  message: The firewall rule has been corrected, and the database connection is restored.
+    Can you confirm if transactions are now processing properly?
+  timestamp: 2023-10-30 12:50:00+00:00
 - role: customer
-  message: The system seems to be working now. Thank you for resolving this.
-  timestamp: 2023-10-06 13:17:00+00:00
-resolved_at: 2023-10-06 13:15:00+00:00
-resolution: The issue was caused by a temporary outage in the Azure SQL Database service.
-  The database instance was restored, and system functionality was confirmed.
+  message: Yes, everything seems to be working fine now. Thank you for the quick resolution.
+  timestamp: 2023-10-30 13:00:00+00:00
+resolved_at: 2023-10-30 13:10:00+00:00
+resolution: A misconfigured Azure firewall rule was causing database connectivity
+  issues. The rule was corrected, restoring functionality.
 area: database
 is_bug: false
-root_cause: Temporary service disruption in Azure SQL Database.
-generated_at: '2025-05-05T22:28:36.198256+00:00'
+root_cause: Misconfigured firewall rule in Azure prevented the backend from connecting
+  to the database.
+generated_at: '2025-05-06T00:24:19.343971+00:00'

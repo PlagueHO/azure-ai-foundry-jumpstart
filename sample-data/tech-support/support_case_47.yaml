@@ -1,46 +1,57 @@
-id: 1f3e8e34-2b6c-4c5c-8a2d-9c1b92f3efc9
-created_at: 2023-10-24 14:35:00+00:00
+id: 4b7c3a9b-1e7c-4c2d-8f2a-6a2d2c3d2e4f
+created_at: 2023-10-12 14:30:00+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
   that provides point of sale retail software to small businesses. React frontend,
   with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Minor display issue on the sales reporting dashboard.
-severity: low
-priority: P3
-status: resolved
-customer_name: Emily Carter
-contact_email: emily.carter@fakesmallbiz.com
+issue_summary: Backend APIs are failing, causing point-of-sale transactions to fail.
+severity: high
+priority: P1
+status: closed
+customer_name: Sarah Thompson
+contact_email: sarah.thompson@fakemail.com
 conversation_history:
 - role: customer
-  message: "I noticed that the sales reporting dashboard isn't showing the correct\
-    \ timestamp format for transactions. It\u2019s showing UTC instead of local time."
-  timestamp: 2023-10-23 10:15:00+00:00
+  message: We're unable to process transactions in our stores. The system keeps showing
+    "API error" on the point-of-sale screens.
+  timestamp: 2023-10-12 12:15:00+00:00
 - role: agent
-  message: Thank you for reporting this, Emily. Let me check if this is a configuration
-    issue or something deeper. Can you confirm your local timezone?
-  timestamp: 2023-10-23 10:20:00+00:00
+  message: Thank you for reaching out, Sarah. We're sorry for the trouble. Let me
+    check the logs and confirm if this is an issue with the backend APIs.
+  timestamp: 2023-10-12 12:20:00+00:00
 - role: customer
-  message: "Sure, we\u2019re in Pacific Time (PST)."
-  timestamp: 2023-10-23 10:25:00+00:00
+  message: Please do it quickly; our stores are completely down and losing sales.
+  timestamp: 2023-10-12 12:22:00+00:00
 - role: agent
-  message: "Got it. It looks like the application is defaulting to UTC due to a backend\
-    \ configuration. I\u2019ll work with the team to correct this."
-  timestamp: 2023-10-23 10:30:00+00:00
+  message: We've identified a failure in the Azure App Service hosting the APIs. The
+    team is working to restore functionality as soon as possible.
+  timestamp: 2023-10-12 12:35:00+00:00
 - role: customer
-  message: "Thanks! Please let me know once it\u2019s fixed."
-  timestamp: 2023-10-23 10:35:00+00:00
+  message: How long will this take? We can't afford prolonged downtime.
+  timestamp: 2023-10-12 12:40:00+00:00
 - role: agent
-  message: "Good news! We\u2019ve adjusted the configuration on our backend services\
-    \ to align timestamps with your local timezone. Can you confirm if the issue is\
-    \ resolved on your end?"
-  timestamp: 2023-10-24 08:50:00+00:00
+  message: The issue has been escalated as a critical priority. We're deploying a
+    fix now and will monitor closely to ensure stability.
+  timestamp: 2023-10-12 12:50:00+00:00
 - role: customer
-  message: Just checked, and everything looks good now. Thanks for the quick fix!
-  timestamp: 2023-10-24 09:00:00+00:00
-resolved_at: 2023-10-24 08:50:00+00:00
-resolution: "Backend timezone configuration was updated to ensure timestamps reflect\
-  \ the customer\u2019s local timezone."
+  message: Thank you for the update. Please let me know once the issue is resolved.
+  timestamp: 2023-10-12 13:00:00+00:00
+- role: agent
+  message: The fix has been deployed successfully, and services have been restored.
+    Please confirm if transactions are now processing correctly.
+  timestamp: 2023-10-12 13:30:00+00:00
+- role: customer
+  message: Yes, everything is working fine now. Thank you for resolving this quickly.
+  timestamp: 2023-10-12 13:45:00+00:00
+- role: agent
+  message: We're glad to hear that! Please don't hesitate to reach out if you experience
+    further issues.
+  timestamp: 2023-10-12 13:50:00+00:00
+resolved_at: 2023-10-12 13:30:00+00:00
+resolution: A configuration error in the Azure App Service caused the backend APIs
+  to fail. The issue was resolved by redeploying the affected services and verifying
+  stability.
 area: backend
 is_bug: true
-root_cause: The backend services were defaulting to UTC due to a missing timezone
-  configuration setting.
-generated_at: '2025-05-05T22:31:18.084043+00:00'
+root_cause: Misconfigured environment settings in the Azure App Service caused API
+  calls to fail.
+generated_at: '2025-05-06T00:26:50.268458+00:00'

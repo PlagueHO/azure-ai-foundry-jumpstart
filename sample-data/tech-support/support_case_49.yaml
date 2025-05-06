@@ -1,57 +1,39 @@
-id: 4c1d7e5f-9a3e-4a59-b6a7-7f5b098d4b6d
-created_at: 2023-10-05 14:32:00+00:00
+id: 5a8b2c3d-1f4e-4a6f-8e2d-9c3e1f6b7a90
+created_at: 2023-10-25 14:23:45+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
   that provides point of sale retail software to small businesses. React frontend,
   with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Backend API downtime caused transaction failures.
-severity: critical
-priority: P2
-status: closed
-customer_name: Jessica Harper
-contact_email: jessica.harper@fakeemail.com
+issue_summary: Customer reports intermittent slowness in the point-of-sale system
+  during peak hours.
+severity: low
+priority: P3
+status: investigating
+customer_name: Jessica Harrington
+contact_email: jessica.harrington@fakemail.com
 conversation_history:
 - role: customer
-  message: Our point of sale system is completely down, and none of our transactions
-    are processing. This is affecting all our stores. Please help!
-  timestamp: 2023-10-05 13:15:00+00:00
+  message: The point-of-sale system feels very slow during our busiest times, especially
+    between 4 PM and 7 PM.
+  timestamp: 2023-10-25 13:45:23+00:00
 - role: agent
-  message: "I\u2019m sorry to hear about the disruption. I\u2019ll start investigating\
-    \ immediately. Can you confirm if you\u2019re seeing any error messages on your\
-    \ end?"
-  timestamp: 2023-10-05 13:20:00+00:00
+  message: Thank you for reporting this, Jessica. Can you confirm if the slowness
+    affects all users or just specific terminals?
+  timestamp: 2023-10-25 13:50:12+00:00
 - role: customer
-  message: Yes, we are getting "503 Service Unavailable" errors when trying to process
-    transactions.
-  timestamp: 2023-10-05 13:25:00+00:00
+  message: It seems to affect all users. The checkout process takes longer to load,
+    and sometimes receipts take a while to print.
+  timestamp: 2023-10-25 13:55:47+00:00
 - role: agent
-  message: "Thank you for confirming. This seems to be an issue with the backend API.\
-    \ I\u2019m escalating this to our engineering team for immediate resolution."
-  timestamp: 2023-10-05 13:30:00+00:00
+  message: Understood. Do you notice any error messages or unusual behavior in the
+    application during these times?
+  timestamp: 2023-10-25 14:05:31+00:00
 - role: customer
-  message: Please let us know as soon as this is fixed. This is causing major issues
-    for our business.
-  timestamp: 2023-10-05 13:35:00+00:00
-- role: agent
-  message: Our engineering team has identified the issue as a misconfigured Azure
-    App Service scaling rule. They are deploying a fix now.
-  timestamp: 2023-10-05 13:50:00+00:00
-- role: customer
-  message: Thanks for the update. Please confirm once everything is back online.
-  timestamp: 2023-10-05 13:55:00+00:00
-- role: agent
-  message: The fix has been deployed, and services are back online. Can you confirm
-    that transactions are now processing correctly?
-  timestamp: 2023-10-05 14:10:00+00:00
-- role: customer
-  message: Yes, everything seems to be working fine now. Thank you for resolving this
-    quickly.
-  timestamp: 2023-10-05 14:15:00+00:00
-resolved_at: 2023-10-05 14:32:00+00:00
-resolution: The issue was caused by a misconfigured Azure App Service scaling rule,
-  which led to backend API downtime. The configuration was corrected, and services
-  were restored.
-area: backend
-is_bug: true
-root_cause: Misconfigured Azure App Service scaling rule caused backend API to become
-  unavailable.
-generated_at: '2025-05-05T22:31:34.086309+00:00'
+  message: No error messages, just the slowness. It goes back to normal after peak
+    hours.
+  timestamp: 2023-10-25 14:12:18+00:00
+resolved_at: null
+resolution: null
+area: null
+is_bug: null
+root_cause: null
+generated_at: '2025-05-06T00:27:01.973325+00:00'

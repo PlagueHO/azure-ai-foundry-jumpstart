@@ -1,47 +1,48 @@
-id: 7e3f4c19-8d2f-4d74-a45a-3f6a217f6b91
-created_at: 2023-10-04 10:15:00+00:00
+id: 9c6f1a7d-2f57-4b8a-b2a6-12c6f5b3e8fc
+created_at: 2023-10-04 15:30:00+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
-  that provides point of sale retail software to small business. React frontend, with
-  APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Backend API outages were causing service disruptions for all customers.
+  that provides point of sale retail software to small businesses. React frontend,
+  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Backend API outage caused transaction failures across multiple customers.
 severity: critical
-priority: P4
+priority: P2
 status: resolved
-customer_name: Sarah Johnston
-contact_email: sarah.johnston@fakeemail.com
+customer_name: Jennifer McAllister
+contact_email: j.mcallister@fakeemail.com
 conversation_history:
 - role: customer
-  message: Our point-of-sale systems are completely down, and none of the transactions
-    are processing. This is affecting all our stores!
-  timestamp: 2023-10-04 10:00:00+00:00
+  message: Our retail stores cannot process transactions. Customers are leaving due
+    to payment failures. What is going on?
+  timestamp: 2023-10-04 14:00:00+00:00
 - role: agent
-  message: "We\u2019re sorry to hear about the disruption. Let me check the system\
-    \ logs to identify the issue. I\u2019ll update you shortly."
-  timestamp: 2023-10-04 10:05:00+00:00
+  message: We are investigating an issue with the backend APIs hosted on Azure App
+    Service. It appears to be causing transaction failures. Please hold tight while
+    we work on a resolution.
+  timestamp: 2023-10-04 14:05:00+00:00
 - role: customer
-  message: Please hurry! This is critical for our business operations.
-  timestamp: 2023-10-04 10:07:00+00:00
+  message: This is causing major disruptions. How long will it take to fix? We need
+    an update.
+  timestamp: 2023-10-04 14:15:00+00:00
 - role: agent
-  message: "We\u2019ve identified a problem with the backend API hosted on Azure App\
-    \ Service. There was an unexpected increase in traffic that caused throttling.\
-    \ We\u2019re working on deploying a fix now."
-  timestamp: 2023-10-04 10:20:00+00:00
+  message: We identified the issue as a misconfigured Azure App Service deployment
+    affecting API availability. Our team is actively working to roll back the deployment
+    to restore services. ETA is 30 minutes.
+  timestamp: 2023-10-04 14:20:00+00:00
 - role: customer
-  message: Do you have an estimated time for resolution? We need this fixed immediately.
-  timestamp: 2023-10-04 10:22:00+00:00
+  message: Please prioritize this. Our losses are mounting. Keep us updated.
+  timestamp: 2023-10-04 14:25:00+00:00
 - role: agent
-  message: The fix has been deployed successfully, and services should be back to
-    normal. Can you confirm if your systems are operational now?
-  timestamp: 2023-10-04 10:30:00+00:00
+  message: The rollback has been completed, and the APIs are now operational. Transactions
+    should process successfully. Can you confirm on your end?
+  timestamp: 2023-10-04 14:50:00+00:00
 - role: customer
-  message: Yes, everything seems to be working again. Thank you for resolving this
-    quickly.
-  timestamp: 2023-10-04 10:35:00+00:00
-resolved_at: 2023-10-04 10:30:00+00:00
-resolution: The issue was caused by throttling due to unexpected traffic spikes on
-  the backend API. Scaling configurations were adjusted to prevent future occurrences.
+  message: Transactions are working again. Thanks for resolving this quickly.
+  timestamp: 2023-10-04 15:00:00+00:00
+resolved_at: 2023-10-04 15:00:00+00:00
+resolution: Rollback of misconfigured Azure App Service deployment restored API functionality
+  and transaction processing.
 area: backend
-is_bug: false
-root_cause: Misconfigured scaling settings in Azure App Service led to throttling
-  during unexpected traffic spikes.
-generated_at: '2025-05-05T22:28:29.671356+00:00'
+is_bug: true
+root_cause: Misconfigured deployment settings in Azure App Service caused API downtime,
+  affecting transaction processing.
+generated_at: '2025-05-06T00:24:11.952118+00:00'

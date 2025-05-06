@@ -1,63 +1,41 @@
-id: 5e1b3c4d-7a6f-42a9-8b3b-9c3d5e6a1f7d
-created_at: 2023-10-05 14:23:45+00:00
+id: 8b9a5a4e-dc7b-4e3f-9475-1a3b3d9f54a6
+created_at: 2023-10-03 14:35:00+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
-  that provides point of sale retail software to small businesses. React frontend,
-  with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Azure SQL Database outage causing system-wide downtime.
-severity: critical
-priority: P1
+  that provides point of sale retail software to small business. React frontend, with
+  APIs hosted in Azure App Service on the backend and an Azure SQL Database.
+issue_summary: Minor display issue on the sales dashboard.
+severity: low
+priority: P4
 status: closed
-customer_name: Amanda Reynolds
-contact_email: amanda.reynolds@example.com
+customer_name: Jamie Carter
+contact_email: jamie.carter@example.com
 conversation_history:
 - role: customer
-  message: "Our entire system is down. None of the point-of-sale terminals are working,\
-    \ and we\u2019re unable to process transactions. Please help immediately!"
-  timestamp: 2023-10-05 13:12:10+00:00
+  message: "Hi, I noticed a small issue with the sales dashboard\u2014some of the\
+    \ labels are misaligned."
+  timestamp: 2023-10-02 10:15:00+00:00
 - role: agent
-  message: "Hi Amanda, thank you for reaching out. We\u2019re investigating the issue\
-    \ now and will provide updates shortly. Can you confirm if the issue is affecting\
-    \ all terminals or just specific ones?"
-  timestamp: 2023-10-05 13:15:30+00:00
+  message: "Thanks for reaching out, Jamie. Can you let me know which browser you're\
+    \ using and if you\u2019ve tried clearing the cache?"
+  timestamp: 2023-10-02 10:20:00+00:00
 - role: customer
-  message: "It\u2019s affecting all terminals across all our locations. The frontend\
-    \ is showing an error saying it can't connect to the server."
-  timestamp: 2023-10-05 13:17:45+00:00
+  message: "I\u2019m using Chrome, and yes, I cleared the cache but the issue persists."
+  timestamp: 2023-10-02 10:25:00+00:00
 - role: agent
-  message: "Understood. Our initial investigation shows an outage in the Azure SQL\
-    \ Database backend. We\u2019re escalating this to our engineering team and working\
-    \ with Microsoft Azure support to resolve it as quickly as possible."
-  timestamp: 2023-10-05 13:22:00+00:00
+  message: "Got it. I\u2019ll forward this to the engineering team to investigate\
+    \ further. The issue seems to be cosmetic and shouldn\u2019t impact functionality."
+  timestamp: 2023-10-02 10:30:00+00:00
 - role: customer
-  message: "Please hurry\u2014this is costing us a lot in lost sales right now. Do\
-    \ you have an ETA for resolution?"
-  timestamp: 2023-10-05 13:25:30+00:00
+  message: Okay, that works. Let me know if you need anything else from me.
+  timestamp: 2023-10-02 10:35:00+00:00
 - role: agent
-  message: "We\u2019ve identified the root cause as a database service interruption\
-    \ on Azure\u2019s side. Microsoft is actively addressing the issue, and we\u2019\
-    re monitoring closely. Current ETA for resolution is 1 hour. We\u2019ll keep you\
-    \ updated."
-  timestamp: 2023-10-05 13:28:50+00:00
-- role: customer
-  message: Thank you. Please let me know as soon as things are back online.
-  timestamp: 2023-10-05 13:30:00+00:00
-- role: agent
-  message: "The Azure SQL Database issue has been resolved, and all systems are back\
-    \ online. We\u2019ve verified connectivity and functionality. Please confirm if\
-    \ everything is working on your end."
-  timestamp: 2023-10-05 14:10:15+00:00
-- role: customer
-  message: Yes, everything seems to be working now. Thank you for resolving this quickly.
-  timestamp: 2023-10-05 14:20:00+00:00
-- role: agent
-  message: "You\u2019re welcome, Amanda! If you encounter any further issues, feel\
-    \ free to reach out. Have a great day."
-  timestamp: 2023-10-05 14:22:15+00:00
-resolved_at: 2023-10-05 14:22:15+00:00
-resolution: The Azure SQL Database outage was resolved with assistance from Microsoft
-  support. All systems are now operational.
-area: database
-is_bug: false
-root_cause: Temporary service disruption in Azure SQL Database due to an internal
-  Azure issue.
-generated_at: '2025-05-05T22:29:28.093456+00:00'
+  message: "Thanks, Jamie. We\u2019ll update you once we have a resolution."
+  timestamp: 2023-10-02 10:40:00+00:00
+resolved_at: 2023-10-02 16:45:00+00:00
+resolution: Engineering team corrected the misalignment by updating frontend CSS.
+  The fix was deployed successfully.
+area: frontend
+is_bug: true
+root_cause: Minor CSS styling issue in the React frontend, introduced during a recent
+  UI update.
+generated_at: '2025-05-06T00:25:10.806378+00:00'

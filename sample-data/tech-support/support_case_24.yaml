@@ -1,61 +1,57 @@
-id: d0f47c5e-8b3e-4c1f-93ad-4f2b2b345c93
-created_at: 2023-10-05 14:12:00+00:00
+id: 8b69f0e3-6a4c-41de-935b-4d4e58e12a02
+created_at: 2023-10-31 12:45:00+00:00
 system_description: ScanlonSoft Retail Solution. A SaaS platform running in Azure
   that provides point of sale retail software to small businesses. React frontend,
   with APIs hosted in Azure App Service on the backend and an Azure SQL Database.
-issue_summary: Backend API timeout causing point-of-sale interruptions.
-severity: high
-priority: P4
+issue_summary: Point of sale transactions failing for all customers.
+severity: critical
+priority: P1
 status: closed
-customer_name: Sarah Whitaker
-contact_email: sarah.whitaker@fakeemail.com
+customer_name: Sarah Thompson
+contact_email: sarah.thompson@retailzen.com
 conversation_history:
 - role: customer
-  message: We're experiencing frequent API timeouts on the backend. This is disrupting
-    sales processing at multiple locations.
-  timestamp: 2023-10-05 08:45:00+00:00
+  message: Our point of sale system is completely down, and none of our customers
+    can complete transactions. This is urgent!
+  timestamp: 2023-10-31 08:00:00+00:00
 - role: agent
-  message: Thank you for reporting this, Sarah. Can you confirm whether this issue
-    affects all locations or just specific ones?
-  timestamp: 2023-10-05 08:50:00+00:00
+  message: "We\u2019re sorry for the inconvenience, Sarah. We\u2019re investigating\
+    \ the issue immediately. Can you confirm if you\u2019re seeing any specific error\
+    \ messages or behaviors?"
+  timestamp: 2023-10-31 08:10:00+00:00
 - role: customer
-  message: "It seems to be affecting all locations. We\u2019re seeing the issue across\
-    \ different devices and networks."
-  timestamp: 2023-10-05 08:55:00+00:00
+  message: It just says "Transaction Failed" after loading for a while. This is affecting
+    all our stores.
+  timestamp: 2023-10-31 08:15:00+00:00
 - role: agent
-  message: "Understood. We\u2019ll begin investigating the backend API and check for\
-    \ any unusual load or errors. I\u2019ll keep you updated."
-  timestamp: 2023-10-05 09:00:00+00:00
+  message: "Thank you for confirming. It appears there\u2019s an outage impacting\
+    \ our backend APIs. We\u2019ve escalated this to our engineering team and will\
+    \ keep you updated."
+  timestamp: 2023-10-31 08:30:00+00:00
 - role: customer
-  message: "Please expedite this. It\u2019s peak business hours, and we\u2019re losing\
-    \ sales."
-  timestamp: 2023-10-05 09:05:00+00:00
+  message: Please hurry, this is costing us a lot of money!
+  timestamp: 2023-10-31 08:35:00+00:00
 - role: agent
-  message: "We\u2019ve identified a high number of timeout errors in the logs and\
-    \ traced them to a database performance bottleneck. We\u2019re applying a fix\
-    \ now."
-  timestamp: 2023-10-05 10:30:00+00:00
+  message: "Our engineering team has identified a misconfiguration in the Azure SQL\
+    \ Database connection settings. A fix is being implemented now. We\u2019ll update\
+    \ you as soon as the system is operational."
+  timestamp: 2023-10-31 09:15:00+00:00
 - role: customer
-  message: Thanks for the update. Let me know once the fix is applied and whether
-    we need to test anything on our end.
-  timestamp: 2023-10-05 10:35:00+00:00
+  message: Any updates? We need to know when we can start processing transactions
+    again.
+  timestamp: 2023-10-31 09:45:00+00:00
 - role: agent
-  message: The fix has been applied. We optimized the database query execution and
-    increased its performance. Please confirm if the issue is resolved.
-  timestamp: 2023-10-05 11:00:00+00:00
+  message: The issue has been resolved. Transactions should now be processing normally.
+    Please confirm if everything is working on your end.
+  timestamp: 2023-10-31 10:00:00+00:00
 - role: customer
-  message: The issue seems resolved. Sales processing is back to normal. Thanks for
-    the quick response.
-  timestamp: 2023-10-05 11:15:00+00:00
-- role: agent
-  message: Glad to hear that! Please feel free to reach out if you experience any
-    further issues.
-  timestamp: 2023-10-05 11:20:00+00:00
-resolved_at: 2023-10-05 11:00:00+00:00
-resolution: Database query optimization and performance tuning resolved the API timeout
-  issue.
+  message: Confirmed, everything is working now. Thank you for resolving this quickly.
+  timestamp: 2023-10-31 10:15:00+00:00
+resolved_at: 2023-10-31 10:00:00+00:00
+resolution: Misconfiguration in the Azure SQL Database connection settings was identified
+  and fixed, restoring transaction functionality.
 area: database
 is_bug: true
-root_cause: Poorly optimized database queries caused high latency under peak load
-  conditions.
-generated_at: '2025-05-05T22:28:22.845418+00:00'
+root_cause: Azure SQL Database connection string was incorrectly updated during a
+  routine deployment, causing authentication failures for backend APIs.
+generated_at: '2025-05-06T00:24:05.053959+00:00'
