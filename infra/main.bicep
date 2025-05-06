@@ -329,11 +329,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
       {
         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         principalType: 'ServicePrincipal'
-        principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
-      }
-      {
-        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-        principalType: 'ServicePrincipal'
         principalId: aiSearchUserAssignedIdentity.outputs.principalId
       }
       // Developer role assignments
@@ -438,7 +433,7 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
     ]
     disableLocalAuth: disableApiKeys
     managedIdentities: {
-      systemAssigned: true
+      systemAssigned: false
       userAssignedResourceIds: [
         aiSearchUserAssignedIdentity.outputs.resourceId
       ]
