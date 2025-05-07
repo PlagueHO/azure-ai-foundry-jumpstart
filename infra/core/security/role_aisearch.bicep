@@ -15,8 +15,45 @@ resource azureAiSearch 'Microsoft.Search/searchServices@2025-02-01-preview' exis
   name: azureAiSearchName
 }
 
-resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
+var builtInRoleNames = {
+  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'Role Based Access Control Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'Search Index Data Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '8ebe5a00-799e-43f5-93ac-243d3dce84a7'
+  )
+  'Search Index Data Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '1407120a-92aa-4202-b7e9-c0e197c71c8f'
+  )
+  'Search Service Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '7ca78c08-252a-4471-8644-bb5ff32d4ba0'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
+}
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+resource aiSearch_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: roleAssignment.?name ?? guid(azureAiSearch.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
       roleDefinitionId: roleAssignment.roleDefinitionId

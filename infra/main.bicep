@@ -455,6 +455,9 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
 module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = {
   name: 'ai-search-role-assignments'
   scope: rg
+  dependsOn: [
+    aiSearchService
+  ]
   params: {
     azureAiSearchName: aiSearchName
     roleAssignments: [
@@ -535,6 +538,9 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
 module aiServicesRoleAssignments './core/security/role_aiservice.bicep' = {
   name: 'ai-services-role-assignments'
   scope: rg
+  dependsOn: [
+    aiServicesAccount
+  ]
   params: {
     azureAiServiceName: aiServicesName
     roleAssignments: [
