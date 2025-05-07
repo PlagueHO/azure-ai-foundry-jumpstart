@@ -530,6 +530,8 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
 }
 
 // Add role assignments for AI Services using the role_aiservice.bicep module
+// This needs to be done after the AI Services account is created to avoid circular dependencies
+// between the AI Services account and the AI Search service.
 module aiServicesRoleAssignments './core/security/role_aiservice.bicep' = {
   name: 'ai-services-role-assignments'
   scope: rg
