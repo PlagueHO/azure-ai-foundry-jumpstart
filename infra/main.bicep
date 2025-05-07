@@ -332,7 +332,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
       {
         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         principalType: 'ServicePrincipal'
-        principalId: aiSearchUserAssignedIdentity.outputs.principalId
+        principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
       }
       // Developer role assignments
       ...(!empty(principalId) ? [
@@ -402,19 +402,6 @@ var effectiveContainerRegistryResourceId = containerRegistryDisabled
   ? ''
   : (empty(containerRegistryResourceId) ? containerRegistry.outputs.resourceId : containerRegistryResourceId)
 
-// Create a user assigned managed identity for the Azure AI Search using Azure Verified Module (AVM)
-// This is needed to decouple the lifecycle of the Azure AI search service from the identity
-// to prevent a circular dependency when assigning roles to the identity
-module aiSearchUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
-  name: 'ai-search-user-assigned-identity-deployment'
-  scope: rg
-  params: {
-    name: aiSearchUserAssignedIdentityName
-    location: location
-    tags: tags
-  }
-}
-
 // ---------- AI SEARCH ----------
 module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
   name: 'ai-search-service-deployment'
@@ -437,9 +424,6 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
     disableLocalAuth: disableApiKeys
     managedIdentities: {
       systemAssigned: true
-      userAssignedResourceIds: [
-        aiSearchUserAssignedIdentity.outputs.resourceId
-      ]
     }
     authOptions: {
       aadOrApiKey: {
@@ -460,6 +444,19 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
       }
     ] : []
     publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
+    semanticSearch: 'standard'
+    tags: tags
+  }
+}
+
+// Add role assignments for AI Search using the role_aisearch.bicep module
+// This needs to be done after the AI Search service is created to avoid circular dependencies
+// between the AI Search service and the AI Services account.
+module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = {
+  name: 'ai-search-role-assignments'
+  scope: rg
+  params: {
+    azureAiSearchName: aiSearchName
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Search Index Data Contributor'
@@ -490,8 +487,6 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
         }
       ] : [])
     ]
-    semanticSearch: 'standard'
-    tags: tags
   }
 }
 
@@ -528,16 +523,28 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
       }
     ] : []
     publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
+    sku: 'S0'
+    deployments: deploySampleOpenAiModels ? openAiSampleModels : []
+    tags: tags
+  }
+}
+
+// Add role assignments for AI Services using the role_aiservice.bicep module
+module aiServicesRoleAssignments './core/security/role_aiservice.bicep' = {
+  name: 'ai-services-role-assignments'
+  scope: rg
+  params: {
+    azureAiServiceName: aiServicesName
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Cognitive Services Contributor'
         principalType: 'ServicePrincipal'
-        principalId: aiSearchUserAssignedIdentity.outputs.principalId
+        principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
       }
       {
         roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
         principalType: 'ServicePrincipal'
-        principalId: aiSearchUserAssignedIdentity.outputs.principalId
+        principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
       }
       // Developer role assignments
       ...(!empty(principalId) ? [
@@ -553,13 +560,10 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
         }
       ] : [])
     ]
-    sku: 'S0'
-    deployments: deploySampleOpenAiModels ? openAiSampleModels : []
-    tags: tags
   }
 }
 
-// ---------- AI FOUNDRY HUB ----------
+// ---------- AI FOUNDRY HUB ----------
 module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = {
   name: 'ai-foundry-hub-workspace-deployment'
   scope: rg
