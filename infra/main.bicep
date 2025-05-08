@@ -283,6 +283,33 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
 }
 
 // ---------- STORAGE ACCOUNT ----------
+// Role assignments for Storage Account
+var storageAccountRoleAssignments = [
+  {
+    roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+    principalType: 'ServicePrincipal'
+    principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
+  }
+  // Developer role assignments
+  ...(!empty(principalId) ? [
+    {
+      roleDefinitionIdOrName: 'Contributor'
+      principalType: principalIdType
+      principalId: principalId
+    }
+    {
+      roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+      principalType: principalIdType
+      principalId: principalId
+    }
+    {
+      roleDefinitionIdOrName: 'Storage File Data Privileged Contributor'
+      principalType: principalIdType
+      principalId: principalId
+    }
+  ] : [])
+]
+
 module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
   name: 'storage-account-deployment'
   scope: rg
@@ -332,31 +359,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
         tags: tags
       }
     ] : []
-    roleAssignments:[
-      {
-        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-        principalType: 'ServicePrincipal'
-        principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
-      }
-      // Developer role assignments
-      ...(!empty(principalId) ? [
-        {
-          roleDefinitionIdOrName: 'Contributor'
-          principalType: principalIdType
-          principalId: principalId
-        }
-        {
-          roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-          principalType: principalIdType
-          principalId: principalId
-        }
-        {
-          roleDefinitionIdOrName: 'Storage File Data Privileged Contributor'
-          principalType: principalIdType
-          principalId: principalId
-        }
-      ] : [])
-    ]
+    roleAssignments: storageAccountRoleAssignments
     sasExpirationPeriod: '180.00:00:00'
     skuName: 'Standard_LRS'
     tags: tags
@@ -407,6 +410,38 @@ var effectiveContainerRegistryResourceId = containerRegistryDisabled
   : (empty(containerRegistryResourceId) ? containerRegistry.outputs.resourceId : containerRegistryResourceId)
 
 // ---------- AI SEARCH ----------
+// Role assignments for AI Search
+var aiSearchRoleAssignmentsArray = [
+  {
+    roleDefinitionIdOrName: 'Search Index Data Contributor'
+    principalType: 'ServicePrincipal'
+    principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
+  }
+  {
+    roleDefinitionIdOrName: 'Search Index Data Reader'
+    principalType: 'ServicePrincipal'
+    principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
+  }
+  {
+    roleDefinitionIdOrName: 'Search Service Contributor'
+    principalType: 'ServicePrincipal'
+    principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
+  }
+  // Developer role assignments
+  ...(!empty(principalId) ? [
+    {
+      roleDefinitionIdOrName: 'Search Service Contributor'
+      principalType: principalIdType
+      principalId: principalId
+    }
+    {
+      roleDefinitionIdOrName: 'Search Index Data Contributor'
+      principalType: principalIdType
+      principalId: principalId
+    }
+  ] : [])
+]
+
 module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
   name: 'ai-search-service-deployment'
   scope: rg
@@ -464,41 +499,40 @@ module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = {
   ]
   params: {
     azureAiSearchName: aiSearchName
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Search Index Data Contributor'
-        principalType: 'ServicePrincipal'
-        principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
-      }
-      {
-        roleDefinitionIdOrName: 'Search Index Data Reader'
-        principalType: 'ServicePrincipal'
-        principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
-      }
-      {
-        roleDefinitionIdOrName: 'Search Service Contributor'
-        principalType: 'ServicePrincipal'
-        principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
-      }
-      // Developer role assignments
-      ...(!empty(principalId) ? [
-        {
-          roleDefinitionIdOrName: 'Search Service Contributor'
-          principalType: principalIdType
-          principalId: principalId
-        }
-        {
-          roleDefinitionIdOrName: 'Search Index Data Contributor'
-          principalType: principalIdType
-          principalId: principalId
-        }
-      ] : [])
-    ]
+    roleAssignments: aiSearchRoleAssignmentsArray
   }
 }
 
 // ---------- AI SERVICES ----------
+// Role assignments for AI Services
+var aiServicesRoleAssignmentsArray = [
+  {
+    roleDefinitionIdOrName: 'Cognitive Services Contributor'
+    principalType: 'ServicePrincipal'
+    principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
+  }
+  {
+    roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
+    principalType: 'ServicePrincipal'
+    principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
+  }
+  // Developer role assignments
+  ...(!empty(principalId) ? [
+    {
+      roleDefinitionIdOrName: 'Contributor'
+      principalType: principalIdType
+      principalId: principalId
+    }
+    {
+      roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
+      principalType: principalIdType
+      principalId: principalId
+    }
+  ] : [])
+]
+
 var openAiSampleModels = loadJsonContent('./sample-openai-models.json')
+
 module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' = {
   name: 'ai-services-account-deployment'
   scope: rg
@@ -547,35 +581,20 @@ module aiServicesRoleAssignments './core/security/role_aiservice.bicep' = {
   ]
   params: {
     azureAiServiceName: aiServicesName
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Cognitive Services Contributor'
-        principalType: 'ServicePrincipal'
-        principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
-      }
-      {
-        roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
-        principalType: 'ServicePrincipal'
-        principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
-      }
-      // Developer role assignments
-      ...(!empty(principalId) ? [
-        {
-          roleDefinitionIdOrName: 'Contributor'
-          principalType: principalIdType
-          principalId: principalId
-        }
-        {
-          roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
-          principalType: principalIdType
-          principalId: principalId
-        }
-      ] : [])
-    ]
+    roleAssignments: aiServicesRoleAssignmentsArray
   }
 }
 
 // ---------- AI FOUNDRY HUB ----------
+// Role assignments for the AI Foundry Hub
+var aiFoundryHubRoleAssignments = !empty(principalId) ? [
+  {
+    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/b78c5d69-af96-48a3-bf8d-a8b4d589de94' // 'Azure AI Administrator'
+    principalType: principalIdType
+    principalId: principalId
+  }
+] : []
+
 module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = {
   name: 'ai-foundry-hub-workspace-deployment'
   scope: rg
@@ -645,13 +664,7 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
       }
     ] : []
     provisionNetworkNow: true
-    roleAssignments: !empty(principalId) ? [
-      {
-        roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/b78c5d69-af96-48a3-bf8d-a8b4d589de94' // 'Azure AI Administrator'
-        principalType: principalIdType
-        principalId: principalId
-      }
-    ] : []
+    roleAssignments: aiFoundryHubRoleAssignments
     systemDatastoresAuthMode: 'Identity'
     tags: tags
     workspaceHubConfig: {
