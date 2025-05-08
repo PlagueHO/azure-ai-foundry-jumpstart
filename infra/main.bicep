@@ -1,35 +1,32 @@
 targetScope = 'subscription'
 
-// The main bicep module to provision Azure resources.
-// For a more complete walkthrough to understand how this file works with azd,
-// see https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/make-azd-compatible?pivots=azd-create
 
-@description('Name of the the environment which is used to generate a short unique hash used in all resources.')
+@sys.description('Name of the the environment which is used to generate a short unique hash used in all resources.')
 @minLength(1)
 @maxLength(64)
 param environmentName string
 
-@description('Primary location for all resources')
+@sys.description('Primary location for all resources')
 @minLength(1)
 param location string
 
-@description('Name of the resource group to create. If not specified, a unique name will be generated.')
+@sys.description('Name of the resource group to create. If not specified, a unique name will be generated.')
 param resourceGroupName string = 'rg-${environmentName}'
 
-@description('Enable purge protection on the Key Vault. When set to true the vault cannot be permanently deleted until purge protection is disabled. Defaults to false.')
+@sys.description('Enable purge protection on the Key Vault. When set to true the vault cannot be permanently deleted until purge protection is disabled. Defaults to false.')
 param keyVaultEnablePurgeProtection bool = false
 
 
-@description('Optional friendly name for the AI Foundry Hub workspace.')
+@sys.description('Optional friendly name for the AI Foundry Hub workspace.')
 param aiFoundryHubFriendlyName string
 
-@description('Optional description for the AI Foundry Hub workspace.')
+@sys.description('Optional description for the AI Foundry Hub workspace.')
 param aiFoundryHubDescription string
 
-@description('Array of public IPv4 addresses or CIDR ranges that will be added to the Azure AI Foundry Hub allow‑list when `azureNetworkIsolation` is true.')
+@sys.description('Array of public IPv4 addresses or CIDR ranges that will be added to the Azure AI Foundry Hub allow‑list when `azureNetworkIsolation` is true.')
 param aiFoundryHubIpAllowList array = []
 
-@description('SKU for the Azure AI Search service. Defaults to standard.')
+@sys.description('SKU for the Azure AI Search service. Defaults to standard.')
 @allowed([
   'standard'
   'standard2'
@@ -39,36 +36,45 @@ param aiFoundryHubIpAllowList array = []
 ])
 param aiSearchSku string = 'standard'
 
-@description('Id of the user or app to assign application roles')
+@sys.description('Id of the user or app to assign application roles')
 param principalId string
 
-@description('Type of the principal referenced by *principalId*.')
+@sys.description('Type of the principal referenced by *principalId*.')
 @allowed([
   'User'
   'ServicePrincipal'
 ])
 param principalIdType string = 'User'
 
-@description('Enable network isolation. When false no virtual network, private endpoint or private DNS resources are created and all services expose public endpoints.')
+@sys.description('Enable network isolation. When false no virtual network, private endpoint or private DNS resources are created and all services expose public endpoints.')
 param azureNetworkIsolation bool = true
 
-@description('Should an Azure Bastion be created?')
+@sys.description('Should an Azure Bastion be created?')
 param createBastionHost bool = false
 
-@description('Disable API key authentication for AI Services and AI Search. Defaults to false.')
+@sys.description('Disable API key authentication for AI Services and AI Search. Defaults to false.')
 param disableApiKeys bool = false
 
-@description('Deploy the sample OpenAI model deployments listed in ./sample-openai-models.json.')
+@sys.description('Deploy the sample OpenAI model deployments listed in ./sample-openai-models.json.')
 param deploySampleOpenAiModels bool = false
 
-@description('Resource ID of an existing Azure Container Registry (ACR) to use instead of deploying a new one. When provided the registry module is skipped. If `azureNetworkIsolation` is true you must ensure the registry has the required private networking configuration.')
+@sys.description('Resource ID of an existing Azure Container Registry (ACR) to use instead of deploying a new one. When provided the registry module is skipped. If `azureNetworkIsolation` is true you must ensure the registry has the required private networking configuration.')
 param containerRegistryResourceId string = ''
 
-@description('Set to true to skip deploying **and** referencing any Azure Container Registry.')
+@sys.description('Set to true to skip deploying **and** referencing any Azure Container Registry.')
 param containerRegistryDisabled bool = false
 
-@description('Enable Hierarchical Namespace on the Storage Account (Data-Lake Gen2). Defaults to false.')
+@sys.description('Enable Hierarchical Namespace on the Storage Account (Data-Lake Gen2). Defaults to false.')
 param storageAccountEnableHierarchicalNamespace bool = false
+
+@sys.description('The name of the Azure AI Foundry project to create.')
+param aiFoundryProjectName string
+
+@sys.description('The friendly name of the Azure AI Foundry project to create.')
+param aiFoundryProjectFriendlyName string
+
+@sys.description('The description of the Azure AI Foundry project to create.') 
+param aiFoundryProjectDescription string
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
@@ -92,14 +98,12 @@ var storageAccounName = take(toLower(replace('${abbrs.storageStorageAccounts}${e
 // Ensure the key vault name is ≤ 24 characters as required by Azure.
 var keyVaultName = take(toLower(replace('${abbrs.keyVaultVaults}${environmentName}', '-', '')),24)
 var containerRegistryName = toLower(replace('${abbrs.containerRegistryRegistries}${environmentName}', '-', ''))
-var aiSearchUserAssignedIdentityName = '${abbrs.managedIdentityUserAssignedIdentities}${abbrs.aiSearchSearchServices}${environmentName}'
 var aiSearchName = '${abbrs.aiSearchSearchServices}${environmentName}'
 var aiServicesName = '${abbrs.aiServicesAccounts}${environmentName}'
 var aiServicesCustomSubDomainName = toLower(replace(environmentName, '-', ''))
 // Ensure the AI Foundry Hub name is ≤ 32 characters as required by Azure.
 var aiFoundryHubName = take('${abbrs.aiFoundryHubs}${environmentName}',32)
 var bastionHostName = '${abbrs.networkBastionHosts}${environmentName}'
-
 var networkDefaultAction = azureNetworkIsolation ? 'Deny' : 'Allow'
 
 // ---------- RESOURCE GROUP ----------
@@ -655,6 +659,59 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
     }
   }
 }
+
+// ---------- AI FOUNDRY PROJECTS ----------
+import { aiFoundryProjectType } from './types/ai/aiFoundryProjectType.bicep'
+
+var effectiveAiFoundryProjects aiFoundryProjectType[] = !empty(aiFoundryProjectName) ? [
+  {
+    name: replace(aiFoundryProjectName,' ','-')
+    friendlyName: aiFoundryProjectFriendlyName
+    description: aiFoundryProjectDescription
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'AzureML Data Scientist'
+        principalType: principalIdType
+        principalId: principalId
+      }
+    ]
+  }
+] : []
+
+module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = [for project in effectiveAiFoundryProjects: {
+  name: 'ai-foundry-project-${project.name}'
+  scope: rg
+  params: {
+    name: project.name
+    friendlyName: project.friendlyName
+    description: project.description
+    location: location
+    kind: 'Project'
+    sku: 'Basic'
+    associatedApplicationInsightsResourceId: applicationInsights.outputs.resourceId
+    associatedKeyVaultResourceId: keyVault.outputs.resourceId
+    associatedStorageAccountResourceId: storageAccount.outputs.resourceId
+    associatedContainerRegistryResourceId: !containerRegistryDisabled ? effectiveContainerRegistryResourceId : null
+    diagnosticSettings: [
+      {
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: sendTologAnalyticsCustomSettingName
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+      }
+    ]
+    hubResourceId: aiFoundryHub.outputs.resourceId
+    managedIdentities: {
+      systemAssigned: true
+    }
+    publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
+    roleAssignments: project.roleAssignments ?? []
+    tags: tags
+  }
+}]
 
 // Final stage of the deployment is to set the IAM role assignments for the
 // Azure AI Service for the Azure AI Search Service to avoie a circular dependency
