@@ -688,9 +688,6 @@ module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspa
     location: location
     kind: 'Project'
     sku: 'Basic'
-    associatedApplicationInsightsResourceId: applicationInsights.outputs.resourceId
-    associatedStorageAccountResourceId: storageAccount.outputs.resourceId
-    associatedContainerRegistryResourceId: !containerRegistryDisabled ? effectiveContainerRegistryResourceId : null
     diagnosticSettings: [
       {
         metricCategories: [
@@ -730,8 +727,8 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (createBa
 
 output RESOURCE_GROUP string = rg.name
 output RESOURCE_GROUP_ID string = rg.id
-output PRINCIPAL_ID string = principalId
-output PRINCIPAL_ID_TYPE string = principalIdType
+output AZURE_PRINCIPAL_ID string = principalId
+output AZURE_PRINCIPAL_ID_TYPE string = principalIdType
 
 // Output the monitoring resources
 output LOG_ANALYTICS_WORKSPACE_NAME string = logAnalyticsWorkspace.outputs.name
