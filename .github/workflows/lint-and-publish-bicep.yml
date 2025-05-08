@@ -24,3 +24,4 @@ jobs:
            ./infra/*.bicep
            ./infra/*.json
            ./infra/core/
+           ./infra/types/

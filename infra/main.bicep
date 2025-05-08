@@ -689,7 +689,6 @@ module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspa
     kind: 'Project'
     sku: 'Basic'
     associatedApplicationInsightsResourceId: applicationInsights.outputs.resourceId
-    associatedKeyVaultResourceId: keyVault.outputs.resourceId
     associatedStorageAccountResourceId: storageAccount.outputs.resourceId
     associatedContainerRegistryResourceId: !containerRegistryDisabled ? effectiveContainerRegistryResourceId : null
     diagnosticSettings: [
