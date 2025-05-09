@@ -1,5 +1,5 @@
 targetScope = 'subscription'
-
+extension microsoftGraphV1
 
 @sys.description('Name of the the environment which is used to generate a short unique hash used in all resources.')
 @minLength(1)
@@ -75,6 +75,12 @@ param aiFoundryProjectFriendlyName string
 
 @sys.description('The description of the Azure AI Foundry project to create.') 
 param aiFoundryProjectDescription string
+
+// The Service Principal of the Azure Machine Learning service.
+// This is used to assign the Reader role for AI Search and AI Services.
+resource azureMachineLearningServicePrincipal 'Microsoft.Graph/servicePrincipals@v1.0' = {
+  appId: '0736f41a-0425-4b46-bdb5-1563eff02385' // Azure Machine Learning service principal
+}
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
@@ -410,39 +416,7 @@ var effectiveContainerRegistryResourceId = containerRegistryDisabled
   : (empty(containerRegistryResourceId) ? containerRegistry.outputs.resourceId : containerRegistryResourceId)
 
 // ---------- AI SEARCH ----------
-// Role assignments for AI Search
-var aiSearchRoleAssignmentsArray = [
-  {
-    roleDefinitionIdOrName: 'Search Index Data Contributor'
-    principalType: 'ServicePrincipal'
-    principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
-  }
-  {
-    roleDefinitionIdOrName: 'Search Index Data Reader'
-    principalType: 'ServicePrincipal'
-    principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
-  }
-  {
-    roleDefinitionIdOrName: 'Search Service Contributor'
-    principalType: 'ServicePrincipal'
-    principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
-  }
-  // Developer role assignments
-  ...(!empty(principalId) ? [
-    {
-      roleDefinitionIdOrName: 'Search Service Contributor'
-      principalType: principalIdType
-      principalId: principalId
-    }
-    {
-      roleDefinitionIdOrName: 'Search Index Data Contributor'
-      principalType: principalIdType
-      principalId: principalId
-    }
-  ] : [])
-]
-
-module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
+module aiSearchService 'br/public:avm/res/search/search-service:0.10.0' = {
   name: 'ai-search-service-deployment'
   scope: rg
   params: {
@@ -488,9 +462,45 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.9.2' = {
   }
 }
 
+// Role assignments for AI Search
 // Add role assignments for AI Search using the role_aisearch.bicep module
 // This needs to be done after the AI Search service is created to avoid circular dependencies
 // between the AI Search service and the AI Services account.
+var aiSearchRoleAssignmentsArray = [
+  {
+    roleDefinitionIdOrName: 'Search Index Data Contributor'
+    principalType: 'ServicePrincipal'
+    principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
+  }
+  {
+    roleDefinitionIdOrName: 'Search Index Data Reader'
+    principalType: 'ServicePrincipal'
+    principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
+  }
+  {
+    roleDefinitionIdOrName: 'Search Service Contributor'
+    principalType: 'ServicePrincipal'
+    principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
+  }
+  {
+      roleDefinitionIdOrName: 'Reader'
+      principalType: 'ServicePrincipal'
+      principalId: azureMachineLearningServicePrincipal.id
+  }
+  // Developer role assignments
+  ...(!empty(principalId) ? [
+    {
+      roleDefinitionIdOrName: 'Search Service Contributor'
+      principalType: principalIdType
+      principalId: principalId
+    }
+    {
+      roleDefinitionIdOrName: 'Search Index Data Contributor'
+      principalType: principalIdType
+      principalId: principalId
+    }
+  ] : [])
+]
 module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = {
   name: 'ai-search-role-assignments'
   scope: rg
@@ -504,33 +514,6 @@ module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = {
 }
 
 // ---------- AI SERVICES ----------
-// Role assignments for AI Services
-var aiServicesRoleAssignmentsArray = [
-  {
-    roleDefinitionIdOrName: 'Cognitive Services Contributor'
-    principalType: 'ServicePrincipal'
-    principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
-  }
-  {
-    roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
-    principalType: 'ServicePrincipal'
-    principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
-  }
-  // Developer role assignments
-  ...(!empty(principalId) ? [
-    {
-      roleDefinitionIdOrName: 'Contributor'
-      principalType: principalIdType
-      principalId: principalId
-    }
-    {
-      roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
-      principalType: principalIdType
-      principalId: principalId
-    }
-  ] : [])
-]
-
 var openAiSampleModels = loadJsonContent('./sample-openai-models.json')
 
 module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' = {
@@ -573,6 +556,36 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
 // Add role assignments for AI Services using the role_aiservice.bicep module
 // This needs to be done after the AI Services account is created to avoid circular dependencies
 // between the AI Services account and the AI Search service.
+var aiServicesRoleAssignmentsArray = [
+  {
+    roleDefinitionIdOrName: 'Cognitive Services Contributor'
+    principalType: 'ServicePrincipal'
+    principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
+  }
+  {
+    roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
+    principalType: 'ServicePrincipal'
+    principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
+  }
+  // Developer role assignments
+  ...(!empty(principalId) ? [
+    {
+      roleDefinitionIdOrName: 'Contributor'
+      principalType: principalIdType
+      principalId: principalId
+    }
+    {
+      roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
+      principalType: principalIdType
+      principalId: principalId
+    }
+    {
+      roleDefinitionIdOrName: 'Reader'
+      principalType: 'ServicePrincipal'
+      principalId: azureMachineLearningServicePrincipal.id
+    }
+  ] : [])
+]
 module aiServicesRoleAssignments './core/security/role_aiservice.bicep' = {
   name: 'ai-services-role-assignments'
   scope: rg
@@ -622,8 +635,25 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
           Location: location
           ResourceId: aiServicesAccount.outputs.resourceId
         }
-        name: 'ai'
-        target: aiServicesAccount.outputs.resourceId
+        name: aiServicesName
+        target: aiServicesAccount.outputs.endpoint
+        isSharedToAll: true
+      }
+      {
+        category: 'CognitiveSearch'
+        connectionProperties: {
+          authType: 'AAD'
+        }
+        metadata: {
+          Type: 'azure_ai_search'
+          ApiType: 'Azure'
+          ApiVersion: '2024-05-01-preview'
+          DeploymentApiVersion: '2023-11-01'
+          Location: location
+          ResourceId: aiSearchService.outputs.resourceId
+        }
+        name: aiSearchName
+        target: aiSearchService.outputs.endpoint
         isSharedToAll: true
       }
     ]
@@ -722,8 +752,26 @@ module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspa
   }
 }]
 
-// Final stage of the deployment is to set the IAM role assignments for the
-// Azure AI Service for the Azure AI Search Service to avoie a circular dependency
+// ---------- AI FOUNDRY PROJECTS ROLE ASSIGNMENTS TO AI SERVICES ----------
+// Add any Azure AI Developer role for each AI Foundry project to the AI Services account
+// This ensures a developer with access to the AI Foundry project can also access the AI Services
+module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aiservice.bicep' = [for (project,index) in effectiveAiFoundryProjects: {
+  name: 'ai-foundry-project-role-assignments-${project.name}'
+  scope: rg
+  dependsOn: [
+    aiFoundryHubProjects
+  ]
+  params: {
+    azureAiServiceName: aiServicesName
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/64702f94-c441-49e6-a78b-ef80e0188fee' // 'Azure AI Developer'
+        principalType: 'ServicePrincipal'
+        principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
+      }
+    ]
+  }
+}]
 
 // ------------- BASTION HOST (OPTIONAL) -------------
 module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (createBastionHost && azureNetworkIsolation) {
