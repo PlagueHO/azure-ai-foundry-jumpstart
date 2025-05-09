@@ -809,6 +809,7 @@ output STORAGE_ACCOUNT_RESOURCE_ID string = storageAccount.outputs.resourceId
 output STORAGE_ACCOUNT_BLOB_ENDPOINT string = storageAccount.outputs.primaryBlobEndpoint
 output STORAGE_ACCOUNT_PRIVATE_ENDPOINTS array = storageAccount.outputs.privateEndpoints
 output STORAGE_ACCOUNT_SERVICE_ENDPOINTS object = storageAccount.outputs.serviceEndpoints
+output STORAGE_ACCOUNT_HIERARCHICAL_NAMESPACE bool = storageAccountEnableHierarchicalNamespace
 output KEY_VAULT_NAME string = keyVault.outputs.name
 output KEY_VAULT_RESOURCE_ID string = keyVault.outputs.resourceId
 output KEY_VAULT_ENDPOINT string = keyVault.outputs.uri
