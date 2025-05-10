@@ -30,6 +30,3 @@ param principalIdType = toLower(readEnvironmentVariable('AZURE_PRINCIPAL_ID_TYPE
 // Container registry parameters
 param containerRegistryResourceId = readEnvironmentVariable('AZURE_CONTAINER_REGISTRY_RESOURCE_ID', '')
 param containerRegistryDisabled = toLower(readEnvironmentVariable('AZURE_CONTAINER_REGISTRY_DISABLED', 'false')) == 'true'
-
-// Storage-account parameters
-param storageAccountEnableHierarchicalNamespace = toLower(readEnvironmentVariable('AZURE_STORAGE_ENABLE_HIERARCHICAL_NAMESPACE', 'false')) == 'true'

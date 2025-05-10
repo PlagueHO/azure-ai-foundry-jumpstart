@@ -64,9 +64,6 @@ param containerRegistryResourceId string = ''
 @sys.description('Set to true to skip deploying **and** referencing any Azure Container Registry.')
 param containerRegistryDisabled bool = false
 
-@sys.description('Enable Hierarchical Namespace on the Storage Account (Data-Lake Gen2). Defaults to false.')
-param storageAccountEnableHierarchicalNamespace bool = false
-
 @sys.description('The name of the Azure AI Foundry project to create.')
 param aiFoundryProjectName string
 
@@ -339,7 +336,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
-    enableHierarchicalNamespace: storageAccountEnableHierarchicalNamespace
+    enableHierarchicalNamespace: false // not supported for AI Foundry
     enableNfsV3: false
     enableSftp: false
     largeFileSharesState: 'Enabled'
@@ -809,7 +806,6 @@ output STORAGE_ACCOUNT_RESOURCE_ID string = storageAccount.outputs.resourceId
 output STORAGE_ACCOUNT_BLOB_ENDPOINT string = storageAccount.outputs.primaryBlobEndpoint
 output STORAGE_ACCOUNT_PRIVATE_ENDPOINTS array = storageAccount.outputs.privateEndpoints
 output STORAGE_ACCOUNT_SERVICE_ENDPOINTS object = storageAccount.outputs.serviceEndpoints
-output STORAGE_ACCOUNT_HIERARCHICAL_NAMESPACE bool = storageAccountEnableHierarchicalNamespace
 output KEY_VAULT_NAME string = keyVault.outputs.name
 output KEY_VAULT_RESOURCE_ID string = keyVault.outputs.resourceId
 output KEY_VAULT_ENDPOINT string = keyVault.outputs.uri
