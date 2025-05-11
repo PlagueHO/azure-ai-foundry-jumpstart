@@ -58,6 +58,9 @@ param disableApiKeys bool = false
 @sys.description('Deploy the sample OpenAI model deployments listed in ./sample-openai-models.json.')
 param deploySampleOpenAiModels bool = false
 
+@sys.description('Deploy sample data containers into the Azure Storage Account. Defaults to false.')
+param deploySampleData bool = false
+
 @sys.description('Resource ID of an existing Azure Container Registry (ACR) to use instead of deploying a new one. When provided the registry module is skipped. If `azureNetworkIsolation` is true you must ensure the registry has the required private networking configuration.')
 param containerRegistryResourceId string = ''
 
@@ -102,6 +105,11 @@ var aiServicesCustomSubDomainName = toLower(replace(environmentName, '-', ''))
 var aiFoundryHubName = take('${abbrs.aiFoundryHubs}${environmentName}',32)
 var bastionHostName = '${abbrs.networkBastionHosts}${environmentName}'
 var networkDefaultAction = azureNetworkIsolation ? 'Deny' : 'Allow'
+
+// List of sample data containers
+var sampleDataContainersArray array = [
+  'tech-support'
+]
 
 // ---------- RESOURCE GROUP ----------
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -307,6 +315,13 @@ var storageAccountRoleAssignments = [
   ] : [])
 ]
 
+// Sample data containers for the storage account
+var sampleDataContainersGenerated = [for name in sampleDataContainersArray: {
+  name: name
+  publicAccess: 'None'
+}]
+var sampleDataContainers = deploySampleData ? sampleDataContainersGenerated : []
+
 module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
   name: 'storage-account-deployment'
   scope: rg
@@ -318,6 +333,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
       containerDeleteRetentionPolicyEnabled: false
       deleteRetentionPolicyEnabled: false
       lastAccessTimeTrackingPolicyEnabled: true
+      containers: sampleDataContainers
     }
     diagnosticSettings: [
       {

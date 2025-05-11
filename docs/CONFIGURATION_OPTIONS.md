@@ -48,11 +48,15 @@ The list of models, versions, quota and TPM are defined in the [infra/sample-ope
 azd env set DEPLOY_SAMPLE_OPENAI_MODELS true
 ```
 
-
 ### DEPLOY_SAMPLE_DATA
 
-Upload sample data into the Azure Storage account connected to the Azure AI Foundry Hub.
+Create containers in the Azure Storage account connected to the Azure AI Foundry Hub and upload sample data.
+It will also create a connection to each container in the Azure AI Foundry hub.
 Default: `false`.
+
+When set to `true`, the following containers will be created in the storage account:
+
+- `tech-support`
 
 ```powershell
 azd env set DEPLOY_SAMPLE_DATA true
