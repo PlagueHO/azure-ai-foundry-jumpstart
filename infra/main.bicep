@@ -73,12 +73,6 @@ param aiFoundryProjectFriendlyName string
 @sys.description('The description of the Azure AI Foundry project to create.') 
 param aiFoundryProjectDescription string
 
-// The Service Principal of the Azure Machine Learning service.
-// This is used to assign the Reader role for AI Search and AI Services.
-resource azureMachineLearningServicePrincipal 'Microsoft.Graph/servicePrincipals@v1.0' = {
-  appId: '0736f41a-0425-4b46-bdb5-1563eff02385' // Azure Machine Learning service principal
-}
-
 var abbrs = loadJsonContent('./abbreviations.json')
 
 // tags that should be applied to all resources.
@@ -457,6 +451,12 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.10.0' = {
     semanticSearch: 'standard'
     tags: tags
   }
+}
+
+// The Service Principal of the Azure Machine Learning service.
+// This is used to assign the Reader role for AI Search and AI Services.
+resource azureMachineLearningServicePrincipal 'Microsoft.Graph/servicePrincipals@v1.0' = {
+  appId: '0736f41a-0425-4b46-bdb5-1563eff02385' // Azure Machine Learning service principal
 }
 
 // Role assignments for AI Search
