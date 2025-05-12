@@ -822,7 +822,7 @@ var containerCount = length(sampleDataContainersArray)
 module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
   for idx in range(0, (projectCount * containerCount) - 1) : if (deploySampleData) {
     // Make the module deployment name unique
-    name: take('datastore-${effectiveAiFoundryProjects[idx / containerCount].name}-${sampleDataContainersArray[idx % containerCount]}',64)
+    name: replace(toLower(take('datastore_${effectiveAiFoundryProjects[idx / containerCount].name}-${sampleDataContainersArray[idx % containerCount]}',64)),'-','_')
     scope: rg
     dependsOn: [
       aiFoundryHubProjects
