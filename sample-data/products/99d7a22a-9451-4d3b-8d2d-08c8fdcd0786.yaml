@@ -1,0 +1,25 @@
+product_id: 99d7a22a-9451-4d3b-8d2d-08c8fdcd0786
+created_at: 2025-05-12 02:42:47.223642+00:00
+name: UltraSound Wireless Headphones X900
+category: headphones
+description: Experience unmatched audio quality with the UltraSound Wireless Headphones
+  X900. Featuring cutting-edge noise cancellation and crystal-clear sound, these headphones
+  are perfect for music lovers, gamers, and professionals. With up to 30 hours of
+  battery life and a lightweight, ergonomic design, you'll enjoy comfort and performance
+  wherever you go.
+price: 129.99
+currency: USD
+tags:
+- wireless
+- headphones
+- noise-cancelling
+- audio
+- Bluetooth
+attributes:
+  colour: black
+  connectivity: Bluetooth 5.2
+  battery_life: 30 hours
+  weight: 250g
+  warranty: 2 years
+stock_quantity: 120
+rating: 4.7

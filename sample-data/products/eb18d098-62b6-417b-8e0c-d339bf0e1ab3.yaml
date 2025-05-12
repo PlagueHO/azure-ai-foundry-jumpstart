@@ -1,0 +1,27 @@
+product_id: eb18d098-62b6-417b-8e0c-d339bf0e1ab3
+created_at: 2025-05-12 02:42:19.606795+00:00
+name: UltraSound Pro ANC Wireless Headphones
+category: audio-accessories
+description: Experience unparalleled sound quality with the UltraSound Pro ANC Wireless
+  Headphones. Designed for audiophiles and casual listeners alike, these headphones
+  feature advanced active noise cancellation, Bluetooth 5.3 connectivity, and up to
+  30 hours of battery life. The sleek, ergonomic design ensures comfort during extended
+  use, making them perfect for travel, work, or relaxation. Elevate your listening
+  experience today!
+price: 199.99
+currency: USD
+tags:
+- wireless
+- headphones
+- ANC
+- Bluetooth
+- audio
+- electronics
+attributes:
+  colour: black
+  connectivity: Bluetooth 5.3
+  battery_life: 30 hours
+  weight: 250g
+  warranty: 2 years
+stock_quantity: 320
+rating: 4.7

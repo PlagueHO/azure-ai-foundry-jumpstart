@@ -1,0 +1,24 @@
+{
+  "product_id": "0728a15a-ffd8-4b67-a3f1-071e462041db",
+  "created_at": "2025-05-12T03:02:24.141372+00:00",
+  "name": "UltraClear 4K Monitor 27\"",
+  "category": "Computer Monitors",
+  "description": "Experience stunning visuals with the UltraClear 4K Monitor, featuring a 27-inch ultra-HD display with vibrant colors and sharp details. Perfect for professionals and gamers alike, this monitor offers seamless connectivity options, a sleek design, and an adjustable stand for ergonomic comfort. Enjoy a fluid refresh rate and low response time for optimal performance during work or play.",
+  "price": 329.99,
+  "currency": "USD",
+  "tags": [
+    "4K display",
+    "computer monitor",
+    "gaming",
+    "professional"
+  ],
+  "attributes": {
+    "screen_size": "27 inches",
+    "resolution": "3840 x 2160",
+    "refresh_rate": "75 Hz",
+    "response_time": "5 ms",
+    "ports": "HDMI, DisplayPort, USB-C"
+  },
+  "stock_quantity": 78,
+  "rating": 4.6
+}

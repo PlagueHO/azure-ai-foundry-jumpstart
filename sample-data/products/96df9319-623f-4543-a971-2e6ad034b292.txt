@@ -1,0 +1,17 @@
+{
+  "Product ID": "96df9319-623f-4543-a971-2e6ad034b292",
+  "Created At": "2025-05-12T02:51:53.832844+00:00",
+  "Name": "HyperCharge Pro Wireless Earbuds",
+  "Category": "Wireless Earbuds",
+  "Description": "Experience unparalleled audio clarity with the HyperCharge Pro Wireless Earbuds, designed for audiophiles and casual listeners alike. Featuring advanced noise cancellation, ergonomic fit, and up to 30 hours of battery life, these earbuds deliver crisp sound quality and all-day comfort. Perfect for workouts, commutes, or relaxation, they pair effortlessly with all Bluetooth-enabled devices for seamless connectivity.",
+  "Price": 123.45,
+  "Tags": "audio, wireless",
+  "Attributes": {
+    "Color": "Black",
+    "Connectivity": "Bluetooth 5.2",
+    "Battery Life": "30 hours",
+    "Water Resistance": "IPX7"
+  },
+  "Stock Quantity": 123,
+  "Rating": 4.6
+}

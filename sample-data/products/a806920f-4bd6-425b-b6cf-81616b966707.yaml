@@ -1,0 +1,24 @@
+product_id: a806920f-4bd6-425b-b6cf-81616b966707
+created_at: 2025-05-12 02:42:15.762371+00:00
+name: UltraSound Pro Noise-Cancelling Headphones
+category: audio equipment
+description: Immerse yourself in unparalleled audio clarity with the UltraSound Pro
+  Noise-Cancelling Headphones. Designed for audiophiles, these sleek headphones deliver
+  rich, balanced sound while eliminating ambient noise. Lightweight and comfortable,
+  they are perfect for long listening sessions, whether at home, work, or on the go.
+  Upgrade your audio experience today!
+price: 149.99
+currency: USD
+tags:
+- headphones
+- noise-cancelling
+- wireless
+- premium
+- audio
+attributes:
+  colour: black
+  connectivity: Bluetooth 5.0
+  battery_life: 30 hours
+  weight: 250g
+stock_quantity: 120
+rating: 4.7

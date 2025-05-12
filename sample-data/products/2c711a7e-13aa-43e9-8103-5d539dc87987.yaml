@@ -1,0 +1,25 @@
+product_id: 2c711a7e-13aa-43e9-8103-5d539dc87987
+created_at: 2025-05-12 02:42:27.777944+00:00
+name: UltraClear 4K HDR Monitor
+category: computer-accessories
+description: Experience stunning visuals with the UltraClear 4K HDR Monitor, designed
+  for professionals and gamers alike. With a sleek design, vivid colors, and ultra-sharp
+  resolution, it offers unparalleled performance for work and entertainment. Its ergonomic
+  stand ensures comfortable viewing, while multiple connectivity options make it versatile
+  for any setup. Upgrade your screen and immerse yourself in clarity like never before.
+price: 349.99
+currency: USD
+tags:
+- monitor
+- 4K
+- HDR
+- computer-accessories
+- professional
+- gaming
+attributes:
+  colour: black
+  screen_size: 27 inches
+  resolution: 3840x2160
+  refresh_rate: 60 Hz
+stock_quantity: 120
+rating: 4.6

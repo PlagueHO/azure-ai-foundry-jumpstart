@@ -1,0 +1,24 @@
+product_id: 118c62a4-835f-452b-bf26-266561069f7b
+created_at: 2025-05-12 02:41:12.625467+00:00
+name: HyperCharge Wireless Power Bank Pro
+category: portable chargers
+description: Stay powered up wherever you go with the HyperCharge Wireless Power Bank
+  Pro. With ultra-fast charging capabilities, a sleek design, and compatibility with
+  all major devices, this is the ultimate solution for on-the-go energy needs. Its
+  durable construction and lightweight design make it ideal for travel, work, or everyday
+  use.
+price: 49.99
+currency: USD
+tags:
+- wireless
+- power bank
+- fast charging
+- portable
+- electronics
+attributes:
+  colour: black
+  capacity: 20000mAh
+  weight: 350g
+  compatibility: universal
+stock_quantity: 320
+rating: 4.7

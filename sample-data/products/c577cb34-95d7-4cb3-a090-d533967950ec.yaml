@@ -1,0 +1,26 @@
+product_id: c577cb34-95d7-4cb3-a090-d533967950ec
+created_at: 2025-05-12 02:42:39.559015+00:00
+name: UltraSound Pro Wireless Earbuds
+category: audio-accessories
+description: Experience unmatched sound clarity and deep bass with the UltraSound
+  Pro Wireless Earbuds. Featuring advanced noise-cancellation technology, a snug fit,
+  and up to 30 hours of battery life, these earbuds are perfect for music lovers and
+  professionals alike. Effortless Bluetooth 5.2 connectivity ensures seamless pairing
+  with all your devices, while the sleek, ergonomic design offers all-day comfort.
+  Elevate your listening experience today!
+price: 149.99
+currency: USD
+tags:
+- wireless
+- earbuds
+- noise-cancellation
+- Bluetooth
+- audio
+- accessories
+attributes:
+  colour: black
+  battery_life: 30 hours
+  connectivity: Bluetooth 5.2
+  weight: 18g
+stock_quantity: 250
+rating: 4.7

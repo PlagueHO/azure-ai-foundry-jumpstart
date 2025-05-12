@@ -1,0 +1,21 @@
+{
+  "product_id": "29b80b5c-591c-413b-b1bb-0ceb4024c052",
+  "created_at": "2025-05-12T03:03:22.678652+00:00",
+  "name": "SmartHome Wi-Fi LED Bulb",
+  "category": "Smart Lighting",
+  "description": "Transform your living space with the SmartHome Wi-Fi LED Bulb, offering vibrant colors, adjustable brightness, and seamless app control. Compatible with Alexa and Google Assistant, this energy-efficient bulb lets you customize your lighting to match your mood or schedule. Perfect for smart home enthusiasts and eco-conscious users.",
+  "price": 24.99,
+  "currency": "USD",
+  "tags": [
+    "smart lighting",
+    "LED bulb",
+    "Wi-Fi enabled"
+  ],
+  "attributes": {
+    "color_temperature": "2700-6500K",
+    "lifespan": "25,000 hours",
+    "connectivity": "Wi-Fi"
+  },
+  "stock_quantity": 250,
+  "rating": 4.6
+}

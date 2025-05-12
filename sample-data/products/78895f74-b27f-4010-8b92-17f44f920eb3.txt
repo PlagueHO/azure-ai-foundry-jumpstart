@@ -1,0 +1,18 @@
+{
+  "Product ID": "78895f74-b27f-4010-8b92-17f44f920eb3",
+  "Created At": "2025-05-12T02:51:58.135935+00:00",
+  "Name": "UltraClear 4K Smart Monitor",
+  "Category": "Monitors & Displays",
+  "Description": "Elevate your workspace or entertainment setup with the UltraClear 4K Smart Monitor. Featuring a stunning 3840x2160 resolution and ultra-thin bezels, this monitor delivers exceptional clarity and vibrant colors. With advanced smart connectivity, including built-in apps and seamless device integration, it ensures productivity and convenience. Perfect for gamers, professionals, and streaming enthusiasts, its sleek design adds a touch of modern elegance to any environment.",
+  "Price": 123.45,
+  "Tags": "4K, Smart Monitor",
+  "Attributes": {
+    "Screen Size": "27 inches",
+    "Resolution": "3840x2160",
+    "Connectivity": "HDMI, USB-C, Wi-Fi",
+    "Refresh Rate": "60Hz",
+    "Color Accuracy": "99% sRGB"
+  },
+  "Stock Quantity": 123,
+  "Rating": 4.6
+}

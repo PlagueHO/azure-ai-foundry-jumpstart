@@ -1,0 +1,23 @@
+{
+  "product_id": "a3d2070c-2bd7-4ecb-8398-d5feec2ba3ca",
+  "created_at": "2025-05-12T03:00:11.121498+00:00",
+  "name": "UltraHD Wireless Projector X200",
+  "category": "Home Theater",
+  "description": "Experience stunning visuals with the UltraHD Wireless Projector X200, designed for seamless streaming and crisp 4K resolution. Perfect for home theaters or professional presentations, it features easy Wi-Fi connectivity, a compact design, and up to 30,000 hours of lamp life. Elevate your viewing experience with vibrant colors and sharp details.",
+  "price": 799.99,
+  "currency": "USD",
+  "tags": [
+    "projector",
+    "4K",
+    "wireless",
+    "home theater"
+  ],
+  "attributes": {
+    "resolution": "3840x2160",
+    "connectivity": "Wi-Fi, HDMI",
+    "lamp_life": "30,000 hours",
+    "weight": "2.5 lbs"
+  },
+  "stock_quantity": 45,
+  "rating": 4.6
+}

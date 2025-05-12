@@ -1,0 +1,13 @@
+Product ID: eb144fad-19cb-4431-b7a5-9c0cac6c4884  
+Created At: 2025-05-12T02:49:31.803431+00:00  
+Name: UltraClear 4K Monitor  
+Category: Computer Monitors  
+Description: Elevate your workspace with the UltraClear 4K Monitor, featuring stunning UHD resolution, vibrant color accuracy, and a sleek frameless design. Perfect for professionals and gamers alike, this monitor offers exceptional performance with a 60Hz refresh rate and built-in eye-care technology for extended viewing comfort. With advanced connectivity options including HDMI and USB-C, it ensures seamless integration with your devices. Experience clarity like never before.  
+Price: 123.45 USD  
+Tags: 4K, monitor  
+Attributes:  
+  Resolution: 3840 x 2160  
+  Refresh Rate: 60Hz  
+  Connectivity: HDMI, USB-C  
+Stock Quantity: 123  
+Rating: 4.6

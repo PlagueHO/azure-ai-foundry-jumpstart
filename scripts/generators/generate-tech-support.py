@@ -3,7 +3,7 @@ Generate technical support cases in YAML format with Azure OpenAI via Semantic K
 
 Example usage:
 
-python scripts/generators/tech-support/generate-tech-support.py -d "ScanlonSoft Retail Solution. A SaaS platform running in Azure that provide point of sale retail software to small business. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database." -n 50 -o ./sample-data/tech-support/
+python scripts/generators/generate-tech-support.py -d "ScanlonSoft Retail Solution. A SaaS platform running in Azure that provide point of sale retail software to small business. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database." -n 50 -o ./sample-data/tech-support/
 
 Prerequisites
 -------------

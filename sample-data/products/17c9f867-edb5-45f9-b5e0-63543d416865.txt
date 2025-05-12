@@ -1,0 +1,16 @@
+{
+  "Product ID": "17c9f867-edb5-45f9-b5e0-63543d416865",
+  "Created At": "2025-05-12T02:49:48.808129+00:00",
+  "Name": "UltraClear 4K Smart Monitor",
+  "Category": "Monitors & Displays",
+  "Description": "Experience unparalleled clarity and vibrant colors with the UltraClear 4K Smart Monitor. Designed for both work and entertainment, this sleek monitor features cutting-edge technology, including HDR support and a frameless design. With built-in smart functionality, you can stream your favorite apps without the need for a separate device. Perfect for professionals and gamers alike, it delivers stunning visuals and seamless performance.",
+  "Price": "123.45 USD",
+  "Tags": "4K, Smart Display",
+  "Attributes": {
+    "Resolution": "3840x2160",
+    "Refresh Rate": "60Hz",
+    "Connectivity": "HDMI, DisplayPort, USB-C"
+  },
+  "Stock Quantity": 123,
+  "Rating": 4.6
+}

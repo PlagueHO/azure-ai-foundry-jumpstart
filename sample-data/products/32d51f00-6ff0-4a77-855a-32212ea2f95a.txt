@@ -1,0 +1,17 @@
+{
+  "Product ID": "32d51f00-6ff0-4a77-855a-32212ea2f95a",
+  "Created At": "2025-05-12T02:53:00.134209+00:00",
+  "Name": "UltraTech Wireless Noise-Cancelling Headphones",
+  "Category": "Audio & Headphones",
+  "Description": "Immerse yourself in crystal-clear sound with the UltraTech Wireless Noise-Cancelling Headphones. Designed for audiophiles and casual listeners alike, these headphones feature advanced noise-cancellation technology, delivering an uninterrupted listening experience. With up to 20 hours of battery life and ergonomic ear cups, you can enjoy comfort and performance all day long. Built with premium materials and Bluetooth 5.0 connectivity, these headphones offer seamless pairing and robust durability.",
+  "Price": "123.45 USD",
+  "Tags": "wireless, noise-cancelling",
+  "Attributes": {
+    "Color": "Black",
+    "Battery Life": "20 hours",
+    "Connectivity": "Bluetooth 5.0",
+    "Weight": "250g"
+  },
+  "Stock Quantity": 123,
+  "Rating": 4.6
+}

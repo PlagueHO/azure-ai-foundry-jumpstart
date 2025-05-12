@@ -1,0 +1,16 @@
+{
+  "Product ID": "14a19506-1f25-454d-b125-68f7d0d23939",
+  "Created At": "2025-05-12T02:50:37.036516+00:00",
+  "Name": "UltraClear Wireless Earbuds",
+  "Category": "Audio & Headphones",
+  "Description": "Immerse yourself in crystal-clear sound with the UltraClear Wireless Earbuds, designed for both music lovers and professionals on the go. Featuring cutting-edge noise-cancellation technology, long-lasting battery life of up to 30 hours, and a sleek ergonomic design, these earbuds deliver premium performance and comfort. With intuitive touch controls and IPX5 water resistance, they are perfect for workouts, commutes, and everything in between.",
+  "Price": "123.45 USD",
+  "Tags": "wireless, audio",
+  "Attributes": {
+    "Connectivity": "Bluetooth 5.2",
+    "Battery Life": "30 hours",
+    "Water Resistance": "IPX5"
+  },
+  "Stock Quantity": 123,
+  "Rating": 4.6
+}

@@ -1,0 +1,22 @@
+{
+  "product_id": "652f6b57-c78e-4723-a8ba-ac454432db7a",
+  "created_at": "2025-05-12T03:00:20.337567+00:00",
+  "name": "UltraVision Pro 4K Smart TV",
+  "category": "Televisions",
+  "description": "Experience stunning visuals with the UltraVision Pro 4K Smart TV. Boasting vibrant colors, crisp details, and advanced HDR technology, this TV is perfect for movie nights, gaming, or streaming your favorite shows. Its intuitive smart platform ensures quick access to apps and content, while the sleek design complements any living space. Elevate your entertainment setup today.",
+  "price": 899.99,
+  "currency": "USD",
+  "tags": [
+    "4K",
+    "Smart TV",
+    "HDR"
+  ],
+  "attributes": {
+    "resolution": "3840x2160",
+    "screen_size": "55 inches",
+    "smart_features": "Yes",
+    "refresh_rate": "120Hz"
+  },
+  "stock_quantity": 45,
+  "rating": 4.6
+}

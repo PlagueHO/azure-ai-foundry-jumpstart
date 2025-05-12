@@ -1,0 +1,17 @@
+{
+  "Product ID": "a925f68b-6dc3-4d6f-8dff-cfaa6a058c91",
+  "Created At": "2025-05-12T02:51:34.069383+00:00",
+  "Name": "UltraClear 4K Smart TV",
+  "Category": "Televisions & Displays",
+  "Description": "Experience stunning picture quality with the UltraClear 4K Smart TV, designed to bring your favorite content to life. Featuring ultra-high-definition resolution, vibrant colors, and a sleek, modern design, this TV is perfect for home entertainment. With built-in smart capabilities, you can easily stream movies, shows, and games from popular platforms. Whether mounted on the wall or displayed on a stand, this TV combines performance with style to complement any living space.",
+  "Price": "123.45 USD",
+  "Tags": "4K, Smart TV",
+  "Attributes": {
+    "Screen Size": "55 inches",
+    "Resolution": "3840 x 2160",
+    "Connectivity": "Wi-Fi, HDMI, USB",
+    "Smart Platform": "Android TV"
+  },
+  "Stock Quantity": 123,
+  "Rating": 4.6
+}

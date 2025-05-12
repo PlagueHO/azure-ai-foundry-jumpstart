@@ -1,0 +1,11 @@
+Product ID: f6ea54f2-eda5-496a-a58a-17542aa078b2  
+Created At: 2025-05-12T02:49:57.745363+00:00  
+Name: Product name  
+Category: Relevant sub-category  
+Description: Experience cutting-edge technology with this premium electronic device, designed to elevate your everyday tasks with seamless performance and versatility. Perfect for tech enthusiasts and professionals alike, this product boasts advanced features, sleek design, and user-friendly functionality. Whether you're working, streaming, or gaming, its high-quality components ensure reliability and efficiency. Invest in innovation and enjoy unparalleled convenience with this top-rated gadget.  
+Price: 123.45 USD  
+Tags: tag1, tag2  
+Attributes:  
+  key: value  
+Stock Quantity: 123  
+Rating: 4.6

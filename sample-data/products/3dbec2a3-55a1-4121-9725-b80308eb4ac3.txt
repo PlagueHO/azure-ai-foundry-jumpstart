@@ -1,0 +1,18 @@
+{
+  "Product ID": "3dbec2a3-55a1-4121-9725-b80308eb4ac3",
+  "Created At": "2025-05-12T02:52:17.116375+00:00",
+  "Name": "HyperCharge Max Wireless Power Bank",
+  "Category": "Portable Chargers",
+  "Description": "Stay powered wherever you go with the HyperCharge Max Wireless Power Bank. Featuring a sleek design and a 20,000mAh capacity, this device supports fast charging for multiple devices simultaneously, including wireless charging for Qi-enabled smartphones. With its compact build and durable construction, it's perfect for travel, work, or daily use. Enjoy reliable and efficient power on the move.",
+  "Price": "123.45 USD",
+  "Tags": "wireless, power bank",
+  "Attributes": {
+    "Capacity": "20,000mAh",
+    "Wireless Charging": "Yes",
+    "Fast Charging": "Yes",
+    "Color": "Black",
+    "Dimensions": "5.5 x 3.1 x 0.7 inches"
+  },
+  "Stock Quantity": 123,
+  "Rating": 4.6
+}

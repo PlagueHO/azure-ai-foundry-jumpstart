@@ -1,0 +1,22 @@
+{
+  "product_id": "f9e89983-b6c7-45b7-b64b-cc3b11fcec52",
+  "created_at": "2025-05-12T03:02:52.782563+00:00",
+  "name": "AuroraX True Wireless Earbuds",
+  "category": "Audio Accessories",
+  "description": "Experience crystal-clear sound and deep bass with the AuroraX True Wireless Earbuds. Featuring advanced noise cancellation, ergonomic design, and up to 30 hours of battery life, these earbuds are perfect for commuting, workouts, or casual listening. The intuitive touch controls and seamless Bluetooth 5.3 connectivity ensure effortless usage. Comes with a compact charging case for convenience.",
+  "price": 89.99,
+  "currency": "USD",
+  "tags": [
+    "wireless earbuds",
+    "noise-cancellation",
+    "Bluetooth"
+  ],
+  "attributes": {
+    "battery_life": "30 hours",
+    "bluetooth_version": "5.3",
+    "noise_cancellation": "Yes",
+    "water_resistance": "IPX5"
+  },
+  "stock_quantity": 250,
+  "rating": 4.6
+}

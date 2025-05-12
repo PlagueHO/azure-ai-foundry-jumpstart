@@ -316,11 +316,10 @@ var storageAccountRoleAssignments = [
 ]
 
 // Sample data containers for the storage account
-var sampleDataContainersGenerated = [for name in sampleDataContainersArray: {
+var sampleDataContainers = [for name in sampleDataContainersArray: {
   name: name
   publicAccess: 'None'
 }]
-var sampleDataContainers = deploySampleData ? sampleDataContainersGenerated : []
 
 module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
   name: 'storage-account-deployment'
@@ -333,7 +332,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
       containerDeleteRetentionPolicyEnabled: false
       deleteRetentionPolicyEnabled: false
       lastAccessTimeTrackingPolicyEnabled: true
-      containers: sampleDataContainers
+      containers: deploySampleData ? sampleDataContainers : []
     }
     diagnosticSettings: [
       {
@@ -769,7 +768,7 @@ module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspa
 // Add any Azure AI Developer role for each AI Foundry project to the AI Services account
 // This ensures a developer with access to the AI Foundry project can also access the AI Services
 module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aiservice.bicep' = [for (project,index) in effectiveAiFoundryProjects: {
-  name: 'ai-foundry-project-role-assignments-${project.name}'
+  name: 'ai-foundry-project-ai-service-role-assignments-${project.name}'
   scope: rg
   dependsOn: [
     aiFoundryHubProjects
@@ -785,6 +784,56 @@ module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aiservic
     ]
   }
 }]
+
+// ---------- AI FOUNDRY PROJECT ROLE ASSIGNMENTS TO AI SEARCH ----------
+// Add any Search Index Reader and Search Service Contributor roles for each AI Foundry project
+// to the AI Search Account. This ensures Agents created within a project can access indexes in
+// the AI Search account.
+module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.bicep' = [for (project,index) in effectiveAiFoundryProjects: {
+  name: 'ai-foundry-project-ai-search-role-assignments-${project.name}'
+  scope: rg
+  dependsOn: [
+    aiFoundryHubProjects
+  ]
+  params: {
+    azureAiSearchName: aiSearchName
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Search Index Data Reader'
+        principalType: 'ServicePrincipal'
+        principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
+      }
+      {
+        roleDefinitionIdOrName: 'Search Service Contributor'
+        principalType: 'ServicePrincipal'
+        principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
+      }
+    ]
+  }
+}]
+
+// ---------- AI FOUNDRY PROJECT DATASTORES ----------
+// Build a Cartesian product index across projects and sample-data containers
+var projectCount   = length(effectiveAiFoundryProjects)
+var containerCount = length(sampleDataContainersArray)
+
+// One module instance per <project, container> when deploySampleData == true
+module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
+  for idx in range(0, (projectCount * containerCount) - 1) : if (deploySampleData) {
+    // Make the module deployment name unique
+    name: 'datastore-${effectiveAiFoundryProjects[int(idx / containerCount)].name}-${sampleDataContainersArray[idx % containerCount]}'
+    scope: rg
+    dependsOn: [
+      aiFoundryHubProjects
+    ]
+    params: {
+      projectWorkspaceName: aiFoundryHubProjects[int(idx / containerCount)].outputs.name
+      storageAccountName:  storageAccounName
+      storageContainerName: sampleDataContainersArray[idx % containerCount]
+      dataStoreName: sampleDataContainersArray[idx % containerCount].name
+    }
+  }
+]
 
 // ------------- BASTION HOST (OPTIONAL) -------------
 module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (createBastionHost && azureNetworkIsolation) {

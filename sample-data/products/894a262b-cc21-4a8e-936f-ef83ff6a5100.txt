@@ -1,0 +1,17 @@
+{
+  "Product ID": "894a262b-cc21-4a8e-936f-ef83ff6a5100",
+  "Created At": "2025-05-12T02:52:55.870273+00:00",
+  "Name": "UltraVision 4K Smart TV 55\"",
+  "Category": "Televisions & Home Entertainment",
+  "Description": "Experience stunning visuals with the UltraVision 4K Smart TV, featuring a 55-inch ultra-high-definition display and advanced HDR technology for vibrant colors and crisp detail. Equipped with built-in streaming apps, voice control compatibility, and seamless connectivity options, this TV transforms your living room into a true entertainment hub. Perfect for gaming, movies, and sports enthusiasts alike.",
+  "Price": "123.45 USD",
+  "Tags": "4K, Smart TV",
+  "Attributes": {
+    "Resolution": "3840 x 2160",
+    "Screen Size": "55 inches",
+    "Connectivity": "Wi-Fi, HDMI, USB",
+    "Smart Features": "Voice Control, Streaming Apps"
+  },
+  "Stock Quantity": 123,
+  "Rating": 4.6
+}

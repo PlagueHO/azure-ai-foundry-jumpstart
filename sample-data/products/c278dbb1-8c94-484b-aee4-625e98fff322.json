@@ -1,0 +1,22 @@
+{
+  "product_id": "c278dbb1-8c94-484b-aee4-625e98fff322",
+  "created_at": "2025-05-12T03:02:34.060521+00:00",
+  "name": "AuroraX Wireless Noise-Cancelling Headphones",
+  "category": "Audio Accessories",
+  "description": "Experience unparalleled sound quality with the AuroraX Wireless Noise-Cancelling Headphones. Designed for music enthusiasts and professionals alike, these headphones feature advanced active noise-cancellation technology, crystal-clear audio, and a battery life of up to 30 hours. The sleek, lightweight design ensures comfort during extended use, making them perfect for travel, work, or leisure.",
+  "price": 199.99,
+  "currency": "USD",
+  "tags": [
+    "headphones",
+    "wireless",
+    "noise-cancelling"
+  ],
+  "attributes": {
+    "color": "black",
+    "connectivity": "Bluetooth 5.2",
+    "battery_life": "30 hours",
+    "weight": "250g"
+  },
+  "stock_quantity": 78,
+  "rating": 4.6
+}

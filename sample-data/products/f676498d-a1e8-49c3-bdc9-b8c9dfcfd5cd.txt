@@ -1,0 +1,18 @@
+{
+  "Product ID": "f676498d-a1e8-49c3-bdc9-b8c9dfcfd5cd",
+  "Created At": "2025-05-12T02:50:26.616612+00:00",
+  "Name": "UltraClear Pro 4K Monitor",
+  "Category": "Computer Monitors",
+  "Description": "The UltraClear Pro 4K Monitor delivers stunning visuals with its UHD resolution, vibrant color accuracy, and ultra-slim bezel design. Perfect for creative professionals and gamers alike, it features advanced eye-care technology and multiple connectivity options, including HDMI and USB-C. With a sleek, modern aesthetic and adjustable stand, this monitor seamlessly fits into any workspace.",
+  "Price": "123.45 USD",
+  "Tags": "4K, ultraclear",
+  "Attributes": {
+    "Resolution": "3840x2160",
+    "Screen Size": "27 inches",
+    "Panel Type": "IPS",
+    "Refresh Rate": "144Hz",
+    "Ports": "HDMI, USB-C, DisplayPort"
+  },
+  "Stock Quantity": 123,
+  "Rating": 4.6
+}

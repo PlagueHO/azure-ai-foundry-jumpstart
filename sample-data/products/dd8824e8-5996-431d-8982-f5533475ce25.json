@@ -1,0 +1,21 @@
+{
+  "product_id": "dd8824e8-5996-431d-8982-f5533475ce25",
+  "created_at": "2025-05-12T03:01:38.319973+00:00",
+  "name": "EcoCharge 5000 Portable Power Bank",
+  "category": "Power Banks",
+  "description": "Stay connected on the go with the EcoCharge 5000 Portable Power Bank. Featuring a 5000mAh capacity, this slim and lightweight device provides reliable charging for your smartphone, tablet, or other USB-powered devices. Its eco-friendly design and durable build ensure long-lasting performance, making it perfect for everyday use or travel.",
+  "price": 29.99,
+  "currency": "USD",
+  "tags": [
+    "portable charger",
+    "eco-friendly",
+    "USB power"
+  ],
+  "attributes": {
+    "capacity": "5000mAh",
+    "color": "black",
+    "weight": "150g"
+  },
+  "stock_quantity": 85,
+  "rating": 4.6
+}

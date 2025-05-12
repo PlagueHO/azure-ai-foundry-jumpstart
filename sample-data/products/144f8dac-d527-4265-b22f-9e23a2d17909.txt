@@ -1,0 +1,16 @@
+{
+  "Product ID": "144f8dac-d527-4265-b22f-9e23a2d17909",
+  "Created At": "2025-05-12T02:50:01.734110+00:00",
+  "Name": "UltraPro Wireless Noise-Cancelling Headphones",
+  "Category": "Audio & Headphones",
+  "Description": "Experience unparalleled sound quality with the UltraPro Wireless Noise-Cancelling Headphones. Featuring advanced active noise-cancellation technology, these headphones deliver crystal-clear audio while blocking out distractions. With up to 30 hours of battery life, Bluetooth 5.2 connectivity, and a sleek, ergonomic design, they are perfect for long listening sessions at home, work, or on the go. Enjoy premium sound with deep bass and crisp highs that elevate your favorite music, podcasts, and calls.",
+  "Price": "123.45 USD",
+  "Tags": "wireless, noise-cancelling",
+  "Attributes": {
+    "Battery Life": "30 hours",
+    "Connectivity": "Bluetooth 5.2",
+    "Color": "Matte Black"
+  },
+  "Stock Quantity": 123,
+  "Rating": 4.6
+}

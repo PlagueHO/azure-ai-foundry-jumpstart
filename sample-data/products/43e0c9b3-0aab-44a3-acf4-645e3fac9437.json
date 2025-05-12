@@ -1,0 +1,21 @@
+{
+  "product_id": "43e0c9b3-0aab-44a3-acf4-645e3fac9437",
+  "created_at": "2025-05-12T03:03:05.575129+00:00",
+  "name": "HyperCharge Wireless Power Bank 20000mAh",
+  "category": "Portable Chargers",
+  "description": "Stay powered up wherever you go with the HyperCharge Wireless Power Bank. Featuring a massive 20000mAh capacity and fast wireless charging capabilities, this sleek and lightweight device ensures your gadgets never run out of juice. Compatible with multiple devices, it includes USB-C, USB-A, and Qi wireless functionality for ultimate convenience.",
+  "price": 89.99,
+  "currency": "USD",
+  "tags": [
+    "wireless charger",
+    "portable power",
+    "high-capacity"
+  ],
+  "attributes": {
+    "capacity": "20000mAh",
+    "charging_ports": "USB-C, USB-A, Qi wireless",
+    "color": "Black"
+  },
+  "stock_quantity": 120,
+  "rating": 4.6
+}

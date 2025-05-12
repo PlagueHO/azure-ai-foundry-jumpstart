@@ -1,0 +1,17 @@
+{
+  "Product ID": "c58d1a7b-2376-4003-8914-910aaf89076d",
+  "Created At": "2025-05-12T02:50:32.219395+00:00",
+  "Name": "UltraMax Wireless Noise-Cancelling Headphones",
+  "Category": "Audio Accessories",
+  "Description": "Experience unparalleled sound quality with the UltraMax Wireless Noise-Cancelling Headphones. Designed for audiophiles and casual listeners alike, these headphones deliver crisp highs, deep bass, and a balanced sound profile. Equipped with advanced noise-cancellation technology, they create an immersive listening experience, even in noisy environments. With up to 30 hours of battery life and a sleek, comfortable design, they are perfect for long commutes, workouts, or relaxation.",
+  "Price": "123.45 USD",
+  "Tags": "wireless, noise-cancelling",
+  "Attributes": {
+    "Battery Life": "30 hours",
+    "Connectivity": "Bluetooth 5.0",
+    "Color": "Matte Black",
+    "Weight": "250g"
+  },
+  "Stock Quantity": 123,
+  "Rating": 4.6
+}

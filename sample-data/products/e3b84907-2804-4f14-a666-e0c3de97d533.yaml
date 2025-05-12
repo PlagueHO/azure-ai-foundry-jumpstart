@@ -1,0 +1,25 @@
+product_id: e3b84907-2804-4f14-a666-e0c3de97d533
+created_at: 2025-05-12 02:44:20.858737+00:00
+name: UltraClear 4K Wireless Monitor
+category: monitors
+description: Experience stunning visuals with the UltraClear 4K Wireless Monitor,
+  designed to deliver vivid colors and crystal-clear image quality. Perfect for gaming,
+  professional work, or entertainment, this monitor boasts seamless wireless connectivity
+  and a sleek, minimalist design. With cutting-edge technology and user-friendly features,
+  it's a must-have addition to any modern workspace or home setup.
+price: 349.99
+currency: USD
+tags:
+- 4K
+- wireless
+- monitor
+- gaming
+- professional
+- sleek
+attributes:
+  colour: black
+  size: 27 inch
+  resolution: 3840x2160
+  connectivity: Wi-Fi, HDMI, USB-C
+stock_quantity: 215
+rating: 4.7

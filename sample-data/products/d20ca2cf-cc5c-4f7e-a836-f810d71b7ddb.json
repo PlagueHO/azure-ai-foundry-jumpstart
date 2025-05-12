@@ -1,0 +1,23 @@
+{
+  "product_id": "d20ca2cf-cc5c-4f7e-a836-f810d71b7ddb",
+  "created_at": "2025-05-12T03:00:51.221135+00:00",
+  "name": "EliteSound Wireless Earbuds Pro",
+  "category": "Audio Accessories",
+  "description": "Experience immersive sound quality with EliteSound Wireless Earbuds Pro. Featuring active noise cancellation, a comfortable ergonomic design, and up to 36 hours of battery life with the included charging case, these earbuds are perfect for music lovers and professionals alike. Enjoy seamless connectivity with Bluetooth 5.3 and crystal-clear calls thanks to advanced microphone technology.",
+  "price": 129.99,
+  "currency": "USD",
+  "tags": [
+    "wireless",
+    "audio",
+    "bluetooth",
+    "noise-cancelling"
+  ],
+  "attributes": {
+    "color": "Black",
+    "battery_life": "36 hours",
+    "bluetooth_version": "5.3",
+    "water_resistance": "IPX5"
+  },
+  "stock_quantity": 240,
+  "rating": 4.6
+}

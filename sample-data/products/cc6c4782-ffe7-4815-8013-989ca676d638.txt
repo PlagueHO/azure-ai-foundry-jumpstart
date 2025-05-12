@@ -1,0 +1,14 @@
+Product ID: cc6c4782-ffe7-4815-8013-989ca676d638  
+Created At: 2025-05-12T02:50:59.830235+00:00  
+Name: UltraClear 4K Smart Monitor  
+Category: Computer Monitors  
+Description: Experience unparalleled clarity and vibrant colors with the UltraClear 4K Smart Monitor. Designed for both work and entertainment, this monitor features a sleek, bezel-less design, advanced HDR technology, and seamless connectivity options. With ultra-fast refresh rates and adaptive syncing, it ensures smooth visuals for gaming and streaming. Perfect for professionals and creatives, its ergonomic stand and customizable settings provide comfort during long hours of use. Elevate your digital experience today!  
+Price: 123.45 USD  
+Tags: 4K, Smart Monitor  
+Attributes:  
+  Resolution: 3840 x 2160  
+  Refresh Rate: 144Hz  
+  Connectivity: HDMI, USB-C, DisplayPort  
+  Panel Type: IPS  
+Stock Quantity: 123  
+Rating: 4.6

@@ -1,0 +1,16 @@
+{
+  "Product ID": "a001772f-480e-432a-8081-25bf99fc2ac6",
+  "Created At": "2025-05-12T02:52:50.965570+00:00",
+  "Name": "SmartTech Ultra HD Wireless Earbuds",
+  "Category": "Audio Accessories",
+  "Description": "Experience superior sound quality with the SmartTech Ultra HD Wireless Earbuds. Featuring cutting-edge audio technology, these earbuds deliver crystal-clear highs and deep bass, perfect for music lovers and audiophiles. With a comfortable, ergonomic design and up to 30 hours of battery life, they are ideal for long listening sessions or workouts. Seamless Bluetooth connectivity ensures hassle-free pairing with your devices, while the integrated touch controls allow easy access to music and calls.",
+  "Price": "123.45 USD",
+  "Tags": "wireless, audio",
+  "Attributes": {
+    "Battery Life": "30 hours",
+    "Connectivity": "Bluetooth 5.2",
+    "Water Resistance": "IPX7"
+  },
+  "Stock Quantity": 123,
+  "Rating": 4.6
+}

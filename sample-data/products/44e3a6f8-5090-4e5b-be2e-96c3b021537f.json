@@ -1,0 +1,21 @@
+{
+  "product_id": "44e3a6f8-5090-4e5b-be2e-96c3b021537f",
+  "created_at": "2025-05-12T03:00:26.145752+00:00",
+  "name": "HyperSound Pro Wireless Earbuds",
+  "category": "Audio & Accessories",
+  "description": "Experience crystal-clear audio with the HyperSound Pro Wireless Earbuds, featuring advanced noise-cancellation technology and a comfortable, ergonomic design. With up to 8 hours of battery life and a compact charging case, these earbuds are perfect for on-the-go listening. Bluetooth 5.3 ensures seamless connectivity, while IPX7 water resistance makes them ideal for workouts or rainy commutes.",
+  "price": 129.99,
+  "currency": "USD",
+  "tags": [
+    "wireless",
+    "audio",
+    "noise-cancellation"
+  ],
+  "attributes": {
+    "battery_life": "8 hours",
+    "connectivity": "Bluetooth 5.3",
+    "water_resistance": "IPX7"
+  },
+  "stock_quantity": 250,
+  "rating": 4.6
+}

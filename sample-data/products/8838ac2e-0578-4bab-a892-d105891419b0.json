@@ -1,0 +1,22 @@
+{
+  "product_id": "8838ac2e-0578-4bab-a892-d105891419b0",
+  "created_at": "2025-05-12T03:00:15.964795+00:00",
+  "name": "UltraSync Wireless Earbuds",
+  "category": "Audio Accessories",
+  "description": "Experience crystal-clear sound and unparalleled comfort with the UltraSync Wireless Earbuds. Featuring advanced Bluetooth 5.3 technology, these earbuds provide seamless connectivity and up to 30 hours of battery life with the charging case. Designed for active lifestyles, they are sweat-resistant and come with customizable ear tips for a secure fit.",
+  "price": 79.99,
+  "currency": "USD",
+  "tags": [
+    "wireless earbuds",
+    "Bluetooth",
+    "audio"
+  ],
+  "attributes": {
+    "color": "Black",
+    "battery_life": "30 hours",
+    "connectivity": "Bluetooth 5.3",
+    "water_resistance": "IPX5"
+  },
+  "stock_quantity": 300,
+  "rating": 4.6
+}

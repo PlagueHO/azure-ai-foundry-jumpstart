@@ -1,0 +1,24 @@
+{
+  "product_id": "558b3071-35c8-46ab-a01b-d57c090f5a01",
+  "created_at": "2025-05-12T03:02:10.234337+00:00",
+  "name": "UltraClear 4K HDR Monitor",
+  "category": "Monitors",
+  "description": "Experience stunning visuals with the UltraClear 4K HDR Monitor, designed for professionals and gamers alike. With a sleek design, vibrant colors, and ultra-sharp resolution, this monitor delivers uncompromising performance. Its adaptive refresh rate technology ensures smooth motion, while multiple connectivity options make it versatile for all setups.",
+  "price": 399.99,
+  "currency": "USD",
+  "tags": [
+    "4K",
+    "HDR",
+    "Monitor",
+    "Gaming",
+    "Professional"
+  ],
+  "attributes": {
+    "screen_size": "27 inches",
+    "resolution": "3840 x 2160",
+    "refresh_rate": "144Hz",
+    "connectivity": "HDMI, DisplayPort, USB-C"
+  },
+  "stock_quantity": 85,
+  "rating": 4.6
+}

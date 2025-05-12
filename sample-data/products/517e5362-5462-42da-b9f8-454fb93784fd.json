@@ -1,0 +1,21 @@
+{
+  "product_id": "517e5362-5462-42da-b9f8-454fb93784fd",
+  "created_at": "2025-05-12T03:01:20.298741+00:00",
+  "name": "X-Tune Wireless Noise-Cancelling Headphones",
+  "category": "Audio & Headphones",
+  "description": "Experience exceptional sound quality with the X-Tune Wireless Noise-Cancelling Headphones. Featuring advanced noise-cancellation technology, these headphones deliver crystal-clear audio while blocking out unwanted distractions. Comfortable ear cushions and a lightweight design ensure long listening sessions without fatigue. Perfect for music lovers, gamers, and professionals alike.",
+  "price": 199.99,
+  "currency": "USD",
+  "tags": [
+    "wireless",
+    "noise-cancelling",
+    "audio"
+  ],
+  "attributes": {
+    "battery_life": "30 hours",
+    "connectivity": "Bluetooth 5.0",
+    "color": "Black"
+  },
+  "stock_quantity": 87,
+  "rating": 4.6
+}

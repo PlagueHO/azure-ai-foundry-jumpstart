@@ -1,0 +1,22 @@
+{
+  "product_id": "175b1500-f7a6-4226-8417-148edf26480d",
+  "created_at": "2025-05-12T03:03:01.364206+00:00",
+  "name": "QuantumSound Wireless Noise-Canceling Headphones",
+  "category": "Headphones & Earbuds",
+  "description": "Experience unparalleled audio clarity with the QuantumSound Wireless Noise-Canceling Headphones. Featuring advanced active noise cancellation technology, these headphones deliver immersive sound while blocking out unwanted distractions. With up to 30 hours of battery life, comfortable memory foam ear cushions, and a sleek, foldable design, they are perfect for travel, work, or relaxation. Seamlessly connect via Bluetooth 5.3 and enjoy crystal-clear calls with the built-in microphone.",
+  "price": 129.99,
+  "currency": "USD",
+  "tags": [
+    "wireless headphones",
+    "noise-canceling",
+    "Bluetooth"
+  ],
+  "attributes": {
+    "color": "black",
+    "battery_life": "30 hours",
+    "connectivity": "Bluetooth 5.3",
+    "microphone": "yes"
+  },
+  "stock_quantity": 245,
+  "rating": 4.6
+}

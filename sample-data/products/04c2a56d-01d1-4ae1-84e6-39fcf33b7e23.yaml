@@ -1,0 +1,24 @@
+product_id: 04c2a56d-01d1-4ae1-84e6-39fcf33b7e23
+created_at: 2025-05-12 02:42:35.877146+00:00
+name: UltraClear HD Wireless Earbuds
+category: audio accessories
+description: Experience crystal-clear sound with UltraClear HD Wireless Earbuds. Designed
+  for comfort and performance, these earbuds feature advanced noise-cancellation,
+  a secure fit, and up to 12 hours of battery life. Perfect for music lovers, gamers,
+  and busy professionals, they deliver immersive audio quality in a sleek and compact
+  design.
+price: 89.99
+currency: USD
+tags:
+- wireless
+- earbuds
+- HD sound
+- noise-cancellation
+- audio accessories
+attributes:
+  colour: black
+  connectivity: Bluetooth 5.0
+  battery_life: 12 hours
+  weight: 20g
+stock_quantity: 325
+rating: 4.7

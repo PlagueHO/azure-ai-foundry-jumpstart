@@ -1,0 +1,14 @@
+{
+  "Product ID": "868a8cf4-b425-4477-a574-17d05ca7ebee",
+  "Created At": "2025-05-12T02:51:04.165720+00:00",
+  "Name": "Product name",
+  "Category": "Relevant sub-category",
+  "Description": "Experience cutting-edge performance with the Product name, expertly designed for efficiency and reliability. Perfect for both personal and professional use, this device offers seamless functionality and enhanced durability. With advanced features tailored to meet modern demands, it delivers exceptional value and versatility. Whether you're tackling day-to-day tasks or diving into complex projects, the Product name is your trusted companion for peak productivity.",
+  "Price": "123.45 USD",
+  "Tags": ["tag1", "tag2"],
+  "Attributes": {
+    "key": "value"
+  },
+  "Stock Quantity": 123,
+  "Rating": 4.6
+}

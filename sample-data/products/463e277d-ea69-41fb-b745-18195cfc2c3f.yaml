@@ -1,0 +1,26 @@
+product_id: 463e277d-ea69-41fb-b745-18195cfc2c3f
+created_at: 2025-05-12 02:43:08.303790+00:00
+name: QuantumSound Wireless Earbuds Pro
+category: audio accessories
+description: Experience unparalleled sound clarity and comfort with the QuantumSound
+  Wireless Earbuds Pro. Designed for audiophiles and casual listeners alike, these
+  earbuds feature active noise cancellation, ergonomic fit, and up to 30 hours of
+  battery life. Perfect for workouts, commutes, or relaxing at home, they bring studio-quality
+  audio to your fingertips. Stay connected with advanced Bluetooth technology and
+  intuitive touch controls.
+price: 129.99
+currency: USD
+tags:
+- wireless
+- earbuds
+- Bluetooth
+- noise-cancellation
+- audio
+- accessories
+attributes:
+  colour: black
+  connectivity: Bluetooth 5.3
+  battery_life: 30 hours
+  weight: 4 grams per earbud
+stock_quantity: 320
+rating: 4.7

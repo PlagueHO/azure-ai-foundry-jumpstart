@@ -1,0 +1,17 @@
+{
+  "Product ID": "056f162a-7f03-4a59-adbe-06058f0bd169",
+  "Created At": "2025-05-12T02:49:44.344631+00:00",
+  "Name": "HyperSound Pro Wireless Headphones",
+  "Category": "Audio Accessories",
+  "Description": "Experience crystal-clear sound and unmatched comfort with the HyperSound Pro Wireless Headphones. Featuring advanced noise-cancellation technology, a sleek design, and up to 30 hours of battery life, these headphones are perfect for audiophiles and casual listeners alike. Seamlessly connect to your devices with Bluetooth 5.2 and enjoy intuitive touch controls for effortless operation. Whether you're commuting, working, or relaxing, the HyperSound Pro delivers immersive audio and reliable performance.",
+  "Price": "123.45 USD",
+  "Tags": "wireless, headphones",
+  "Attributes": {
+    "Color": "Black",
+    "Battery Life": "30 hours",
+    "Connectivity": "Bluetooth 5.2",
+    "Noise Cancellation": "Yes"
+  },
+  "Stock Quantity": 123,
+  "Rating": 4.6
+}

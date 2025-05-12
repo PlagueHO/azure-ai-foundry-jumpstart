@@ -1,0 +1,24 @@
+product_id: 2d910087-13e2-4399-b02c-f019ab47d0b7
+created_at: 2025-05-12 02:44:25.206093+00:00
+name: UltraTone Wireless Earbuds Pro
+category: audio accessories
+description: Experience unparalleled sound quality with the UltraTone Wireless Earbuds
+  Pro. Featuring advanced noise cancellation, a sleek ergonomic design, and up to
+  30 hours of playtime, these earbuds are perfect for music lovers and professionals
+  alike. Stay connected with intuitive touch controls and seamless Bluetooth pairing.
+  Elevate your listening experience today!
+price: 149.99
+currency: USD
+tags:
+- wireless
+- earbuds
+- noise-cancelling
+- bluetooth
+- audio
+attributes:
+  colour: black
+  connectivity: Bluetooth 5.3
+  battery_life: 30 hours
+  waterproof_rating: IPX5
+stock_quantity: 275
+rating: 4.8

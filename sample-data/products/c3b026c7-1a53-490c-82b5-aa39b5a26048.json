@@ -1,0 +1,22 @@
+{
+  "product_id": "c3b026c7-1a53-490c-82b5-aa39b5a26048",
+  "created_at": "2025-05-12T03:00:36.274048+00:00",
+  "name": "Wireless Noise-Cancelling Headphones",
+  "category": "Audio Accessories",
+  "description": "Experience immersive sound quality with these wireless noise-cancelling headphones. Perfect for travel, work, or leisure, they feature advanced noise-cancellation technology, long battery life, and a comfortable, ergonomic design. Stay connected with easy Bluetooth pairing and enjoy crystal-clear calls thanks to the built-in microphone.",
+  "price": 199.99,
+  "currency": "USD",
+  "tags": [
+    "headphones",
+    "wireless",
+    "noise-cancelling"
+  ],
+  "attributes": {
+    "battery_life": "30 hours",
+    "connectivity": "Bluetooth 5.0",
+    "color": "Matte Black",
+    "weight": "250g"
+  },
+  "stock_quantity": 75,
+  "rating": 4.6
+}

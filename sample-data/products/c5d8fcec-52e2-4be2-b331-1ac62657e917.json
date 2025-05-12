@@ -1,0 +1,22 @@
+{
+  "product_id": "c5d8fcec-52e2-4be2-b331-1ac62657e917",
+  "created_at": "2025-05-12T02:59:33.021109+00:00",
+  "name": "HyperCharge Pro Wireless Charging Pad",
+  "category": "Wireless Chargers",
+  "description": "Experience effortless charging with the HyperCharge Pro Wireless Charging Pad. Designed for compatibility with all Qi-enabled devices, this sleek and compact pad delivers fast charging speeds of up to 15W. Its anti-slip surface ensures your device stays secure, while intelligent temperature control prevents overheating. Perfect for home, office, or travel, it's a reliable and stylish addition to your tech accessories.",
+  "price": 49.99,
+  "currency": "USD",
+  "tags": [
+    "wireless charger",
+    "fast charging",
+    "Qi-compatible"
+  ],
+  "attributes": {
+    "color": "black",
+    "power_output": "15W",
+    "dimensions": "3.5 x 3.5 x 0.4 inches",
+    "compatibility": "Qi-enabled devices"
+  },
+  "stock_quantity": 250,
+  "rating": 4.6
+}

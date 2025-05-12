@@ -1,0 +1,25 @@
+product_id: b508a79b-bd37-4403-80ae-db0e827ff4bf
+created_at: 2025-05-12 02:41:21.746773+00:00
+name: UltraStream Wireless Bluetooth Earbuds
+category: headphones
+description: Experience crystal-clear audio and seamless connectivity with the UltraStream
+  Wireless Bluetooth Earbuds. Designed for comfort and durability, these earbuds feature
+  noise-cancellation technology, a 10-hour battery life, and a compact charging case.
+  Perfect for workouts, commutes, or relaxing at home, UltraStream delivers sound
+  quality that rivals premium brands at a fraction of the price.
+price: 59.99
+currency: USD
+tags:
+- wireless
+- earbuds
+- bluetooth
+- audio
+- portable
+- noise-cancelling
+attributes:
+  colour: black
+  connectivity: bluetooth 5.2
+  battery_life: 10 hours
+  waterproof_rating: IPX5
+stock_quantity: 235
+rating: 4.7

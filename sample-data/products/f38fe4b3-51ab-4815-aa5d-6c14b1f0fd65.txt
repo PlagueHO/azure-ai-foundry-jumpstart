@@ -1,0 +1,17 @@
+{
+  "Product ID": "f38fe4b3-51ab-4815-aa5d-6c14b1f0fd65",
+  "Created At": "2025-05-12T02:50:46.365736+00:00",
+  "Name": "SmartLink Pro Wi-Fi Router",
+  "Category": "Networking Devices",
+  "Description": "The SmartLink Pro Wi-Fi Router delivers high-speed connectivity, ensuring seamless streaming, gaming, and browsing experiences. Equipped with advanced dual-band technology, it offers coverage for large spaces and supports up to 50 connected devices simultaneously. Its sleek design blends effortlessly into any modern setup, while robust security features protect your network from threats. Ideal for households and small offices looking for reliable performance.",
+  "Price": "123.45 USD",
+  "Tags": "Wi-Fi, Router",
+  "Attributes": {
+    "Connectivity": "Dual-Band",
+    "Max Devices Supported": "50",
+    "Security Features": "Built-in Firewall",
+    "Dimensions": "8.5 x 5.5 x 2.0 inches"
+  },
+  "Stock Quantity": 123,
+  "Rating": 4.6
+}

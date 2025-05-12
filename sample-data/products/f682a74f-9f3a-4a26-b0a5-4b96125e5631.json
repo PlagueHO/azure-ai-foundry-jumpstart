@@ -1,0 +1,23 @@
+{
+  "product_id": "f682a74f-9f3a-4a26-b0a5-4b96125e5631",
+  "created_at": "2025-05-12T03:02:00.871789+00:00",
+  "name": "UltraClear 4K Monitor",
+  "category": "Monitors",
+  "description": "Experience unparalleled visual clarity with the UltraClear 4K Monitor, featuring a 27-inch edge-to-edge display, HDR support, and a 144Hz refresh rate for seamless performance. Perfect for gaming, content creation, or office work, this monitor delivers vibrant colors and sharp details in every frame. Designed with an ergonomic stand and multiple connectivity options, including HDMI and USB-C, it ensures convenience and comfort for any setup.",
+  "price": 329.99,
+  "currency": "USD",
+  "tags": [
+    "4K",
+    "Monitor",
+    "Gaming",
+    "HDR"
+  ],
+  "attributes": {
+    "resolution": "3840x2160",
+    "refresh_rate": "144Hz",
+    "screen_size": "27 inches",
+    "connectivity": "HDMI, USB-C"
+  },
+  "stock_quantity": 85,
+  "rating": 4.6
+}

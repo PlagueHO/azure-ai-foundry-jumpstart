@@ -1,0 +1,25 @@
+product_id: f7d38a43-9c2b-4715-be09-6859c88a1f87
+created_at: 2025-05-12 02:42:51.466765+00:00
+name: UltraTone Noise-Cancelling Wireless Headphones
+category: audio accessories
+description: Experience unparalleled sound quality with the UltraTone Noise-Cancelling
+  Wireless Headphones, designed for audiophiles and casual listeners alike. Featuring
+  advanced noise-cancellation technology, Bluetooth 5.2 connectivity, and a comfortable
+  over-ear design, these headphones provide up to 30 hours of uninterrupted listening.
+  Perfect for travel, work, or relaxation, they deliver crisp highs, deep bass, and
+  rich mids that elevate your music experience.
+price: 129.99
+currency: USD
+tags:
+- headphones
+- wireless
+- noise-cancelling
+- audio
+- Bluetooth
+attributes:
+  colour: black
+  battery_life: 30 hours
+  connectivity: Bluetooth 5.2
+  weight: 250g
+stock_quantity: 245
+rating: 4.7
