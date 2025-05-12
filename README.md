@@ -12,6 +12,8 @@ The Azure AI Foundry Jumpstart Solution Accelerator deploys an [Azure AI Foundry
 
 This solution accelerator is intended to help getting started with Azure AI Foundry quickly and easily, while meeting security and well-architected framework best practices.
 
+If you just want to get started, jumpt to the [Deploying the Solution Accelerator](#deploying-the-solution-accelerator) section.
+
 ### Zero-trust with network isolation
 
 By default, this soltion accelerator deploys Azure AI Foundry and most of the supporting resources into a *virtual network* using *private endpoints*, *disables public access* and uses *managed identities for services to authenticate* to each other. This aligns to [Microsoft's Secure Future Initiative](https://www.microsoft.com/trust-center/security/secure-future-initiative) and the [Zero Trust security model](https://learn.microsoft.com/security/zero-trust/).
@@ -20,6 +22,15 @@ It automates the deployment of the services using the same approach as the instr
 
 > [!NOTE]
 > Zero-trust with network isolation is the default configuration for this solution accelerator. But you can choose to deploy the resources without a virtual network and public endpoints if you prefer. See the [Configuration Options](#configuration-options) section for more details.
+
+## Features
+
+There are several features of the solution accelerator that are worth highlighting:
+
+- **Zero-trust**: Support for deploying a zero-trust environment.
+- **Project creation**: Optional creation of a project
+- **Model deployment**: Deploy various models, speeding up getting started.
+- **Sample data deployment**: Publish sample data to the storage accounts help you get started with Azure AI Foundry.
 
 ## Prerequisites
 

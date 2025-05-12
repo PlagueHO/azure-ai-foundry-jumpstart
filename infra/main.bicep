@@ -94,7 +94,7 @@ var sendTologAnalyticsCustomSettingName = 'send-to-${logAnalyticsName}'
 var applicationInsightsName = '${abbrs.insightsComponents}${environmentName}'
 var virtualNetworkName = '${abbrs.networkVirtualNetworks}${environmentName}'
 // Ensure the storage account name is ≤ 24 characters as required by Azure.
-var storageAccounName = take(toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', '')),24)
+var storageAccountName = take(toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', '')),24)
 // Ensure the key vault name is ≤ 24 characters as required by Azure.
 var keyVaultName = take(toLower(replace('${abbrs.keyVaultVaults}${environmentName}', '-', '')),24)
 var containerRegistryName = toLower(replace('${abbrs.containerRegistryRegistries}${environmentName}', '-', ''))
@@ -326,7 +326,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
   name: 'storage-account-deployment'
   scope: rg
   params: {
-    name: storageAccounName
+    name: storageAccountName
     allowBlobPublicAccess: false
     blobServices: {
       automaticSnapshotPolicyEnabled: false
@@ -816,22 +816,22 @@ module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.
 // ---------- AI FOUNDRY PROJECT DATASTORES ----------
 // Build a Cartesian product index across projects and sample-data containers
 var projectCount   = length(effectiveAiFoundryProjects)
-var containerCount = length(sampleDataContainersArray)
+var sampleDataContainerCount = length(sampleDataContainersArray)
 
 // One module instance per <project, container> when deploySampleData == true
 module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
-  for idx in range(0, (projectCount * containerCount) - 1) : if (deploySampleData) {
+  for idx in range(0, (projectCount * sampleDataContainerCount) - 1) : if (deploySampleData) {
     // Make the module deployment name unique
-    name: replace(toLower(take('datastore_${effectiveAiFoundryProjects[idx / containerCount].name}-${sampleDataContainersArray[idx % containerCount]}',64)),'-','_')
+    name: replace(toLower(take('datastore_${effectiveAiFoundryProjects[idx / sampleDataContainerCount].name}_${sampleDataContainersArray[idx % sampleDataContainerCount]}',64)),'-','_')
     scope: rg
     dependsOn: [
       aiFoundryHubProjects
     ]
     params: {
-      projectWorkspaceName: aiFoundryHubProjects[idx / containerCount].outputs.name
-      storageAccountName:  storageAccounName
-      storageContainerName: sampleDataContainersArray[idx % containerCount]
-      dataStoreName: sampleDataContainersArray[idx % containerCount].name
+      projectWorkspaceName: aiFoundryHubProjects[idx / sampleDataContainerCount].outputs.name
+      storageAccountName: storageAccountName
+      storageContainerName: sampleDataContainersArray[idx % sampleDataContainerCount]
+      dataStoreName: replace(toLower(sampleDataContainersArray[idx % sampleDataContainerCount].name),'-','_')
     }
   }
 ]
