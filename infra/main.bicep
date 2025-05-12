@@ -735,7 +735,7 @@ var effectiveAiFoundryProjects aiFoundryProjectType[] = !empty(aiFoundryProjectN
 ] : []
 
 module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = [for project in effectiveAiFoundryProjects: {
-  name: 'ai-foundry-project-${project.name}'
+  name: take('aifp-${project.name}',64)
   scope: rg
   params: {
     name: project.name
@@ -769,7 +769,7 @@ module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspa
 // Add any Azure AI Developer role for each AI Foundry project to the AI Services account
 // This ensures a developer with access to the AI Foundry project can also access the AI Services
 module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aiservice.bicep' = [for (project,index) in effectiveAiFoundryProjects: {
-  name: 'ai-foundry-project-ai-service-role-assignments-${project.name}'
+  name: take('aifp-aisvc-ra-${project.name}',64)
   scope: rg
   dependsOn: [
     aiFoundryHubProjects
@@ -791,7 +791,7 @@ module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aiservic
 // to the AI Search Account. This ensures Agents created within a project can access indexes in
 // the AI Search account.
 module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.bicep' = [for (project,index) in effectiveAiFoundryProjects: {
-  name: 'ai-foundry-project-ai-search-role-assignments-${project.name}'
+  name: take('aifp-aisch-ra-${project.name}',64)
   scope: rg
   dependsOn: [
     aiFoundryHubProjects
@@ -822,7 +822,7 @@ var containerCount = length(sampleDataContainersArray)
 module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
   for idx in range(0, (projectCount * containerCount) - 1) : if (deploySampleData) {
     // Make the module deployment name unique
-    name: 'datastore-${effectiveAiFoundryProjects[int(idx / containerCount)].name}-${sampleDataContainersArray[idx % containerCount]}'
+    name: take('datastore-${effectiveAiFoundryProjects[int(idx / containerCount)].name}-${sampleDataContainersArray[idx % containerCount]}',64)
     scope: rg
     dependsOn: [
       aiFoundryHubProjects
