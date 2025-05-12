@@ -2,7 +2,7 @@
 Generate sample retail-product catalogue items using Azure OpenAI via Semantic Kernel.
 
 Example:
-python scripts/generators/generate-retail-product.py -n 100 -i electronics -o ./sample-data/products/
+python scripts/generators/generate-retail-product.py -n 100 -i electronics -o ./sample-data/retail-product/
 
 Prerequisites
 -------------
