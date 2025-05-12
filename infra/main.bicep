@@ -109,6 +109,7 @@ var networkDefaultAction = azureNetworkIsolation ? 'Deny' : 'Allow'
 // List of sample data containers
 var sampleDataContainersArray array = [
   'tech-support'
+  'retail-product'
 ]
 
 // ---------- RESOURCE GROUP ----------
