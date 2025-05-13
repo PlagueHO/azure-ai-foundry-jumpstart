@@ -831,7 +831,7 @@ module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
       projectWorkspaceName: aiFoundryHubProjects[idx / sampleDataContainerCount].outputs.name
       storageAccountName: storageAccountName
       storageContainerName: sampleDataContainersArray[idx % sampleDataContainerCount]
-      dataStoreName: replace(toLower(sampleDataContainersArray[idx % sampleDataContainerCount].name),'-','_')
+      dataStoreName: replace(toLower(sampleDataContainersArray[idx % sampleDataContainerCount]),'-','_')
     }
   }
 ]

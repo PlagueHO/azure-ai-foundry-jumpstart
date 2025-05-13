@@ -8,7 +8,7 @@ param storageAccountName string
 param storageContainerName string
 
 @description('The name of the datastore to be created in the Azure AI Foundry project. Defaults to "ds-<storageContainerName>".')
-param dataStoreName string = replace(toLower('ds_${storageContainerName}'), '-','_')
+param dataStoreName string
 
 // Reference to the existing Azure AI Foundry project workspace
 resource projectWorkspace 'Microsoft.MachineLearningServices/workspaces@2025-01-01-preview' existing = {
