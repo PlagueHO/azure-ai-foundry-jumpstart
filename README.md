@@ -14,14 +14,15 @@ This solution accelerator is intended to help getting started with Azure AI Foun
 
 If you just want to get started, jumpt to the [Deploying the Solution Accelerator](#deploying-the-solution-accelerator) section.
 
-### Zero-trust with network isolation
+## A Zero-trust AI Foundry Environment
 
-By default, this soltion accelerator deploys Azure AI Foundry and most of the supporting resources into a *virtual network* using *private endpoints*, *disables public access* and uses *managed identities for services to authenticate* to each other. This aligns to [Microsoft's Secure Future Initiative](https://www.microsoft.com/trust-center/security/secure-future-initiative) and the [Zero Trust security model](https://learn.microsoft.com/security/zero-trust/).
+By default, this solution accelerator deploys Azure AI Foundry and most of the supporting resources into a *virtual network* using *private endpoints*, *disables public access* and configures *managed identities for services to authenticate* to each other. This aligns to [Microsoft's Secure Future Initiative](https://www.microsoft.com/trust-center/security/secure-future-initiative) and the [Zero Trust security model](https://learn.microsoft.com/security/zero-trust/).
 
 It automates the deployment of the services using the same approach as the instructions on [How to create a secure Azure AI Foundry hub and project with a managed virtual network](https://learn.microsoft.com/azure/ai-foundry/how-to/secure-data-playground) page.
 
-> [!NOTE]
+> [!IMPORTANT]
 > Zero-trust with network isolation is the default configuration for this solution accelerator. But you can choose to deploy the resources without a virtual network and public endpoints if you prefer. See the [Configuration Options](#configuration-options) section for more details.
+> When deployed with zero-trust, the Azure AI Foundry hub and project are not accessible from the public internet. You will need to use a VPN or Azure Bastion to access the Azure AI Foundry environment.
 
 ## Features
 
@@ -29,11 +30,12 @@ There are several features of the solution accelerator that are worth highlighti
 
 - **Zero-trust**: Support for deploying a zero-trust environment (network isolation).
 - **Managed identities**: Use of managed identities for Azure resources to authenticate to each other. API keys are not used and can optionally be disabled.
+- **Azure Verified Modules**: Use of Bicep[Azure verified modules](https://aka.ms/avm) to deploy the resources where possible.
+- **Hub deployment and supporting resources**: Deployment of an Azure AI Hub and required supporting resources.
+- **Project deployment**: Optional deployment of an [Azure AI Foundry project during](https://learn.microsoft.com/azure/ai-foundry/concepts/ai-resources#organize-work-in-projects-for-customization) in the hub.
 - **Diagnostic settings**: Diagnostic settings are configured for all resources to send logs to a Log Analytics workspace.
-- **Suppporting resources**: Creation of supporting resources such as Azure Storage accounts, Azure Key Vault, Azure Log Analytics workspace, and Azure Application Insights.
-- **Project creation**: Optional creation of a project during deployment.
-- **Model deployment**: Deploy various models, speeding up getting started.
-- **Sample data deployment**: Publish sample data to the storage accounts help you get started with Azure AI Foundry.
+- **Model deployment**: Optionally deploy a selection of current AI models, speeding up getting started.
+- **Sample data deployment**: Optionally upload sample data to the storage accounts help you get started with Azure AI Foundry.
 - **Sample data creation**: Scripts to create custom sample data for using with Azure AI Foundry.
 
 ## Prerequisites
@@ -87,7 +89,7 @@ Click on the Deploy to Azure button to deploy the Azure resources for this solut
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FPlagueHO%2Fazure-ai-foundry-jumpstart%2Fmain%2Finfra%2Fmain.bicep)
 
 > [!NOTE]
-> This button will only create Azure resources. It will not populate any sample data.
+> This button will only create Azure resources. It will not deploy any sample data.
 
 ## Next Steps
 
@@ -95,10 +97,16 @@ After the deployment is complete, you can access the Azure AI Foundry hub using 
 
 ## Deleting the Deployment
 
-If you used the Azure Developer CLI to deploy the solution accelerator, you can delete all the resources by running the following command:
+If you created the deployment as a test or demonstration environment, you can easily delete the environment using the Azure Developer CLI if you used this method to deploy it.To delete all the resources created during the deployment, run the following command:
 
 ```powershell
 azd down
+```
+
+You can force the deletion and purge the Key Vault and Azure AI Services by using the `--force` and `--purge` options:
+
+```powershell
+azd down --force --purge
 ```
 
 > [!WARNING]
@@ -114,13 +122,19 @@ azd env set AZURE_NETWORK_ISOLATION false
 
 A complete list of environment variables can be found in the [Configuration Options](docs/CONFIGURATION_OPTIONS.md) document.
 
-## Features
+## Archtecture
 
-Some key features of the solution accelerator include:
+The following diagrams illustrate the architecture of the solution accelerator. For a detailed overview of the architecture of the solution accelerator, see the [Architecture](docs/ARCHITECTURE.md) document.
 
-- **Azure Developer CLI**: The solution accelerator uses the Azure Developer CLI to deploy the Azure resources. The Azure Developer CLI is a command-line interface that simplifies the process of deploying Azure resources and applications. It provides a simple and consistent way to manage Azure resources using a command-line interface.
-- **Bicep Templates**: The solution accelerator uses Bicep templates to deploy the Azure resources. Bicep is a domain-specific language (DSL) that simplifies the process of deploying Azure resources. It is a more readable and maintainable alternative to JSON templates.
-- **Azure Verified Modules**: The solution accelerator uses [Azure verified modules](https://aka.ms/avm) to define the Azure resources and ensure best practices are being used. Azure verified modules are pre-built Bicep modules that are designed to be reusable and composable. They provide a consistent way to deploy Azure resources and are maintained by Microsoft.
+### Zero-trust with network isolation
+
+TBC
+
+### Without network isolation
+
+The following diagram illustrates the architecture of the solution accelerator without network isolation.
+
+[![Azure AI Foundry Jumpstart Solution Accelerator without network isolation](docs/images/azure-ai-foundry-jumpstart-public.svg)](docs/images/azure-ai-foundry-jumpstart-public.svg)
 
 ## Contributing
 
