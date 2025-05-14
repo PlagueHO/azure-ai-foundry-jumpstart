@@ -124,7 +124,7 @@ A complete list of environment variables can be found in the [Configuration Opti
 
 ## Archtecture
 
-The following diagrams illustrate the architecture of the solution accelerator. For a detailed overview of the architecture of the solution accelerator, see the [Architecture](docs/ARCHITECTURE.md) document.
+The following diagrams illustrate the architecture of the solution accelerator. For a detailed overview of the architecture of the solution accelerator, see the [Architecture](docs/design/ARCHITECTURE.md) document.
 
 ### Zero-trust with network isolation
 
