@@ -27,10 +27,14 @@ It automates the deployment of the services using the same approach as the instr
 
 There are several features of the solution accelerator that are worth highlighting:
 
-- **Zero-trust**: Support for deploying a zero-trust environment.
-- **Project creation**: Optional creation of a project
+- **Zero-trust**: Support for deploying a zero-trust environment (network isolation).
+- **Managed identities**: Use of managed identities for Azure resources to authenticate to each other. API keys are not used and can optionally be disabled.
+- **Diagnostic settings**: Diagnostic settings are configured for all resources to send logs to a Log Analytics workspace.
+- **Suppporting resources**: Creation of supporting resources such as Azure Storage accounts, Azure Key Vault, Azure Log Analytics workspace, and Azure Application Insights.
+- **Project creation**: Optional creation of a project during deployment.
 - **Model deployment**: Deploy various models, speeding up getting started.
 - **Sample data deployment**: Publish sample data to the storage accounts help you get started with Azure AI Foundry.
+- **Sample data creation**: Scripts to create custom sample data for using with Azure AI Foundry.
 
 ## Prerequisites
 
