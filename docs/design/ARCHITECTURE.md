@@ -4,7 +4,7 @@ This document describes the Azure resources deployed by [infra/main.bicep](infra
 
 If this solution accelerator is deployed without network isolation, the networking resources are not deployed and public endpoints are enabled for all PaaS services.
 
-## Netowrk Isolation Mode
+## Zero-trust with Network Isolation
 
 ### High‑Level Architecture
 
@@ -36,7 +36,7 @@ If this solution accelerator is deployed without network isolation, the networki
 
 All private endpoints are placed in their dedicated subnets, isolating traffic and enabling granular NSG rules if required.
 
-#### Logical Network Topology
+### Logical Network Topology
 
 The following diagram illustrates the logical network topology of the deployed resources. The `azd-env-name` tag is applied to all resources for traceability.
 
@@ -72,6 +72,12 @@ flowchart TB
     LA --- PE_ACR
     LA --- Bastion
 ```
+
+## Without Network Isolation
+
+When deployed without network isolation, the following resources are deployed:
+
+[![Azure AI Foundry Jumpstart Solution Accelerator without network isolation](../images/azure-ai-foundry-jumpstart-public.svg)](docs/images/azure-ai-foundry-jumpstart-public.svg)
 
 ## Security & Best Practices
 
