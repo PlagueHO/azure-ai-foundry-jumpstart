@@ -6,7 +6,7 @@
 [![Azure][azure-shield]][azure-url]
 [![IaC][iac-shield]][iac-url]
 
-## Introduction
+## What is the Azure AI Jumpstart Solution Accelerator
 
 The Azure AI Foundry Jumpstart Solution Accelerator deploys an [Azure AI Foundry environment](https://learn.microsoft.com/azure/ai-foundry/how-to/create-secure-ai-hub) and supporting services into your Azure subscription. This accelerator is designed to be used as a secure environment for exploring and experimenting with Azure AI Foundry capabilities.
 
@@ -24,7 +24,13 @@ It automates the deployment of the services using the same approach as the instr
 > Zero-trust with network isolation is the default configuration for this solution accelerator. But you can choose to deploy the resources without a virtual network and public endpoints if you prefer. See the [Configuration Options](#configuration-options) section for more details.
 > When deployed with zero-trust, the Azure AI Foundry hub and project are not accessible from the public internet. You will need to use a VPN or Azure Bastion to access the Azure AI Foundry environment.
 
-## Features
+## Requirements
+
+Before you begin, ensure you have the following prerequisites in place:
+
+- An active Azure subscription - [Create a free account](https://azure.microsoft.com/free/) if you don't have one.
+
+## Key Features
 
 There are several features of the solution accelerator that are worth highlighting:
 
@@ -38,13 +44,7 @@ There are several features of the solution accelerator that are worth highlighti
 - **Sample data deployment**: Optionally upload sample data to the storage accounts help you get started with Azure AI Foundry.
 - **Sample data creation**: Scripts to create custom sample data for using with Azure AI Foundry.
 
-## Prerequisites
-
-Before you begin, ensure you have the following prerequisites in place:
-
-- An active Azure subscription - [Create a free account](https://azure.microsoft.com/free/) if you don't have one.
-
-## Deploying the Solution Accelerator
+## Deploying
 
 You can deploy the application using one of the following methods:
 
