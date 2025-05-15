@@ -1,0 +1,48 @@
+version: 2
+
+# Dependabot configuration for Azure AI Foundry Jumpstart
+updates:
+  # Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      time: "06:00"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+    labels:
+      - "dependencies"
+      - "pip"
+    reviewers:
+      - "PlagueHO"
+    rebase-strategy: "auto"
+    groups:
+      pip-dependencies:
+        patterns:
+          - "*"
+    allow:
+      - dependency-type: "all"
+    ignore:
+      - dependency-name: "example-pkg-to-ignore"
+        versions: ["1.x"]
+
+  # GitHub Actions dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      time: "06:00"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    reviewers:
+      - "PlagueHO"
+    rebase-strategy: "auto"
+    groups:
+      gh-actions:
+        patterns:
+          - "*"
