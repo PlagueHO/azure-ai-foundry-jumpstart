@@ -12,7 +12,7 @@ The Azure AI Foundry Jumpstart Solution Accelerator deploys an [Azure AI Foundry
 
 This solution accelerator is intended to help getting started with Azure AI Foundry quickly and easily, while meeting security and well-architected framework best practices.
 
-If you just want to get started, jumpt to the [Deploying the Solution Accelerator](#deploying-the-solution-accelerator) section.
+If you just want to get started, jump to the [Deploying](#deploying) section.
 
 ## A Zero-trust AI Foundry Environment
 
