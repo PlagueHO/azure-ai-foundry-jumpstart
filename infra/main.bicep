@@ -63,7 +63,7 @@ param deploySampleData bool = false
 @sys.description('Resource ID of an existing Azure Container Registry (ACR) to use instead of deploying a new one. When provided the registry module is skipped. If `azureNetworkIsolation` is true you must ensure the registry has the required private networking configuration.')
 param containerRegistryResourceId string = ''
 
-@sys.description('Set to true to skip deploying **and** referencing any Azure Container Registry.')
+@sys.description('Deploy Azure Container Registry and all dependent configuration. Set to false to skip its deployment.')
 param containerRegistryDeploy bool = true
 
 @sys.description('The name of the Azure AI Foundry project to create.')

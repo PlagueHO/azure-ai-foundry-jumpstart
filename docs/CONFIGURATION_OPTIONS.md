@@ -179,16 +179,6 @@ If `AZURE_NETWORK_ISOLATION` is `true`, ensure the registry already has the requ
 azd env set AZURE_CONTAINER_REGISTRY_RESOURCE_ID "/subscriptions/<subId>/resourceGroups/rg-xyz/providers/Microsoft.ContainerRegistry/registries/acrExisting"
 ```
 
-### AZURE_CONTAINER_REGISTRY_DISABLED
-
-Skip deploying **and** associating any Azure Container Registry.  
-When `true`, `AZURE_CONTAINER_REGISTRY_RESOURCE_ID` is ignored and the AI Foundry Hub is created without an attached registry.
-Default: `false`.
-
-```powershell
-azd env set AZURE_CONTAINER_REGISTRY_DISABLED true
-```
-
 ### AZURE_CONTAINER_REGISTRY_DEPLOY
 
 Deploy a new Azure Container Registry **or** attach an existing one (`true`).  
