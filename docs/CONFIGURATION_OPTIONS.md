@@ -125,6 +125,17 @@ Default: `standard`.
 azd env set AZURE_AI_SEARCH_SKU standard2
 ```
 
+### AZURE_AI_SEARCH_DEPLOY
+
+Deploy the Azure AI Search service **and** all related role assignments / connections (`true`).  
+When set to `false`, no Search resources or privileges are created.
+
+Default: `true`.
+
+```powershell
+azd env set AZURE_AI_SEARCH_DEPLOY false
+```
+
 ## Identity & Access
 
 ### AZURE_PRINCIPAL_ID
@@ -176,6 +187,17 @@ Default: `false`.
 
 ```powershell
 azd env set AZURE_CONTAINER_REGISTRY_DISABLED true
+```
+
+### AZURE_CONTAINER_REGISTRY_DEPLOY
+
+Deploy a new Azure Container Registry **or** attach an existing one (`true`).  
+When set to `false`, `AZURE_CONTAINER_REGISTRY_RESOURCE_ID` is ignored and the AI Foundry Hub is created without an attached registry.
+
+Default: `true`.
+
+```powershell
+azd env set AZURE_CONTAINER_REGISTRY_DEPLOY false
 ```
 
 ## Security

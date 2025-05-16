@@ -16,7 +16,6 @@ param resourceGroupName string = 'rg-${environmentName}'
 @sys.description('Enable purge protection on the Key Vault. When set to true the vault cannot be permanently deleted until purge protection is disabled. Defaults to false.')
 param keyVaultEnablePurgeProtection bool = false
 
-
 @sys.description('Optional friendly name for the AI Foundry Hub workspace.')
 param aiFoundryHubFriendlyName string
 
@@ -65,7 +64,7 @@ param deploySampleData bool = false
 param containerRegistryResourceId string = ''
 
 @sys.description('Set to true to skip deploying **and** referencing any Azure Container Registry.')
-param containerRegistryDisabled bool = false
+param containerRegistryDeploy bool = true
 
 @sys.description('The name of the Azure AI Foundry project to create.')
 param aiFoundryProjectName string
@@ -75,6 +74,9 @@ param aiFoundryProjectFriendlyName string
 
 @sys.description('The description of the Azure AI Foundry project to create.') 
 param aiFoundryProjectDescription string
+
+@sys.description('Deploy Azure AI Search and all dependent configuration. Set to false to skip its deployment.')
+param azureAiSearchDeploy bool = true
 
 var abbrs = loadJsonContent('./abbreviations.json')
 
@@ -214,7 +216,7 @@ module containerRegistryPrivateDnsZone 'br/public:avm/res/network/private-dns-zo
   }
 }
 
-module aiSearchPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
+module aiSearchPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation && azureAiSearchDeploy) {
   name: 'ai-search-private-dns-zone'
   scope: rg
   params: {
@@ -291,11 +293,13 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
 // ---------- STORAGE ACCOUNT ----------
 // Role assignments for Storage Account
 var storageAccountRoleAssignments = [
-  {
-    roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-    principalType: 'ServicePrincipal'
-    principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
-  }
+  ...(azureAiSearchDeploy ? [
+    {
+      roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+      principalType: 'ServicePrincipal'
+      principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
+    }
+  ] : [])
   // Developer role assignments
   ...(!empty(principalId) ? [
     {
@@ -380,7 +384,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
 }
 
 // ---------- CONTAINER REGISTRY ----------
-module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = if (!containerRegistryDisabled && empty(containerRegistryResourceId)) {
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = if (containerRegistryDeploy && empty(containerRegistryResourceId)) {
   name: 'container-registry-deployment'
   scope: rg
   params: {
@@ -417,13 +421,13 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
   }
 }
 
-// Effective ACR resource-id used by the hub ('' when disabled)
-var effectiveContainerRegistryResourceId = containerRegistryDisabled
-  ? ''
-  : (empty(containerRegistryResourceId) ? containerRegistry.outputs.resourceId : containerRegistryResourceId)
+// Effective ACR resource-id used by the hub ('' when not deploying / skipped)
+var effectiveContainerRegistryResourceId = containerRegistryDeploy
+  ? (empty(containerRegistryResourceId) ? containerRegistry.outputs.resourceId : containerRegistryResourceId)
+  : ''
 
 // ---------- AI SEARCH ----------
-module aiSearchService 'br/public:avm/res/search/search-service:0.10.0' = {
+module aiSearchService 'br/public:avm/res/search/search-service:0.10.0' = if (azureAiSearchDeploy) {
   name: 'ai-search-service-deployment'
   scope: rg
   params: {
@@ -475,11 +479,8 @@ resource azureMachineLearningServicePrincipal 'Microsoft.Graph/servicePrincipals
   appId: '0736f41a-0425-4b46-bdb5-1563eff02385' // Azure Machine Learning service principal
 }
 
-// Role assignments for AI Search
-// Add role assignments for AI Search using the role_aisearch.bicep module
-// This needs to be done after the AI Search service is created to avoid circular dependencies
-// between the AI Search service and the AI Services account.
-var aiSearchRoleAssignmentsArray = [
+// Role assignments (only when Search exists)
+var aiSearchRoleAssignmentsArray = azureAiSearchDeploy ? [
   {
     roleDefinitionIdOrName: 'Search Index Data Contributor'
     principalType: 'ServicePrincipal'
@@ -513,8 +514,9 @@ var aiSearchRoleAssignmentsArray = [
       principalId: principalId
     }
   ] : [])
-]
-module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = {
+] : []
+
+module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = if (azureAiSearchDeploy) {
   name: 'ai-search-role-assignments'
   scope: rg
   dependsOn: [
@@ -570,16 +572,19 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
 // This needs to be done after the AI Services account is created to avoid circular dependencies
 // between the AI Services account and the AI Search service.
 var aiServicesRoleAssignmentsArray = [
-  {
-    roleDefinitionIdOrName: 'Cognitive Services Contributor'
-    principalType: 'ServicePrincipal'
-    principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
-  }
-  {
-    roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
-    principalType: 'ServicePrincipal'
-    principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
-  }
+  // search–specific roles only when search is present
+  ...(azureAiSearchDeploy ? [
+    {
+      roleDefinitionIdOrName: 'Cognitive Services Contributor'
+      principalType: 'ServicePrincipal'
+      principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
+    }
+    {
+      roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
+      principalType: 'ServicePrincipal'
+      principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
+    }
+  ] : [])
   // Developer role assignments
   ...(!empty(principalId) ? [
     {
@@ -599,6 +604,7 @@ var aiServicesRoleAssignmentsArray = [
     }
   ] : [])
 ]
+
 module aiServicesRoleAssignments './core/security/role_aiservice.bicep' = {
   name: 'ai-services-role-assignments'
   scope: rg
@@ -621,6 +627,45 @@ var aiFoundryHubRoleAssignments = !empty(principalId) ? [
   }
 ] : []
 
+var aiFoundryHubConnections = concat([
+  {
+    // AIServices connection
+    category: 'AIServices'
+    connectionProperties: {
+      authType: 'AAD'
+    }
+    metadata: {
+      ApiType: 'Azure'
+      ApiVersion: '2023-07-01-preview'
+      DeploymentApiVersion: '2023-10-01-preview'
+      Location: location
+      ResourceId: aiServicesAccount.outputs.resourceId
+    }
+    name: aiServicesName
+    target: aiServicesAccount.outputs.endpoint
+    isSharedToAll: true
+  }
+], azureAiSearchDeploy ? [
+  {
+    // CognitiveSearch connection
+    category: 'CognitiveSearch'
+    connectionProperties: {
+      authType: 'AAD'
+    }
+    metadata: {
+      Type: 'azure_ai_search'
+      ApiType: 'Azure'
+      ApiVersion: '2024-05-01-preview'
+      DeploymentApiVersion: '2023-11-01'
+      Location: location
+      ResourceId: aiSearchService.outputs.resourceId
+    }
+    name: aiSearchName
+    target: aiSearchService.outputs.endpoint
+    isSharedToAll: true
+  }
+] : [])
+
 module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = {
   name: 'ai-foundry-hub-workspace-deployment'
   scope: rg
@@ -634,42 +679,8 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
     associatedApplicationInsightsResourceId: applicationInsights.outputs.resourceId
     associatedKeyVaultResourceId: keyVault.outputs.resourceId
     associatedStorageAccountResourceId: storageAccount.outputs.resourceId
-    associatedContainerRegistryResourceId: !containerRegistryDisabled ? effectiveContainerRegistryResourceId : null
-    connections: [
-      {
-        category: 'AIServices'
-        connectionProperties: {
-          authType: 'AAD'
-        }
-        metadata: {
-          ApiType: 'Azure'
-          ApiVersion: '2023-07-01-preview'
-          DeploymentApiVersion: '2023-10-01-preview'
-          Location: location
-          ResourceId: aiServicesAccount.outputs.resourceId
-        }
-        name: aiServicesName
-        target: aiServicesAccount.outputs.endpoint
-        isSharedToAll: true
-      }
-      {
-        category: 'CognitiveSearch'
-        connectionProperties: {
-          authType: 'AAD'
-        }
-        metadata: {
-          Type: 'azure_ai_search'
-          ApiType: 'Azure'
-          ApiVersion: '2024-05-01-preview'
-          DeploymentApiVersion: '2023-11-01'
-          Location: location
-          ResourceId: aiSearchService.outputs.resourceId
-        }
-        name: aiSearchName
-        target: aiSearchService.outputs.endpoint
-        isSharedToAll: true
-      }
-    ]
+    associatedContainerRegistryResourceId: containerRegistryDeploy ? effectiveContainerRegistryResourceId : null
+    connections: aiFoundryHubConnections
     diagnosticSettings: [
       {
         metricCategories: [
@@ -790,28 +801,30 @@ module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aiservic
 // Add any Search Index Reader and Search Service Contributor roles for each AI Foundry project
 // to the AI Search Account. This ensures Agents created within a project can access indexes in
 // the AI Search account.
-module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.bicep' = [for (project,index) in effectiveAiFoundryProjects: {
-  name: take('aifp-aisch-ra-${project.name}',64)
-  scope: rg
-  dependsOn: [
-    aiFoundryHubProjects
-  ]
-  params: {
-    azureAiSearchName: aiSearchName
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Search Index Data Reader'
-        principalType: 'ServicePrincipal'
-        principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
-      }
-      {
-        roleDefinitionIdOrName: 'Search Service Contributor'
-        principalType: 'ServicePrincipal'
-        principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
-      }
+module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.bicep' = [
+  for (project,index) in effectiveAiFoundryProjects : if (azureAiSearchDeploy) {
+    name: take('aifp-aisch-ra-${project.name}',64)
+    scope: rg
+    dependsOn: [
+      aiFoundryHubProjects
     ]
+    params: {
+      azureAiSearchName: aiSearchName
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Search Index Data Reader'
+          principalType: 'ServicePrincipal'
+          principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
+        }
+        {
+          roleDefinitionIdOrName: 'Search Service Contributor'
+          principalType: 'ServicePrincipal'
+          principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
+        }
+      ]
+    }
   }
-}]
+]
 
 // ---------- AI FOUNDRY PROJECT DATASTORES ----------
 // Build a Cartesian product index across projects and sample-data containers
@@ -875,12 +888,12 @@ output STORAGE_ACCOUNT_SERVICE_ENDPOINTS object = storageAccount.outputs.service
 output KEY_VAULT_NAME string = keyVault.outputs.name
 output KEY_VAULT_RESOURCE_ID string = keyVault.outputs.resourceId
 output KEY_VAULT_ENDPOINT string = keyVault.outputs.uri
-output CONTAINER_REGISTRY_NAME string = (!containerRegistryDisabled && empty(containerRegistryResourceId)) ? containerRegistry.outputs.name : ''
-output CONTAINER_REGISTRY_ID   string = containerRegistryDisabled
-  ? ''
-  : (empty(containerRegistryResourceId) ? containerRegistry.outputs.resourceId : containerRegistryResourceId)
-output AI_SEARCH_NAME string = aiSearchService.outputs.name
-output AI_SEARCH_ID string = aiSearchService.outputs.resourceId
+output CONTAINER_REGISTRY_NAME string = (containerRegistryDeploy && empty(containerRegistryResourceId)) ? containerRegistry.outputs.name : ''
+output CONTAINER_REGISTRY_ID   string = containerRegistryDeploy
+  ? (empty(containerRegistryResourceId) ? containerRegistry.outputs.resourceId : containerRegistryResourceId)
+  : ''
+output AI_SEARCH_NAME string = azureAiSearchDeploy ? aiSearchService.outputs.name : ''
+output AI_SEARCH_ID   string = azureAiSearchDeploy ? aiSearchService.outputs.resourceId : ''
 output AI_SERVICES_NAME string = aiServicesAccount.outputs.name
 output AI_SERVICES_ID string = aiServicesAccount.outputs.resourceId
 output AI_SERVICES_ENDPOINT string = aiServicesAccount.outputs.endpoint

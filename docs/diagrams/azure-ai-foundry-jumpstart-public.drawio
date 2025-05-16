@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36 Edg/137.0.0.0" version="27.0.5">
   <diagram name="Page-1" id="OB-Skv7ipIgz0RFftd0Z">
-    <mxGraphModel dx="1234" dy="781" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#FFFFFF" math="0" shadow="0" adaptiveColors="none">
+    <mxGraphModel dx="1803" dy="1139" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#FFFFFF" math="0" shadow="0" adaptiveColors="none">
       <root>
         <mxCell id="A9TOfrX54KiNDDk2kyXw-0" />
         <mxCell id="A9TOfrX54KiNDDk2kyXw-1" parent="A9TOfrX54KiNDDk2kyXw-0" />
@@ -63,7 +63,12 @@
         <mxCell id="pcRGNQqygn--t2DNfjO_-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;flowAnimation=0;startArrow=classic;startFill=0;fontFamily=Verdana;strokeColor=#999999;" parent="pcRGNQqygn--t2DNfjO_-10" source="pcRGNQqygn--t2DNfjO_-16" target="pcRGNQqygn--t2DNfjO_-15" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="pcRGNQqygn--t2DNfjO_-16" value="Azure AI&lt;br&gt;Search" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/app_services/Search_Services.svg;fontFamily=Verdana;rounded=0;strokeColor=#C7C7C7;" parent="pcRGNQqygn--t2DNfjO_-10" vertex="1">
+        <mxCell id="fvOApo1kb7UWq9ieddKt-0" value="Text" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="pcRGNQqygn--t2DNfjO_-28" vertex="1" connectable="0">
+          <mxGeometry x="-0.352" y="4" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pcRGNQqygn--t2DNfjO_-16" value="Azure AI&lt;br&gt;Search (optional)" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/app_services/Search_Services.svg;fontFamily=Verdana;rounded=0;strokeColor=#C7C7C7;" parent="pcRGNQqygn--t2DNfjO_-10" vertex="1">
           <mxGeometry x="209.5" y="303" width="68" height="49.120000000000005" as="geometry" />
         </mxCell>
         <mxCell id="pcRGNQqygn--t2DNfjO_-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Verdana;strokeColor=#999999;" parent="pcRGNQqygn--t2DNfjO_-10" source="pcRGNQqygn--t2DNfjO_-16" target="pcRGNQqygn--t2DNfjO_-6" edge="1">
@@ -135,14 +140,14 @@
         <mxCell id="pcRGNQqygn--t2DNfjO_-54" value="Logs &amp;amp;&lt;br&gt;Metrics" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=9;fontFamily=Verdana;rounded=0;spacing=0;" parent="pcRGNQqygn--t2DNfjO_-10" vertex="1">
           <mxGeometry x="341" y="253" width="46" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="_iLT0d9KRik_b3K9yHIM-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Verdana;strokeColor=#999999;dashed=1;" edge="1" parent="pcRGNQqygn--t2DNfjO_-10" source="pcRGNQqygn--t2DNfjO_-7">
+        <mxCell id="_iLT0d9KRik_b3K9yHIM-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Verdana;strokeColor=#999999;dashed=1;" parent="pcRGNQqygn--t2DNfjO_-10" source="pcRGNQqygn--t2DNfjO_-7" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="440" y="257" as="targetPoint" />
             <Array as="points" />
             <mxPoint x="286" y="477" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="_iLT0d9KRik_b3K9yHIM-2" value="Logs &amp;amp;&lt;br&gt;Metrics" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=9;fontFamily=Verdana;rounded=0;spacing=0;" vertex="1" parent="pcRGNQqygn--t2DNfjO_-10">
+        <mxCell id="_iLT0d9KRik_b3K9yHIM-2" value="Logs &amp;amp;&lt;br&gt;Metrics" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=9;fontFamily=Verdana;rounded=0;spacing=0;" parent="pcRGNQqygn--t2DNfjO_-10" vertex="1">
           <mxGeometry x="394" y="199" width="46" height="30" as="geometry" />
         </mxCell>
         <mxCell id="pcRGNQqygn--t2DNfjO_-56" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=-0.001;entryY=0.444;entryDx=0;entryDy=0;entryPerimeter=0;dashed=1;strokeColor=#999999;" parent="A9TOfrX54KiNDDk2kyXw-1" source="pcRGNQqygn--t2DNfjO_-12" target="pcRGNQqygn--t2DNfjO_-3" edge="1">
