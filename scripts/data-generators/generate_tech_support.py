@@ -3,15 +3,15 @@ Generate technical support cases in YAML format with Azure OpenAI via Semantic K
 
 Example usage:
 
-python scripts/generators/generate_tech_support.py -d "ScanlonSoft Retail Solution. A SaaS platform running in Azure that provide point of sale retail software to small business. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database." -n 50 -o ./sample-data/tech-support/
+python generate_tech_support.py -d "ScanlonSoft Retail Solution. A SaaS platform running in Azure that provide point of sale retail software to small business. React frontend, with APIs hosted in Azure App Service on the backend and an Azure SQL Database." -n 50 -o ./sample-data/tech-support/
 
 Prerequisites
 -------------
-1. pip install semantic-kernel python-dotenv pyyaml colorama
+1. pip install -r requirements.txt
 2. Create a `.env` file in this folder (or export env vars) containing:
    AZURE_OPENAI_ENDPOINT="https://<your-endpoint>.openai.azure.com/"
    AZURE_OPENAI_DEPLOYMENT="<deployment-name>"
-   AZURE_OPENAI_API_KEY="<api-key>"
+   AZURE_OPENAI_API_KEY="<api-key>" # Omit if using DefaultAzureCredential()
 """
 
 from __future__ import annotations

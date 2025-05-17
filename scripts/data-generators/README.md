@@ -105,6 +105,28 @@ python generate_retail_product.py \
 
 ---
 
+### 2.4 Generate Financial Transactions
+
+Creates realistic **account statements** with ≥ 50 transactions each (YAML / JSON / text).
+
+- [financial_transactions_generator.py](financial_transactions_generator.py)
+
+| Flag | Required | Description | Default |
+| ---- | -------- | ----------- | ------- |
+| `-a, --account-type` | ❌ | Account kind (checking, savings, credit) | `checking` |
+| `-n, --count`        | ❌ | Number of statements | `1` |
+| `-o, --output`       | ❌ | Output folder | `./output_financial` |
+| `-f, --format`       | ❌ | `yaml` \| `json` \| `text` | `yaml` |
+
+Example:
+
+```bash
+python financial_transactions_generator.py \
+  -a checking -n 20 -f json -o ./sample/fin-statements
+```
+
+---
+
 ## 3. Quick-start
 
 ```bash

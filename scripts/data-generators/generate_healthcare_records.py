@@ -3,17 +3,17 @@ Generate synthetic healthcare records using Azure OpenAI via Semantic Kernel.
 This script creates anonymized and entirely fictional medical documents.
 
 Example usage:
-python scripts/data-generators/generate_healthcare_records.py -n 10 -o ./sample-data/healthcare/ --format yaml --document-type "Clinic Note" --specialty "Cardiology"
-python scripts/data-generators/generate_healthcare_records.py -n 5 -o ./sample-data/healthcare/ --format json --document-type "Discharge Summary"
-python scripts/data-generators/generate_healthcare_records.py -n 3 -o ./sample-data/healthcare/ --format text --document-type "Referral Letter" --specialty "Oncology"
+python generate_healthcare_records.py -n 10 -o ./sample-data/healthcare-records/ --format yaml --document-type "Clinic Note" --specialty "Cardiology"
+python generate_healthcare_records.py -n 5 -o ./sample-data/healthcare-records/ --format json --document-type "Discharge Summary"
+python generate_healthcare_records.py -n 3 -o ./sample-data/healthcare-records/ --format text --document-type "Referral Letter" --specialty "Oncology"
 
 Prerequisites
 -------------
-1. pip install semantic-kernel python-dotenv pyyaml colorama
+1. pip install -r requirements.txt
 2. Create a `.env` file in this folder (or export env vars) containing:
    AZURE_OPENAI_ENDPOINT="https://<your-endpoint>.openai.azure.com/"
    AZURE_OPENAI_DEPLOYMENT="<deployment-name>"
-   AZURE_OPENAI_API_KEY="<api-key>"
+   AZURE_OPENAI_API_KEY="<api-key>" # Omit if using DefaultAzureCredential()
 """
 
 from __future__ import annotations

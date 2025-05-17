@@ -2,15 +2,15 @@
 Generate sample retail-product catalogue items using Azure OpenAI via Semantic Kernel.
 
 Example:
-python scripts/generators/generate_retail_product.py -n 100 -i electronics -o ./sample-data/retail-product/
+python generate_retail_product.py -n 100 -i electronics -o ./sample-data/retail-product/
 
 Prerequisites
 -------------
-1. pip install semantic-kernel python-dotenv pyyaml colorama
-2. Provide Azure OpenAI env-vars in .env:
+1. pip install -r requirements.txt
+2. Create a `.env` file in this folder (or export env vars) containing:
    AZURE_OPENAI_ENDPOINT="https://<your-endpoint>.openai.azure.com/"
    AZURE_OPENAI_DEPLOYMENT="<deployment-name>"
-   AZURE_OPENAI_API_KEY="<api-key>"
+   AZURE_OPENAI_API_KEY="<api-key>" # Omit if using DefaultAzureCredential()
 """
 
 from __future__ import annotations
