@@ -128,7 +128,9 @@ The following diagrams illustrate the architecture of the solution accelerator. 
 
 ### Zero-trust with network isolation
 
-TBC
+The following diagram illustrates the architecture of the solution accelerator with network isolation.
+
+[![Azure AI Foundry Jumpstart Solution Accelerator with Network Isolation](docs/images/azure-ai-foundry-jumpstart-zero-trust.svg)](docs/images/azure-ai-foundry-jumpstart-zero-trust.svg)
 
 ### Without network isolation
 

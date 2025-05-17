@@ -144,6 +144,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
 }
 
 // ---------- VIRTUAL NETWORK (REQUIRED FOR NETOWRK ISOLATION) ----------
+// Update subnet definitions to match architecture doc
 var subnets = [
   {
     // Default subnet (generally not used)
@@ -151,19 +152,24 @@ var subnets = [
     addressPrefix: '10.0.0.0/24'
   }
   {
-    // AI Services Subnet
+    // AiServices Subnet (AI Foundry Hub, AI Search, AI Services private endpoints)
     name: 'AiServices'
     addressPrefix: '10.0.1.0/24'
   }
   {
-    // Azure AI Foundry Hubs Subnet
-    name: 'FoundryHubs'
+    // Data Subnet (Storage, Key Vault)
+    name: 'Data'
     addressPrefix: '10.0.2.0/24'
   }
   {
-    // Shared Services Subnet (storage accounts, key vaults, monitoring, etc.)
-    name: 'SharedServices'
+    // Container Registry Subnet (ACR private endpoints)
+    name: 'ContainerRegistry'
     addressPrefix: '10.0.3.0/24'
+  }
+  {
+    // Management Subnet (Log Analytics, Application Insights)
+    name: 'Management'
+    addressPrefix: '10.0.4.0/24'
   }
   {
     // Bastion Gateway Subnet
@@ -283,7 +289,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
           ]
         }
         service: 'vault'
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[3]
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2] // SharedServices
       }
     ] : []
     tags: tags
@@ -372,7 +378,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
           ]
         }
         service: 'blob'
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[3]
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2] // SharedServices
         tags: tags
       }
     ] : []
@@ -414,7 +420,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
             }
           ]
         }
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[3]
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2] // SharedServices
         tags: tags
       }
     ] : []
@@ -463,7 +469,7 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.10.0' = if (az
             }
           ]
         }
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1] // AiServices
         tags: tags
       }
     ] : []
@@ -557,7 +563,7 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' =
             }
           ]
         }
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1] // AiServices
         tags: tags
       }
     ] : []
@@ -713,7 +719,7 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
             }
           ]
         }
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2]
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1] // AiServices
         tags: tags
       }
     ] : []
@@ -826,7 +832,7 @@ module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.
   }
 ]
 
-// ---------- AI FOUNDRY PROJECT DATASTORES ----------
+// ---------- AI FOUNDRY PROJECTS DATASTORES ----------
 // Build a Cartesian product index across projects and sample-data containers
 var projectCount   = length(effectiveAiFoundryProjects)
 var sampleDataContainerCount = length(sampleDataContainersArray)
