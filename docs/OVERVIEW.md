@@ -33,8 +33,8 @@ The accelerator includes sample data sets to facilitate testing, demonstrating a
 
 | Data Set                       | Description                                                                                      | Data Generator Script                                                                 |
 |--------------------------------|--------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
-| Technical Support Cases        | Synthetic support tickets, resolutions, and customer feedback for various products.              | [tech-support.py](../scripts/data-generators/tech-support.py)                         |
-| Retail Products                | Synthetic retail product descriptions and attributes.                                            | [retail-product.py](../scripts/data-generators/retail-product.py)                     |
+| Technical Support Cases        | Synthetic support tickets, resolutions, and customer feedback for various products.              | [generate_tech_support.py](../scripts/data-generators/generate_tech_support.py)                         |
+| Retail Products                | Synthetic retail product descriptions and attributes.                                            | [generate_retail_produc.py](../scripts/data-generators/generate_retail_product.py)                     |
 | Healthcare Patient Records     | Synthetic anonymized patient visit summaries, diagnoses, and treatment plans.                    | *(not yet available)*                                                                 |
 | Financial Transactions         | Simulated bank transactions, account statements, and fraud detection cases.                      | *(not yet available)*                                                                 |
 | Insurance Claims               | Example auto, health, or property insurance claim forms and adjuster notes.                      | *(not yet available)*                                                                 |
