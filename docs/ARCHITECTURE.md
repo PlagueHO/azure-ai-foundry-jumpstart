@@ -8,7 +8,7 @@ If this solution accelerator is deployed without network isolation, the networki
 
 The following diagram illustrates the architecture of the Azure resources deployed when network isolation is enabled. The solution accelerator is deployed in a single resource group, and all resources are deployed in a single virtual network with private endpoints. The virtual network is segmented into multiple subnets to enable granular network security and future scalability.
 
-[![Azure AI Foundry Jumpstart Solution Accelerator with Network Isolation](../images/azure-ai-foundry-jumpstart-zero-trust.svg)](docs/images/azure-ai-foundry-jumpstart-zero-trust.svg)
+[![Azure AI Foundry Jumpstart Solution Accelerator with Network Isolation](images/azure-ai-foundry-jumpstart-zero-trust.svg)](docs/images/azure-ai-foundry-jumpstart-zero-trust.svg)
 
 ### Zero-trust high‑Level Architecture
 
@@ -91,7 +91,7 @@ flowchart RL
 
 The following diagram illustrates the architecture of the Azure resources deployed when network isolation is disabled and public endpoints are enabled for all PaaS services. The solution accelerator is deployed in a single resource group, and not.
 
-[![Azure AI Foundry Jumpstart Solution Accelerator without network isolation](../images/azure-ai-foundry-jumpstart-public.svg)](docs/images/azure-ai-foundry-jumpstart-public.svg)
+[![Azure AI Foundry Jumpstart Solution Accelerator without network isolation](images/azure-ai-foundry-jumpstart-public.svg)](docs/images/azure-ai-foundry-jumpstart-public.svg)
 
 ### Without Network Isolation High-Level Architecture
 
