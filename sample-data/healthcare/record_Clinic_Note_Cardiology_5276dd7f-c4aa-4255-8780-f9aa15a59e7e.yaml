@@ -1,0 +1,42 @@
+record_id: 5276dd7f-c4aa-4255-8780-f9aa15a59e7e
+document_type: Clinic Note
+specialty: Cardiology
+created_at: 2025-05-17 07:32:07.178797+00:00
+patient_details:
+  fictional_name: Jane Doe
+  age: 58
+  gender: Female
+  fictional_patient_id: MRN-FAKE-38472
+document_content:
+  title: Cardiology Clinic Follow-up Note
+  sections:
+  - heading: Reason for Visit/Consultation
+    content: Ms. Jane Doe presents for follow-up evaluation of hypertension and recently
+      diagnosed paroxysmal atrial fibrillation.
+  - heading: History of Present Illness
+    content: The patient reports intermittent episodes of palpitations over the past
+      month, sometimes associated with mild dizziness but no syncope. She denies chest
+      pain, shortness of breath, or lower extremity swelling. Her home blood pressure
+      readings have averaged 148/92 mmHg. She reports good adherence to her prescribed
+      medications.
+  - heading: Past Medical History
+    content: Hypertension, hyperlipidemia, type 2 diabetes mellitus, paroxysmal atrial
+      fibrillation (diagnosed one month ago).
+  - heading: Assessment
+    content: 58-year-old female with history of hypertension, hyperlipidemia, diabetes,
+      and paroxysmal atrial fibrillation. Blood pressure remains suboptimally controlled.
+      No evidence of heart failure or ischemic symptoms. CHA2DS2-VASc score is 3,
+      indicating increased stroke risk.
+  - heading: Plan
+    content: 1. Increase amlodipine to 10mg daily for better blood pressure control.
+      2. Continue metoprolol succinate 50mg daily. 3. Initiate apixaban 5mg BID for
+      stroke prevention. 4. Continue atorvastatin and metformin as prescribed. 5.
+      Recommend home BP monitoring and record readings. 6. Schedule echocardiogram
+      to assess cardiac function. 7. Follow up in 4 weeks or sooner if symptoms worsen.
+author_details:
+  fictional_doctor_name: Dr. Emily Carter
+  fictional_clinic_name: Maplewood Cardiology Associates
+  fictional_contact_info: contact@maplewoodcardio.com / 555-0100-FAKE
+generation_metadata:
+  generated_at_script: '2025-05-17T07:32:14.474576+00:00'
+  script_version: '1.0'

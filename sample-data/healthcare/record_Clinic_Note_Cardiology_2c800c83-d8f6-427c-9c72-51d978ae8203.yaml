@@ -1,0 +1,41 @@
+record_id: 2c800c83-d8f6-427c-9c72-51d978ae8203
+document_type: Clinic Note
+specialty: Cardiology
+created_at: 2025-05-17 07:31:14.292077+00:00
+patient_details:
+  fictional_name: Linda Parker
+  age: 54
+  gender: Female
+  fictional_patient_id: MRN-FAKE-45782
+document_content:
+  title: Cardiology Clinic Follow-up Note
+  sections:
+  - heading: Reason for Visit/Consultation
+    content: Ms. Linda Parker presents for routine follow-up regarding her recently
+      diagnosed hypertension and evaluation of persistent chest discomfort.
+  - heading: History of Present Illness
+    content: The patient reports intermittent, non-radiating chest pressure over the
+      past three weeks, primarily occurring with moderate exertion and resolving with
+      rest. She denies associated shortness of breath, palpitations, dizziness, or
+      syncope. No recent fevers or upper respiratory symptoms. She has been compliant
+      with her antihypertensive medications but notes occasional headaches.
+  - heading: Past Medical History
+    content: Hypertension (diagnosed 6 months ago), hyperlipidemia, remote history
+      of migraine headaches.
+  - heading: Assessment
+    content: 54-year-old female with controlled hypertension and hyperlipidemia presenting
+      with exertional chest discomfort. No acute ischemic symptoms at this time. Physical
+      exam and ECG today are unremarkable. Risk factors for coronary artery disease
+      present.
+  - heading: Plan
+    content: Continue current antihypertensive and statin therapy. Schedule treadmill
+      stress test to further evaluate exertional chest pain. Advise on dietary modifications
+      and regular exercise. Educated patient on warning signs requiring urgent evaluation.
+      Follow up in 4 weeks or sooner if symptoms worsen.
+author_details:
+  fictional_doctor_name: Dr. Emily Carter
+  fictional_clinic_name: Midtown Cardiology Associates
+  fictional_contact_info: dr.carter@midtowncardio.fake / 555-0100-FAKE
+generation_metadata:
+  generated_at_script: '2025-05-17T07:31:20.681265+00:00'
+  script_version: '1.0'

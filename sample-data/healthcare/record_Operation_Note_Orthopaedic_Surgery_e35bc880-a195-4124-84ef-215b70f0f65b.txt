@@ -1,0 +1,85 @@
+Record ID: e35bc880-a195-4124-84ef-215b70f0f65b  
+Document Type: Operation Note  
+Specialty: Orthopaedic Surgery  
+Created At: 2025-05-17T07:36:23.903364+00:00  
+
+Patient: Michael Turner (Fictional)  
+Age: 62  
+Gender: Male  
+Patient ID: FAKE-PT-204  
+
+--- Document: Operation Note ---  
+Title: Left Total Knee Arthroplasty
+
+Date of Service: 2025-05-17  
+Surgeon: Dr. Emily Carter, MD  
+Assistant: Dr. Samuel Lin, MD  
+Anesthesiologist: Dr. Priya Desai, MD  
+Facility: Northbridge Orthopaedic Center (Fictional)  
+
+**Reason for Visit:**  
+Mr. Turner presented with chronic left knee pain secondary to severe osteoarthritis, resulting in significant functional impairment and failed conservative management.
+
+**History:**  
+- Progressive left knee pain for over 5 years  
+- Symptoms included stiffness, swelling, and decreased range of motion  
+- Failed non-surgical treatments: NSAIDs, physical therapy, corticosteroid injections  
+- No prior knee surgeries  
+- Past medical history significant for hypertension and hyperlipidemia  
+
+**Preoperative Assessment:**  
+- Radiographs revealed tricompartmental osteoarthritis with joint space narrowing and osteophyte formation  
+- Preoperative laboratory results within normal limits  
+- Cleared for surgery by preoperative medicine  
+
+**Procedure:**  
+Left Total Knee Arthroplasty
+
+**Anesthesia:**  
+General endotracheal anesthesia with femoral nerve block
+
+**Operative Findings:**  
+- Significant cartilage loss and eburnation of the femoral condyles  
+- Medial and lateral meniscal degeneration  
+- Intact cruciate and collateral ligaments  
+- No evidence of infection or gross deformity  
+
+**Surgical Technique:**  
+- Standard medial parapatellar approach utilized  
+- Distal femur and proximal tibia prepared with appropriate jigs  
+- Trial components placed and satisfactory alignment, stability, and range of motion achieved  
+- Cemented femoral, tibial, and patellar components implanted  
+- Hemostasis achieved, joint irrigated, and wound closed in layers  
+- Sterile dressing applied; knee immobilizer placed  
+
+**Estimated Blood Loss:**  
+350 mL
+
+**Complications:**  
+None encountered intraoperatively
+
+**Postoperative Plan:**  
+- Admit to orthopaedic floor for observation  
+- Pain management with multimodal analgesia  
+- DVT prophylaxis with low molecular weight heparin  
+- Early mobilization with physical therapy beginning postoperative day 1  
+- Wound care instructions provided  
+- Monitor for signs of infection or thromboembolic events  
+- Follow-up in orthopaedic clinic in 2 weeks
+
+**Recommendations:**  
+- Weight bearing as tolerated with walker  
+- Continue home exercises as instructed by physical therapy  
+- Maintain close follow-up for wound and functional assessment  
+- Contact clinic immediately for fever, increasing pain, or wound drainage
+
+---
+
+Authored by:  
+Dr. Emily Carter, MD  
+Northbridge Orthopaedic Center (Fictional)  
+Contact: dr.carter@northbridgeortho.fake / 555-0210-FAKE
+
+---Generation Metadata---
+Generated At (Script): 2025-05-17T07:36:31.815333+00:00
+Script Version: 1.0

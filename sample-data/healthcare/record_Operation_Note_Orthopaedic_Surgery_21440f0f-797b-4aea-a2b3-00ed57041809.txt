@@ -1,0 +1,67 @@
+Record ID: 21440f0f-797b-4aea-a2b3-00ed57041809  
+Document Type: Operation Note  
+Specialty: Orthopaedic Surgery  
+Created At: 2025-05-17T07:36:08.623408+00:00  
+
+Patient: Samuel Carter (Fictional)  
+Age: 62  
+Gender: Male  
+Patient ID: FAKE-PT-2144  
+
+--- Document: Operation Note ---  
+Title: Left Total Knee Arthroplasty Operation Note
+
+**Reason for Visit:**  
+Mr. Carter presented with progressive left knee pain and functional limitation secondary to advanced osteoarthritis, refractory to conservative management.
+
+**History:**  
+Patient has a 5-year history of left knee pain with significant stiffness, swelling, and reduced mobility. Failed conservative treatments included physical therapy, NSAIDs, intra-articular steroid injections, and bracing. No prior knee surgeries.
+
+**Preoperative Assessment:**  
+- Diagnosis: End-stage osteoarthritis of the left knee  
+- Imaging: X-rays revealed severe tricompartmental joint space narrowing, osteophyte formation, and subchondral sclerosis.  
+- Allergies: NKDA  
+- Medical history: Hypertension, controlled with medication.  
+- ASA Classification: II
+
+**Procedure Performed:**  
+Left Total Knee Arthroplasty
+
+**Date of Surgery:**  
+2025-05-17
+
+**Surgeon:**  
+Dr. Michael Greene (Fictional)
+
+**Anesthesia:**  
+Spinal anesthesia with sedation
+
+**Findings:**  
+- Severe degenerative changes in all compartments of the left knee  
+- Intact collateral and cruciate ligaments  
+- No evidence of infection or gross deformity
+
+**Procedure Details:**  
+After standard sterile preparation and draping, a midline skin incision and medial parapatellar arthrotomy were performed. The patella was everted, and the osteoarthritic changes were confirmed intraoperatively. The distal femur and proximal tibia were resected using standard instrumentation. Appropriate trial components were placed and satisfactory alignment and stability achieved. The final femoral, tibial, and patellar components were cemented in place. Hemostasis achieved, wound irrigated, and layered closure performed. Sterile dressing applied. Estimated blood loss: 300 mL. No intraoperative complications.
+
+**Immediate Postoperative Plan:**  
+- DVT prophylaxis initiated  
+- Early mobilization with physiotherapy  
+- Analgesia as per protocol  
+- Wound checks daily
+
+**Recommendations:**  
+- Continue inpatient physical therapy  
+- Monitor for signs of infection, DVT, or neurovascular compromise  
+- Follow-up in orthopaedic clinic in 2 weeks for suture removal and further evaluation
+
+---
+
+Authored by:  
+Dr. Michael Greene  
+Summit Valley Orthopaedic Clinic (Fictional)  
+Contact: dr.greene@fictionalclinic.org / 555-0123-ORTHO
+
+---Generation Metadata---
+Generated At (Script): 2025-05-17T07:36:16.250351+00:00
+Script Version: 1.0

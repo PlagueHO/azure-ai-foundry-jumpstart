@@ -1,0 +1,46 @@
+{
+  "record_id": "8d77442c-bf13-4bf2-86b6-0951a75b65bb",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-17T07:44:45.039806+00:00",
+  "patient_details": {
+    "fictional_name": "Jane Doe",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to Cardiology Clinic",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Jane Doe is being referred to the cardiology clinic for further evaluation and management of recurrent episodes of palpitations and atypical chest discomfort that have persisted over the past two months."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports experiencing intermittent palpitations, often described as a rapid or irregular heartbeat, occurring several times per week and lasting up to 10 minutes. She also describes occasional chest tightness without exertion, not associated with syncope, dizziness, or shortness of breath. No recent changes in exercise tolerance or known cardiac history. There is no family history of premature cardiac disease."
+      },
+      {
+        "heading": "Relevant Medical History",
+        "content": "Ms. Doe has a history of mild hypertension, well controlled with lisinopril. No previous cardiac events or interventions. No known drug allergies."
+      },
+      {
+        "heading": "Assessment",
+        "content": "Physical examination is unremarkable. Recent ECG in clinic showed normal sinus rhythm without acute changes. Basic metabolic panel and thyroid function tests were within normal limits. Given the persistence of symptoms and family concern, further cardiology evaluation is warranted to rule out underlying arrhythmia or structural heart disease."
+      },
+      {
+        "heading": "Plan and Recommendations",
+        "content": "Recommend outpatient cardiology assessment, including consideration for Holter monitoring and echocardiogram. Please advise regarding further management and need for additional diagnostic studies. Patient has been advised to keep a symptom diary and to seek immediate care if symptoms worsen."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Emily Carter",
+    "fictional_clinic_name": "Green Valley Medical Center",
+    "fictional_contact_info": "fake-email@example.com / 555-0100-FAKE"
+  },
+  "generation_metadata": {
+    "generated_at_script": "2025-05-17T07:44:52.073930+00:00",
+    "script_version": "1.0"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "record_id": "1cb71f99-a6f3-4a43-9e75-85a4beda3ae2",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-17T07:46:21.807334+00:00",
+  "patient_details": {
+    "fictional_name": "Jane Doe",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral Letter to Rheumatology",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Jane Doe is being referred to rheumatology for further evaluation of persistent joint pain and swelling, which has not responded adequately to initial management in primary care."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "Jane Doe reports a six-month history of bilateral hand and wrist pain, accompanied by morning stiffness lasting approximately one hour. She describes intermittent swelling of the metacarpophalangeal and proximal interphalangeal joints, with occasional episodes of fatigue. No significant relief has been achieved with over-the-counter analgesics."
+      },
+      {
+        "heading": "Medical History",
+        "content": "The patient has a history of mild seasonal allergies but no prior rheumatologic conditions. She does not have a family history of autoimmune diseases. No recent infections or trauma reported."
+      },
+      {
+        "heading": "Assessment",
+        "content": "Physical examination revealed tenderness and mild swelling over the MCP and PIP joints bilaterally, without erythema. Laboratory investigations showed a mildly elevated ESR (28 mm/hr) and a positive rheumatoid factor. No radiographic evidence of erosions on hand X-rays."
+      },
+      {
+        "heading": "Plan and Recommendations",
+        "content": "Referral to rheumatology for further diagnostic workup, including consideration of advanced serological testing and potential initiation of disease-modifying antirheumatic drugs (DMARDs). Continue current NSAID regimen for symptomatic relief. Patient advised to monitor for any new symptoms and follow up with primary care as needed."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Emily Carter",
+    "fictional_clinic_name": "Maplewood Medical Center",
+    "fictional_contact_info": "emily.carter@maplewoodfake.com / 555-0100-FAKE"
+  },
+  "generation_metadata": {
+    "generated_at_script": "2025-05-17T07:46:27.985072+00:00",
+    "script_version": "1.0"
+  }
+}

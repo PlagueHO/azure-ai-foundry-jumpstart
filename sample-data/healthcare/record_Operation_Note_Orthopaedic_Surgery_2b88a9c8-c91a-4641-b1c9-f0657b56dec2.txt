@@ -1,0 +1,79 @@
+Record ID: 2b88a9c8-c91a-4641-b1c9-f0657b56dec2  
+Document Type: Operation Note  
+Specialty: Orthopaedic Surgery  
+Created At: 2025-05-17T07:36:31.818576+00:00  
+
+Patient: Lucas Bennett (Fictional)  
+Age: 32  
+Gender: Male  
+Patient ID: FAKE-PT-2034  
+
+--- Document: Operation Note ---  
+Title: Left Anterior Cruciate Ligament (ACL) Reconstruction
+
+Date of Service: 2025-05-17
+
+**Reason for Visit**  
+Patient presented with persistent left knee instability and pain following a sports-related injury. MRI confirmed a complete tear of the anterior cruciate ligament.
+
+**History**  
+Mr. Bennett is a 32-year-old male who sustained a twisting injury to his left knee while playing recreational soccer three months ago. Since the injury, he has experienced recurrent episodes of knee giving way, swelling, and difficulty with activities requiring pivoting. Conservative management, including physiotherapy and bracing, failed to resolve symptoms.
+
+**Assessment**  
+- Complete left ACL tear (MRI confirmed)  
+- No associated meniscal tear  
+- Normal contralateral knee  
+- No prior surgical history on the affected knee
+
+**Pre-Operative Plan**  
+- Left arthroscopic ACL reconstruction using hamstring autograft  
+- General anesthesia  
+- Prophylactic intravenous antibiotics pre-operatively  
+- Tourniquet to be used
+
+**Operative Findings**  
+- Complete rupture of the left ACL noted on arthroscopy  
+- Intact medial and lateral menisci  
+- No significant chondral damage  
+- No evidence of other ligamentous injuries
+
+**Procedure Details**  
+- Patient placed supine with left leg prepped and draped in standard sterile fashion  
+- Diagnostic arthroscopy performed confirming ACL rupture  
+- Hamstring tendon harvested (semitendinosus and gracilis) and prepared as quadruple-strand graft  
+- Femoral and tibial tunnels drilled using anatomic landmarks  
+- Graft passed and fixed with interference screws  
+- Graft tensioned and knee taken through range of motion to confirm stability  
+- Thorough irrigation performed  
+- Portals closed with absorbable sutures  
+- Sterile dressing applied
+
+**Estimated Blood Loss**  
+Less than 50 mL
+
+**Complications**  
+None encountered intraoperatively
+
+**Post-Operative Plan**  
+- Knee immobilizer and partial weight-bearing with crutches  
+- Ice and elevation to minimize swelling  
+- Pain management with oral analgesics  
+- Start physiotherapy within one week focusing on range of motion and gradual strengthening  
+- Follow-up appointment in two weeks for wound check and suture removal
+
+**Recommendations**  
+- Avoid high-impact activities for at least six months  
+- Adhere strictly to rehabilitation protocol  
+- Monitor for signs of infection or deep vein thrombosis  
+- Contact clinic immediately if excessive pain, swelling, or fever develops
+
+---
+
+Authored by:  
+Dr. Evelyn Carter, MD  
+Summit Orthopaedic Center (Fictional)  
+Contact: dr.carter@summitortho-fake.com / 555-0198-FAKE
+
+---Generation Metadata---
+Generated At (Script): 2025-05-17T07:36:40.910415+00:00
+Script Version: 1.0

@@ -1,0 +1,77 @@
+Record ID: 20fcdcd4-eda7-4bc3-b11b-7def79e94b2f  
+Document Type: Operation Note  
+Specialty: Orthopaedic Surgery  
+Created At: 2025-05-17T07:34:28.787569+00:00  
+
+Patient: Samuel Carter (Fictional)  
+Age: 58  
+Gender: Male  
+Patient ID: FAKE-ORTHO-2025-008  
+
+--- Document: Operation Note ---  
+Title: Left Total Knee Arthroplasty
+
+Date of Service: 2025-05-17
+
+**Reason for Visit**  
+Mr. Carter presented with advanced osteoarthritis of the left knee, resulting in chronic pain, reduced mobility, and impaired quality of life. Conservative management, including physical therapy and medication, failed to provide sufficient relief.
+
+**History**  
+- Diagnosis: End-stage osteoarthritis, left knee  
+- Duration of symptoms: 4 years  
+- Previous treatments: NSAIDs, intra-articular steroid injections, physiotherapy  
+- Relevant medical history: Hypertension (well controlled), no known allergies  
+
+**Assessment**  
+Physical examination revealed significant tenderness, crepitus, and decreased range of motion in the left knee. Radiographs confirmed severe tricompartmental osteoarthritic changes with joint space narrowing and osteophyte formation.
+
+**Preoperative Plan**  
+- Proceed with elective left total knee arthroplasty  
+- Preoperative labs and anesthesia assessment completed  
+- Informed consent obtained
+
+**Procedure**  
+- Anesthesia: Spinal with sedation  
+- Position: Supine  
+- Approach: Medial parapatellar  
+- Tourniquet applied  
+- Standard medial parapatellar arthrotomy performed  
+- Severely degenerated articular cartilage and osteophytes noted  
+- Distal femur and proximal tibia prepared with cutting guides  
+- Appropriate trial components placed; satisfactory alignment and stability confirmed  
+- Cemented prosthesis (femoral, tibial, and patellar components) implanted  
+- Hemostasis achieved; wound closed in layers  
+- Sterile dressing applied  
+- Procedure duration: 1 hour 45 minutes  
+- Estimated blood loss: 180 mL  
+- No intraoperative complications
+
+**Findings**  
+- Extensive cartilage loss and sclerosis in all compartments  
+- No significant ligamentous injury  
+- No evidence of infection or other intra-articular pathology
+
+**Postoperative Plan**  
+- Admit to orthopaedic ward  
+- Begin physical therapy on postoperative day 1  
+- Thromboprophylaxis with low molecular weight heparin  
+- Analgesia as per protocol  
+- Monitor wound site for signs of infection  
+- Anticipated hospital stay: 3-4 days
+
+**Recommendations**  
+- Gradual increase in weight-bearing as tolerated  
+- Continue home exercises after discharge  
+- Follow-up in outpatient clinic in 2 weeks  
+- Contact clinic immediately if fever, excessive pain, or wound complications develop
+
+---
+
+Authored by:  
+Dr. Eleanor Finch, MD  
+Summit Orthopaedic & Joint Center (Fictional)  
+Contact: efinch@summitortho-fake.com / 555-0167-FAKE
+
+---Generation Metadata---
+Generated At (Script): 2025-05-17T07:34:36.689635+00:00
+Script Version: 1.0

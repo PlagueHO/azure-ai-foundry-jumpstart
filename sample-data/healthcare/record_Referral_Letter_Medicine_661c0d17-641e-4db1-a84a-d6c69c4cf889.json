@@ -1,0 +1,54 @@
+{
+  "record_id": "661c0d17-641e-4db1-a84a-d6c69c4cf889",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-17T07:45:17.905425+00:00",
+  "patient_details": {
+    "fictional_name": "Jane Doe",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to General Medicine for Further Evaluation",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Jane Doe is being referred to the General Medicine department for further evaluation and management of persistent fatigue, intermittent low-grade fevers, and unexplained weight loss over the past two months."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports progressive fatigue that has worsened over the last eight weeks, accompanied by occasional low-grade fevers (maximum temperature recorded at home: 37.8°C) and unintentional weight loss of approximately 4 kg. She denies any recent travel, sick contacts, or significant changes in her daily routine. She has also noted mild joint aches and occasional headaches, but no chest pain, cough, shortness of breath, or gastrointestinal symptoms."
+      },
+      {
+        "heading": "Relevant Medical History",
+        "content": "Ms. Doe has a history of mild asthma, well controlled with inhalers. She has no known drug allergies. Family history is notable for autoimmune disease (mother with rheumatoid arthritis). She does not smoke or consume alcohol. No prior surgeries."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "On examination, the patient appeared mildly pale but was afebrile in clinic. Vital signs were within normal limits. Mild tenderness was noted over the small joints of both hands without swelling. No lymphadenopathy, hepatosplenomegaly, or skin rashes observed. Cardiovascular, respiratory, and abdominal examinations were unremarkable."
+      },
+      {
+        "heading": "Investigations Performed",
+        "content": "Recent laboratory tests revealed normocytic anemia (Hb 10.7 g/dL), mildly elevated ESR (38 mm/hr), and normal renal and liver function tests. Chest X-ray and urinalysis were unremarkable. ANA was borderline positive."
+      },
+      {
+        "heading": "Assessment",
+        "content": "The clinical picture raises suspicion for an underlying autoimmune or inflammatory process. Infectious and malignant causes appear less likely given the current findings."
+      },
+      {
+        "heading": "Plan and Recommendations",
+        "content": "Further evaluation by General Medicine is requested for comprehensive workup and management. Suggested next steps include repeat autoimmune serology, additional infectious disease screening, and consideration of rheumatology input. Please feel free to contact me for any further information."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Clara Bennett",
+    "fictional_clinic_name": "Evergreen Medical Center",
+    "fictional_contact_info": "fake-email@example.com / 555-0100-FAKE"
+  },
+  "generation_metadata": {
+    "generated_at_script": "2025-05-17T07:45:27.379670+00:00",
+    "script_version": "1.0"
+  }
+}

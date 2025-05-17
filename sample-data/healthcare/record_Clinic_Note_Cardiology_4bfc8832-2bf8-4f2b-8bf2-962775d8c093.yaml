@@ -1,0 +1,40 @@
+record_id: 4bfc8832-2bf8-4f2b-8bf2-962775d8c093
+document_type: Clinic Note
+specialty: Cardiology
+created_at: 2025-05-17 06:54:56.400436+00:00
+patient_details:
+  fictional_name: Jane Doe
+  age: 58
+  gender: Female
+  fictional_patient_id: MRN-FAKE-78901
+document_content:
+  title: Cardiology Clinic Follow-up Note
+  sections:
+  - heading: Reason for Visit/Consultation
+    content: Ms. Jane Doe presents for a routine cardiology follow-up to monitor her
+      hypertension and evaluate her recent symptoms of mild shortness of breath.
+  - heading: History of Present Illness
+    content: The patient reports experiencing occasional shortness of breath over
+      the past two weeks, particularly when climbing stairs. She denies chest pain,
+      palpitations, syncope, or lower extremity swelling. She has been compliant with
+      her medications and has not noticed any significant changes in her overall health.
+  - heading: Past Medical History
+    content: Hypertension, hyperlipidemia, and hypothyroidism. No history of coronary
+      artery disease, diabetes, or stroke.
+  - heading: Assessment
+    content: Ms. Doe is a 58-year-old woman with well-controlled hypertension and
+      hyperlipidemia. Her mild exertional dyspnea is likely multifactorial but does
+      not currently suggest acute cardiac pathology. No evidence of heart failure
+      or arrhythmia at this time.
+  - heading: Plan
+    content: Continue current antihypertensive and statin therapy. Encourage regular
+      physical activity and dietary modifications. Schedule echocardiogram to further
+      evaluate cardiac function. Return to clinic in 3 months or sooner if symptoms
+      worsen.
+author_details:
+  fictional_doctor_name: Dr. Samuel Carter
+  fictional_clinic_name: Evergreen Cardiology Associates
+  fictional_contact_info: contact@evergreencardio.fake / 555-0100-FAKE
+generation_metadata:
+  generated_at_script: '2025-05-17T06:55:01.802143+00:00'
+  script_version: '1.0'

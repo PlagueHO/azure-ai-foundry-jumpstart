@@ -1,0 +1,47 @@
+record_id: 80c7bfeb-f248-404a-9926-a2a2df838d77
+document_type: Clinic Note
+specialty: Cardiology
+created_at: 2025-05-17 07:31:55.594480+00:00
+patient_details:
+  fictional_name: Emily Carter
+  age: 58
+  gender: Female
+  fictional_patient_id: MRN-FAKE-84712
+document_content:
+  title: Cardiology Clinic Follow-up Note
+  sections:
+  - heading: Reason for Visit/Consultation
+    content: Patient presents for routine follow-up of hypertension and evaluation
+      of intermittent palpitations reported over the past two months.
+  - heading: History of Present Illness
+    content: Ms. Carter reports experiencing episodes of rapid, irregular heartbeat
+      occurring 2-3 times per week, lasting approximately 10-15 minutes each. She
+      denies associated chest pain, syncope, or shortness of breath. She notes that
+      symptoms are sometimes triggered by stress or caffeine intake. Blood pressure
+      readings at home have been elevated, averaging 148/92 mmHg.
+  - heading: Past Medical History
+    content: Hypertension (diagnosed 5 years ago), hyperlipidemia, hypothyroidism.
+      No known history of coronary artery disease or diabetes.
+  - heading: Assessment
+    content: 58-year-old female with history of hypertension and hyperlipidemia, now
+      presenting with intermittent palpitations. No evidence of acute coronary syndrome.
+      Blood pressure remains suboptimally controlled. Consideration for ambulatory
+      ECG monitoring to assess for arrhythmia.
+  - heading: Plan
+    content: '1. Order 24-hour Holter monitor to evaluate arrhythmia.
+
+      2. Adjust antihypertensive medication by increasing lisinopril to 20 mg daily.
+
+      3. Continue current statin therapy for hyperlipidemia.
+
+      4. Advise lifestyle modifications including reduction of caffeine intake and
+      stress management techniques.
+
+      5. Schedule follow-up appointment in 4 weeks or sooner if symptoms worsen.'
+author_details:
+  fictional_doctor_name: Dr. Samuel Nguyen
+  fictional_clinic_name: Evergreen Cardiology Associates
+  fictional_contact_info: samuel.nguyen@evergreen-fake.com / 555-0100-FAKE
+generation_metadata:
+  generated_at_script: '2025-05-17T07:32:01.255898+00:00'
+  script_version: '1.0'

@@ -1,0 +1,44 @@
+record_id: 3ac35507-c193-463b-9a27-23fe6c1bb697
+document_type: Clinic Note
+specialty: Cardiology
+created_at: 2025-05-17 07:31:26.353343+00:00
+patient_details:
+  fictional_name: Emily Carter
+  age: 54
+  gender: Female
+  fictional_patient_id: MRN-FAKE-29834
+document_content:
+  title: Cardiology Clinic Follow-up Note
+  sections:
+  - heading: Reason for Visit/Consultation
+    content: Ms. Emily Carter presents for follow-up evaluation of her hypertension
+      and recently diagnosed paroxysmal atrial fibrillation. She was last seen in
+      the clinic three months ago.
+  - heading: History of Present Illness
+    content: The patient reports intermittent palpitations, most noticeable over the
+      past two weeks, occasionally accompanied by mild dizziness but no syncope. She
+      denies chest pain, shortness of breath, or lower extremity swelling. She has
+      been compliant with her prescribed medications and has been monitoring her blood
+      pressure at home, which has ranged between 128–142/84–92 mmHg.
+  - heading: Past Medical History
+    content: Hypertension, hyperlipidemia, paroxysmal atrial fibrillation (diagnosed
+      6 months ago), and hypothyroidism.
+  - heading: Assessment
+    content: 54-year-old female with history of hypertension and paroxysmal atrial
+      fibrillation, currently experiencing intermittent palpitations without evidence
+      of hemodynamic compromise. Blood pressure remains moderately controlled. No
+      signs of heart failure or ischemia.
+  - heading: Plan
+    content: Continue current antihypertensive regimen (lisinopril 20 mg daily). Continue
+      apixaban 5 mg BID for stroke prevention. Initiate low-dose beta blocker (metoprolol
+      tartrate 25 mg BID) to help control heart rate and palpitations. Schedule 24-hour
+      Holter monitor to assess arrhythmia burden. Follow up in 3 months or sooner
+      if symptoms worsen. Encourage ongoing lifestyle modifications and home blood
+      pressure monitoring.
+author_details:
+  fictional_doctor_name: Dr. Samuel Greene
+  fictional_clinic_name: Heartwell Cardiology Associates
+  fictional_contact_info: dr.greene@heartwell-fake.com / 555-0100-FAKE
+generation_metadata:
+  generated_at_script: '2025-05-17T07:31:32.229019+00:00'
+  script_version: '1.0'

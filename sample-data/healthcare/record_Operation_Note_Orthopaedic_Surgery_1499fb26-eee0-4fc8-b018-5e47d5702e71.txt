@@ -1,0 +1,63 @@
+Record ID: 1499fb26-eee0-4fc8-b018-5e47d5702e71  
+Document Type: Operation Note  
+Specialty: Orthopaedic Surgery  
+Created At: 2025-05-17T07:37:11.769889+00:00  
+
+Patient: John Smith (Fictional)  
+Age: 62  
+Gender: Male  
+Patient ID: FAKE-PT-1023  
+
+--- Document: Operation Note ---  
+Title: Left Total Knee Arthroplasty
+
+**Reason for Visit:**  
+Patient presented with progressively worsening left knee pain and stiffness secondary to end-stage osteoarthritis, refractory to conservative management.
+
+**History:**  
+Mr. Smith has a 5-year history of left knee pain, aggravated by ambulation and weight-bearing. Conservative measures, including physical therapy, NSAIDs, and intra-articular corticosteroid injections, have failed to provide lasting relief. No prior surgical interventions to the affected knee. No reported drug allergies. Past medical history notable for well-controlled hypertension.
+
+**Assessment:**  
+Diagnosis: Left knee end-stage osteoarthritis  
+Indication: Failure of non-surgical management, significant functional limitation, and radiographic evidence of joint space narrowing and osteophyte formation.
+
+**Procedure:**  
+Left Total Knee Arthroplasty
+
+**Findings:**  
+- Extensive degenerative changes of femoral and tibial articular surfaces  
+- Significant osteophyte formation noted medially and laterally  
+- Intact cruciate and collateral ligaments  
+- No evidence of infection or gross deformity
+
+**Operative Details:**  
+- Patient placed under spinal anesthesia and positioned supine  
+- Standard medial parapatellar approach utilized  
+- Osteophytes excised, femoral and tibial surfaces prepared  
+- Cemented total knee prosthesis implanted with satisfactory alignment and stability  
+- Patella resurfaced  
+- Hemostasis achieved, wound closed in layers  
+- Sterile dressing applied  
+- Procedure duration: 1 hour, 45 minutes  
+- Estimated blood loss: 250 mL
+
+**Complications:**  
+None encountered intraoperatively.
+
+**Recommendations / Postoperative Plan:**  
+- Begin physiotherapy on postoperative day 1  
+- DVT prophylaxis with low molecular weight heparin  
+- Pain management with multimodal analgesia  
+- Wound inspection in 48 hours  
+- Follow-up in orthopaedic clinic in 2 weeks for suture removal and assessment
+
+---
+
+Authored by:  
+Dr. Clara Matthews  
+Evergreen Orthopaedic Center  
+Contact: dr.matthews@evergreenortho.fake / 555-0199-FAKE
+
+---Generation Metadata---
+Generated At (Script): 2025-05-17T07:37:18.621731+00:00
+Script Version: 1.0

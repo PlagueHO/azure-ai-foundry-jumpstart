@@ -1,0 +1,54 @@
+{
+  "record_id": "8d52e91e-2302-45a6-8efe-82db2c3ee413",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-17T07:44:02.326617+00:00",
+  "patient_details": {
+    "fictional_name": "Jane Doe",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to Rheumatology",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Jane Doe is being referred to the Rheumatology clinic for further evaluation of persistent joint pain and swelling, which has not responded adequately to initial management in the primary care setting."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "Ms. Doe reports a 4-month history of intermittent pain and stiffness in her hands and wrists, particularly in the morning, lasting for over an hour. She also notes mild swelling of the finger joints and occasional fatigue. Over-the-counter analgesics have provided only partial relief. There is no history of recent trauma or infection."
+      },
+      {
+        "heading": "Past Medical History",
+        "content": "No significant past medical history. No known allergies. No prior surgeries. Family history is notable for autoimmune conditions in her mother."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "On examination, there is mild swelling and tenderness over the proximal interphalangeal joints bilaterally. No erythema or deformity is observed. Range of motion is mildly restricted due to discomfort."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Recent blood work revealed a mildly elevated ESR (28 mm/hr) and a positive rheumatoid factor. Complete blood count and renal function are within normal limits. Hand X-rays show no erosive changes."
+      },
+      {
+        "heading": "Assessment",
+        "content": "Persistent polyarticular joint pain and swelling, likely early inflammatory arthritis. Features are suggestive of possible early rheumatoid arthritis."
+      },
+      {
+        "heading": "Plan",
+        "content": "Referral to Rheumatology for diagnostic clarification and management recommendations. Consideration for disease-modifying antirheumatic drugs if diagnosis is confirmed. Continue NSAIDs as needed for symptom relief. Advise monitoring for any new symptoms and follow up in primary care after specialist assessment."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Emily Carter",
+    "fictional_clinic_name": "Greenfield Community Health Center",
+    "fictional_contact_info": "fake-email@example.com / 555-0100-FAKE"
+  },
+  "generation_metadata": {
+    "generated_at_script": "2025-05-17T07:44:09.601139+00:00",
+    "script_version": "1.0"
+  }
+}

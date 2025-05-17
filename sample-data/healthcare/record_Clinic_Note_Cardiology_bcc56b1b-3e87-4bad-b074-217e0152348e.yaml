@@ -1,0 +1,41 @@
+record_id: bcc56b1b-3e87-4bad-b074-217e0152348e
+document_type: Clinic Note
+specialty: Cardiology
+created_at: 2025-05-17 06:54:43.609670+00:00
+patient_details:
+  fictional_name: Emily Carter
+  age: 58
+  gender: Female
+  fictional_patient_id: MRN-FAKE-78241
+document_content:
+  title: Cardiology Clinic Follow-up Note
+  sections:
+  - heading: Reason for Visit/Consultation
+    content: Patient presents for follow-up evaluation of previously diagnosed hypertension
+      and to assess recent complaints of intermittent chest discomfort.
+  - heading: History of Present Illness
+    content: Ms. Carter reports experiencing episodes of mild, pressure-like chest
+      discomfort over the past three weeks, typically occurring with exertion and
+      resolving with rest. She denies any associated shortness of breath, palpitations,
+      syncope, or diaphoresis. She has been compliant with her prescribed antihypertensive
+      regimen. There have been no recent medication changes or hospitalizations.
+  - heading: Past Medical History
+    content: Hypertension (diagnosed 5 years ago), hyperlipidemia, and osteoarthritis
+      of the left knee.
+  - heading: Assessment
+    content: 58-year-old female with controlled hypertension and hyperlipidemia, now
+      presenting with exertional chest discomfort suggestive of possible stable angina.
+      No signs of acute coronary syndrome at this time.
+  - heading: Plan
+    content: Recommend initiation of low-dose aspirin and continuation of current
+      antihypertensive and statin therapy. Order exercise stress test to further evaluate
+      for ischemia. Advise patient on lifestyle modifications including dietary sodium
+      reduction and regular aerobic exercise. Follow-up appointment scheduled in two
+      weeks or sooner if symptoms worsen.
+author_details:
+  fictional_doctor_name: Dr. Lucas Green
+  fictional_clinic_name: Riverside Cardiology Associates
+  fictional_contact_info: contact@riversidecardio.fake / 555-0100-FAKE
+generation_metadata:
+  generated_at_script: '2025-05-17T06:54:50.005703+00:00'
+  script_version: '1.0'

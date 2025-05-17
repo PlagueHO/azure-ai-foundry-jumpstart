@@ -1,0 +1,40 @@
+record_id: 1cd6c89f-1c89-4788-8833-ac9dcb4f4184
+document_type: Clinic Note
+specialty: Cardiology
+created_at: 2025-05-17 07:31:20.686829+00:00
+patient_details:
+  fictional_name: Rachel Morgan
+  age: 54
+  gender: Female
+  fictional_patient_id: MRN-FAKE-20483
+document_content:
+  title: Cardiology Clinic Follow-up Note
+  sections:
+  - heading: Reason for Visit/Consultation
+    content: Patient presents for follow-up evaluation of hypertension and stable
+      angina, as well as review of recent echocardiogram results.
+  - heading: History of Present Illness
+    content: Ms. Morgan reports intermittent chest discomfort over the past two weeks,
+      described as a mild pressure sensation occurring with exertion and relieved
+      by rest. No associated palpitations, syncope, or shortness of breath. She denies
+      any recent hospitalizations or medication changes. Compliance with her current
+      medications is reported as good.
+  - heading: Past Medical History
+    content: Hypertension, hyperlipidemia, type 2 diabetes mellitus, and stable angina.
+      No prior myocardial infarction or cardiac interventions.
+  - heading: Assessment
+    content: Stable angina with no evidence of acute coronary syndrome. Blood pressure
+      is moderately controlled. Echocardiogram demonstrates preserved left ventricular
+      function with no significant valvular disease.
+  - heading: Plan
+    content: Continue current regimen of beta-blocker, statin, ACE inhibitor, and
+      low-dose aspirin. Encourage lifestyle modifications including dietary sodium
+      restriction and regular exercise. Schedule treadmill stress test in four weeks.
+      Return to clinic in three months or sooner if symptoms worsen.
+author_details:
+  fictional_doctor_name: Dr. Samuel Carter
+  fictional_clinic_name: Evergreen Heart Center
+  fictional_contact_info: dr.carter@evergreenheart.fake / 555-0100-FAKE
+generation_metadata:
+  generated_at_script: '2025-05-17T07:31:26.349124+00:00'
+  script_version: '1.0'

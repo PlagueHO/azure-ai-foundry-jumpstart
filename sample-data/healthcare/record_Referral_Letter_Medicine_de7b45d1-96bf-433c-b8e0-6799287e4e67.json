@@ -1,0 +1,42 @@
+{
+  "record_id": "de7b45d1-96bf-433c-b8e0-6799287e4e67",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-17T07:44:24.460162+00:00",
+  "patient_details": {
+    "fictional_name": "Jane Doe",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to General Medicine Clinic",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Jane Doe is being referred to the General Medicine Clinic for further evaluation and management of persistent fatigue and intermittent low-grade fevers over the past two months."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports experiencing increasing fatigue, generalized malaise, and occasional low-grade fevers (up to 37.8°C) for approximately eight weeks. She denies any recent travel, sick contacts, or significant weight loss. There is no history of night sweats, cough, chest pain, or gastrointestinal symptoms. Over-the-counter analgesics have provided minimal relief. Her past medical history is notable only for mild seasonal allergies."
+      },
+      {
+        "heading": "Assessment",
+        "content": "On initial evaluation, Ms. Doe appears alert but tired. Vital signs are stable. Physical examination is unremarkable except for mild pallor. Basic laboratory investigations revealed a borderline low hemoglobin (11.2 g/dL) and slightly elevated C-reactive protein. Other parameters, including renal and liver function tests, were within normal limits. No clear source of infection or inflammation has been identified."
+      },
+      {
+        "heading": "Plan",
+        "content": "Further workup is recommended to identify the underlying cause of her symptoms. Suggested investigations include an expanded blood panel, autoimmune screening, and chest radiography. Please evaluate and advise regarding the need for additional diagnostic procedures or specialist input. The patient will continue supportive care and monitoring in the interim."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Alex Turner",
+    "fictional_clinic_name": "Riverside Family Practice",
+    "fictional_contact_info": "contact@riversideclinic.fake / 555-0100-FAKE"
+  },
+  "generation_metadata": {
+    "generated_at_script": "2025-05-17T07:44:31.306399+00:00",
+    "script_version": "1.0"
+  }
+}

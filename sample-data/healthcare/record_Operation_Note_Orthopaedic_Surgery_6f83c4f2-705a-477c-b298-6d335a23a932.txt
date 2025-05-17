@@ -1,0 +1,59 @@
+Record ID: 6f83c4f2-705a-477c-b298-6d335a23a932  
+Document Type: Operation Note  
+Specialty: Orthopaedic Surgery  
+Created At: 2025-05-17T07:36:00.369569+00:00  
+
+Patient: John Smith (Fictional)  
+Age: 62  
+Gender: Male  
+Patient ID: FAKE-PT-2047  
+
+--- Document: Operation Note ---  
+Title: Left Total Knee Arthroplasty
+
+Date of Service: 2025-05-17
+
+Reason for Visit  
+Mr. John Smith presented with chronic left knee pain and functional limitation secondary to advanced osteoarthritis, refractory to conservative management.
+
+History  
+The patient has experienced progressive left knee pain over the past five years, unresponsive to physical therapy, NSAIDs, and intra-articular corticosteroid injections. He reports difficulty ambulating more than one block and morning stiffness lasting up to 45 minutes. No history of trauma or prior knee surgeries. Past medical history notable for hypertension and hyperlipidemia.
+
+Preoperative Assessment  
+Physical examination revealed antalgic gait, joint line tenderness, and crepitus on the left knee. Radiographs demonstrated tricompartmental osteoarthritis with joint space narrowing and osteophyte formation. Preoperative labs were within normal limits. Cardiology clearance obtained.
+
+Procedure Performed  
+Left Total Knee Arthroplasty
+
+Anesthesia  
+Spinal anesthesia with sedation.
+
+Findings  
+Intraoperative findings included severe degenerative changes of the femoral and tibial articular surfaces, significant osteophyte formation, and synovial hypertrophy. No gross ligamentous instability was noted.
+
+Operative Details  
+The patient was positioned supine with a tourniquet applied to the left thigh. Standard medial parapatellar approach utilized. Osteophytes were excised, and the joint surfaces were prepared. Cemented prosthetic components (femoral, tibial, and patellar) were implanted with satisfactory alignment and fixation. Stability and range of motion were assessed intraoperatively and found to be excellent. Wound irrigated and closed in layers. Sterile dressing applied.
+
+Estimated Blood Loss: 250 mL  
+No intraoperative complications.
+
+Postoperative Plan  
+- Weight-bearing as tolerated with walker assistance  
+- Initiate physical therapy on postoperative day 1  
+- DVT prophylaxis with low-molecular-weight heparin  
+- Pain control with multimodal analgesia  
+- Wound checks in 2 days and 2 weeks
+
+Recommendations  
+Continue post-operative rehabilitation and scheduled follow-up. Monitor for signs of infection, thromboembolic events, or prosthesis-related complications. Long-term prognosis is favorable with adherence to rehabilitation protocol.
+
+---
+
+Authored by:  
+Dr. Emily Carter, MD  
+Fictional Orthopaedic Surgery Center  
+Contact: dr.ecarter@fictionalortho.com / 555-0199-FAKE
+
+---Generation Metadata---
+Generated At (Script): 2025-05-17T07:36:08.622021+00:00
+Script Version: 1.0

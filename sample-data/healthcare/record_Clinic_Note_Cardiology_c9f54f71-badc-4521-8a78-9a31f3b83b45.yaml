@@ -1,0 +1,44 @@
+record_id: c9f54f71-badc-4521-8a78-9a31f3b83b45
+document_type: Clinic Note
+specialty: Cardiology
+created_at: 2025-05-17 06:54:14.841897+00:00
+patient_details:
+  fictional_name: Emily Parker
+  age: 58
+  gender: Female
+  fictional_patient_id: MRN-FAKE-94726
+document_content:
+  title: Cardiology Clinic Follow-up Note
+  sections:
+  - heading: Reason for Visit/Consultation
+    content: Ms. Emily Parker presents to the cardiology clinic for follow-up evaluation
+      of her recently diagnosed hypertension and to discuss ongoing management of
+      her mild heart failure symptoms.
+  - heading: History of Present Illness
+    content: The patient reports occasional episodes of mild shortness of breath on
+      exertion over the past several weeks, with no associated chest pain or palpitations.
+      She denies orthopnea or paroxysmal nocturnal dyspnea. She has been compliant
+      with her prescribed medications and reports monitoring her blood pressure at
+      home, which has ranged between 130-145/80-88 mmHg. She also notes mild ankle
+      swelling at the end of the day, which resolves overnight.
+  - heading: Past Medical History
+    content: Hypertension, hyperlipidemia, mild congestive heart failure (NYHA Class
+      II), osteoarthritis.
+  - heading: Assessment
+    content: Stable hypertension with satisfactory control. Mild heart failure symptoms,
+      likely NYHA Class II, with no evidence of decompensation. No new cardiac symptoms
+      reported. Blood pressure and heart rate within target range. No signs of fluid
+      overload on examination.
+  - heading: Plan
+    content: Continue current antihypertensive and heart failure medications. Encourage
+      low-sodium diet and regular light exercise as tolerated. Schedule routine laboratory
+      monitoring in 3 months, including renal function and electrolytes. Patient advised
+      to monitor blood pressure and weight at home and to report any sudden changes
+      in symptoms. Follow-up appointment in 4 months, or sooner if symptoms worsen.
+author_details:
+  fictional_doctor_name: Dr. Samuel Turner
+  fictional_clinic_name: Lakeside Cardiology Associates
+  fictional_contact_info: fake-email@example.com / 555-0100-FAKE
+generation_metadata:
+  generated_at_script: '2025-05-17T06:54:20.702124+00:00'
+  script_version: '1.0'

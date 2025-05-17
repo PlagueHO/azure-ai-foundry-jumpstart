@@ -1,0 +1,43 @@
+record_id: f2ba9e66-4b63-4ec7-98aa-aa8c1e185872
+document_type: Clinic Note
+specialty: Cardiology
+created_at: 2025-05-17 07:31:07.747642+00:00
+patient_details:
+  fictional_name: Jane Doe
+  age: 56
+  gender: Female
+  fictional_patient_id: MRN-FAKE-84729
+document_content:
+  title: Cardiology Clinic Follow-up Note
+  sections:
+  - heading: Reason for Visit/Consultation
+    content: Patient presents for follow-up evaluation of previously diagnosed hypertension
+      and recent onset of exertional chest discomfort.
+  - heading: History of Present Illness
+    content: Ms. Doe reports a two-week history of intermittent, mild chest tightness
+      occurring primarily during brisk walking or climbing stairs. She denies associated
+      shortness of breath, palpitations, dizziness, or syncope. No episodes at rest.
+      She has been compliant with her antihypertensive medications. No recent illness
+      or significant lifestyle changes.
+  - heading: Past Medical History
+    content: Hypertension (diagnosed 4 years ago), hyperlipidemia, no history of diabetes,
+      no prior cardiac events. Non-smoker. Family history notable for coronary artery
+      disease in father.
+  - heading: Assessment
+    content: Stable hypertension with new onset exertional chest pain, likely angina.
+      No symptoms suggestive of acute coronary syndrome at present. Blood pressure
+      well controlled today. Physical exam unremarkable; no murmurs or signs of heart
+      failure.
+  - heading: Plan
+    content: Recommend initiation of low-dose aspirin and referral for outpatient
+      exercise stress test to assess for inducible ischemia. Continue current antihypertensive
+      and statin therapy. Advise patient to monitor for worsening symptoms and seek
+      immediate care if chest pain occurs at rest, is severe, or associated with other
+      concerning features. Follow-up scheduled in 2 weeks to review test results.
+author_details:
+  fictional_doctor_name: Dr. Samuel Carter
+  fictional_clinic_name: Westview Cardiology Center
+  fictional_contact_info: cardio-doc@example.com / 555-0100-FAKE
+generation_metadata:
+  generated_at_script: '2025-05-17T07:31:14.287176+00:00'
+  script_version: '1.0'

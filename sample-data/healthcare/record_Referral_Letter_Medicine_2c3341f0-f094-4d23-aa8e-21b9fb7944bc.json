@@ -1,0 +1,42 @@
+{
+  "record_id": "2c3341f0-f094-4d23-aa8e-21b9fb7944bc",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-17T07:45:41.916379+00:00",
+  "patient_details": {
+    "fictional_name": "Emily Harper",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to Rheumatology",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Emily Harper is being referred to Rheumatology for further evaluation and management of persistent joint pain and morning stiffness, which have not responded adequately to initial conservative therapy."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "Ms. Harper reports a six-month history of diffuse joint discomfort, predominantly affecting her wrists, knees, and small joints of the hands. She describes morning stiffness lasting approximately 90 minutes, which gradually improves throughout the day. She denies any recent trauma, fever, or weight loss. Over-the-counter analgesics have provided only minimal relief."
+      },
+      {
+        "heading": "Assessment",
+        "content": "On examination, there is mild synovitis noted in the bilateral wrists and proximal interphalangeal joints. Laboratory investigations reveal a mildly elevated erythrocyte sedimentation rate (ESR) and positive anti-nuclear antibody (ANA) at low titer. Rheumatoid factor and anti-CCP antibodies are negative. Imaging of the hands shows no erosions."
+      },
+      {
+        "heading": "Plan",
+        "content": "Given the persistence of symptoms and laboratory findings, further specialized evaluation is warranted to rule out early inflammatory arthritis or connective tissue disease. I recommend rheumatology assessment for possible initiation of disease-modifying therapy. Please see attached laboratory and imaging reports. Patient has been advised to continue supportive care and NSAIDs as needed until reviewed by your team."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Alex Morgan",
+    "fictional_clinic_name": "Greenfield Medical Center",
+    "fictional_contact_info": "amorgan@greenfieldclinic.fake / 555-0100-FAKE"
+  },
+  "generation_metadata": {
+    "generated_at_script": "2025-05-17T07:45:48.268144+00:00",
+    "script_version": "1.0"
+  }
+}

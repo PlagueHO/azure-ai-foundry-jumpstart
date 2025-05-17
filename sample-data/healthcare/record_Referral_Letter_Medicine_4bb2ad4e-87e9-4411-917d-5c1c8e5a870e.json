@@ -1,0 +1,42 @@
+{
+  "record_id": "4bb2ad4e-87e9-4411-917d-5c1c8e5a870e",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-17T07:45:11.583745+00:00",
+  "patient_details": {
+    "fictional_name": "Jane Doe",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to Cardiology Clinic",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Jane Doe is being referred to the Cardiology Clinic for further evaluation of persistent episodes of palpitations and intermittent chest discomfort, which have not resolved with initial management in the primary care setting."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports experiencing episodes of rapid heartbeat lasting several minutes, occurring two to three times per week over the past two months. These episodes are sometimes accompanied by mild chest tightness and shortness of breath. There is no associated syncope, but she notes occasional dizziness. No significant relief has been observed with lifestyle modifications and reassurance."
+      },
+      {
+        "heading": "Assessment",
+        "content": "On examination, vital signs are within normal limits, and cardiac auscultation reveals a regular rhythm with no murmurs. Resting ECG performed in the clinic was unremarkable. Thyroid function tests are normal. Given the frequency and nature of her symptoms, further cardiac evaluation is warranted to rule out arrhythmias or underlying structural heart disease."
+      },
+      {
+        "heading": "Plan",
+        "content": "Referral to Cardiology for further diagnostic workup, including ambulatory ECG monitoring and echocardiogram. Please advise on additional management or interventions as appropriate. Patient has been counseled on when to seek urgent care should her symptoms worsen."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Emily Carter",
+    "fictional_clinic_name": "Greenfield Family Medicine Center",
+    "fictional_contact_info": "emily.carter@fakeclinic.com / 555-0100-FAKE"
+  },
+  "generation_metadata": {
+    "generated_at_script": "2025-05-17T07:45:17.901108+00:00",
+    "script_version": "1.0"
+  }
+}

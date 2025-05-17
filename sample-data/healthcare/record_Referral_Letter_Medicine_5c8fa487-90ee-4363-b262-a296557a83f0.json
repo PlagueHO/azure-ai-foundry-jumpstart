@@ -1,0 +1,42 @@
+{
+  "record_id": "5c8fa487-90ee-4363-b262-a296557a83f0",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-17T07:46:02.067641+00:00",
+  "patient_details": {
+    "fictional_name": "Jane Doe",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to Cardiology Clinic",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Jane Doe is being referred to the cardiology clinic for evaluation of intermittent chest discomfort and episodes of palpitations that have not resolved with initial management."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports a three-month history of intermittent chest pain, described as a mild to moderate pressure sensation, occasionally radiating to her left arm. She also notes palpitations occurring mainly at rest and lasting up to five minutes. There is no associated syncope, but she has experienced mild shortness of breath during exertion. She denies any history of hypertension, diabetes, or previous cardiac issues."
+      },
+      {
+        "heading": "Assessment",
+        "content": "On examination, vital signs are stable. Cardiovascular examination reveals a regular rhythm with no murmurs or gallops. Recent ECG in clinic showed occasional premature atrial contractions but was otherwise unremarkable. Baseline laboratory studies, including lipid profile and thyroid function, are within normal limits."
+      },
+      {
+        "heading": "Plan",
+        "content": "Given the persistence of her symptoms, I recommend further evaluation by cardiology for possible ambulatory monitoring and echocardiogram. Please assess for underlying arrhythmia or structural heart disease and advise on management. The patient has been counseled on lifestyle modifications and to avoid caffeine and other stimulants. She will follow up with your clinic as soon as an appointment is available."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Samuel Greene",
+    "fictional_clinic_name": "Maplewood Family Practice",
+    "fictional_contact_info": "fake-email@example.com / 555-0100-FAKE"
+  },
+  "generation_metadata": {
+    "generated_at_script": "2025-05-17T07:46:08.195080+00:00",
+    "script_version": "1.0"
+  }
+}

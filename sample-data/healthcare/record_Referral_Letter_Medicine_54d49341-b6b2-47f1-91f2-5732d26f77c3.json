@@ -1,0 +1,54 @@
+{
+  "record_id": "54d49341-b6b2-47f1-91f2-5732d26f77c3",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-17T07:46:33.953938+00:00",
+  "patient_details": {
+    "fictional_name": "Jane Doe",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to Endocrinology",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Jane Doe is being referred to your clinic for evaluation and management of persistent fatigue and unexplained weight gain, with recent laboratory findings suggestive of hypothyroidism."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports a gradual onset of fatigue over the past six months, accompanied by a 7 kg weight gain despite no significant changes in diet or activity. She also describes increased sensitivity to cold and mild constipation. There is no history of depression or recent stressors. She denies palpitations, chest pain, or shortness of breath."
+      },
+      {
+        "heading": "Relevant Medical History",
+        "content": "Ms. Doe has a past medical history of mild asthma, well controlled with inhalers. No known allergies. She is not on any chronic medications except for an occasional salbutamol inhaler. Family history is significant for autoimmune thyroid disease in her mother."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "Physical examination revealed mild periorbital puffiness and dry skin. Her heart rate was 58 bpm and blood pressure 112/68 mmHg. No palpable thyroid enlargement or nodules were noted."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Recent laboratory tests showed elevated TSH (9.2 mIU/L) and low free T4 (8.0 pmol/L). CBC, renal and liver function tests were within normal limits. Lipid profile revealed mild hypercholesterolemia."
+      },
+      {
+        "heading": "Assessment",
+        "content": "Findings are consistent with primary hypothyroidism, likely of autoimmune etiology. Further endocrine evaluation is warranted to confirm diagnosis and guide management."
+      },
+      {
+        "heading": "Plan",
+        "content": "Referral to Endocrinology for further assessment and initiation of appropriate thyroid hormone replacement. Patient advised to monitor symptoms and return if there is worsening fatigue, mood changes, or any new symptoms. Copies of relevant laboratory results are attached."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Linda Carter",
+    "fictional_clinic_name": "Meadowbrook Family Practice",
+    "fictional_contact_info": "lcarter@meadowbrookclinic.com / 555-0100-FAKE"
+  },
+  "generation_metadata": {
+    "generated_at_script": "2025-05-17T07:46:41.689207+00:00",
+    "script_version": "1.0"
+  }
+}

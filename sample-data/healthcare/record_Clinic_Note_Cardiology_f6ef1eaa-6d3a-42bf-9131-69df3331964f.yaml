@@ -1,0 +1,40 @@
+record_id: f6ef1eaa-6d3a-42bf-9131-69df3331964f
+document_type: Clinic Note
+specialty: Cardiology
+created_at: 2025-05-17 07:31:01.878297+00:00
+patient_details:
+  fictional_name: Emily Carter
+  age: 58
+  gender: Female
+  fictional_patient_id: MRN-FAKE-62731
+document_content:
+  title: Cardiology Clinic Follow-up Note
+  sections:
+  - heading: Reason for Visit/Consultation
+    content: Ms. Carter presents for follow-up evaluation of her hypertension and
+      recent episodes of exertional chest discomfort.
+  - heading: History of Present Illness
+    content: Over the past month, the patient has experienced intermittent pressure-like
+      chest pain during brisk walking, lasting 3-5 minutes and relieved by rest. She
+      denies associated shortness of breath, palpitations, or syncope. She has been
+      compliant with her antihypertensive medications but reports occasional headaches.
+  - heading: Past Medical History
+    content: Hypertension (diagnosed 8 years ago), hyperlipidemia, and a remote history
+      of migraine headaches. No prior myocardial infarction or stroke.
+  - heading: Assessment
+    content: Ms. Carter is a 58-year-old female with stable hypertension and hyperlipidemia,
+      now presenting with probable angina pectoris on exertion. Blood pressure today
+      is 142/88 mmHg. Physical exam unremarkable. ECG in clinic shows normal sinus
+      rhythm without acute changes.
+  - heading: Plan
+    content: Recommend initiating low-dose beta blocker (metoprolol succinate 25 mg
+      daily) and continuing current statin therapy. Schedule outpatient stress echocardiogram
+      to further evaluate for ischemia. Advise dietary salt reduction and regular
+      exercise as tolerated. Follow-up in 4 weeks or sooner if symptoms worsen.
+author_details:
+  fictional_doctor_name: Dr. Samuel Lin
+  fictional_clinic_name: Green Valley Cardiology Associates
+  fictional_contact_info: contact@greenvalleycardio.fake / 555-0100-FAKE
+generation_metadata:
+  generated_at_script: '2025-05-17T07:31:07.744256+00:00'
+  script_version: '1.0'

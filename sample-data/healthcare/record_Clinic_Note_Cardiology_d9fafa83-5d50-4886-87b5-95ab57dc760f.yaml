@@ -1,0 +1,41 @@
+record_id: d9fafa83-5d50-4886-87b5-95ab57dc760f
+document_type: Clinic Note
+specialty: Cardiology
+created_at: 2025-05-17 07:31:43.727625+00:00
+patient_details:
+  fictional_name: Emily Turner
+  age: 58
+  gender: Female
+  fictional_patient_id: MRN-FAKE-45982
+document_content:
+  title: Cardiology Clinic Follow-up Note
+  sections:
+  - heading: Reason for Visit/Consultation
+    content: Patient presents for a routine follow-up to monitor management of hypertension
+      and evaluation of recent onset palpitations.
+  - heading: History of Present Illness
+    content: Ms. Turner reports experiencing intermittent palpitations over the past
+      two weeks, described as a rapid, fluttering sensation in her chest, lasting
+      a few minutes and resolving spontaneously. She denies chest pain, syncope, or
+      shortness of breath. No recent changes in medication or lifestyle. Blood pressure
+      readings at home have averaged 138/86 mmHg.
+  - heading: Past Medical History
+    content: Hypertension, hyperlipidemia, and hypothyroidism. No previous history
+      of coronary artery disease or arrhythmias.
+  - heading: Assessment
+    content: Well-controlled hypertension. New onset palpitations, likely benign,
+      but further workup is warranted to rule out arrhythmia. No evidence of heart
+      failure or ischemic symptoms.
+  - heading: Plan
+    content: Obtain a 24-hour Holter monitor to assess for arrhythmias. Continue current
+      antihypertensive and statin therapy. Encourage patient to record frequency and
+      timing of palpitations. Follow-up appointment scheduled in four weeks or sooner
+      if symptoms worsen. Advised to seek immediate care for chest pain, syncope,
+      or severe shortness of breath.
+author_details:
+  fictional_doctor_name: Dr. Samuel Lin
+  fictional_clinic_name: Heartwell Cardiology Associates
+  fictional_contact_info: contact@heartwellclinic.com / 555-0100-FAKE
+generation_metadata:
+  generated_at_script: '2025-05-17T07:31:49.181427+00:00'
+  script_version: '1.0'

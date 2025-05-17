@@ -1,0 +1,41 @@
+record_id: 7a93a410-3a43-446f-b6ef-078cdbaa6fb6
+document_type: Clinic Note
+specialty: Cardiology
+created_at: 2025-05-17 07:31:49.186927+00:00
+patient_details:
+  fictional_name: Emily Carter
+  age: 56
+  gender: Female
+  fictional_patient_id: MRN-FAKE-92847
+document_content:
+  title: Cardiology Clinic Follow-up Note
+  sections:
+  - heading: Reason for Visit/Consultation
+    content: Ms. Carter presents for routine follow-up after her recent diagnosis
+      of hypertension and hyperlipidemia. She reports intermittent chest discomfort
+      over the past month and is here for further evaluation and management.
+  - heading: History of Present Illness
+    content: The patient describes a dull, non-radiating chest pressure occurring
+      primarily with exertion, lasting 3–5 minutes, and resolving with rest. No associated
+      palpitations, syncope, or diaphoresis. She denies shortness of breath at rest,
+      orthopnea, or paroxysmal nocturnal dyspnea. No recent hospitalizations or emergency
+      visits. She has been adherent to her prescribed medications.
+  - heading: Past Medical History
+    content: Hypertension (diagnosed 2023), hyperlipidemia, mild osteoarthritis of
+      the knees. No history of diabetes, myocardial infarction, or stroke.
+  - heading: Assessment
+    content: 56-year-old female with stable exertional chest discomfort, hypertension,
+      and hyperlipidemia. Symptoms are suggestive of possible stable angina. Cardiovascular
+      risk factors are present, but there are no acute concerning features.
+  - heading: Plan
+    content: Continue current antihypertensive and statin therapy. Order a treadmill
+      exercise stress test to evaluate for inducible ischemia. Encourage dietary modifications
+      and regular aerobic exercise. Schedule follow-up in 4 weeks or sooner if symptoms
+      worsen. Educated patient on warning signs and when to seek immediate care.
+author_details:
+  fictional_doctor_name: Dr. Samuel Lin
+  fictional_clinic_name: Riverbend Cardiology Associates
+  fictional_contact_info: contact@riverbendcardio.fake / 555-0100-FAKE
+generation_metadata:
+  generated_at_script: '2025-05-17T07:31:55.565456+00:00'
+  script_version: '1.0'

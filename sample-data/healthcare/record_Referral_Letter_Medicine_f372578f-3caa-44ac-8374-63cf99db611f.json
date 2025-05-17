@@ -1,0 +1,50 @@
+{
+  "record_id": "f372578f-3caa-44ac-8374-63cf99db611f",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-17T07:44:37.908184+00:00",
+  "patient_details": {
+    "fictional_name": "Jane Doe",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to Cardiology Clinic",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Jane Doe is being referred to the Cardiology Clinic for further evaluation of intermittent chest discomfort and palpitations that have persisted over the past two months. She requires specialist assessment to determine the underlying cause and appropriate management."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports experiencing episodes of chest tightness, described as a mild pressure sensation, primarily occurring during periods of exertion and occasionally at rest. She notes associated palpitations and mild shortness of breath, without syncope or dizziness. There is no history of known heart disease. Symptoms have gradually increased in frequency, prompting this referral."
+      },
+      {
+        "heading": "Relevant Medical History",
+        "content": "Ms. Doe has a history of mild hypertension, currently managed with lifestyle modifications. She has no known allergies and is not on any regular medications. Family history is significant for coronary artery disease in her father, diagnosed at age 55."
+      },
+      {
+        "heading": "Examination and Investigations",
+        "content": "Physical examination revealed normal heart sounds with no murmurs or added sounds. Blood pressure was 132/84 mmHg, pulse regular at 76 bpm. Recent ECG in clinic showed normal sinus rhythm with no acute changes. Basic blood tests, including full blood count and electrolytes, were within normal limits."
+      },
+      {
+        "heading": "Assessment",
+        "content": "Ms. Doe presents with exertional chest discomfort and palpitations of unclear etiology. Differential diagnosis includes atypical angina, arrhythmia, and non-cardiac causes such as anxiety. Further specialist evaluation is warranted."
+      },
+      {
+        "heading": "Plan and Recommendations",
+        "content": "Referral to Cardiology for further assessment, including consideration of exercise stress testing and 24-hour Holter monitoring. Please advise on the need for further cardiac imaging if indicated. The patient has been advised to monitor symptoms and seek urgent care if chest pain is severe or associated with other concerning features."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Emily Carter",
+    "fictional_clinic_name": "Greenwood Medical Center",
+    "fictional_contact_info": "fake-email@example.com / 555-0100-FAKE"
+  },
+  "generation_metadata": {
+    "generated_at_script": "2025-05-17T07:44:45.039052+00:00",
+    "script_version": "1.0"
+  }
+}

@@ -1,0 +1,62 @@
+Record ID: 016d7f4d-9d37-4fa9-acd6-c86e92c80994  
+Document Type: Operation Note  
+Specialty: Orthopaedic Surgery  
+Created At: 2025-05-17T07:35:11.367195+00:00  
+
+Patient: Michael Carter (Fictional)  
+Age: 62  
+Gender: Male  
+Patient ID: FAKE-PT-104  
+
+--- Document: Operation Note ---  
+Title: Left Total Knee Arthroplasty Operation Note
+
+**Reason for Visit:**  
+Patient presented with chronic left knee pain and progressive loss of mobility secondary to advanced osteoarthritis. Conservative management, including physical therapy, NSAIDs, and intra-articular injections, failed to provide significant relief.
+
+**History:**  
+Mr. Carter has a five-year history of worsening left knee pain, stiffness, and decreased range of motion. No prior surgical interventions on the affected knee. Past medical history includes controlled hypertension and mild type 2 diabetes mellitus.
+
+**Assessment:**  
+Diagnosis: End-stage osteoarthritis of the left knee, refractory to non-operative treatment.
+
+**Preoperative Plan:**  
+Proceed with elective left total knee arthroplasty under spinal anesthesia. Standard prophylactic antibiotics and DVT prophylaxis to be administered perioperatively.
+
+**Operative Findings:**  
+Under sterile conditions, a midline skin incision and medial parapatellar arthrotomy were performed. There was significant degenerative change of the femoral and tibial articular surfaces, with complete loss of joint space and marginal osteophyte formation. No evidence of acute infection or malignancy. The patella was moderately arthritic with eburnation noted.
+
+**Procedure:**  
+- Femoral and tibial cuts were made using standard jigs.
+- Osteophytes were excised.
+- Trial components were placed and satisfactory alignment, stability, and range of motion were confirmed.
+- Definitive cemented prosthesis was implanted.
+- Patella resurfaced with a polyethylene button.
+- Wound irrigated thoroughly and closed in layers.
+- A sterile compressive dressing was applied.
+
+**Complications:**  
+No intraoperative complications. Estimated blood loss: 250 mL. No transfusion required.
+
+**Postoperative Plan:**  
+- Monitor in recovery for 24 hours.
+- Begin physiotherapy on postoperative day 1.
+- Continue DVT prophylaxis (enoxaparin 40mg daily).
+- Pain management per protocol.
+- Wound inspection and dressing change in 48 hours.
+- Discharge anticipated on postoperative day 3 if ambulating safely.
+
+**Recommendations:**  
+- Follow up in outpatient clinic in two weeks for wound review and staple removal.
+- Continue home-based physical therapy as advised.
+- Monitor blood glucose and blood pressure closely during recovery.
+
+---
+Authored by:  
+Dr. Samantha Lin, MD  
+Fictional Orthopaedic Specialists Group  
+Contact: samantha.lin@fakespecialists.com / 555-0123-FAKE
+
+---Generation Metadata---
+Generated At (Script): 2025-05-17T07:35:19.288976+00:00
+Script Version: 1.0

@@ -1,0 +1,41 @@
+record_id: caa32479-fb98-4924-9956-736b783d6b64
+document_type: Clinic Note
+specialty: Cardiology
+created_at: 2025-05-17 06:54:25.911708+00:00
+patient_details:
+  fictional_name: Emily Carter
+  age: 58
+  gender: Female
+  fictional_patient_id: MRN-FAKE-8675309
+document_content:
+  title: Cardiology Clinic Follow-up Note
+  sections:
+  - heading: Reason for Visit/Consultation
+    content: Ms. Emily Carter presents for a routine follow-up evaluation after recent
+      adjustment of her antihypertensive regimen. She was last seen in the clinic
+      three months ago.
+  - heading: History of Present Illness
+    content: The patient reports mild improvement in her blood pressure since her
+      medication was changed from lisinopril to amlodipine. She denies chest pain,
+      palpitations, orthopnea, or lower extremity edema. She notes occasional mild
+      headaches, but no dizziness or syncope. She adheres to her prescribed medications
+      and follows a low-sodium diet.
+  - heading: Past Medical History
+    content: Hypertension (diagnosed 10 years ago), hyperlipidemia, and osteoarthritis
+      of the knees.
+  - heading: Assessment
+    content: 58-year-old female with a history of hypertension and hyperlipidemia,
+      currently well-controlled on amlodipine and atorvastatin. Blood pressure today
+      is 128/76 mmHg. No evidence of heart failure or ischemic symptoms.
+  - heading: Plan
+    content: Continue amlodipine 10 mg daily and atorvastatin 20 mg nightly. Encourage
+      ongoing dietary modifications and regular exercise. Recheck fasting lipid panel
+      in 6 months. Return to clinic in 6 months for follow-up or sooner if symptoms
+      develop.
+author_details:
+  fictional_doctor_name: Dr. Samuel Lin
+  fictional_clinic_name: Maple Grove Cardiology Center
+  fictional_contact_info: dr.lin@maplegrovecardiology.fake / 555-0100-FAKE
+generation_metadata:
+  generated_at_script: '2025-05-17T06:54:32.338631+00:00'
+  script_version: '1.0'

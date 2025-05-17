@@ -1,0 +1,59 @@
+Record ID: 16e04ae1-45e2-4229-b050-d2b6c43ff8ee  
+Document Type: Operation Note  
+Specialty: Orthopaedic Surgery  
+Created At: 2025-05-17T07:37:04.573565+00:00  
+
+Patient: John Smith (Fictional)  
+Age: 62  
+Gender: Male  
+Patient ID: FAKE-ORTHO-1023  
+
+--- Document: Operation Note ---  
+Title: Left Total Knee Arthroplasty  
+
+Reason for Visit:  
+Patient presented with progressive left knee pain and functional limitation secondary to severe osteoarthritis, refractory to conservative management including physical therapy, NSAIDs, and intra-articular steroid injections.
+
+History:  
+Mr. Smith has a five-year history of worsening left knee pain, stiffness, and reduced range of motion. He reports difficulty ambulating and performing daily activities. No prior surgeries on the affected joint. No history of infection or trauma. Medical history significant for hypertension and hyperlipidemia, both well controlled.
+
+Preoperative Assessment:  
+Physical examination revealed varus deformity, crepitus, and decreased flexion in the left knee. Radiographs demonstrated tricompartmental osteoarthritis with joint space narrowing and osteophyte formation. Laboratory values within normal limits. Patient optimized for surgery.
+
+Procedure Performed:  
+Left Total Knee Arthroplasty
+
+Anesthesia:  
+Spinal anesthesia with sedation.
+
+Operative Findings:  
+- Severe degenerative changes throughout the left knee joint  
+- Prominent osteophytes on the femoral and tibial condyles  
+- Intact collateral and cruciate ligaments  
+- No evidence of infection or intra-articular loose bodies
+
+Operative Details:  
+Standard medial parapatellar approach was utilized. Osteophytes were excised, and the distal femur and proximal tibia were prepared using appropriate guides. Trial components achieved satisfactory alignment and stability. Final cemented implants were inserted. Patella was resurfaced. Hemostasis achieved. Wound irrigated and closed in layers. Sterile dressing applied. Estimated blood loss: 300 mL. No intraoperative complications.
+
+Postoperative Plan:  
+- Early mobilization with physiotherapy starting postoperative day 1  
+- DVT prophylaxis with low molecular weight heparin  
+- Pain management per protocol  
+- Close monitoring for signs of infection or thromboembolic events
+
+Recommendations:  
+- Continue physical therapy for strengthening and range of motion  
+- Follow up in orthopaedic clinic in two weeks for wound assessment and suture removal  
+- Monitor for fever, increased pain, redness, or drainage at surgical site  
+- Return to clinic earlier if concerning symptoms arise
+
+---
+
+Authored by:  
+Dr. Clara Matthews, MD  
+Fictional Orthopaedic Institute  
+Contact: dr.matthews@fictionalortho.com / 555-0212-FAKE
+
+---Generation Metadata---
+Generated At (Script): 2025-05-17T07:37:11.768739+00:00
+Script Version: 1.0

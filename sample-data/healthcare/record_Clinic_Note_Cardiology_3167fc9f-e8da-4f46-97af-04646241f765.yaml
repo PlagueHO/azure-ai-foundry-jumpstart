@@ -1,0 +1,40 @@
+record_id: 3167fc9f-e8da-4f46-97af-04646241f765
+document_type: Clinic Note
+specialty: Cardiology
+created_at: 2025-05-17 07:31:38.313932+00:00
+patient_details:
+  fictional_name: Evelyn Carter
+  age: 58
+  gender: Female
+  fictional_patient_id: MRN-FAKE-76231
+document_content:
+  title: Cardiology Clinic Follow-up Note
+  sections:
+  - heading: Reason for Visit/Consultation
+    content: Ms. Carter returns to the cardiology clinic for routine follow-up regarding
+      her history of hypertension and recently diagnosed paroxysmal atrial fibrillation.
+  - heading: History of Present Illness
+    content: The patient reports intermittent episodes of palpitations over the past
+      month, occurring mainly at night and lasting a few minutes. She denies chest
+      pain, syncope, or shortness of breath. She notes mild fatigue but is otherwise
+      able to perform her daily activities. She has been compliant with her prescribed
+      medications and has not experienced any adverse effects.
+  - heading: Past Medical History
+    content: Hypertension, hyperlipidemia, paroxysmal atrial fibrillation diagnosed
+      two months ago, hypothyroidism.
+  - heading: Assessment
+    content: 58-year-old female with well-controlled hypertension and hyperlipidemia,
+      presenting with paroxysmal atrial fibrillation. No evidence of decompensated
+      heart failure or ischemic symptoms. CHA2DS2-VASc score calculated as 2.
+  - heading: Plan
+    content: Continue current antihypertensive and statin therapy. Continue apixaban
+      for stroke prophylaxis. Monitor thyroid function tests due to underlying hypothyroidism.
+      Schedule Holter monitor to further evaluate arrhythmia burden. Return for follow-up
+      in three months or sooner if symptoms worsen.
+author_details:
+  fictional_doctor_name: Dr. Samuel Jennings
+  fictional_clinic_name: Green Valley Cardiology Associates
+  fictional_contact_info: dr.jennings@greenvalleycardio.fake / 555-0100-FAKE
+generation_metadata:
+  generated_at_script: '2025-05-17T07:31:43.722231+00:00'
+  script_version: '1.0'

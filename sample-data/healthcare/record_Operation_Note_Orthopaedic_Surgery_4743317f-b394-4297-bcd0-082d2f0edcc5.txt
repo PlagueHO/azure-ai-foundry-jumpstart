@@ -1,0 +1,74 @@
+Record ID: 4743317f-b394-4297-bcd0-082d2f0edcc5  
+Document Type: Operation Note  
+Specialty: Orthopaedic Surgery  
+Created At: 2025-05-17T07:36:40.912571+00:00  
+
+Patient: Michael Carter (Fictional)  
+Age: 62  
+Gender: Male  
+Patient ID: FAKE-PT-029  
+
+--- Document: Operation Note ---  
+Title: Left Total Knee Arthroplasty  
+
+**Reason for Visit:**  
+Patient presented with chronic left knee pain secondary to severe osteoarthritis, refractory to conservative management including physical therapy, NSAIDs, and corticosteroid injections.
+
+**History:**  
+Mr. Carter has experienced progressive left knee pain over the past five years, significantly limiting ambulation and daily activities. No prior history of knee surgery. Past medical history includes hypertension and hyperlipidemia. No known drug allergies.
+
+**Preoperative Assessment:**  
+Physical examination revealed reduced range of motion in the left knee (flexion 0-90 degrees), significant crepitus, and varus deformity. Radiographs demonstrated tricompartmental osteoarthritic changes with joint space narrowing and osteophyte formation.
+
+**Procedure Performed:**  
+Left Total Knee Arthroplasty
+
+**Date of Surgery:**  
+2025-05-17
+
+**Anesthesia:**  
+Spinal anesthesia with sedation
+
+**Surgical Findings:**  
+- Extensive degenerative changes of the femoral and tibial articular surfaces  
+- Medial compartment collapse with meniscal degeneration  
+- No intra-articular loose bodies  
+- Intact collateral and cruciate ligaments (PCL sacrificed as per technique)
+
+**Operative Details:**  
+- Standard medial parapatellar approach utilized  
+- Osteophytes removed, and joint surfaces prepared  
+- Femoral and tibial components cemented in place  
+- Patella resurfaced  
+- Excellent alignment and stability achieved  
+- Thorough irrigation and hemostasis performed  
+- Layered closure completed; sterile dressing applied  
+
+**Estimated Blood Loss:**  
+250 mL
+
+**Complications:**  
+None encountered intraoperatively
+
+**Postoperative Plan:**  
+- Admit to orthopaedic ward for monitoring  
+- Begin physical therapy on postoperative day 1  
+- Thromboprophylaxis with low molecular weight heparin  
+- Pain management with multimodal analgesia  
+- Monitor for signs of infection or thromboembolic events
+
+**Recommendations:**  
+- Continue physiotherapy as directed  
+- Follow up in orthopaedic clinic in two weeks for wound check and suture removal  
+- Watch for increased pain, redness, or swelling around the surgical site  
+- Resume home medications except for NSAIDs until cleared  
+
+---
+Authored by:  
+Dr. Samantha Lin, MD (Fictional)  
+Summit Orthopaedic & Joint Center (Fictional Clinic)  
+Contact: dr.lin@summitortho-fake.com / 555-0123-ORTHO
+
+---Generation Metadata---
+Generated At (Script): 2025-05-17T07:36:48.559445+00:00
+Script Version: 1.0

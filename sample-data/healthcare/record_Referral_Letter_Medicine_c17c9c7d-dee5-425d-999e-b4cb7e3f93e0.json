@@ -1,0 +1,50 @@
+{
+  "record_id": "c17c9c7d-dee5-425d-999e-b4cb7e3f93e0",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-17T07:45:55.308567+00:00",
+  "patient_details": {
+    "fictional_name": "Jane Doe",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to Endocrinology for Evaluation of Thyroid Dysfunction",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Jane Doe is being referred to your clinic for further evaluation and management of suspected thyroid dysfunction, following recent laboratory results and ongoing symptoms suggestive of hypothyroidism."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports a six-month history of progressive fatigue, unintended weight gain of approximately 8 kilograms, and increased sensitivity to cold. She has also noticed hair thinning and occasional constipation. There is no history of neck swelling or pain. She denies palpitations, tremors, or recent changes in appetite. No prior history of thyroid disease is known."
+      },
+      {
+        "heading": "Relevant Medical History",
+        "content": "Ms. Doe has a history of mild asthma, well-controlled with inhalers. No previous surgeries. No known drug allergies. Family history is notable for her mother having hypothyroidism. She is not currently taking any medications aside from an as-needed salbutamol inhaler."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Recent laboratory investigations showed an elevated TSH (7.5 mIU/L) with low-normal free T4 (0.8 ng/dL). CBC, renal, and liver function tests were within normal limits."
+      },
+      {
+        "heading": "Assessment",
+        "content": "Clinical features and laboratory findings are consistent with primary hypothyroidism. Further evaluation is warranted to determine the underlying etiology and to initiate appropriate management."
+      },
+      {
+        "heading": "Plan and Recommendations",
+        "content": "Referral to endocrinology for comprehensive assessment and consideration of thyroid hormone replacement therapy. Please advise on further investigations, including thyroid antibody testing and imaging if indicated. Patient has been advised to monitor symptoms and return if any acute concerns arise."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Emily Carter",
+    "fictional_clinic_name": "Riverside Family Practice",
+    "fictional_contact_info": "fake-email@example.com / 555-0100-FAKE"
+  },
+  "generation_metadata": {
+    "generated_at_script": "2025-05-17T07:46:02.065963+00:00",
+    "script_version": "1.0"
+  }
+}

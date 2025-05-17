@@ -1,0 +1,64 @@
+Record ID: 5ba400a9-9d6b-4141-b960-5d3f46bac69b  
+Document Type: Operation Note  
+Specialty: Orthopaedic Surgery  
+Created At: 2025-05-17T07:35:44.369470+00:00  
+
+Patient: Samuel Turner (Fictional)  
+Age: 62  
+Gender: Male  
+Patient ID: FAKE-PT-4732  
+
+--- Document: Operation Note ---  
+Title: Left Total Knee Arthroplasty Operation Note
+
+**Reason for Visit:**  
+Mr. Turner presented with chronic left knee pain and functional limitation secondary to advanced osteoarthritis, unresponsive to conservative management.
+
+**History:**  
+The patient has a 4-year history of progressive left knee pain, stiffness, and reduced mobility. Non-surgical treatments, including physical therapy, NSAIDs, and intra-articular corticosteroid injections, provided only temporary relief. No history of previous knee surgeries. Medical history includes hypertension and type II diabetes, both well controlled.
+
+**Assessment:**  
+Diagnosis: End-stage osteoarthritis of the left knee with significant impact on daily activities and quality of life.
+
+**Preoperative Plan:**  
+- Procedure: Left total knee arthroplasty  
+- Prophylactic antibiotics administered preoperatively  
+- Standard DVT prophylaxis planned postoperatively  
+- Blood products on standby
+
+**Intraoperative Findings:**  
+- Date of Surgery: 2025-05-17  
+- Anesthesia: Spinal anesthesia with sedation  
+- Position: Supine  
+- Approach: Medial parapatellar  
+- Intraoperative findings revealed severe tricompartmental cartilage loss, osteophyte formation, and varus deformity. No evidence of infection or ligamentous instability.  
+- Femoral and tibial cuts made using standard jigs. Cemented prosthesis inserted without complication. Patella resurfaced due to significant chondral wear.
+
+**Procedure Details:**  
+- Tourniquet time: 68 minutes  
+- Estimated blood loss: 350 mL  
+- No intraoperative complications  
+- Wound closed in layers; sterile dressing applied
+
+**Immediate Postoperative Plan:**  
+- Pain control with multimodal analgesia  
+- Early mobilization with physiotherapy  
+- Thromboprophylaxis with low-molecular-weight heparin  
+- Monitor wound for signs of infection  
+- Routine radiographs to confirm prosthesis position
+
+**Recommendations:**  
+- Continue postoperative physiotherapy to maximize range of motion and strength  
+- Follow-up in 2 weeks for wound check and suture removal  
+- Monitor for signs of infection, DVT, or prosthetic complications  
+- Resume regular medications as per medical team guidance
+
+---
+Authored by:  
+Dr. Clara Nguyen, MD (Fictional)  
+Summit Valley Orthopaedic Center (Fictional Clinic)  
+Contact: clara.nguyen@fakeclinic.com / 555-0192-ORTHO
+
+---Generation Metadata---
+Generated At (Script): 2025-05-17T07:35:52.096151+00:00
+Script Version: 1.0

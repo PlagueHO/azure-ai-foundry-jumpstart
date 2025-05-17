@@ -1,0 +1,41 @@
+record_id: 1eedc0c8-76d7-44a3-aa49-12fd0975f8bf
+document_type: Clinic Note
+specialty: Cardiology
+created_at: 2025-05-17 06:54:04.802300+00:00
+patient_details:
+  fictional_name: Samantha Lee
+  age: 58
+  gender: Female
+  fictional_patient_id: MRN-FAKE-20481
+document_content:
+  title: Cardiology Clinic Follow-up Note
+  sections:
+  - heading: Reason for Visit/Consultation
+    content: Patient presents for routine follow-up evaluation of previously diagnosed
+      hypertension and non-obstructive coronary artery disease.
+  - heading: History of Present Illness
+    content: Samantha Lee reports increased episodes of mild chest discomfort over
+      the past two weeks, primarily occurring during periods of emotional stress.
+      She denies any associated shortness of breath, palpitations, syncope, or exertional
+      symptoms. No recent hospitalizations or emergency visits. She is compliant with
+      her current medications but admits occasional missed doses.
+  - heading: Past Medical History
+    content: Hypertension, non-obstructive coronary artery disease, hyperlipidemia,
+      hypothyroidism.
+  - heading: Assessment
+    content: Stable non-obstructive coronary artery disease with intermittent chest
+      discomfort, likely non-cardiac in origin. Blood pressure moderately controlled.
+      No evidence of acute ischemic symptoms at this visit.
+  - heading: Plan
+    content: Continue current antihypertensive and statin therapy. Reinforce medication
+      adherence. Schedule a stress echocardiogram within the next month to further
+      evaluate chest discomfort. Recommend lifestyle modifications including dietary
+      sodium reduction and increased physical activity as tolerated. Follow up in
+      cardiology clinic in 3 months or sooner if symptoms worsen.
+author_details:
+  fictional_doctor_name: Dr. Marcus Patel
+  fictional_clinic_name: Riverbend Cardiology Associates
+  fictional_contact_info: contact@riverbend-fake.com / 555-0100-FAKE
+generation_metadata:
+  generated_at_script: '2025-05-17T06:54:14.837561+00:00'
+  script_version: '1.0'

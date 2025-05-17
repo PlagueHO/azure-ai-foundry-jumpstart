@@ -2,6 +2,13 @@
 Reusable helper for data-generator scripts that use Semantic-Kernel +
 Azure OpenAI. Handles environment loading, kernel wiring, prompt
 registration and coloured logging.
+
+Requires:
+- semantic-kernel
+- python-dotenv
+- colorama
+- pyyaml (if using YAML output in consuming scripts)
+- azure-identity (if using Managed Identity for Azure OpenAI authentication)
 """
 
 from __future__ import annotations
@@ -13,10 +20,10 @@ from typing import Any, Callable, Dict, List
 
 import colorama
 from dotenv import load_dotenv
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 import semantic_kernel as sk
 from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
 from semantic_kernel.prompt_template import PromptTemplateConfig
-
 
 class SyntheticDataGenerator:
     """
@@ -43,18 +50,12 @@ class SyntheticDataGenerator:
 
         self.azure_openai_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
         self.azure_openai_deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT")
-        self.azure_openai_api_key = os.getenv("AZURE_OPENAI_API_KEY")
+        self.azure_openai_api_key = os.getenv("AZURE_OPENAI_API_KEY") # Can be None
 
-        if not all(
-            [
-                self.azure_openai_endpoint,
-                self.azure_openai_deployment,
-                self.azure_openai_api_key,
-            ]
-        ):
+        if not self.azure_openai_endpoint or not self.azure_openai_deployment:
             raise EnvironmentError(
                 "Azure OpenAI environment variables (AZURE_OPENAI_ENDPOINT, "
-                "AZURE_OPENAI_DEPLOYMENT, AZURE_OPENAI_API_KEY) are not fully configured."
+                "AZURE_OPENAI_DEPLOYMENT) must be configured."
             )
 
         # Configure logging
@@ -72,12 +73,27 @@ class SyntheticDataGenerator:
     def _create_kernel(self) -> sk.Kernel:
         """Creates and configures a Semantic Kernel instance."""
         kernel = sk.Kernel()
-        service = AzureChatCompletion(
-            deployment_name=self.azure_openai_deployment,
-            endpoint=self.azure_openai_endpoint,
-            api_key=self.azure_openai_api_key,
-            service_id="azure_open_ai",  # Unique identifier for the service
-        )
+        
+        if self.azure_openai_api_key:
+            self.logger.debug("Using API key for Azure OpenAI authentication.")
+            service = AzureChatCompletion(
+                deployment_name=self.azure_openai_deployment,
+                endpoint=self.azure_openai_endpoint,
+                api_key=self.azure_openai_api_key,
+                service_id="azure_open_ai",  # Unique identifier for the service
+            )
+        else:
+            self.logger.debug("Using DefaultAzureCredential for Azure OpenAI authentication.")
+            token_provider = get_bearer_token_provider(
+                DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
+            )
+            service = AzureChatCompletion(
+                deployment_name=self.azure_openai_deployment,
+                endpoint=self.azure_openai_endpoint,
+                ad_token_provider=token_provider,
+                service_id="azure_open_ai",  # Unique identifier for the service
+            )
+            
         kernel.add_service(service)
         return kernel
 

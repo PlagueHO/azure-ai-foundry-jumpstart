@@ -1,0 +1,46 @@
+{
+  "record_id": "00350088-cfcb-4f6d-ad57-4af45798c37f",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-17T07:44:52.075378+00:00",
+  "patient_details": {
+    "fictional_name": "Jane Doe",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to General Medicine Clinic",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Jane Doe is being referred for further evaluation and management of persistent fatigue and intermittent low-grade fevers of unknown origin, which have not resolved with initial outpatient interventions."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "Ms. Doe reports experiencing fatigue over the past three months, accompanied by occasional low-grade fevers (maximum 38.2°C), mild joint aches, and unintentional weight loss of approximately 3 kg. She denies cough, night sweats, or recent travel. No recent infectious exposures are known. Over-the-counter analgesics have provided minimal relief."
+      },
+      {
+        "heading": "Past Medical History",
+        "content": "History is notable for mild asthma, well-controlled with inhalers. No history of autoimmune disease or recent hospitalizations. No known drug allergies."
+      },
+      {
+        "heading": "Assessment",
+        "content": "The clinical picture raises concern for possible underlying inflammatory or infectious process. Initial laboratory investigations revealed a mild normocytic anemia and elevated C-reactive protein. Chest X-ray and basic metabolic panel were unremarkable."
+      },
+      {
+        "heading": "Plan",
+        "content": "Referral to General Medicine is requested for further diagnostic workup, including consideration of autoimmune screening, infectious disease panel, and possible imaging studies. Please advise regarding additional investigations or specialist consultations as appropriate."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Emily Carter",
+    "fictional_clinic_name": "Willow Grove Medical Center",
+    "fictional_contact_info": "dr.carter@willowgrove.fake / 555-0100-FAKE"
+  },
+  "generation_metadata": {
+    "generated_at_script": "2025-05-17T07:44:58.362375+00:00",
+    "script_version": "1.0"
+  }
+}

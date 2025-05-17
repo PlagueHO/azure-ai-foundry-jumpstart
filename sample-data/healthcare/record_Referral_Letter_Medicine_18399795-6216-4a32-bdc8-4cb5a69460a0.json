@@ -1,0 +1,54 @@
+{
+  "record_id": "18399795-6216-4a32-bdc8-4cb5a69460a0",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-17T07:44:58.365542+00:00",
+  "patient_details": {
+    "fictional_name": "Emily Carter",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral Letter to Rheumatology",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Carter is being referred to the Rheumatology Clinic for further evaluation of persistent joint pain, morning stiffness, and intermittent swelling affecting her hands and wrists over the past three months."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports a gradual onset of bilateral hand and wrist discomfort, with morning stiffness lasting approximately 45 minutes. She denies any recent trauma or overuse. There is occasional mild swelling and difficulty performing daily activities. No fevers, rashes, or recent infections have been noted. Over-the-counter NSAIDs provide only partial relief."
+      },
+      {
+        "heading": "Relevant Medical History",
+        "content": "Ms. Carter has a history of mild seasonal allergies and hypothyroidism, managed on levothyroxine. No known history of autoimmune disease. Family history is significant for rheumatoid arthritis in her mother."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "On examination, there is mild swelling and tenderness of the metacarpophalangeal and proximal interphalangeal joints bilaterally, with reduced grip strength. No erythema or deformities noted. Other systems are unremarkable."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Recent laboratory tests revealed mildly elevated ESR (28 mm/hr) and CRP (11 mg/L). Rheumatoid factor and anti-CCP antibody results are pending. Complete blood count and metabolic panel were within normal limits. Hand X-rays showed no erosive changes."
+      },
+      {
+        "heading": "Assessment",
+        "content": "Ms. Carter presents with features suggestive of early inflammatory arthritis. Her family history and symptoms raise suspicion for a possible underlying autoimmune etiology, such as early rheumatoid arthritis."
+      },
+      {
+        "heading": "Plan and Recommendations",
+        "content": "Referral to Rheumatology for further evaluation and management is recommended. Pending antibody results to be forwarded. Continue NSAIDs as needed for symptom relief. Advise monitoring of symptoms and encourage gentle hand exercises. Please consider assessment for disease-modifying therapy if diagnosis is confirmed."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Samuel Hayes",
+    "fictional_clinic_name": "Northwood General Medical Center",
+    "fictional_contact_info": "samuel.hayes@northwoodfake.com / 555-0100-FAKE"
+  },
+  "generation_metadata": {
+    "generated_at_script": "2025-05-17T07:45:06.155750+00:00",
+    "script_version": "1.0"
+  }
+}

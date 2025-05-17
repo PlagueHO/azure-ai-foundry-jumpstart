@@ -1,0 +1,73 @@
+Record ID: 7ca4da4b-1e1c-4a52-b7f1-4b941b92efde  
+Document Type: Operation Note  
+Specialty: Orthopaedic Surgery  
+Created At: 2025-05-17T07:34:21.784509+00:00  
+
+Patient: John Smith (Fictional)  
+Age: 58  
+Gender: Male  
+Patient ID: FAKE-PT-237  
+
+--- Document: Operation Note ---  
+Title: Left Total Knee Arthroplasty
+
+**Reason for Visit:**  
+Mr. John Smith presented with chronic left knee pain and functional limitation secondary to advanced osteoarthritis, refractory to conservative management.
+
+**History:**  
+The patient has experienced progressive left knee pain over the past 4 years, with marked worsening in the last 12 months. Conservative treatments including physical therapy, NSAIDs, and intra-articular corticosteroid injections have failed to provide lasting relief. The patient reports difficulty ambulating and performing daily activities.
+
+**Preoperative Assessment:**  
+- Diagnosis: End-stage osteoarthritis of the left knee  
+- Imaging: X-rays revealed severe tricompartmental narrowing, osteophyte formation, and subchondral sclerosis  
+- No significant cardiac or pulmonary contraindications to surgery  
+- Allergies: None reported  
+- Preoperative labs within normal limits
+
+**Procedure Performed:**  
+Left Total Knee Arthroplasty
+
+**Anesthesia:**  
+Spinal anesthesia with sedation
+
+**Operative Findings:**  
+- Marked degeneration of articular cartilage in all three compartments  
+- Osteophyte formation at femoral condyles and tibial plateau  
+- No gross ligamentous instability  
+- No evidence of infection or inflammatory arthropathy
+
+**Procedure Details:**  
+- Standard medial parapatellar approach used  
+- Osteophytes excised, and bone surfaces prepared  
+- Femoral and tibial components implanted using cemented technique  
+- Patella resurfaced  
+- Components placed in appropriate alignment  
+- Wound irrigated and closed in layers  
+- Hemostasis achieved  
+- Sterile dressing applied  
+- Estimated blood loss: 250 mL  
+- No intraoperative complications
+
+**Postoperative Plan:**  
+- Admit to orthopaedic ward for routine postoperative care  
+- Early mobilization with physiotherapy starting postoperative day 1  
+- Thromboprophylaxis with low molecular weight heparin  
+- Pain management with multimodal analgesia  
+- Monitor wound and neurovascular status
+
+**Recommendations:**  
+- Continue physiotherapy for range of motion and strengthening  
+- Outpatient follow-up in 2 weeks  
+- Monitor for signs of infection or deep vein thrombosis  
+- Weight-bearing as tolerated
+
+---
+
+Authored by:  
+Dr. Emily Carter, MD  
+Fictional Orthopaedic Surgery Center  
+Contact: ecarter@fakesurgeryclinic.com / 555-0123-ORTHO
+
+---Generation Metadata---
+Generated At (Script): 2025-05-17T07:34:28.785411+00:00
+Script Version: 1.0
