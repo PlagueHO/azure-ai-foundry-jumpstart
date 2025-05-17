@@ -1,0 +1,94 @@
+Statement ID: fdff40f1-8800-442b-9184-28110d223ddf  
+Account ID: 7860624714 (checking)  
+Period: 2025-04-01 – 2025-04-30  
+Opening Balance: 1234.56 USD  
+Closing Balance: 2345.67 USD  
+
+Transactions:  
+date | description | amount | balance_after | category  
+----------------------------------------------------------------  
+2025-04-01 | Payroll Deposit | +1800.00 | 3034.56 | income  
+2025-04-01 | Starbucks | -5.84 | 3028.72 | dining  
+2025-04-01 | Metro Transit | -2.50 | 3026.22 | transport  
+2025-04-02 | Amazon Marketplace | -37.99 | 2988.23 | shopping  
+2025-04-02 | Whole Foods | -56.42 | 2931.81 | groceries  
+2025-04-02 | Walgreens | -14.99 | 2916.82 | pharmacy  
+2025-04-03 | Venmo Transfer to J. Smith | -50.00 | 2866.82 | transfer  
+2025-04-03 | Netflix | -17.99 | 2848.83 | entertainment  
+2025-04-03 | Shell Gas | -42.10 | 2806.73 | gas  
+2025-04-04 | Target | -83.17 | 2723.56 | shopping  
+2025-04-04 | Uber | -13.20 | 2710.36 | transport  
+2025-04-04 | Dunkin Donuts | -4.35 | 2706.01 | dining  
+2025-04-05 | ATM Withdrawal | -100.00 | 2606.01 | cash  
+2025-04-05 | Trader Joe’s | -62.13 | 2543.88 | groceries  
+2025-04-05 | Spotify | -10.99 | 2532.89 | entertainment  
+2025-04-06 | PayPal Transfer from L. Evans | +120.00 | 2652.89 | transfer  
+2025-04-06 | CVS Pharmacy | -22.75 | 2630.14 | pharmacy  
+2025-04-06 | Chipotle | -11.42 | 2618.72 | dining  
+2025-04-07 | City Electric Bill | -92.40 | 2526.32 | utilities  
+2025-04-07 | Apple.com | -3.99 | 2522.33 | digital  
+2025-04-07 | Lyft | -8.75 | 2513.58 | transport  
+2025-04-08 | Home Depot | -34.11 | 2479.47 | home  
+2025-04-08 | Amazon Prime | -14.99 | 2464.48 | subscriptions  
+2025-04-08 | Panera Bread | -8.62 | 2455.86 | dining  
+2025-04-09 | Check Deposit | +310.00 | 2765.86 | deposit  
+2025-04-09 | Walmart Supercenter | -98.33 | 2667.53 | groceries  
+2025-04-09 | Walgreens | -19.99 | 2647.54 | pharmacy  
+2025-04-10 | T-Mobile | -56.17 | 2591.37 | utilities  
+2025-04-10 | Uber Eats | -21.65 | 2569.72 | dining  
+2025-04-10 | Dollar Tree | -7.47 | 2562.25 | shopping  
+2025-04-11 | Venmo Transfer from S. Patel | +50.00 | 2612.25 | transfer  
+2025-04-11 | BP Gas | -38.01 | 2574.24 | gas  
+2025-04-11 | McDonald's | -5.89 | 2568.35 | dining  
+2025-04-12 | Movie Theater | -16.00 | 2552.35 | entertainment  
+2025-04-12 | Kroger | -75.90 | 2476.45 | groceries  
+2025-04-12 | 7-Eleven | -9.21 | 2467.24 | convenience  
+2025-04-13 | Zelle Transfer to A. Nguyen | -60.00 | 2407.24 | transfer  
+2025-04-13 | Starbucks | -5.84 | 2401.40 | dining  
+2025-04-13 | Metro Transit | -2.50 | 2398.90 | transport  
+2025-04-14 | PayPal Transfer from R. Park | +75.00 | 2473.90 | transfer  
+2025-04-14 | Target | -43.27 | 2430.63 | shopping  
+2025-04-14 | CVS Pharmacy | -15.37 | 2415.26 | pharmacy  
+2025-04-15 | Payroll Deposit | +1800.00 | 4215.26 | income  
+2025-04-15 | City Water Bill | -38.22 | 4177.04 | utilities  
+2025-04-15 | Chick-fil-A | -9.51 | 4167.53 | dining  
+2025-04-16 | Amazon Marketplace | -24.99 | 4142.54 | shopping  
+2025-04-16 | Shell Gas | -41.88 | 4100.66 | gas  
+2025-04-16 | Walgreens | -11.99 | 4088.67 | pharmacy  
+2025-04-17 | Rent Payment | -1800.00 | 2288.67 | rent  
+2025-04-17 | Trader Joe’s | -68.23 | 2220.44 | groceries  
+2025-04-17 | Panera Bread | -7.49 | 2212.95 | dining  
+2025-04-18 | ATM Withdrawal | -60.00 | 2152.95 | cash  
+2025-04-18 | Uber | -12.80 | 2140.15 | transport  
+2025-04-18 | Apple.com | -3.99 | 2136.16 | digital  
+2025-04-19 | PayPal Transfer from J. Kim | +95.00 | 2231.16 | transfer  
+2025-04-19 | Kroger | -89.76 | 2141.40 | groceries  
+2025-04-19 | BP Gas | -36.40 | 2105.00 | gas  
+2025-04-20 | Venmo Transfer to L. Evans | -40.00 | 2065.00 | transfer  
+2025-04-20 | Chipotle | -13.22 | 2051.78 | dining  
+2025-04-20 | Walgreens | -17.99 | 2033.79 | pharmacy  
+2025-04-21 | Check Deposit | +210.00 | 2243.79 | deposit  
+2025-04-21 | Walmart Supercenter | -76.50 | 2167.29 | groceries  
+2025-04-21 | Uber Eats | -18.45 | 2148.84 | dining  
+2025-04-22 | Home Depot | -42.35 | 2106.49 | home  
+2025-04-22 | Metro Transit | -2.50 | 2103.99 | transport  
+2025-04-22 | Starbucks | -6.15 | 2097.84 | dining  
+2025-04-23 | Venmo Transfer from S. Patel | +60.00 | 2157.84 | transfer  
+2025-04-23 | Netflix | -17.99 | 2139.85 | entertainment  
+2025-04-23 | Dollar Tree | -8.19 | 2131.66 | shopping  
+2025-04-24 | Zelle Transfer to A. Nguyen | -50.00 | 2081.66 | transfer  
+2025-04-24 | Shell Gas | -39.17 | 2042.49 | gas  
+2025-04-24 | CVS Pharmacy | -19.99 | 2022.50 | pharmacy  
+2025-04-25 | Payroll Deposit | +1800.00 | 3822.50 | income  
+2025-04-25 | Chick-fil-A | -8.67 | 3813.83 | dining  
+2025-04-25 | Trader Joe’s | -65.10 | 3748.73 | groceries  
+2025-04-26 | Uber | -14.50 | 3734.23 | transport  
+2025-04-26 | Apple.com | -3.99 | 3730.24 | digital  
+2025-04-26 | Target | -29.80 | 3700.44 | shopping  
+2025-04-27 | PayPal Transfer from R. Park | +120.00 | 3820.44 | transfer  
+2025-04-27 | BP Gas | -37.88 | 3782.56 | gas  
+2025-04-27 | Panera Bread | -7.49 |
+
+---Generation Metadata---
+Generated At (Script): 2025-05-17T10:18:46.526729+00:00
+Script Version: 1.0

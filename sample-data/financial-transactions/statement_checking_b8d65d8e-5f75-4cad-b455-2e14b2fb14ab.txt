@@ -1,0 +1,86 @@
+Statement ID: b8d65d8e-5f75-4cad-b455-2e14b2fb14ab  
+Account ID: 2735697120 (checking)  
+Period: 2025-04-01 – 2025-04-30  
+Opening Balance: 1234.56 USD  
+Closing Balance: 2345.67 USD  
+
+Transactions:  
+date | description | amount | balance_after | category  
+----------------------------------------------------------------  
+2025-04-01 | Payroll Deposit | +2150.00 | 3384.56 | income  
+2025-04-01 | ATM Withdrawal | -100.00 | 3284.56 | cash withdrawal  
+2025-04-02 | QuickMart Grocery | -54.23 | 3230.33 | groceries  
+2025-04-02 | Metro Transit | -2.75 | 3227.58 | transportation  
+2025-04-03 | City Coffeehouse | -6.80 | 3220.78 | dining  
+2025-04-03 | Rent Payment | -950.00 | 2270.78 | rent  
+2025-04-03 | Utility Bill Payment | -89.50 | 2181.28 | utilities  
+2025-04-04 | Amazon Marketplace | -32.99 | 2148.29 | shopping  
+2025-04-04 | Mobile Check Deposit | +120.00 | 2268.29 | deposit  
+2025-04-05 | Walgreens Pharmacy | -17.45 | 2250.84 | health  
+2025-04-05 | Spotify Subscription | -10.99 | 2239.85 | entertainment  
+2025-04-06 | Gas Station | -41.00 | 2198.85 | transportation  
+2025-04-06 | ATM Withdrawal | -60.00 | 2138.85 | cash withdrawal  
+2025-04-07 | Central Market | -67.14 | 2071.71 | groceries  
+2025-04-07 | Local Diner | -13.20 | 2058.51 | dining  
+2025-04-08 | Uber Ride | -18.42 | 2040.09 | transportation  
+2025-04-08 | Bookstore | -22.60 | 2017.49 | shopping  
+2025-04-09 | Payroll Deposit | +200.00 | 2217.49 | income  
+2025-04-09 | Water Utility | -40.00 | 2177.49 | utilities  
+2025-04-10 | Electric Utility | -74.89 | 2102.60 | utilities  
+2025-04-10 | Netflix Subscription | -15.49 | 2087.11 | entertainment  
+2025-04-11 | Farmers Market | -29.75 | 2057.36 | groceries  
+2025-04-11 | ATM Withdrawal | -80.00 | 1977.36 | cash withdrawal  
+2025-04-12 | Target | -58.67 | 1918.69 | shopping  
+2025-04-12 | Bakery | -9.50 | 1909.19 | dining  
+2025-04-13 | Fuel Express | -36.90 | 1872.29 | transportation  
+2025-04-13 | Pet Supplies | -23.80 | 1848.49 | shopping  
+2025-04-14 | Payroll Deposit | +150.00 | 1998.49 | income  
+2025-04-14 | Cafe Latte | -7.25 | 1991.24 | dining  
+2025-04-15 | Insurance Payment | -110.00 | 1881.24 | insurance  
+2025-04-15 | Walmart Supercenter | -64.38 | 1816.86 | groceries  
+2025-04-15 | Hulu Subscription | -12.99 | 1803.87 | entertainment  
+2025-04-16 | Gym Membership | -45.00 | 1758.87 | health  
+2025-04-16 | ATM Withdrawal | -40.00 | 1718.87 | cash withdrawal  
+2025-04-17 | Pharmacy | -13.62 | 1705.25 | health  
+2025-04-17 | Lyft | -14.15 | 1691.10 | transportation  
+2025-04-18 | Payroll Deposit | +200.00 | 1891.10 | income  
+2025-04-18 | Home Goods | -38.25 | 1852.85 | shopping  
+2025-04-18 | Corner Store | -11.89 | 1840.96 | groceries  
+2025-04-19 | Movie Theater | -25.00 | 1815.96 | entertainment  
+2025-04-19 | Gas Station | -39.40 | 1776.56 | transportation  
+2025-04-19 | ATM Withdrawal | -100.00 | 1676.56 | cash withdrawal  
+2025-04-20 | Fresh Foods Market | -52.19 | 1624.37 | groceries  
+2025-04-20 | Pizza Palace | -27.85 | 1596.52 | dining  
+2025-04-21 | Payroll Deposit | +225.00 | 1821.52 | income  
+2025-04-21 | Electric Utility | -75.00 | 1746.52 | utilities  
+2025-04-21 | Walgreens Pharmacy | -18.90 | 1727.62 | health  
+2025-04-22 | Target | -43.12 | 1684.50 | shopping  
+2025-04-22 | Uber Ride | -16.73 | 1667.77 | transportation  
+2025-04-23 | Cafe Latte | -5.85 | 1661.92 | dining  
+2025-04-23 | ATM Withdrawal | -60.00 | 1601.92 | cash withdrawal  
+2025-04-24 | Payroll Deposit | +225.00 | 1826.92 | income  
+2025-04-24 | Internet Bill | -55.00 | 1771.92 | utilities  
+2025-04-24 | Amazon Marketplace | -48.99 | 1722.93 | shopping  
+2025-04-25 | Grocery Store | -59.88 | 1663.05 | groceries  
+2025-04-25 | ATM Withdrawal | -80.00 | 1583.05 | cash withdrawal  
+2025-04-26 | Central Market | -26.43 | 1556.62 | groceries  
+2025-04-26 | Lyft | -13.50 | 1543.12 | transportation  
+2025-04-27 | Payroll Deposit | +200.00 | 1743.12 | income  
+2025-04-27 | Movie Theater | -24.00 | 1719.12 | entertainment  
+2025-04-27 | Gas Station | -35.00 | 1684.12 | transportation  
+2025-04-28 | Bookstore | -18.75 | 1665.37 | shopping  
+2025-04-28 | Cafe Latte | -8.00 | 1657.37 | dining  
+2025-04-29 | Mobile Check Deposit | +400.00 | 2057.37 | deposit  
+2025-04-29 | Pharmacy | -22.45 | 2034.92 | health  
+2025-04-29 | Grocery Store | -45.00 | 1989.92 | groceries  
+2025-04-30 | Payroll Deposit | +355.75 | 2345.67 | income  
+
+---
+
+**Total transactions: 55**  
+**Opening Balance: 1234.56 USD**  
+**Closing Balance: 2345.67 USD**
+
+---Generation Metadata---
+Generated At (Script): 2025-05-17T10:19:02.102967+00:00
+Script Version: 1.0

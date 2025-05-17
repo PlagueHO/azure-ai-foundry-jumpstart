@@ -1,0 +1,89 @@
+Statement ID: 9f0827d7-8f90-4d32-9dee-197a4a348470  
+Account ID: 5480741992 (checking)  
+Period: 2025-04-01 – 2025-04-30  
+Opening Balance: 1234.56 USD  
+Closing Balance: 2345.67 USD  
+
+Transactions:  
+date | description | amount | balance_after | category  
+----------------------------------------------------------------  
+2025-04-01 | Payroll Deposit | +1650.00 | 2884.56 | income  
+2025-04-01 | Rent Payment | -850.00 | 2034.56 | rent  
+2025-04-02 | Coffee House | -4.75 | 2029.81 | dining  
+2025-04-02 | Grocery Mart | -62.30 | 1967.51 | groceries  
+2025-04-03 | Gas Station | -38.20 | 1929.31 | transportation  
+2025-04-03 | Amazon Online | -27.99 | 1901.32 | shopping  
+2025-04-03 | ATM Withdrawal | -100.00 | 1801.32 | cash withdrawal  
+2025-04-04 | Insurance Premium | -92.50 | 1708.82 | insurance  
+2025-04-04 | Pharmacy | -14.75 | 1694.07 | health  
+2025-04-04 | Utility Bill Payment | -120.00 | 1574.07 | utilities  
+2025-04-05 | Netflix Subscription | -15.99 | 1558.08 | entertainment  
+2025-04-05 | Restaurant: Bella Italia | -48.60 | 1509.48 | dining  
+2025-04-06 | Mobile Payment | -65.00 | 1444.48 | utilities  
+2025-04-06 | Grocery Mart | -53.24 | 1391.24 | groceries  
+2025-04-07 | Paypal Transfer | -25.00 | 1366.24 | transfer  
+2025-04-07 | Coffee House | -5.20 | 1361.04 | dining  
+2025-04-07 | Salary Bonus | +300.00 | 1661.04 | income  
+2025-04-08 | Bookstore | -27.85 | 1633.19 | shopping  
+2025-04-08 | Gym Membership | -45.00 | 1588.19 | health  
+2025-04-09 | Uber Ride | -13.60 | 1574.59 | transportation  
+2025-04-09 | Grocery Mart | -40.88 | 1533.71 | groceries  
+2025-04-10 | Fast Food | -8.55 | 1525.16 | dining  
+2025-04-10 | Spotify Subscription | -10.99 | 1514.17 | entertainment  
+2025-04-10 | Transfer from Savings | +200.00 | 1714.17 | transfer  
+2025-04-11 | Home Supplies | -34.20 | 1679.97 | shopping  
+2025-04-11 | Gas Station | -29.10 | 1650.87 | transportation  
+2025-04-11 | Coffee House | -4.75 | 1646.12 | dining  
+2025-04-12 | Movie Theater | -22.00 | 1624.12 | entertainment  
+2025-04-12 | Grocery Mart | -58.17 | 1565.95 | groceries  
+2025-04-13 | ATM Withdrawal | -80.00 | 1485.95 | cash withdrawal  
+2025-04-13 | Restaurant: Sunny Side | -36.40 | 1449.55 | dining  
+2025-04-14 | Online Shopping: Zeno | -47.99 | 1401.56 | shopping  
+2025-04-14 | Utility Bill Payment | -63.50 | 1338.06 | utilities  
+2025-04-15 | Payroll Deposit | +1650.00 | 2988.06 | income  
+2025-04-15 | Rent Payment | -850.00 | 2138.06 | rent  
+2025-04-16 | Grocery Mart | -49.85 | 2088.21 | groceries  
+2025-04-16 | Coffee House | -6.10 | 2082.11 | dining  
+2025-04-16 | Pharmacy | -23.40 | 2058.71 | health  
+2025-04-17 | Gas Station | -41.75 | 2016.96 | transportation  
+2025-04-17 | Bookstore | -19.99 | 1996.97 | shopping  
+2025-04-17 | Fast Food | -9.60 | 1987.37 | dining  
+2025-04-18 | Paypal Transfer | -30.00 | 1957.37 | transfer  
+2025-04-18 | Grocery Mart | -57.41 | 1899.96 | groceries  
+2025-04-18 | Mobile Payment | -65.00 | 1834.96 | utilities  
+2025-04-19 | Restaurant: Bella Italia | -52.70 | 1782.26 | dining  
+2025-04-19 | Gym Membership | -45.00 | 1737.26 | health  
+2025-04-19 | Amazon Online | -35.00 | 1702.26 | shopping  
+2025-04-20 | Uber Ride | -16.80 | 1685.46 | transportation  
+2025-04-20 | Coffee House | -5.20 | 1680.26 | dining  
+2025-04-21 | Home Supplies | -28.95 | 1651.31 | shopping  
+2025-04-21 | Grocery Mart | -61.27 | 1590.04 | groceries  
+2025-04-22 | ATM Withdrawal | -100.00 | 1490.04 | cash withdrawal  
+2025-04-22 | Fast Food | -7.65 | 1482.39 | dining  
+2025-04-22 | Movie Theater | -19.00 | 1463.39 | entertainment  
+2025-04-23 | Utility Bill Payment | -89.50 | 1373.89 | utilities  
+2025-04-23 | Bookstore | -22.40 | 1351.49 | shopping  
+2025-04-24 | Grocery Mart | -52.33 | 1299.16 | groceries  
+2025-04-24 | Coffee House | -4.85 | 1294.31 | dining  
+2025-04-25 | Payroll Deposit | +1650.00 | 2944.31 | income  
+2025-04-25 | Rent Payment | -850.00 | 2094.31 | rent  
+2025-04-26 | Gas Station | -35.55 | 2058.76 | transportation  
+2025-04-26 | Pharmacy | -18.90 | 2039.86 | health  
+2025-04-26 | Grocery Mart | -53.17 | 1986.69 | groceries  
+2025-04-27 | Paypal Transfer | -25.00 | 1961.69 | transfer  
+2025-04-27 | Coffee House | -6.25 | 1955.44 | dining  
+2025-04-28 | Fast Food | -9.80 | 1945.64 | dining  
+2025-04-28 | Mobile Payment | -65.00 | 1880.64 | utilities  
+2025-04-29 | Amazon Online | -31.99 | 1848.65 | shopping  
+2025-04-29 | Grocery Mart | -48.67 | 1800.98 | groceries  
+2025-04-30 | ATM Withdrawal | -100.00 | 1700.98 | cash withdrawal  
+2025-04-30 | Restaurant: Sunny Side | -37.00 | 1663.98 | dining  
+2025-04-30 | Closing Adjustment | +681.69 | 2345.67 | adjustment  
+
+**(Total: 65 transactions)**
+
+Let me know if you need CSV or JSON format, or want to adjust the scenario!
+
+---Generation Metadata---
+Generated At (Script): 2025-05-17T10:19:51.709699+00:00
+Script Version: 1.0

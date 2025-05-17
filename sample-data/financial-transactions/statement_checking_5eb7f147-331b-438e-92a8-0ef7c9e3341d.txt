@@ -1,0 +1,78 @@
+Statement ID: 5eb7f147-331b-438e-92a8-0ef7c9e3341d  
+Account ID: 8656148350 (checking)  
+Period: 2025-04-01 – 2025-04-30  
+Opening Balance: 1234.56 USD  
+Closing Balance: 2345.67 USD  
+
+Transactions:  
+date | description | amount | balance_after | category  
+----------------------------------------------------------------  
+2025-04-01 | Payroll Deposit | +2100.00 | 3334.56 | income  
+2025-04-01 | Rent Payment | -1050.00 | 2284.56 | rent  
+2025-04-02 | Grocery Store - FreshMart | -74.12 | 2210.44 | groceries  
+2025-04-02 | Online Subscription - StreamFlix | -14.99 | 2195.45 | entertainment  
+2025-04-03 | Coffee Shop - Bean Bros | -5.25 | 2190.20 | dining  
+2025-04-03 | Gas Station - QuickFuel | -38.50 | 2151.70 | transportation  
+2025-04-03 | Pharmacy - WellCare | -23.87 | 2127.83 | health  
+2025-04-04 | ATM Withdrawal | -60.00 | 2067.83 | cash withdrawal  
+2025-04-04 | Utility Payment - PowerGrid | -120.40 | 1947.43 | utilities  
+2025-04-05 | Restaurant - Bella Pasta | -42.18 | 1905.25 | dining  
+2025-04-05 | Pet Store - Pawfect | -29.99 | 1875.26 | pets  
+2025-04-06 | Mobile Payment - PayAll | -13.00 | 1862.26 | utilities  
+2025-04-06 | Grocery Store - FreshMart | -58.47 | 1803.79 | groceries  
+2025-04-07 | Online Shopping - ZippyCart | -87.23 | 1716.56 | shopping  
+2025-04-07 | Coffee Shop - Bean Bros | -4.85 | 1711.71 | dining  
+2025-04-08 | Insurance - SafeLife | -80.00 | 1631.71 | insurance  
+2025-04-08 | Gym Membership - FitNation | -45.00 | 1586.71 | fitness  
+2025-04-09 | Payroll Deposit | +200.00 | 1786.71 | income  
+2025-04-09 | Gas Station - QuickFuel | -40.12 | 1746.59 | transportation  
+2025-04-09 | Movie Theater - CineMax | -18.00 | 1728.59 | entertainment  
+2025-04-10 | Grocery Store - FreshMart | -66.95 | 1661.64 | groceries  
+2025-04-10 | Pharmacy - WellCare | -15.60 | 1646.04 | health  
+2025-04-11 | Restaurant - Sushi Place | -36.90 | 1609.14 | dining  
+2025-04-11 | Online Subscription - NewsNow | -9.99 | 1599.15 | entertainment  
+2025-04-12 | Bookstore - ReadMore | -23.45 | 1575.70 | shopping  
+2025-04-12 | Pet Store - Pawfect | -12.99 | 1562.71 | pets  
+2025-04-13 | Taxi - QuickRide | -17.60 | 1545.11 | transportation  
+2025-04-13 | Grocery Store - FreshMart | -52.30 | 1492.81 | groceries  
+2025-04-14 | Payroll Deposit | +150.00 | 1642.81 | income  
+2025-04-14 | Coffee Shop - Bean Bros | -6.10 | 1636.71 | dining  
+2025-04-15 | Utility Payment - AquaPure | -35.75 | 1600.96 | utilities  
+2025-04-15 | Online Shopping - ZippyCart | -41.22 | 1559.74 | shopping  
+2025-04-16 | Restaurant - Taco Spot | -24.80 | 1534.94 | dining  
+2025-04-16 | Gas Station - QuickFuel | -37.90 | 1497.04 | transportation  
+2025-04-17 | Payroll Deposit | +200.00 | 1697.04 | income  
+2025-04-17 | Pharmacy - WellCare | -18.95 | 1678.09 | health  
+2025-04-17 | Grocery Store - FreshMart | -68.10 | 1609.99 | groceries  
+2025-04-18 | Coffee Shop - Bean Bros | -5.80 | 1604.19 | dining  
+2025-04-18 | ATM Withdrawal | -40.00 | 1564.19 | cash withdrawal  
+2025-04-19 | Online Subscription - StreamFlix | -14.99 | 1549.20 | entertainment  
+2025-04-19 | Restaurant - Burger Barn | -28.40 | 1520.80 | dining  
+2025-04-20 | Bookstore - ReadMore | -15.60 | 1505.20 | shopping  
+2025-04-20 | Grocery Store - FreshMart | -61.08 | 1444.12 | groceries  
+2025-04-21 | Payroll Deposit | +200.00 | 1644.12 | income  
+2025-04-21 | Gas Station - QuickFuel | -39.45 | 1604.67 | transportation  
+2025-04-22 | Utility Payment - CityNet | -55.20 | 1549.47 | utilities  
+2025-04-22 | Pharmacy - WellCare | -22.50 | 1526.97 | health  
+2025-04-23 | Coffee Shop - Bean Bros | -4.75 | 1522.22 | dining  
+2025-04-23 | Grocery Store - FreshMart | -70.55 | 1451.67 | groceries  
+2025-04-24 | Restaurant - Bella Pasta | -38.25 | 1413.42 | dining  
+2025-04-24 | Online Shopping - ZippyCart | -49.99 | 1363.43 | shopping  
+2025-04-25 | Payroll Deposit | +200.00 | 1563.43 | income  
+2025-04-25 | Gas Station - QuickFuel | -35.60 | 1527.83 | transportation  
+2025-04-26 | Pet Store - Pawfect | -19.99 | 1507.84 | pets  
+2025-04-26 | Grocery Store - FreshMart | -64.70 | 1443.14 | groceries  
+2025-04-27 | Coffee Shop - Bean Bros | -5.90 | 1437.24 | dining  
+2025-04-27 | Restaurant - Sushi Place | -29.80 | 1407.44 | dining  
+2025-04-28 | Payroll Deposit | +200.00 | 1607.44 | income  
+2025-04-28 | Bookstore - ReadMore | -18.75 | 1588.69 | shopping  
+2025-04-29 | Utility Payment - PowerGrid | -120.40 | 1468.29 | utilities  
+2025-04-29 | Online Subscription - NewsNow | -9.99 | 1458.30 | entertainment  
+2025-04-30 | Payroll Deposit | +900.00 | 2358.30 | income  
+2025-04-30 | Grocery Store - FreshMart | -12.63 | 2345.67 | groceries  
+
+**Total Transactions: 54**
+
+---Generation Metadata---
+Generated At (Script): 2025-05-17T10:18:29.648347+00:00
+Script Version: 1.0
