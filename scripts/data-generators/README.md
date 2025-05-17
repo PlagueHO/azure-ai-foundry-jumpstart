@@ -5,7 +5,9 @@ Every script relies on the reusable helper `synthetic_data_generator.py` to remo
 
 ---
 
-## 1. Common Helper – `synthetic_data_generator.py`
+## 1. Common Helper
+
+ The file [synthetic_data_generator.py](synthetic_data_generator.py) contains the common logic for all data generators.
 
 | Responsibility | Details |
 | -------------- | ------- |
@@ -33,9 +35,11 @@ pip install -r requirements.txt
 
 ## 2. Generator Scripts
 
-### 2.1  `generate_tech_support.py`
+### 2.1 Tech Support Cases
 
 Creates realistic technical-support cases (YAML / JSON / text).
+
+- [generate_tech_support.py](generate_tech_support.py)
 
 | Flag | Required | Description | Default |
 | ---- | -------- | ----------- | ------- |
@@ -54,9 +58,11 @@ python generate_tech_support.py \
 
 ---
 
-### 2.2  `generate_healthcare_records.py`
+### 2.2 Generate Healthcare Records
 
 Produces anonymised medical documents in several formats.
+
+- [generate_healthcare_records.py](generate_healthcare_records.py)
 
 | Flag | Required | Description | Default |
 | ---- | -------- | ----------- | ------- |
@@ -77,9 +83,11 @@ python generate_healthcare_records.py \
 
 ---
 
-### 2.3  `generate_retail_product.py`
+### 2.3 Generate Retail Products
 
 Generates catalogue items for e-commerce scenarios.
+
+- [generate_retail_product.py](generate_retail_product.py)
 
 | Flag | Required | Description | Default |
 | ---- | -------- | ----------- | ------- |
