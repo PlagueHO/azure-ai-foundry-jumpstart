@@ -78,7 +78,6 @@ You can deploy the application using one of the following methods:
 1. Run `azd up` to provision and deploy the application
 
    ```powershell
-   azd init -t PlagueHO/azure-ai-foundry-jumpstart
    azd up
    ```
 
