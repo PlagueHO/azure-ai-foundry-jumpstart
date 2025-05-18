@@ -1,0 +1,316 @@
+from __future__ import annotations
+
+import logging
+import time
+from dataclasses import dataclass
+from typing import Optional
+
+from azure.core.credentials import AzureKeyCredential
+from azure.identity import DefaultAzureCredential
+from azure.search.documents.indexes import SearchIndexClient, SearchIndexerClient
+from azure.search.documents.indexes.models import (
+    SearchIndex,
+    SearchField,
+    SearchFieldDataType,
+    VectorSearch,
+    VectorSearchProfile,
+    SearchIndexer,
+    SearchIndexerDataSourceConnection,
+    SearchIndexerSkillset,
+    InputFieldMappingEntry,
+    OutputFieldMappingEntry,
+    AzureOpenAIVectorizer,
+    AzureOpenAIVectorizerParameters,
+    SplitSkill,
+    IndexingParameters,
+    IndexingParametersConfiguration,
+    CorsOptions,
+    HnswAlgorithmConfiguration,
+    )
+
+__all__: list[str] = ["CreateSearchIndex", "CreateSearchIndexConfig"]
+
+@dataclass
+class CreateSearchIndexConfig:
+    """
+    Configuration dataclass for the CreateSearchIndex pipeline.
+
+    Holds all user-supplied and derived settings required to build and run
+    the Azure AI Search indexing pipeline.
+    """
+    storage_account: str
+    storage_container: str
+    search_service: str
+    index_name: str
+    embedding_model: Optional[str] = None
+    embedding_deployment: Optional[str] = None
+    azure_openai_endpoint: Optional[str] = None
+    delete_existing: bool = False
+
+    @property
+    def search_endpoint(self) -> str:
+        """Return the full endpoint URL for the Azure AI Search service."""
+        return f"https://{self.search_service}.search.windows.net"
+
+class CreateSearchIndex:
+    """
+    Synchronous builder that assembles an Azure AI Search pipeline and triggers
+    the first index run.
+
+    This class encapsulates the full workflow for creating or updating an
+    Azure AI Search index, data source, skillset, and indexer, and then
+    running the indexer to populate the index from a blob container.
+    """
+
+    def __init__(self, cfg: CreateSearchIndexConfig, *, log_level: str | int = "INFO") -> None:
+        """
+        Initialize the CreateSearchIndex orchestrator.
+
+        Args:
+            cfg (CreateSearchIndexConfig): Configuration dataclass with pipeline settings.
+            log_level (str|int, optional): Logging verbosity. Defaults to "INFO".
+        """
+        self.cfg = cfg
+        logging.basicConfig(
+            format="%(asctime)s %(levelname)-8s %(name)s :: %(message)s",
+            level=log_level,
+        )
+        self.logger = logging.getLogger("create-search-index")
+
+        # Credential: prefer DefaultAzureCredential, fallback to API key
+        api_key = None  # Optionally load from env
+        if api_key:
+            self.credential = AzureKeyCredential(api_key)
+        else:
+            self.credential = DefaultAzureCredential(exclude_interactive_browser_credential=False)
+
+        self.index_client = SearchIndexClient(self.cfg.search_endpoint, self.credential)
+        self.indexer_client = SearchIndexerClient(self.cfg.search_endpoint, self.credential)
+
+    def run(self) -> None:
+        """
+        Execute the full pipeline: optionally tear down, then create or update
+        index schema, data source, skillset, indexer, and finally run the indexer.
+        """
+        if self.cfg.delete_existing:
+            self._teardown_pipeline()
+        self._ensure_index_schema()
+        self._ensure_data_source()
+        self._ensure_skillset()
+        self._ensure_indexer()
+        self._run_indexer()
+
+    def _ensure_index_schema(self) -> None:
+        """
+        Create or update the Azure AI Search index schema.
+
+        Raises:
+            Exception: If the index creation or update fails.
+        """
+        self.logger.info("Ensuring index schema '%s'...", self.cfg.index_name)
+
+        fields = [
+            SearchField(name="parent_id", type=SearchFieldDataType.String),
+            SearchField(name="title", type=SearchFieldDataType.String),
+            SearchField(name="locations", type=SearchFieldDataType.Collection(SearchFieldDataType.String), filterable=True),
+            SearchField(name="chunk_id", type=SearchFieldDataType.String, key=True, sortable=True, filterable=True, facetable=True, analyzer_name="keyword"),  
+            SearchField(name="chunk", type=SearchFieldDataType.String, sortable=False, filterable=False, facetable=False),  
+            SearchField(name="text_vector", type=SearchFieldDataType.Collection(SearchFieldDataType.Single), vector_search_dimensions=1024, vector_search_profile_name="myHnswProfile")
+            ]
+
+        vector_search = VectorSearch(
+            algorithms=[
+                HnswAlgorithmConfiguration(name="myHnsw"),
+            ],
+            profiles=[
+                VectorSearchProfile(
+                    name="myHnswProfile",
+                    algorithm_configuration_name="myHnsw",
+                    vectorizer_name="myOpenAI",
+                )
+            ],
+            vectorizers=[
+                AzureOpenAIVectorizer(
+                    vectorizer_name="myOpenAI",
+                    kind="azureOpenAI",
+                    parameters=AzureOpenAIVectorizerParameters(  
+                        resource_url=self.cfg.azure_openai_endpoint,
+                        deployment_name=self.cfg.embedding_deployment,
+                        model_name=self.cfg.embedding_model
+                    ),
+                ),
+            ],
+        )
+
+        cors_options = CorsOptions(allowed_origins=["*"], max_age_in_seconds=300)
+
+        index = SearchIndex(
+            name=self.cfg.index_name,
+            fields=fields,
+            vector_search=vector_search,
+            cors_options=cors_options
+        )
+
+        try:
+            self.index_client.create_or_update_index(index)
+            self.logger.info("Index schema ensured.")
+        except Exception as ex:
+            self.logger.error("Failed to create/update index: %s", ex)
+            raise
+
+    def _ensure_data_source(self) -> None:
+        """
+        Create or update the data source connection for the indexer.
+
+        Raises:
+            Exception: If the data source creation or update fails.
+        """
+        self.logger.info("Ensuring data source connection...")
+        ds_name = f"{self.cfg.index_name}-blob-ds"
+        connection_string = f"DefaultEndpointsProtocol=https;AccountName={self.cfg.storage_account};EndpointSuffix=core.windows.net"
+        # For production, use Key Vault or Managed Identity
+        ds = SearchIndexerDataSourceConnection(
+            name=ds_name,
+            type="azureblob",
+            connection_string=connection_string,
+            container={"name": self.cfg.storage_container},
+            description="Blob container for RAG documents"
+        )
+        try:
+            self.indexer_client.create_or_update_data_source_connection(ds)
+            self.logger.info("Data source ensured.")
+        except Exception as ex:
+            self.logger.error("Failed to create/update data source: %s", ex)
+            raise
+
+    def _ensure_skillset(self) -> None:
+        """
+        Create or update the skillset for chunking and embedding.
+
+        Raises:
+            Exception: If the skillset creation or update fails.
+        """
+        self.logger.info("Ensuring skillset...")
+        skillset_name = f"{self.cfg.index_name}-skillset"
+        skills = [
+            SplitSkill(
+                name="splitSkill",
+                description="Split content into chunks",
+                context="/document/content",
+                text_split_mode="pages",
+                maximum_page_length=2000,
+                inputs=[InputFieldMappingEntry(name="text", source="/document/content")],
+                outputs=[OutputFieldMappingEntry(name="pages", target_name="chunks")]
+            ),
+            AzureOpenAIVectorizer(
+                name="embeddingSkill",
+                context="/document/chunks/*",
+                resource_uri="https://{your-openai-resource}.openai.azure.com/",
+                deployment_id=self.cfg.embedding_model or "text-embedding-ada-002",
+                inputs=[InputFieldMappingEntry(name="text", source="/document/chunks/*")],
+                outputs=[OutputFieldMappingEntry(name="vector", target_name="contentVector")],
+                vectorizer_name="myOpenAI",
+            ),
+        ]
+        skillset = SearchIndexerSkillset(
+            name=skillset_name,
+            skills=skills,
+            description="Chunking and embedding skillset"
+        )
+        try:
+            self.indexer_client.create_or_update_skillset(skillset)
+            self.logger.info("Skillset ensured.")
+        except Exception as ex:
+            self.logger.error("Failed to create/update skillset: %s", ex)
+            raise
+
+    def _ensure_indexer(self) -> None:
+        """
+        Create or update the indexer that connects the data source, skillset, and index.
+
+        Raises:
+            Exception: If the indexer creation or update fails.
+        """
+        self.logger.info("Ensuring indexer...")
+        indexer_name = f"{self.cfg.index_name}-indexer"
+        ds_name = f"{self.cfg.index_name}-blob-ds"
+        skillset_name = f"{self.cfg.index_name}-skillset"
+        indexer = SearchIndexer(
+            name=indexer_name,
+            data_source_name=ds_name,
+            target_index_name=self.cfg.index_name,
+            skillset_name=skillset_name,
+            description="Indexer for RAG pipeline",
+            parameters=IndexingParameters(
+                configuration=IndexingParametersConfiguration(
+                    parsing_mode="default"
+                )
+            )
+        )
+        try:
+            self.indexer_client.create_or_update_indexer(indexer)
+            self.logger.info("Indexer ensured.")
+        except Exception as ex:
+            self.logger.error("Failed to create/update indexer: %s", ex)
+            raise
+
+    def _run_indexer(self) -> None:
+        """
+        Run the indexer and poll for completion, logging progress and errors.
+
+        Raises:
+            RuntimeError: If the indexer fails or does not complete in time.
+            Exception: If running the indexer fails.
+        """
+        indexer_name = f"{self.cfg.index_name}-indexer"
+        self.logger.info("Running indexer '%s'...", indexer_name)
+        try:
+            self.indexer_client.run_indexer(indexer_name)
+            # Poll for status (simple loop)
+            for _ in range(60):
+                status = self.indexer_client.get_indexer_status(indexer_name)
+                if status.status == "inProgress":
+                    self.logger.info("Indexer running...")
+                    time.sleep(10)
+                elif status.status == "success":
+                    self.logger.info("Indexer completed successfully.")
+                    return
+                else:
+                    self.logger.error("Indexer failed: %s", status.error_message)
+                    raise RuntimeError(f"Indexer failed: {status.error_message}")
+            self.logger.warning("Indexer did not complete within expected time.")
+        except Exception as ex:
+            self.logger.error("Failed to run indexer: %s", ex)
+            raise
+
+    def _teardown_pipeline(self) -> None:
+        """
+        Delete indexer, skillset, data source, and index if they exist.
+
+        This is called if --delete-existing is set to ensure a clean pipeline.
+        """
+        self.logger.info("Tearing down existing pipeline resources...")
+        indexer_name = f"{self.cfg.index_name}-indexer"
+        skillset_name = f"{self.cfg.index_name}-skillset"
+        ds_name = f"{self.cfg.index_name}-blob-ds"
+        # Delete indexer
+        try:
+            self.indexer_client.delete_indexer(indexer_name)
+        except Exception:
+            pass
+        # Delete skillset
+        try:
+            self.indexer_client.delete_skillset(skillset_name)
+        except Exception:
+            pass
+        # Delete data source
+        try:
+            self.indexer_client.delete_data_source_connection(ds_name)
+        except Exception:
+            pass
+        # Delete index
+        try:
+            self.index_client.delete_index(self.cfg.index_name)
+        except Exception:
+            pass
+        self.logger.info("Pipeline teardown complete.")
