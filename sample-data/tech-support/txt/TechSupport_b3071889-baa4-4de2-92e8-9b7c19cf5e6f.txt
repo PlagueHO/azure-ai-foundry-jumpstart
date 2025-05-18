@@ -1,0 +1,23 @@
+Case ID: b3071889-baa4-4de2-92e8-9b7c19cf5e6f  
+Created At: 2025-05-18T05:38:06.457153+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.
+
+Issue Summary: Search bar auto-suggestions occasionally do not appear for users.
+
+Severity: low  
+Priority: P3  
+Status: closed  
+Customer Name: Rachel Dorsey  
+Contact Email: rachel.dorsey@contososhopdemo.com  
+Conversation History:
+- 2025-05-18T05:38:06.457153+00:00 [customer] Hi, just wanted to let you know that sometimes the search bar doesn’t show suggestions as you type. It’s not a big deal, but thought you’d want to know. No error message.
+- 2025-05-18T07:12:10.817401+00:00 [agent] Hello Rachel, thank you for reporting this. Can you confirm if this happens for specific keywords or randomly? Also, does refreshing the page help or is it persistent for certain searches?
+- 2025-05-18T08:03:44.909700+00:00 [customer] Seems random to me. I noticed it a couple of times this week, both on Chrome and Edge. Refreshing usually brings the suggestions back.
+- 2025-05-18T09:20:18.226900+00:00 [agent] Thanks for the details. We’ll review the front-end search suggestion logic and monitor for any API latency or failed requests. Let us know if you notice any patterns or if it becomes more frequent.
+
+Resolved At: 2025-05-19T10:18:33.154900+00:00  
+Resolution: Reviewed front-end logs and API performance during the reported times. Minor, intermittent network latency to the search suggestion endpoint was identified and mitigated by increasing the client-side timeout threshold. No further issues reported by user.
+
+Area: frontend  
+Is Bug: true  
+Root Cause: Intermittent network latency caused the auto-suggestion API calls to occasionally time out before responses arrived, resulting in missing suggestions. Adjusting the client-side timeout resolved the symptom.

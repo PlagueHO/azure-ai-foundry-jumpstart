@@ -1,0 +1,22 @@
+Case ID: a2e1a5be-6603-440a-9c90-55801dbc0153  
+Created At: 2025-05-18T05:33:02.693988+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: CSS not loading on login page, causing layout issues.  
+Severity: low  
+Priority: P2  
+Status: resolved  
+Customer Name: Helen Yu  
+Contact Email: helen.yu@fakeshopdemo.com  
+Conversation History:
+  - 2025-05-18T05:34:11Z [customer] Hi, the login page looks weird this morning—none of the styles are loading. All the text is crammed together.
+  - 2025-05-18T05:38:22Z [agent] Hello Helen, thank you for letting us know. Is this happening on all browsers or just one? Are you seeing any errors in the console or network tab?
+  - 2025-05-18T05:39:59Z [customer] Chrome and Edge, same issue. Console says: "Failed to load resource: the server responded with a status of 404 (Not Found)" for main.css.
+  - 2025-05-18T05:44:30Z [agent] Thank you for that detail. We’ll check the deployment for missing static assets. In the meantime, can you try a hard refresh (Ctrl+F5) and let us know if it helps?
+  - 2025-05-18T05:46:09Z [customer] Just tried, no difference.
+  - 2025-05-18T06:01:17Z [agent] We identified a misconfiguration in the web app's static file path during the last deployment. We've redeployed and the CSS should now load correctly. Can you please check again?
+  - 2025-05-18T06:03:05Z [customer] Looks good now, thanks!
+Resolved At: 2025-05-18T06:03:05Z  
+Resolution: Redeployed the front-end with corrected static asset path configuration. CSS is now loading correctly on the login page.  
+Area: frontend  
+Is Bug: true  
+Root Cause: Incorrect static asset path in the deployment configuration caused main.css to return 404 errors, breaking the login page layout.

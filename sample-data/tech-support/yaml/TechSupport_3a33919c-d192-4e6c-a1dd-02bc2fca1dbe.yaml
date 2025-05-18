@@ -1,0 +1,34 @@
+case_id: 3a33919c-d192-4e6c-a1dd-02bc2fca1dbe
+created_at: 2025-05-18 04:32:51.827893+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Some product images intermittently fail to load on the storefront homepage.
+severity: low
+priority: P3
+status: resolved
+customer_name: Jamie Patel
+contact_email: jamie.patel@fakesamplemail.com
+conversation_history:
+- role: customer
+  message: Hi, we're noticing that a few product images on our homepage aren't loading
+    sometimes, but refreshing the page usually fixes it. Can you take a look?
+  timestamp: 2025-05-18 04:34:12+00:00
+- role: agent
+  message: Thanks for reporting this, Jamie. We'll investigate the image loading issue
+    and update you soon.
+  timestamp: 2025-05-18 04:40:21+00:00
+- role: agent
+  message: We've identified a caching issue with the CDN serving product images. We're
+    purging the affected cache and will monitor for recurrence.
+  timestamp: 2025-05-18 05:10:44+00:00
+- role: customer
+  message: Thanks for the update. The images are loading fine now. Appreciate your
+    help!
+  timestamp: 2025-05-18 05:22:03+00:00
+resolved_at: 2025-05-18 05:22:30+00:00
+resolution: The issue was traced to a stale CDN cache; purging the cache restored
+  normal image loading across the storefront.
+area: frontend
+is_bug: false
+root_cause: CDN cache occasionally served outdated image links, causing intermittent
+  load failures until cache was refreshed.

@@ -1,0 +1,45 @@
+case_id: 988839e3-08e2-4938-a9ed-ededa24aa6fb
+created_at: 2025-05-18 04:32:51.818410+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Checkout process intermittently fails with "Transaction Timeout" errors
+  impacting order completion.
+severity: high
+priority: P4
+status: resolved
+customer_name: Jordan Slater
+contact_email: jordan.slater@northlight-demo.com
+conversation_history:
+- role: customer
+  message: "We're seeing a high number of failed checkouts today\u2014users report\
+    \ 'Transaction Timeout' errors after clicking to place orders. Can you investigate\
+    \ urgently?"
+  timestamp: 2025-05-18 04:35:12.020000+00:00
+- role: agent
+  message: Thank you for reporting this, Jordan. We're escalating and will update
+    you once we've identified the cause.
+  timestamp: 2025-05-18 04:37:45.210000+00:00
+- role: agent
+  message: Initial investigation shows spikes in transaction processing times at the
+    Service Bus layer. We're collecting additional logs and will update shortly.
+  timestamp: 2025-05-18 04:52:10.610000+00:00
+- role: agent
+  message: We've identified message processing delays due to increased lock contention
+    on the SQL back-end. We're applying a configuration fix to increase the SQL connection
+    pool size.
+  timestamp: 2025-05-18 05:14:03.990000+00:00
+- role: agent
+  message: The configuration change has been applied and transaction times are back
+    to normal. Please confirm if you see continued issues.
+  timestamp: 2025-05-18 05:35:27.660000+00:00
+- role: customer
+  message: Checkouts are working again and error rates are down. Thanks for the quick
+    fix.
+  timestamp: 2025-05-18 05:42:09.830000+00:00
+resolved_at: 2025-05-18 05:42:09.830000+00:00
+resolution: Increased SQL connection pool size to resolve lock contention, restoring
+  normal transaction processing times.
+area: backend
+is_bug: true
+root_cause: SQL back-end lock contention caused by insufficient connection pool sizing
+  during peak transaction volume.

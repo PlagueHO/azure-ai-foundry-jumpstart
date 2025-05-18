@@ -1,0 +1,53 @@
+{
+  "case_id": "c0837355-89a4-4165-a445-c10bd10ae994",
+  "created_at": "2025-05-18T04:48:24.036632+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Checkout page intermittently fails to display order confirmation after payment submission.",
+  "severity": "medium",
+  "priority": "P2",
+  "status": "closed",
+  "customer_name": "Jordan Whitfield",
+  "contact_email": "jordan.whitfield@fakeshopmail.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Some users report that after submitting payment, they don't see the order confirmation page\u2014just a loading spinner.",
+      "timestamp": "2025-05-18T04:49:50.214Z"
+    },
+    {
+      "role": "support_agent",
+      "message": "Thank you for reporting this, Jordan. Can you confirm if this affects all users or only certain browsers/devices?",
+      "timestamp": "2025-05-18T05:00:16.017Z"
+    },
+    {
+      "role": "customer",
+      "message": "It appears to happen randomly, mostly on Chrome and Edge, but not on mobile.",
+      "timestamp": "2025-05-18T05:02:42.858Z"
+    },
+    {
+      "role": "support_engineer",
+      "message": "We are investigating API logs and monitoring Service Bus for message delivery failures during checkout.",
+      "timestamp": "2025-05-18T05:15:05.128Z"
+    },
+    {
+      "role": "support_engineer",
+      "message": "Identified that the front-end was not handling delayed API responses gracefully, causing the spinner to persist if the confirmation response was delayed beyond 5 seconds.",
+      "timestamp": "2025-05-18T06:40:31.702Z"
+    },
+    {
+      "role": "support_agent",
+      "message": "We have deployed a patch to improve the front-end response handling. Can you please verify if the issue persists?",
+      "timestamp": "2025-05-18T08:12:55.331Z"
+    },
+    {
+      "role": "customer",
+      "message": "Checked with several users\u2014order confirmation now displays correctly after payment. Thanks for the fast fix!",
+      "timestamp": "2025-05-18T09:21:44.014Z"
+    }
+  ],
+  "resolved_at": "2025-05-18T09:25:00.000Z",
+  "resolution": "Patched the front-end to handle delayed order confirmation responses and display a fallback message if the API response exceeds 10 seconds.",
+  "area": "frontend",
+  "is_bug": true,
+  "root_cause": "The React front-end did not have appropriate handling for long-running API responses, resulting in an infinite loading state when order confirmation calls were delayed due to backend processing times."
+}

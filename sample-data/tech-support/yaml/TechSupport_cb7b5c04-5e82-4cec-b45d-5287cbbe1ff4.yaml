@@ -1,0 +1,55 @@
+case_id: cb7b5c04-5e82-4cec-b45d-5287cbbe1ff4
+created_at: 2025-05-18 04:33:10.282315+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Checkout transactions intermittently failed due to API timeouts, causing
+  lost orders.
+severity: high
+priority: P4
+status: resolved
+customer_name: Jordan Lee
+contact_email: jordan.lee@fakeshopmail.com
+conversation_history:
+- role: customer
+  message: "We're seeing a spike in failed checkouts since last night\u2014customers\
+    \ are reporting that their orders aren't going through and they get a timeout\
+    \ error. Can you investigate urgently?\n"
+  timestamp: 2025-05-18 04:35:08+00:00
+- role: agent
+  message: 'Thank you for reporting, Jordan. We''re reviewing API logs and monitoring
+    service health in Azure now. We''ll update you with findings shortly.
+
+    '
+  timestamp: 2025-05-18 04:40:22+00:00
+- role: agent
+  message: 'We''ve identified increased latency and intermittent timeouts on the REST
+    API, particularly during peak traffic. The backend SQL database shows some slow
+    queries related to order processing. We''re optimizing those queries and scaling
+    up the App Service instance as a mitigation.
+
+    '
+  timestamp: 2025-05-18 05:10:11+00:00
+- role: customer
+  message: 'Thanks for the update. Please let us know when the fix is deployed and
+    if any orders were lost or need recovery.
+
+    '
+  timestamp: 2025-05-18 05:13:44+00:00
+- role: agent
+  message: 'We''ve completed the query optimizations and scaled the backend. API performance
+    is back to normal, and we''ve confirmed that affected orders were not committed
+    to the database, so no partial transactions occurred. We''ll continue monitoring
+    but you should see normal operation now.
+
+    '
+  timestamp: 2025-05-18 05:31:09+00:00
+resolved_at: 2025-05-18 05:31:09+00:00
+resolution: 'Backend SQL query optimizations and increased Azure App Service scaling
+  resolved the intermittent API timeouts. No lost or partial transactions were detected;
+  checkout is now functioning normally.
+
+  '
+area: backend
+is_bug: true
+root_cause: Inefficient SQL queries under high concurrency caused backend API timeouts,
+  impacting the checkout process during peak usage.

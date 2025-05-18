@@ -1,0 +1,56 @@
+case_id: a4c5e1ca-b457-481d-9d71-bf1d1381188a
+created_at: 2025-05-18 04:32:51.824124+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Customers intermittently received a "Service Unavailable" error when
+  accessing their order history.
+severity: medium
+priority: P4
+status: resolved
+customer_name: Jamie Linden
+contact_email: jamie.linden@fakesamplemail.com
+conversation_history:
+- role: customer
+  message: 'Hi, several of our users reported seeing a "Service Unavailable" error
+    when they try to view their order history on the website. It seems to happen randomly
+    and refresh sometimes fixes it. Can you help?
+
+    '
+  timestamp: 2025-05-18 04:33:20.232000+00:00
+- role: agent
+  message: 'Thank you for reporting this, Jamie. We''re investigating the intermittent
+    "Service Unavailable" errors on the order history page. I''ll update you as soon
+    as we identify the cause.
+
+    '
+  timestamp: 2025-05-18 05:02:11.489000+00:00
+- role: agent
+  message: 'Hi Jamie, we''ve identified a temporary spike in SQL database connection
+    timeouts during the affected periods, which caused the API to fail and return
+    a "Service Unavailable" message to the frontend. We''re deploying a configuration
+    fix to increase the connection pool limit and optimize the query. I''ll let you
+    know once it''s resolved.
+
+    '
+  timestamp: 2025-05-18 08:19:47.920000+00:00
+- role: agent
+  message: 'The configuration change has been deployed and our monitoring shows the
+    order history feature is now stable. Please confirm if your users are no longer
+    experiencing this issue.
+
+    '
+  timestamp: 2025-05-18 10:44:33.310000+00:00
+- role: customer
+  message: 'Thanks! We''ve tested with several accounts and the error hasn''t come
+    up again. Looks good from our side.
+
+    '
+  timestamp: 2025-05-18 11:05:12.650000+00:00
+resolved_at: 2025-05-18 11:06:27+00:00
+resolution: The issue was resolved by increasing the SQL connection pool limit and
+  optimizing the related query to prevent timeouts, restoring stable access to the
+  order history page.
+area: backend
+is_bug: true
+root_cause: SQL database connection pool exhaustion during peak usage led to intermittent
+  API failures.

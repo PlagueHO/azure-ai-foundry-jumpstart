@@ -1,0 +1,44 @@
+case_id: 3f2f07d4-1880-44c5-9eeb-98d1932ac9cc
+created_at: 2025-05-18 04:33:05.604626+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Orders placed during peak hours were not being processed and remained
+  in a pending state.
+severity: high
+priority: P4
+status: closed
+customer_name: Jordan Patel
+contact_email: jordan.patel@northwind-demo.com
+conversation_history:
+- role: customer
+  message: We are seeing a large number of orders stuck in "pending" status since
+    last night. Customers are reporting missing order confirmations.
+  timestamp: 2025-05-18 04:35:19+00:00
+- role: agent
+  message: Thank you for reporting this, Jordan. We are reviewing the order processing
+    pipeline and will update you soon.
+  timestamp: 2025-05-18 04:50:12+00:00
+- role: agent
+  message: We've identified a backlog in the Service Bus queue that prevented order
+    completion. We're working on clearing the backlog and investigating the cause.
+  timestamp: 2025-05-18 06:03:44+00:00
+- role: customer
+  message: Thanks for the update. Please let us know once the orders are processed
+    and the system is stable.
+  timestamp: 2025-05-18 06:10:17+00:00
+- role: agent
+  message: The backlog has been cleared and all pending orders have been processed.
+    We will provide a root cause analysis in our final update.
+  timestamp: 2025-05-18 07:41:05+00:00
+- role: agent
+  message: We've confirmed the system is stable and all services are operating normally.
+    Closing this case, but please reach out if you notice any further issues.
+  timestamp: 2025-05-18 08:12:48+00:00
+resolved_at: 2025-05-18 08:12:48+00:00
+resolution: The Service Bus queue backlog was cleared and order processing resumed.
+  The incident was traced to a scaling misconfiguration during peak load; auto-scaling
+  parameters have been adjusted to prevent recurrence.
+area: backend
+is_bug: true
+root_cause: Service Bus message processing was delayed due to insufficient scaling
+  of the order processing worker, causing a backlog during high-traffic periods.

@@ -1,0 +1,48 @@
+{
+  "case_id": "c29e3e00-230f-405a-94e3-dd035ddf5d09",
+  "created_at": "2025-05-18T04:39:54.716410+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Checkout page fails to load for all users due to API 500 errors.",
+  "severity": "critical",
+  "priority": "P3",
+  "status": "resolved",
+  "customer_name": "Jordan Muller",
+  "contact_email": "jordan.muller@contososupport.example.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Users are unable to access the checkout page. It just shows a spinner or sometimes a generic error.",
+      "timestamp": "2025-05-18T04:41:10+00:00"
+    },
+    {
+      "role": "support_agent",
+      "message": "Thank you for reporting. We're investigating the API logs for errors.",
+      "timestamp": "2025-05-18T04:43:05+00:00"
+    },
+    {
+      "role": "support_agent",
+      "message": "We've identified repeated 500 errors from the /api/checkout endpoint, starting at 04:36 UTC.",
+      "timestamp": "2025-05-18T04:48:27+00:00"
+    },
+    {
+      "role": "support_engineer",
+      "message": "Root cause appears to be a recent deployment that introduced a null reference in the payment validation handler. Rolling back to previous version.",
+      "timestamp": "2025-05-18T05:01:12+00:00"
+    },
+    {
+      "role": "support_agent",
+      "message": "The rollback is complete. Checkout is now loading successfully in our tests. Can you confirm resolution on your end?",
+      "timestamp": "2025-05-18T05:05:50+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Confirmed, checkout is working again for users. Thanks for the quick fix.",
+      "timestamp": "2025-05-18T05:07:03+00:00"
+    }
+  ],
+  "resolved_at": "2025-05-18T05:07:03+00:00",
+  "resolution": "Rolled back the latest deployment to resolve the null reference bug in the payment validation handler. Checkout API is now stable and operational.",
+  "area": "backend",
+  "is_bug": true,
+  "root_cause": "A recent deployment introduced a null reference exception in the backend payment validation handler, causing the checkout API to return 500 errors for all requests."
+}

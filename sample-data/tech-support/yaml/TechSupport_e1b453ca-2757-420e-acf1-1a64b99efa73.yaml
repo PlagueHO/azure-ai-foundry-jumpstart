@@ -1,0 +1,31 @@
+case_id: e1b453ca-2757-420e-acf1-1a64b99efa73
+created_at: 2025-05-18 04:33:08.265469+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Checkout process fails with "Unable to process payment" for all users.
+severity: high
+priority: P2
+status: open
+customer_name: Jordan Ellis
+contact_email: jordan.ellis@fakesamplemail.com
+conversation_history:
+- role: customer
+  message: 'Since last night, all users are unable to complete purchases on our ContosoShop
+    site. The checkout screen returns an "Unable to process payment" error after clicking
+    "Place Order." We have confirmed the payment gateway is operational and suspect
+    the issue may be within our API or transaction workflow. This is impacting all
+    customers and needs urgent attention.
+
+    '
+  timestamp: 2025-05-18 04:31:44.553192+00:00
+- role: agent
+  message: 'Thank you for reporting this, Jordan. We''re treating this as a high priority
+    and have begun our investigation. Could you please confirm if there have been
+    any recent deployments or configuration changes to the backend or Service Bus?
+    Additionally, if you have logs or error IDs from failed transactions, please share
+    them to help expedite troubleshooting.
+
+    '
+  timestamp: 2025-05-18 04:36:12.111394+00:00
+area: backend
+is_bug: true

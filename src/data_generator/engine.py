@@ -210,6 +210,7 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
         out_dir: Path,
         output_format: str = "json",
         concurrency: int = 8,
+        timeout_seconds: float | None = 300.0,
     ) -> None:
         """
         Blocking helper that delegates to the async implementation.
@@ -224,6 +225,9 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
             One of ``json``, ``yaml`` or ``txt``.
         concurrency:
             Upper bound on simultaneous Azure OpenAI requests.
+        timeout_seconds:
+            Maximum time in seconds to wait for a single generation task.
+            If None, no timeout is applied.
         """
         asyncio.run(
             self._run_async(
@@ -231,6 +235,7 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
                 out_dir=out_dir,
                 output_format=output_format,
                 concurrency=concurrency,
+                timeout_seconds=timeout_seconds,
             )
         )
 
@@ -244,32 +249,41 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
         out_dir: Path,
         output_format: str,
         concurrency: int,
+        timeout_seconds: float | None,
     ) -> None:
         """
         Drive *count* asynchronous generation tasks while honouring
-        *concurrency*.
+        *concurrency* and an optional *timeout_seconds* per task.
 
         See Also
         --------
         _generate_one_async : Handles the life-cycle of a single record.
         """
         semaphore = asyncio.Semaphore(concurrency)
-        tasks = [
-            asyncio.create_task(
-                self._generate_one_async(
-                    index=i,
-                    out_dir=out_dir,
-                    output_format=output_format,
-                    semaphore=semaphore,
-                )
+        tasks = []
+        for i in range(1, count + 1):
+            # Coroutine to be executed by the task
+            coro = self._generate_one_async(
+                index=i,
+                out_dir=out_dir,
+                output_format=output_format,
+                semaphore=semaphore,
             )
-            for i in range(1, count + 1)
-        ]
+            # Wrap with asyncio.wait_for if a timeout is specified
+            if timeout_seconds is not None:
+                task_coro = asyncio.wait_for(coro, timeout=timeout_seconds)
+            else:
+                task_coro = coro
+            
+            tasks.append(asyncio.create_task(task_coro))
 
         failures = 0
         for t in asyncio.as_completed(tasks):
             try:
                 await t
+            except asyncio.TimeoutError:
+                self.logger.error("Generation task timed out after %s seconds.", timeout_seconds)
+                failures += 1
             except Exception:  # pylint: disable=broad-exception-caught
                 self.logger.exception("Generation task failed")
                 failures += 1
@@ -313,11 +327,11 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
                 max_tokens=2048,
             )
             raw_output: str = await asyncio.to_thread(prompt_fn, index=index)
-            processed = self.tool.post_process(raw_output)
+            processed = self.tool.post_process(raw_output, output_format)
 
             await asyncio.to_thread(
                 self._persist,
-                unique_id=unique_id,                    # drive filename
+                unique_id=unique_id,
                 data=processed,
                 out_dir=out_dir,
                 output_format=output_format,

@@ -1,0 +1,34 @@
+case_id: c1950242-50bd-4bc4-964b-4b1c05eee6f4
+created_at: 2025-05-18 04:32:51.813084+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Some users are reporting intermittent failures when submitting orders
+  at checkout.
+severity: medium
+priority: P2
+status: investigating
+customer_name: Jordan Alvarez
+contact_email: jordan.alvarez@fakesamplemail.com
+conversation_history:
+- role: customer
+  message: 'We have received several customer complaints today about failed checkouts.
+    The error message is "Order submission failed, please try again." This seems to
+    be happening more frequently during peak traffic hours. Can you help us investigate?
+
+    '
+  timestamp: 2025-05-18 04:30:22+00:00
+- role: agent
+  message: 'Thank you for bringing this to our attention, Jordan. We are starting
+    our investigation and will update you as soon as we have more information. Could
+    you confirm if the failures are limited to specific payment methods or all orders?
+
+    '
+  timestamp: 2025-05-18 04:35:47+00:00
+- role: customer
+  message: 'It appears to affect all payment methods. Our logs show order creation
+    attempts reaching the API, but not all are processed in the database.
+
+    '
+  timestamp: 2025-05-18 04:40:13+00:00
+area: backend
+is_bug: true

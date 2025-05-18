@@ -1,0 +1,48 @@
+{
+  "case_id": "19276fb4-de7e-4486-a26d-4015650dab84",
+  "created_at": "2025-05-18T04:39:40.421710+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Checkout process failing for all users due to unhandled backend exception.",
+  "severity": "critical",
+  "priority": "P2",
+  "status": "closed",
+  "customer_name": "Lisa Tan",
+  "contact_email": "lisa.tan@contososhop-demo.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "None of our customers can complete checkout \u2013 they're seeing a generic error after submitting their orders.",
+      "timestamp": "2025-05-18T04:40:12.782000+00:00"
+    },
+    {
+      "role": "support",
+      "message": "Thank you for reporting this, Lisa. We are escalating and will update you as soon as we have more information.",
+      "timestamp": "2025-05-18T04:41:00.120000+00:00"
+    },
+    {
+      "role": "support",
+      "message": "Our engineering team has identified a recent deployment caused a serialization failure in the checkout API endpoint. We are rolling back the deployment now.",
+      "timestamp": "2025-05-18T05:02:45.900000+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Thank you for the update. Please let me know once the issue is resolved.",
+      "timestamp": "2025-05-18T05:05:22.430000+00:00"
+    },
+    {
+      "role": "support",
+      "message": "The rollback is complete and testing confirms checkout is operational again. Please verify on your end.",
+      "timestamp": "2025-05-18T05:15:37.090000+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Confirmed, checkout is working now. Thanks for the quick resolution.",
+      "timestamp": "2025-05-18T05:19:00.450000+00:00"
+    }
+  ],
+  "resolved_at": "2025-05-18T05:15:37.090000+00:00",
+  "resolution": "Rolled back faulty deployment that introduced a serialization bug in the checkout API; service restored.",
+  "area": "backend",
+  "is_bug": true,
+  "root_cause": "A recent backend deployment introduced an unhandled serialization exception in the checkout API, causing all order submissions to fail."
+}

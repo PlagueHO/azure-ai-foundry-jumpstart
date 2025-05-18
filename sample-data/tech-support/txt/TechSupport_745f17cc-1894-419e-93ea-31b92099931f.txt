@@ -1,0 +1,25 @@
+Case ID: 745f17cc-1894-419e-93ea-31b92099931f  
+Created At: 2025-05-18T05:33:20.204479+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Checkout process failing with "Payment could not be processed" error for all users.  
+Severity: high  
+Priority: P2  
+Status: resolved  
+Customer Name: Jordan Myers  
+Contact Email: jordan.myers@contosotest.com  
+Conversation History:
+- 2025-05-18T05:34:10Z [customer] We're getting "Payment could not be processed" for every checkout, even with test cards. Please advise ASAP.
+- 2025-05-18T05:35:59Z [agent] Thank you for reporting this, Jordan. Is this affecting all users or just specific accounts? Are there any recent changes to your payment gateway or environment?
+- 2025-05-18T05:37:41Z [customer] Seems to be all users, even our internal testers. No known changes, but our DevOps did a deployment last night.
+- 2025-05-18T05:39:27Z [agent] Understood. Can you provide the deployment ID or timestamp? Also, are there any error logs from the API or Service Bus that mention payment processing failures?
+- 2025-05-18T05:41:15Z [customer] Last deployment was at 01:15 UTC, ID dpl-20250518-0115. API logs show "ServiceBusException: Unauthorized" around the time checkouts fail.
+- 2025-05-18T05:44:03Z [agent] Thank you. It appears the API is unable to send payment messages to the Service Bus due to authorization issues. Please check if the Service Bus connection string or credentials were changed in the deployment.
+- 2025-05-18T05:46:22Z [customer] You’re right—the connection string in the deployment pipeline was blank due to a misconfigured secret. We’ve restored it and redeployed. Checkout is working again.
+- 2025-05-18T05:47:13Z [agent] Great to hear! I recommend monitoring for any delayed payments and auditing your secret management process to prevent future occurrences. Please confirm if we can mark this case as resolved.
+- 2025-05-18T05:48:01Z [customer] Yes, you can close it. Thanks for the quick help!
+
+Resolved At: 2025-05-18T05:48:01Z  
+Resolution: Issue was caused by a missing Service Bus connection string in the deployment pipeline, leading to authorization failures during payment processing. Restoring the secret and redeploying resolved the problem.  
+Area: backend  
+Is Bug: false  
+Root Cause: Deployment pipeline had a misconfigured secret, resulting in the Service Bus connection string being blank and causing authorization errors for payment messages.

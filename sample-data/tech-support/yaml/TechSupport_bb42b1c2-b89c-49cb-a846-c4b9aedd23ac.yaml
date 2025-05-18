@@ -1,0 +1,30 @@
+case_id: bb42b1c2-b89c-49cb-a846-c4b9aedd23ac
+created_at: 2025-05-18 04:33:11.840142+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Orders placed via the website are not being recorded in the database
+  and customers are not receiving confirmation emails.
+severity: critical
+priority: P3
+status: investigating
+customer_name: Jessica Tran
+contact_email: jessica.tran@contososhopdemo.com
+conversation_history:
+- role: customer
+  message: 'Hello, several customers have reported that after submitting orders on
+    our website, they are not receiving confirmation emails and the orders are not
+    showing up in the admin dashboard. We need urgent assistance as this is affecting
+    live sales.
+
+    '
+  timestamp: 2025-05-18 04:31:55+00:00
+- role: agent
+  message: 'Thank you for reporting this, Jessica. We acknowledge the critical nature
+    of the issue and are currently investigating why orders are not being persisted
+    and confirmations are not sent. We''ll provide an update as soon as we identify
+    the cause.
+
+    '
+  timestamp: 2025-05-18 04:36:19+00:00
+area: backend
+is_bug: true

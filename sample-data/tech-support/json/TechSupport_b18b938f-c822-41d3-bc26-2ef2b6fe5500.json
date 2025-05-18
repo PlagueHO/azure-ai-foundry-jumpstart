@@ -1,0 +1,30 @@
+{
+  "case_id": "b18b938f-c822-41d3-bc26-2ef2b6fe5500",
+  "created_at": "2025-05-18T04:39:49.208425+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Order status updates are delayed in the front-end after checkout completion.",
+  "severity": "medium",
+  "priority": "P2",
+  "status": "investigating",
+  "customer_name": "Jessica Landon",
+  "contact_email": "jlandon@contosotestmail.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "After completing checkout, my order status doesn\u2019t update right away on the site. It sometimes takes several minutes.",
+      "timestamp": "2025-05-18T04:35:18+00:00"
+    },
+    {
+      "role": "support_agent",
+      "message": "Thank you for reporting this, Jessica. We are currently investigating the delay in order status updates.",
+      "timestamp": "2025-05-18T04:41:02+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Let me know if you need more details from my side.",
+      "timestamp": "2025-05-18T04:43:37+00:00"
+    }
+  ],
+  "area": "frontend",
+  "is_bug": true
+}

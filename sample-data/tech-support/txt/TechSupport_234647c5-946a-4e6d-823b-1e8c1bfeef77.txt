@@ -1,0 +1,23 @@
+Case ID: 234647c5-946a-4e6d-823b-1e8c1bfeef77  
+Created At: 2025-05-18T05:38:06.456583+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Product search results were intermittently missing items due to backend query timeout.  
+Severity: medium  
+Priority: P3  
+Status: closed  
+Customer Name: Daniel Yu  
+Contact Email: daniel.yu@contososhop-demo.com  
+Conversation History:  
+  - 2025-05-18T05:40:11Z [customer] We’re seeing some products missing from the search results page, but only sometimes. No errors in the browser console.  
+  - 2025-05-18T06:07:53Z [agent] Thanks for reporting this, Daniel. Can you confirm if this happens for specific search terms or at certain times of day? Are you seeing any errors in the network tab of the browser dev tools?  
+  - 2025-05-18T06:22:10Z [customer] It seems to happen on “laptop” and “phone” searches, but not always. Sometimes the count is lower than expected, but no network errors, just fewer items.  
+  - 2025-05-18T06:45:31Z [agent] Understood. We’ll check our backend logs for those queries. In the meantime, can you confirm if refreshing the page ever shows the missing items, or do they stay missing?  
+  - 2025-05-18T07:01:55Z [customer] Sometimes a refresh brings back the right number of products, but not always. It’s inconsistent.  
+  - 2025-05-18T07:33:20Z [agent] Thanks, Daniel. We’ve identified elevated SQL query times during peak hours, which could be causing intermittent timeouts and incomplete results. We’re optimizing the affected queries now and will update you once deployed.  
+  - 2025-05-18T10:13:47Z [agent] Hi Daniel, we’ve deployed query optimizations and increased SQL DTUs. Could you please confirm if the issue is resolved on your end?  
+  - 2025-05-18T11:08:19Z [customer] Looks good now—search results are consistent and complete. Thanks for the quick fix!  
+Resolved At: 2025-05-18T11:09:00Z  
+Resolution: Backend SQL query optimization and increased resource allocation resolved intermittent missing items in search results.  
+Area: backend  
+Is Bug: true  
+Root Cause: SQL query handling product searches was timing out under load, leading to incomplete result sets being returned to the front-end.

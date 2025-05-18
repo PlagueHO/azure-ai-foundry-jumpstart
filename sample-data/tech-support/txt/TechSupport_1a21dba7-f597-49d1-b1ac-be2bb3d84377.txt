@@ -1,0 +1,23 @@
+Case ID: 1a21dba7-f597-49d1-b1ac-be2bb3d84377  
+Created At: 2025-05-18T05:33:02.689535+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Pagination on product listing page not updating page number display correctly.  
+Severity: low  
+Priority: P2  
+Status: closed  
+Customer Name: Marcus T. Greene  
+Contact Email: marcus.greene@fictionalcorp.com  
+Conversation History:  
+  - 2025-05-18T05:33:02.689535+00:00 [customer] Hi, I noticed that when I click to go to the next page of products, sometimes the page number at the bottom doesn’t change, even though the products do. Is this a known issue?
+  - 2025-05-18T06:10:22.102354+00:00 [agent] Hello Marcus, thank you for reporting this. Could you confirm if this happens consistently or only after certain actions (like searching or filtering)? Also, which browser and version are you using?
+  - 2025-05-18T06:29:11.019410+00:00 [customer] It happens after I use the search bar, then try to go to page 2 or 3. I’m on Chrome 124.0.6367.119.
+  - 2025-05-18T07:05:33.454908+00:00 [agent] Thanks for the details. We’ll test this scenario and update you soon.
+  - 2025-05-19T09:44:10.821001+00:00 [agent] Hi Marcus, we were able to reproduce the issue. It appears that the page number display does not update when pagination is used after a search. We’ve logged this for our dev team and will let you know once a fix is deployed.
+  - 2025-05-23T14:19:55.670245+00:00 [agent] Hi Marcus, an update has been deployed to address the pagination display issue after searching. Could you please refresh your browser cache and let us know if the problem is resolved?
+  - 2025-05-23T18:02:41.321533+00:00 [customer] Just checked—looks good now! Page number updates as expected after searching. Thanks for the fix.
+
+Resolved At: 2025-05-23T18:15:00.000000+00:00  
+Resolution: Pagination component state handling was updated to synchronize with search actions; issue confirmed resolved by customer.  
+Area: frontend  
+Is Bug: true  
+Root Cause: Front-end state for the pagination component did not update when the search query changed, causing page number display to become desynchronized from the displayed products.

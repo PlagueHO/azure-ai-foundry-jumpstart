@@ -1,0 +1,23 @@
+Case ID: 20b3c3c5-a8d0-4602-b2cb-096a9d591264  
+Created At: 2025-05-18T05:33:16.878724+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Users unable to complete checkout due to "Payment processing error" message.  
+Severity: medium  
+Priority: P1  
+Status: resolved  
+Customer Name: Olivia Sanderson  
+Contact Email: olivia.sanderson@fakeshopmail.com  
+Conversation History:
+- 2025-05-18T05:35:42Z [customer] We're getting a "Payment processing error. Please try again later." message when trying to check out. This is happening for multiple users since last night. Any idea what's going on?
+- 2025-05-18T05:37:11Z [agent] Thank you for reporting this, Olivia. To help us investigate, could you please confirm if this is affecting all payment methods or just specific ones (e.g. credit card, PayPal)? Are there any errors in the browser console or API responses you can share?
+- 2025-05-18T06:01:03Z [customer] It's affecting all payment methods. In the console, I see a 500 error from /api/payments/process. The error message is just "Internal Server Error".
+- 2025-05-18T06:08:47Z [agent] Thanks for the details. We're escalating this to our backend team. We will update you as soon as we have more information.
+- 2025-05-18T08:21:29Z [agent] Update: Our backend team found a recent deployment changed the payment processor config, causing failures in connecting to the payment gateway. We're rolling back the config now.
+- 2025-05-18T08:54:02Z [agent] Hi Olivia, the configuration has been rolled back and payment processing is working again. Can you please try to complete a checkout and confirm?
+- 2025-05-18T09:04:10Z [customer] Just tested - checkout is working again! Thanks for the quick fix.
+
+Resolved At: 2025-05-18T09:04:20Z  
+Resolution: Issue was caused by an incorrect payment processor configuration introduced during a recent deployment. Rolling back to the previous configuration restored payment processing functionality.  
+Area: backend  
+Is Bug: true  
+Root Cause: Incorrect payment processor configuration was deployed, causing the backend API to fail to connect to the payment gateway. Rolling back resolved the issue.

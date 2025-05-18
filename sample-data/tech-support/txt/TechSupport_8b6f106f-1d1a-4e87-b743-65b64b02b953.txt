@@ -1,0 +1,23 @@
+Case ID: 8b6f106f-1d1a-4e87-b743-65b64b02b953  
+Created At: 2025-05-18T05:33:12.931729+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Product search results intermittently fail to load for some users.  
+Severity: medium  
+Priority: P3  
+Status: resolved  
+Customer Name: Jamie Porter  
+Contact Email: jamie.porter@contosotest.com  
+Conversation History:  
+  - 2025-05-18T05:33:13Z [customer] Our users are reporting that sometimes the product search shows a "Failed to load products" message. It's not happening every time, but enough to get complaints.  
+  - 2025-05-18T05:36:29Z [agent] Thank you for bringing this to our attention. Are there any particular times or user actions when this happens? Can you share a screenshot or any error details from the browser console?  
+  - 2025-05-18T06:02:14Z [customer] It seems random, but mainly during the day when site traffic is higher. One user sent this error from the console: "GET /api/products/search 502 (Bad Gateway)".  
+  - 2025-05-18T06:20:51Z [agent] Thanks for the details. We’ll investigate for any API or backend issues during peak times. Are you seeing issues with any other features, or just product search?  
+  - 2025-05-18T07:11:07Z [customer] Just the product search as far as we can tell.  
+  - 2025-05-18T09:18:22Z [agent] We identified intermittent 502 errors from the API during high load due to a misconfiguration in the App Service scaling settings. We are adjusting these now.  
+  - 2025-05-18T11:05:46Z [agent] The scaling configuration has been updated and we’re no longer seeing 502 errors in monitoring. Can you confirm if the issue is resolved on your end?  
+  - 2025-05-18T12:00:22Z [customer] Looks good so far. No complaints this past hour and search is working for us. Thanks!  
+Resolved At: 2025-05-18T12:01:00Z  
+Resolution: The issue was caused by insufficient scaling on the Azure App Service during peak traffic, resulting in intermittent 502 errors on the product search endpoint. After updating the scaling configuration, the errors have ceased and users can consistently load search results.  
+Area: backend  
+Is Bug: true  
+Root Cause: Azure App Service instance count was too low for peak demand, causing the REST API to intermittently return 502 errors under load.

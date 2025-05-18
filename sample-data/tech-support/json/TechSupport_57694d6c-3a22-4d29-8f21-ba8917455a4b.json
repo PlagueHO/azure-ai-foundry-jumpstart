@@ -1,0 +1,25 @@
+{
+  "case_id": "57694d6c-3a22-4d29-8f21-ba8917455a4b",
+  "created_at": "2025-05-18T04:39:40.427758+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Checkout process fails with 500 error after submitting payment details.",
+  "severity": "critical",
+  "priority": "P2",
+  "status": "open",
+  "customer_name": "Samantha Reeves",
+  "contact_email": "samantha.reeves@contosotestmail.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Our customers can't complete purchases\u2014after entering payment info, they're getting a generic error and can't proceed. This is impacting all users.",
+      "timestamp": "2025-05-18T04:39:40.427758+00:00"
+    },
+    {
+      "role": "support_agent",
+      "message": "Thank you for reporting this. We're escalating this issue as a critical incident and will provide updates as soon as we have more information.",
+      "timestamp": "2025-05-18T04:45:12.000000+00:00"
+    }
+  ],
+  "area": "backend",
+  "is_bug": true
+}

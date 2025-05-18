@@ -1,0 +1,43 @@
+case_id: 69d4fea4-f8e3-4064-9d73-373cf3d59bba
+created_at: 2025-05-18 04:32:51.820477+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Checkout transactions intermittently failed due to Service Bus message
+  delivery errors.
+severity: high
+priority: P4
+status: closed
+customer_name: Jordan McAllister
+contact_email: jordan.mcallister@fakeshopmail.com
+conversation_history:
+- role: customer
+  message: We are seeing failed transactions at checkout, and several users report
+    their orders are not being processed.
+  timestamp: 2025-05-18 04:35:02+00:00
+- role: agent
+  message: Thank you for reporting this. Can you provide more details, such as error
+    messages or timeframes for the failures?
+  timestamp: 2025-05-18 04:39:47+00:00
+- role: customer
+  message: The errors started around 04:10 UTC. Users get a generic "Order could not
+    be completed" message. Our logs show repeated Service Bus delivery failures.
+  timestamp: 2025-05-18 04:42:10+00:00
+- role: agent
+  message: We are investigating Service Bus connectivity and reviewing logs for failed
+    deliveries. We will update you as soon as we identify the cause.
+  timestamp: 2025-05-18 04:44:29+00:00
+- role: agent
+  message: Issue identified as intermittent connectivity loss to Azure Service Bus.
+    We have implemented a retry policy and are monitoring the system.
+  timestamp: 2025-05-18 05:16:12+00:00
+- role: customer
+  message: Confirming that checkout is now working normally and no new errors are
+    reported. Thank you.
+  timestamp: 2025-05-18 05:29:08+00:00
+resolved_at: 2025-05-18 05:20:00+00:00
+resolution: Implemented exponential backoff retry logic for Service Bus message delivery;
+  connectivity has stabilized and affected transactions are processing successfully.
+area: backend
+is_bug: true
+root_cause: Temporary Azure Service Bus connectivity disruptions caused message delivery
+  failures during checkout.

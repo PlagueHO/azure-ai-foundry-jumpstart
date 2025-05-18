@@ -1,0 +1,52 @@
+case_id: 7b8e85a2-90dc-4f41-a917-a202ebf86d59
+created_at: 2025-05-18 04:33:05.135709+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Checkout process intermittently fails with "Payment not processed"
+  errors for multiple users.
+severity: high
+priority: P4
+status: closed
+customer_name: Jordan Wilcox
+contact_email: jordan.wilcox@contososhop-demo.com
+conversation_history:
+- role: customer
+  message: We're experiencing a high rate of checkout failures. Users are seeing a
+    "Payment not processed" error after submitting their orders, but the payments
+    are sometimes being captured anyway. This has led to confusion and some duplicate
+    charges. Please investigate as soon as possible.
+  timestamp: 2025-05-18 04:35:12+00:00
+- role: agent
+  message: Thank you for reporting this, Jordan. We are escalating this issue and
+    will begin investigation immediately. Could you please provide a few recent affected
+    order IDs and any relevant logs from your end?
+  timestamp: 2025-05-18 04:50:47+00:00
+- role: customer
+  message: "Sure, here are three order IDs from this morning: 982374, 982375, 982379.\
+    \ I've attached application logs from 04:00\u201305:00 UTC. Let me know if you\
+    \ need anything else."
+  timestamp: 2025-05-18 05:02:11+00:00
+- role: agent
+  message: Thank you for the details and logs. Our engineers have identified multiple
+    timeout exceptions between the API and the Service Bus, causing duplicate payment
+    processing attempts. We're deploying a fix to improve error handling and idempotency
+    on the transaction endpoint.
+  timestamp: 2025-05-18 05:33:39+00:00
+- role: agent
+  message: The hotfix has been deployed and monitoring confirms checkout transactions
+    are now processing correctly. Please verify on your end and let us know if further
+    issues occur.
+  timestamp: 2025-05-18 06:11:02+00:00
+- role: customer
+  message: We've tested several checkout flows and confirm the issue appears to be
+    resolved. Thank you for your prompt assistance.
+  timestamp: 2025-05-18 06:24:18+00:00
+resolved_at: 2025-05-18 06:24:18+00:00
+resolution: A hotfix was deployed to improve error handling and implement idempotency
+  at the transaction endpoint, preventing duplicate payment processing when Service
+  Bus timeouts occur. Monitoring confirms the checkout process is stable.
+area: backend
+is_bug: true
+root_cause: Timeout exceptions between the API and Service Bus led to duplicate transaction
+  attempts and inconsistent payment states due to insufficient idempotency in the
+  transaction endpoint.

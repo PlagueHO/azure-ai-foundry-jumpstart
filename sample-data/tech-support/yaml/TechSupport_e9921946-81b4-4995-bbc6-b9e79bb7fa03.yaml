@@ -1,0 +1,33 @@
+case_id: e9921946-81b4-4995-bbc6-b9e79bb7fa03
+created_at: 2025-05-18 04:33:05.379879+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Footer copyright year on front-end was not updated to 2025.
+severity: low
+priority: P4
+status: closed
+customer_name: Jenna Park
+contact_email: jpark@fakesuite-mail.com
+conversation_history:
+- role: customer
+  message: Hi, I've noticed that the copyright year at the bottom of the website still
+    shows 2024. Can this be updated?
+  timestamp: 2025-05-18 04:31:22+00:00
+- role: agent
+  message: Thank you for reporting this, Jenna. We'll take a look and update the footer
+    to reflect the correct year.
+  timestamp: 2025-05-18 04:36:11+00:00
+- role: agent
+  message: The footer has been updated to display 2025. Please refresh your browser
+    to see the change.
+  timestamp: 2025-05-18 05:12:47+00:00
+- role: customer
+  message: Confirmed, it's showing 2025 now. Thanks for the quick fix!
+  timestamp: 2025-05-18 05:16:54+00:00
+resolved_at: 2025-05-18 05:12:47+00:00
+resolution: Updated the static footer text in the React front-end to display the current
+  year (2025).
+area: frontend
+is_bug: true
+root_cause: Footer year was hardcoded and not dynamically updated at the start of
+  the new year.

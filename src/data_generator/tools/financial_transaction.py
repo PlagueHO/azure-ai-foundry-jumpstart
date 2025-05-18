@@ -180,15 +180,20 @@ class FinancialTransactionTool(DataGeneratorTool):
             f"# ... ≥{self.transactions_max} rows ...\n"
         )
 
-    def post_process(self, raw: str) -> Any:
-        """Attempt JSON/YAML parsing; otherwise return raw text."""
-        try:
-            if raw.lstrip().startswith("{"):
+    def post_process(self, raw: str, output_format: str) -> Any:
+        """Deserialize based on output_format; fallback to raw text on failure."""
+        fmt = output_format.lower()
+        if fmt == "json":
+            try:
                 return json.loads(raw)
-            if ":" in raw and "\n" in raw:
+            except json.JSONDecodeError:
+                return raw
+        if fmt == "yaml":
+            try:
                 return yaml.safe_load(raw)
-        except Exception:
-            pass
+            except yaml.YAMLError:
+                return raw
+        # text or other formats
         return raw
 
     def get_system_description(self) -> str:

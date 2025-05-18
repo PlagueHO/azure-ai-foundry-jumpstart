@@ -1,0 +1,39 @@
+case_id: 5fc5fc5b-9b2f-45d7-96b9-fafe65f273fe
+created_at: 2025-05-18 04:33:10.531237+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Customers unable to complete checkout due to persistent 500 errors
+  on the payment endpoint.
+severity: critical
+priority: P1
+status: resolved
+customer_name: Jamie Rodwell
+contact_email: jamie.rodwell@fictionalco.com
+conversation_history:
+- role: customer
+  message: "We are seeing a spike in failed checkouts\u2014users report 500 errors\
+    \ when submitting payment. This is impacting all sales."
+  timestamp: 2025-05-18 04:36:54+00:00
+- role: agent
+  message: Thank you for reporting this. We're escalating this as a critical incident
+    and will update you as soon as we identify the root cause.
+  timestamp: 2025-05-18 04:38:02+00:00
+- role: agent
+  message: We've identified a misconfiguration in the API deployment that caused the
+    payment endpoint to fail. A hotfix is being deployed now.
+  timestamp: 2025-05-18 05:01:24+00:00
+- role: agent
+  message: The hotfix has been deployed and successful checkouts are being processed
+    again. Can you please confirm from your side?
+  timestamp: 2025-05-18 05:13:09+00:00
+- role: customer
+  message: "Confirmed\u2014checkout is working again and error rates are back to normal.\
+    \ Thanks for the quick turnaround."
+  timestamp: 2025-05-18 05:16:47+00:00
+resolved_at: 2025-05-18 05:16:47+00:00
+resolution: Hotfix deployed to correct API deployment misconfiguration; payment endpoint
+  now stable and checkouts succeeding.
+area: backend
+is_bug: true
+root_cause: Deployment misconfiguration in the backend API caused the payment processing
+  endpoint to fail with HTTP 500 errors.

@@ -1,0 +1,48 @@
+{
+  "case_id": "fa7829f0-465a-401d-bb72-68fbfd5f1e2b",
+  "created_at": "2025-05-18T04:39:52.593535+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Checkout process fails with 'Unexpected Server Error' for all users.",
+  "severity": "critical",
+  "priority": "P1",
+  "status": "closed",
+  "customer_name": "Jasmine Patel",
+  "contact_email": "jasmine.patel@fakeshopmail.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Our customers can't complete purchases\u2014checkout shows an 'Unexpected Server Error' every time. This started about an hour ago. Please help!",
+      "timestamp": "2025-05-18T04:41:16.002Z"
+    },
+    {
+      "role": "support",
+      "message": "Thank you for reporting. We\u2019re treating this as a critical issue and have escalated it to our engineering team. We\u2019ll update you as soon as we have more information.",
+      "timestamp": "2025-05-18T04:43:59.210Z"
+    },
+    {
+      "role": "support",
+      "message": "Initial investigation shows a spike in 500 errors from the REST API during checkout. We\u2019re reviewing logs and dependencies now.",
+      "timestamp": "2025-05-18T05:01:34.908Z"
+    },
+    {
+      "role": "support",
+      "message": "Root cause identified: a recent deployment introduced a breaking change in the API\u2019s transaction endpoint, causing serialization failures. We are rolling back the deployment.",
+      "timestamp": "2025-05-18T05:29:11.455Z"
+    },
+    {
+      "role": "support",
+      "message": "The rollback is complete. Checkout functionality is restored. Please confirm if you are able to process transactions again.",
+      "timestamp": "2025-05-18T05:43:25.722Z"
+    },
+    {
+      "role": "customer",
+      "message": "Confirmed\u2014checkout is working again. Thanks for the quick resolution.",
+      "timestamp": "2025-05-18T05:45:06.537Z"
+    }
+  ],
+  "resolved_at": "2025-05-18T05:45:20.100Z",
+  "resolution": "Rolled back the faulty deployment to restore checkout functionality; API endpoint serialization issue to be fixed in a future release after additional testing.",
+  "area": "backend",
+  "is_bug": true,
+  "root_cause": "A breaking change in the transaction API endpoint during a recent deployment caused serialization failures and 500 errors on checkout."
+}

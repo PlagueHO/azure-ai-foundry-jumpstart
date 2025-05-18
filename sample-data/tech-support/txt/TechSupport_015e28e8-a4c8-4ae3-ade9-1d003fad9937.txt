@@ -1,0 +1,26 @@
+Case ID: 015e28e8-a4c8-4ae3-ade9-1d003fad9937  
+Created At: 2025-05-18T05:33:02.684883+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.
+
+Issue Summary: Product images intermittently fail to load on the storefront page.
+
+Severity: low  
+Priority: P2  
+Status: resolved  
+Customer Name: Jordan Whitaker  
+Contact Email: jordan.whitaker@fakemail.com
+
+Conversation History:
+- 2025-05-18T05:34:10Z [customer] Hi, some of our product images are not loading on the main page. Instead, I’m seeing broken image icons randomly. Could you check?
+- 2025-05-18T05:36:55Z [agent] Hi Jordan, thank you for reporting this. Could you please clarify if this happens in all browsers and devices, or just specific ones? Also, do you notice any pattern to which images fail to load?
+- 2025-05-18T06:01:23Z [customer] It seems pretty random, sometimes after refreshing they appear. I tried Chrome and Edge on two different laptops, same issue. No obvious pattern, but it’s not every image, just a few each time.
+- 2025-05-18T06:11:40Z [agent] Thanks for the details. Could you open the browser dev tools, refresh the page, and let me know if you see any errors in the Console or Network tab related to the images?
+- 2025-05-18T06:22:01Z [customer] In the Network tab, some images are showing a 504 Gateway Timeout error. No errors in the Console related to this.
+- 2025-05-18T06:31:58Z [agent] Understood, thank you. I will check the image API and storage availability in our backend and see if there are intermittent issues.
+
+Resolved At: 2025-05-18T08:05:10Z  
+Resolution: Identified that the Azure Blob Storage hosting the product images experienced brief throttling due to increased read requests. Implemented improved caching and adjusted storage performance tier. Images are now loading consistently after these changes.
+
+Area: backend  
+Is Bug: false  
+Root Cause: Temporary Azure Blob Storage throttling under increased load, resolved by updating cache policy and upgrading storage tier.

@@ -1,0 +1,38 @@
+case_id: 7dba4693-3a72-4602-90e9-609b04b97f94
+created_at: 2025-05-18 04:33:05.508605+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Checkout process consistently failed for all users due to API timeouts.
+severity: critical
+priority: P2
+status: closed
+customer_name: Lila Evans
+contact_email: lila.evans@contosomail.com
+conversation_history:
+- role: customer
+  message: "Users are unable to complete purchases\u2014checkout hangs and then fails\
+    \ with a timeout error."
+  timestamp: 2025-05-18 04:34:10+00:00
+- role: agent
+  message: Thank you for reporting this. We are seeing elevated error rates in the
+    transaction API and are actively investigating.
+  timestamp: 2025-05-18 04:36:42+00:00
+- role: agent
+  message: We have identified a spike in message backlog on the Service Bus, which
+    is causing API timeouts. Working on mitigation.
+  timestamp: 2025-05-18 05:03:14+00:00
+- role: agent
+  message: The backlog has been cleared and the API is responding normally. Please
+    confirm if checkout is working on your end.
+  timestamp: 2025-05-18 05:41:21+00:00
+- role: customer
+  message: "Confirmed\u2014checkout is working again for all users. Thank you for\
+    \ the quick resolution."
+  timestamp: 2025-05-18 05:47:03+00:00
+resolved_at: 2025-05-18 05:47:03+00:00
+resolution: Service Bus message backlog cleared; API performance restored and checkout
+  process now completes successfully.
+area: backend
+is_bug: true
+root_cause: Surge in transactional messages led to Service Bus backlog, resulting
+  in API request timeouts during checkout.

@@ -4,8 +4,11 @@ import argparse
 import json
 import logging
 import uuid
+
 from abc import ABC, abstractmethod
 from typing import Any, ClassVar, Dict, List, Type
+
+import yaml
 
 _logger = logging.getLogger(__name__)
 
@@ -79,15 +82,27 @@ class DataGeneratorTool(ABC):
         """Override to narrow/widen acceptable output formats."""
         return ["json"]
 
-    def post_process(self, raw: str) -> Any:  # noqa: ANN401 (Any is intentional)
+    def post_process(self, raw: str, output_format: str) -> Any:  # noqa: ANN401 (Any is intentional)
         """
-        Default implementation attempts JSON deserialisation; otherwise returns
-        plain string.  Sub-classes can override for YAML/CSV, etc.
+        Deserialize based on the requested output_format:
+        - json: parse with json.loads
+        - yaml: parse with yaml.safe_load
+        - text/txt: return raw string
+        Fallback to raw if parsing fails.
         """
-        try:
-            return json.loads(raw)
-        except json.JSONDecodeError:
-            return raw
+        fmt = output_format.lower()
+        if fmt == "json":
+            try:
+                return json.loads(raw)
+            except json.JSONDecodeError:
+                return raw
+        if fmt == "yaml":
+            try:
+                return yaml.safe_load(raw)
+            except yaml.YAMLError:
+                return raw
+        # plain text or other formats
+        return raw
 
     # ------------------------------------------------------------------ #
     # Helper: factory                                                    #

@@ -37,7 +37,7 @@ class TechSupportTool(DataGeneratorTool):
     # ------------------------------------------------------------------ #
     def supported_output_formats(self) -> List[str]:  # noqa: D401
         """Return the list of output formats this tool can generate."""
-        return ["yaml", "json", "text"]
+        return ["yaml", "json", "txt"]
 
     # ------------------------------------------------------------------ #
     # CLI contract                                                       #
@@ -112,23 +112,24 @@ class TechSupportTool(DataGeneratorTool):
         Construct the full system-prompt string for the requested *output_format*.
         All variable data (status, ids, etc.) are pre-baked so the kernel only
         receives the `index` placeholder supplied by the engine.
-        ## ON CONVERSATION HISTORY
-        User messages should be realistic, sometimes unclear, contain realistic
-        error messages and information. The agent's replies should be helpful
-        and ask clarifying questions or to provide specific information.
         """
         base = (
             "You are a helpful support agent generating REALISTIC BUT ENTIRELY "
             "FICTIONAL technical support cases for demonstrations.\n\n"
-            f"Target system:\n- {self.system_description}\n\n"
+            "## ON THE CASE\n\n"
+            f"The system being simulated:\n- {self.system_description}\n\n"
             f"{self._prompt_common(unique_id=unique_id)}"
+            "## ON CONVERSATION HISTORY\n\n"
+            "User messages should be realistic, sometimes unclear, contain realistic "
+            "error messages and information. The agent's replies should be helpful "
+            "and ask clarifying questions or to provide specific information.\n"
         )
 
         if output_format == "yaml":
             return base + self._yaml_skeleton()
         if output_format == "json":
             return base + self._json_skeleton()
-        # TEXT
+        # Plain text is the default
         return base + self._text_skeleton()
 
     # ------------------------------------------------------------------ #
@@ -210,18 +211,20 @@ class TechSupportTool(DataGeneratorTool):
     # ------------------------------------------------------------------ #
     # Post-processing                                                    #
     # ------------------------------------------------------------------ #
-    def post_process(self, raw: str) -> Any:  # noqa: ANN401
-        """Attempt JSON/YAML parsing; fall back to raw string on failure."""
-        if raw.lstrip().startswith("{"):
+    def post_process(self, raw: str, output_format: str) -> Any:  # noqa: ANN401
+        """Deserialize based on output_format; fallback to raw string on failure."""
+        fmt = output_format.lower()
+        if fmt == "json" and raw.lstrip().startswith("{"):
             try:
                 return json.loads(raw)
             except json.JSONDecodeError:
-                pass
-        if ":" in raw and "\n" in raw:  # naive YAML sniff
+                return raw
+        if fmt == "yaml" and ":" in raw and "\n" in raw:  # naive YAML sniff
             try:
                 return yaml.safe_load(raw)
             except yaml.YAMLError:
-                pass
+                return raw
+        # plain-text or unrecognized format
         return raw
 
     # ------------------------------------------------------------------ #

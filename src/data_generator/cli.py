@@ -30,7 +30,7 @@ def _add_common_args(p: argparse.ArgumentParser) -> None:
     p.add_argument("--out-dir", type=Path, required=True, help="Output directory.")
     p.add_argument(
         "--output-format",
-        choices=["json", "yaml", "text"],
+        choices=["json", "yaml", "txt"],
         default="json",
         help="File format for generated records.",
     )

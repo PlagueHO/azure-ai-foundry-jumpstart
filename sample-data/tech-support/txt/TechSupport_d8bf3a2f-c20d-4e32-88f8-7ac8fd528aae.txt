@@ -1,0 +1,15 @@
+Case ID: d8bf3a2f-c20d-4e32-88f8-7ac8fd528aae  
+Created At: 2025-05-18T05:33:19.431902+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Checkout process intermittently fails with "Transaction could not be completed" error for multiple users.  
+Severity: high  
+Priority: P2  
+Status: open  
+Customer Name: Lucas Tran  
+Contact Email: lucas.tran@fakeshopmail.com  
+Conversation History:
+- 2025-05-18T05:34:09Z [customer] We are seeing a spike in failed checkouts this morning. Users are getting "Transaction could not be completed, please try again later" when submitting orders. Nothing in the dashboard looks off, but the complaints are piling up. Can you help?
+- 2025-05-18T05:36:12Z [agent] Thank you for reporting this, Lucas. Can you confirm if this error is appearing for all users or only certain ones? Are there any patterns around payment methods, browser type, or time of day? Additionally, do you have any recent order IDs that failed for reference?  
+
+Area: backend  
+Is Bug: true

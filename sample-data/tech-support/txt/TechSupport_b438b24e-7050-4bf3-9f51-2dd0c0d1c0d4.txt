@@ -1,0 +1,15 @@
+Case ID: b438b24e-7050-4bf3-9f51-2dd0c0d1c0d4  
+Created At: 2025-05-18T05:33:12.883756+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Checkout fails with 500 error for all users; orders not processed.  
+Severity: critical  
+Priority: P2  
+Status: investigating  
+Customer Name: Jordan Mayer  
+Contact Email: jordan.mayer@contososhop-demo.com  
+Conversation History:  
+  - 2025-05-18T05:34:02Z [customer] We're getting a 500 error when trying to place orders through the checkout page. It started about 10 minutes ago, and now no one can complete a purchase. Can you look into this ASAP?  
+  - 2025-05-18T05:36:19Z [agent] Hi Jordan, thank you for reporting this. Just to confirm, is this affecting all users or only certain accounts? Do you see the 500 error immediately on clicking "Place Order," or does it take a while? Any other error messages or codes in the browser console or server logs?  
+
+Area: backend  
+Is Bug: true

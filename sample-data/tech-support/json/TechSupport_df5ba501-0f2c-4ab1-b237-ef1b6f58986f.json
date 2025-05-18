@@ -1,0 +1,43 @@
+{
+  "case_id": "df5ba501-0f2c-4ab1-b237-ef1b6f58986f",
+  "created_at": "2025-05-18T04:39:56.751751+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Orders placed via the front-end were not being processed due to a failure in the Service Bus integration.",
+  "severity": "critical",
+  "priority": "P3",
+  "status": "closed",
+  "customer_name": "Jordan Peterson",
+  "contact_email": "j.peterson@contososhop-demo.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Customers are reporting that after submitting orders, nothing happens and their orders are not being recorded.",
+      "timestamp": "2025-05-18T04:41:02+00:00"
+    },
+    {
+      "role": "support",
+      "message": "Thank you for reporting the issue. We are investigating the Service Bus integration between the API and the transaction processor.",
+      "timestamp": "2025-05-18T04:52:19+00:00"
+    },
+    {
+      "role": "support",
+      "message": "We have identified that the Service Bus connection string was rotated but not updated in the API configuration, causing message delivery failures.",
+      "timestamp": "2025-05-18T05:20:44+00:00"
+    },
+    {
+      "role": "support",
+      "message": "The API configuration has been updated with the new Service Bus credentials, and order processing is now restored. Please confirm.",
+      "timestamp": "2025-05-18T06:01:30+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Confirmed, orders are being processed again. Thank you for the quick resolution.",
+      "timestamp": "2025-05-18T06:07:18+00:00"
+    }
+  ],
+  "resolved_at": "2025-05-18T06:10:00+00:00",
+  "resolution": "Updated the Service Bus connection string in the API configuration to restore order processing functionality.",
+  "area": "backend",
+  "is_bug": true,
+  "root_cause": "The Service Bus connection string was rotated for security purposes, but the new credentials were not updated in the API configuration, resulting in message delivery failures and halted order processing."
+}

@@ -1,0 +1,53 @@
+{
+  "case_id": "c310666f-ce1d-4aa3-8819-fb740a274e62",
+  "created_at": "2025-05-18T04:39:47.798181+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Checkout page intermittently fails to load payment options.",
+  "severity": "medium",
+  "priority": "P3",
+  "status": "resolved",
+  "customer_name": "Jordan Ellis",
+  "contact_email": "jordan.ellis@fakeshopmail.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Our users are reporting that the checkout page sometimes doesn't display payment options, and they can't complete their purchases.",
+      "timestamp": "2025-05-18T04:40:15+00:00"
+    },
+    {
+      "role": "support",
+      "message": "Thank you for reporting this. Can you confirm if there are any specific browsers or times when this occurs more frequently?",
+      "timestamp": "2025-05-18T04:46:01+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "It seems random, but most reports are from Chrome users. No pattern with time of day.",
+      "timestamp": "2025-05-18T04:51:17+00:00"
+    },
+    {
+      "role": "support",
+      "message": "We are investigating the logs and front-end requests to the payment options endpoint. We will update you soon.",
+      "timestamp": "2025-05-18T05:10:28+00:00"
+    },
+    {
+      "role": "support",
+      "message": "We've identified a bug in the front-end code where a race condition sometimes prevents payment options from loading if the API response is delayed. We're deploying a fix now.",
+      "timestamp": "2025-05-18T06:02:43+00:00"
+    },
+    {
+      "role": "support",
+      "message": "The fix has been deployed. Please have your users try again and confirm if the issue is resolved.",
+      "timestamp": "2025-05-18T06:28:17+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Confirmed, payment options are loading consistently now. Thanks for the quick turnaround.",
+      "timestamp": "2025-05-18T07:03:12+00:00"
+    }
+  ],
+  "resolved_at": "2025-05-18T07:05:00+00:00",
+  "resolution": "Deployed a front-end patch to resolve a race condition that occasionally blocked payment options from rendering when API responses were delayed.",
+  "area": "frontend",
+  "is_bug": true,
+  "root_cause": "A race condition in the React checkout component caused payment options to intermittently fail to render if the payment options API response arrived after a component state change."
+}

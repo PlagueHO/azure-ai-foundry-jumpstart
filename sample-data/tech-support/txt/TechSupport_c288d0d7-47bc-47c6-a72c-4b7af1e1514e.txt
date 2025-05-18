@@ -1,0 +1,42 @@
+Case ID: c288d0d7-47bc-47c6-a72c-4b7af1e1514e  
+Created At: 2025-05-18T05:33:02.701785+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Customers unable to complete checkout—payment service times out and orders are not processed.  
+Severity: critical  
+Priority: P2  
+Status: closed  
+Customer Name: Elaine Tran  
+Contact Email: etran@fakesamplemail.com  
+Conversation History:
+- 2025-05-18T05:33:02.701785+00:00 [customer]  
+  Multiple customers are reporting that they're getting stuck on the checkout screen. The payment just keeps spinning and eventually errors out. We've had several complaints in the last hour.
+
+- 2025-05-18T05:36:17.112394+00:00 [agent]  
+  Thank you for reporting this, Elaine. Can you confirm if there are any specific error messages or codes appearing for customers, or is it just a generic timeout? Also, are all payment methods affected or just certain ones?
+
+- 2025-05-18T05:39:59.584203+00:00 [customer]  
+  It seems to be all payment methods. Most users just see "Payment could not be processed, please try again later." Our logs show some 504 Gateway Timeout errors from the /api/checkout endpoint.
+
+- 2025-05-18T05:44:12.901456+00:00 [agent]  
+  Understood. We’re looking into potential API or back-end issues. Can you provide a recent order ID where this occurred? Also, have there been any recent deployments or config changes?
+
+- 2025-05-18T05:49:31.775644+00:00 [customer]  
+  Order ID: 1209841 failed at 05:28 UTC. No recent deployments or config changes on our end since last week.
+
+- 2025-05-18T06:03:54.202303+00:00 [agent]  
+  Thank you. We are seeing a spike in Service Bus queue depth—looks like messages from the checkout API are not being processed. We will escalate to the back-end team for immediate investigation.
+
+- 2025-05-18T06:25:41.991204+00:00 [agent]  
+  Update: The transaction processor listening to the Service Bus queue was in a failed state due to a connection string rotation earlier this morning. We are working to restore service and will update as soon as possible.
+
+- 2025-05-18T06:54:33.625210+00:00 [agent]  
+  The Service Bus connection string has been updated and the transaction processor is running again. Orders are now processing successfully. Please monitor and confirm on your end.
+
+- 2025-05-18T07:05:44.900120+00:00 [customer]  
+  Confirmed—checkout is working and orders are being processed again. Thanks for the quick response.
+
+Resolved At: 2025-05-18T07:05:44.900120+00:00  
+Resolution: Restored Service Bus connection string for the transaction processor, resolving the payment and order processing failures.  
+Area: backend  
+Is Bug: true  
+Root Cause: Service Bus connection string used by the transaction processor was rotated but not updated in the application, causing a backlog and timeouts at checkout.

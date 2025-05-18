@@ -1,0 +1,53 @@
+{
+  "case_id": "136ab9c1-181d-4888-952d-554500ba6ffe",
+  "created_at": "2025-05-18T04:36:39.956067+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Orders placed through the web frontend were intermittently failing with a 500 error during checkout.",
+  "severity": "high",
+  "priority": "P1",
+  "status": "resolved",
+  "customer_name": "Andrea Lin",
+  "contact_email": "andrea.lin@contososhop-demo.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Our users are reporting that checkouts are failing with a server error. This is impacting live sales\u2014please investigate ASAP.",
+      "timestamp": "2025-05-18T04:38:10.123Z"
+    },
+    {
+      "role": "support",
+      "message": "Thank you for reporting. We are escalating this as a P1 and beginning immediate investigation.",
+      "timestamp": "2025-05-18T04:40:25.512Z"
+    },
+    {
+      "role": "support",
+      "message": "Initial logs show repeated 500 errors from the /api/orders endpoint. We are checking the backend and service bus dependencies.",
+      "timestamp": "2025-05-18T05:02:44.201Z"
+    },
+    {
+      "role": "support",
+      "message": "Identified a spike in dead-lettered messages on the Service Bus topic used for order processing. Investigating message schema changes.",
+      "timestamp": "2025-05-18T05:31:07.789Z"
+    },
+    {
+      "role": "support",
+      "message": "Root cause found: a recent backend deployment introduced a breaking change to the order payload schema, causing deserialization failures and 500 errors during checkout.",
+      "timestamp": "2025-05-18T06:18:22.985Z"
+    },
+    {
+      "role": "support",
+      "message": "A hotfix has been deployed to restore compatibility. Monitoring confirms that checkouts are succeeding and no further errors are observed.",
+      "timestamp": "2025-05-18T06:45:55.310Z"
+    },
+    {
+      "role": "customer",
+      "message": "Confirmed that the issue is resolved. Thank you for the quick response.",
+      "timestamp": "2025-05-18T07:01:10.102Z"
+    }
+  ],
+  "resolved_at": "2025-05-18T06:45:55.310Z",
+  "resolution": "Deployed a hotfix to restore backward compatibility in the order payload schema, unblocking order processing and resolving all checkout failures.",
+  "area": "backend",
+  "is_bug": true,
+  "root_cause": "A breaking change to the order payload schema in a backend deployment caused deserialization errors, resulting in failed order processing and Service Bus dead-lettering."
+}

@@ -1,0 +1,18 @@
+Case ID: b8ba913f-9ac2-4de5-bc8d-12e4a058a5a9  
+Created At: 2025-05-18T05:33:17.293255+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.
+
+Issue Summary: Orders are getting stuck in "Processing" state and not completing checkout.
+
+Severity: critical  
+Priority: P3  
+Status: open  
+Customer Name: Jordan Patel  
+Contact Email: jordan.patel@fakemail.com
+
+Conversation History:
+- 2025-05-18T05:32:48Z [customer] Orders are getting stuck at "Processing" after checkout, both on test and live environments. Users are complaining their payments are taken but the order never completes. We see the order in the database but status doesn't update. Please help ASAP.
+- 2025-05-18T05:35:10Z [agent] Hi Jordan, thanks for reaching out and sorry for the disruption. To help us investigate, can you clarify if this issue started recently or has been ongoing? Also, are there any error logs or failed messages showing in the Service Bus or backend API logs?
+
+Area: backend  
+Is Bug: true

@@ -1,0 +1,14 @@
+Case ID: 015d1865-8cf0-4a06-98fc-48c1680166a0  
+Created At: 2025-05-18T05:33:12.426455+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Customers cannot complete checkout, receiving "Service Unavailable" errors after payment step.  
+Severity: critical  
+Priority: P4  
+Status: investigating  
+Customer Name: Julian Farrow  
+Contact Email: julian.farrow@contoso-demo.com  
+Conversation History:
+- 2025-05-18T05:34:06Z [customer] We have customers reporting they can't finish checkout. They get a "503 Service Unavailable" error after entering payment info. No issues accessing the rest of the site.
+- 2025-05-18T05:36:22Z [agent] Thank you for reporting this, Julian. To help us investigate, can you confirm if all payment methods are affected or just specific ones? Also, is this happening for all users or only a subset? Any recent changes or deployments to the checkout or payment services?
+Area: backend  
+Is Bug: true

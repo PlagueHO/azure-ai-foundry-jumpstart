@@ -1,0 +1,25 @@
+{
+  "case_id": "aa5ab152-7107-4902-a7f0-025a9bda9a5a",
+  "created_at": "2025-05-18T04:39:53.465620+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Users intermittently receive 'Failed to load products' errors on the home page.",
+  "severity": "medium",
+  "priority": "P3",
+  "status": "open",
+  "customer_name": "Jordan McAllister",
+  "contact_email": "jordan.mcallister@fakeshopmail.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Some of our users are seeing a 'Failed to load products' message when they visit the home page. It doesn't happen every time, but it's frequent enough that we're getting complaints.",
+      "timestamp": "2025-05-18T04:41:02+00:00"
+    },
+    {
+      "role": "support",
+      "message": "Thank you for reporting this, Jordan. To help us investigate, could you let us know if there are any common patterns (browsers, locations, times of day) when this issue occurs? Additionally, can you provide a recent timestamp of when this error was observed?",
+      "timestamp": "2025-05-18T04:43:29+00:00"
+    }
+  ],
+  "area": "frontend",
+  "is_bug": true
+}

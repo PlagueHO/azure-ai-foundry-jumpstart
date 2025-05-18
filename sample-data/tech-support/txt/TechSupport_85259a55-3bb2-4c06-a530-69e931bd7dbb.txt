@@ -1,0 +1,21 @@
+Case ID: 85259a55-3bb2-4c06-a530-69e931bd7dbb  
+Created At: 2025-05-18T05:33:15.596607+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.
+
+Issue Summary: Some users are reporting that order confirmations are delayed or not appearing after checkout.
+
+Severity: medium  
+Priority: P1  
+Status: investigating  
+Customer Name: Jordan Ramirez  
+Contact Email: jordan.ramirez@contosomail.com
+
+Conversation History:
+2025-05-18T05:35:42Z [customer]  
+Hi, we’re seeing an issue where after customers complete checkout, the order confirmation screen sometimes takes a long time to load or doesn’t show up at all. Some users are also saying they don’t get confirmation emails. Can you help?
+
+2025-05-18T05:38:10Z [agent]  
+Thank you for reporting this, Jordan. Just to clarify: is this affecting all customers or only specific users or regions? Are there any error messages in the browser or logs you can share? Additionally, do you know if the orders are actually being processed in the database, even if the confirmation isn’t shown? Any extra details will help us investigate.
+
+Area: backend  
+Is Bug: true

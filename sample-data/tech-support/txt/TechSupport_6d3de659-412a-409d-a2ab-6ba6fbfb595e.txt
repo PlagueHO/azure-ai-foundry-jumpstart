@@ -1,0 +1,25 @@
+Case ID: 6d3de659-412a-409d-a2ab-6ba6fbfb595e  
+Created At: 2025-05-18T05:38:06.460801+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Product search results were not updating after new items were added.  
+Severity: medium  
+Priority: P1  
+Status: resolved  
+Customer Name: Jamie Patel  
+Contact Email: jamie.patel@contososhop-demo.com  
+Conversation History:  
+  - 2025-05-18T05:39:12Z [customer] I added several new products this morning but they don’t show up in the product search on the website. The API says the items are there, but the front end isn’t updating. Can you help?
+  - 2025-05-18T05:41:54Z [agent] Thank you for contacting support, Jamie. Can you confirm whether you’ve tried clearing your browser cache or using a private browsing window? Also, is this happening for all users or just your account?
+  - 2025-05-18T05:44:28Z [customer] Yes, I tried both. It's the same for everyone on the team. The API returns the new items if we call it directly, but the React app still shows the old list even after refresh.
+  - 2025-05-18T05:50:03Z [agent] Thanks for clarifying. Was there any recent deployment or configuration change on the front end? We’ll check if the SPA is caching the search results.
+  - 2025-05-18T06:03:10Z [customer] We did push a front-end update last night to improve search performance, but nothing else changed.
+  - 2025-05-18T06:26:41Z [agent] We’ve identified that the new front-end code is caching search results in local storage for 24 hours. That’s likely why new products aren’t appearing. We recommend clearing local storage or reverting this change. We can provide a patch to reduce the cache duration—would you like us to do that?
+  - 2025-05-18T06:31:23Z [customer] Please send the patch ASAP, thanks.
+  - 2025-05-18T07:02:49Z [agent] Patch delivered via email. Please deploy and confirm if the issue is resolved.
+  - 2025-05-18T07:20:17Z [customer] Patch is live, and new products show up immediately now. Thanks for the quick fix!
+
+Resolved At: 2025-05-18T07:20:17Z  
+Resolution: Provided a patch to reduce local storage cache duration for product search results from 24 hours to 5 minutes, allowing new products to appear promptly.  
+Area: frontend  
+Is Bug: true  
+Root Cause: Recent front-end update introduced aggressive local storage caching (24h) of product search results, preventing new items from displaying until cache expiration.

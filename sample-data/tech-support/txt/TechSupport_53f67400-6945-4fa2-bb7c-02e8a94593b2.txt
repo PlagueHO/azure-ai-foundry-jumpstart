@@ -1,0 +1,34 @@
+Case ID: 53f67400-6945-4fa2-bb7c-02e8a94593b2  
+Created At: 2025-05-18T05:33:15.324563+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.
+
+Issue Summary: Customers were unable to complete checkout due to a persistent “Payment Processing Error” message.
+
+Severity: medium  
+Priority: P2  
+Status: resolved  
+Customer Name: Jamie Tran  
+Contact Email: jamie.tran@fakeshopmail.com
+
+Conversation History:
+- 2025-05-18T05:34:22Z [customer]  
+Hi, users are reporting that they're unable to complete purchases on the website. Checkout just fails with "Payment Processing Error - Please try again later." This has been going on since last night.
+- 2025-05-18T05:36:58Z [agent]  
+Thank you for letting us know, Jamie. Are all users affected, or is it limited to certain payment methods or regions? Also, can you share a recent order ID that failed so we can check the logs?
+- 2025-05-18T05:39:21Z [customer]  
+As far as I can tell, it's all users. We tested Visa and PayPal and both failed. Here’s a recent order ID: 54983.  
+- 2025-05-18T05:42:10Z [agent]  
+Thanks, Jamie. We see repeated errors in the API logs related to service bus timeouts when posting payment events. We’re escalating this to our backend team for immediate review.
+- 2025-05-18T06:17:33Z [agent]  
+Update: The backend team identified high latency on the Azure Service Bus used for transaction processing. They are restarting the affected service and increasing message retry attempts. We'll update you as soon as it’s resolved.
+- 2025-05-18T06:42:09Z [agent]  
+Hi Jamie, the fix has been applied and we’re seeing successful transactions in the logs. Can you please test checkout again and let us know if the issue is resolved?
+- 2025-05-18T06:55:11Z [customer]  
+Checkout is working again now—orders are going through. Thank you for the quick help!
+
+Resolved At: 2025-05-18T06:55:30+00:00  
+Resolution: Issue was traced to high latency on the Azure Service Bus, causing payment event posting to fail. The service was restarted and retry logic was increased, restoring normal operation.
+
+Area: backend  
+Is Bug: true  
+Root Cause: Increased message latency on Azure Service Bus caused payment processing to fail at the API layer, resulting in checkout errors for all users.

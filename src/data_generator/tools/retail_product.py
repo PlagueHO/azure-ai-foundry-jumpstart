@@ -178,28 +178,38 @@ class RetailProductTool(DataGeneratorTool):
     # ------------------------------------------------------------------ #
     # Post-processing                                                    #
     # ------------------------------------------------------------------ #
-    def post_process(self, raw: str) -> Any:  # noqa: ANN401
-        """Attempt to enrich & deserialize where applicable."""
-        data: Any = raw
-        if raw.lstrip().startswith("{"):
-            try:
-                data = json.loads(raw)
-            except json.JSONDecodeError:
-                return raw
-        elif ":" in raw and "\n" in raw:
-            try:
-                data = yaml.safe_load(raw)
-            except yaml.YAMLError:
-                return raw
+    def post_process(self, raw: str, output_format: str) -> Any:  # noqa: ANN401
+        """Deserialize based on output_format and enrich if applicable."""
+        fmt = output_format.lower()
+        parsed_data: Any
 
-        # Enrich JSON/YAML outputs with defaults (price/stock/currency/rating)
-        if isinstance(data, dict):
-            data.setdefault("price", self._random_price())
-            data.setdefault("currency", random.choice(self._CURRENCIES))
-            data.setdefault("stock_quantity", self._random_stock())
-            if "rating" not in data and random.choice([True, False]):
-                data["rating"] = round(random.uniform(1.0, 5.0), 1)
-        return data
+        if fmt == "json":
+            try:
+                parsed_data = json.loads(raw)
+            except json.JSONDecodeError:
+                _logger.warning("Failed to parse raw output as JSON. Returning raw string.")
+                return raw
+        elif fmt == "yaml":
+            try:
+                parsed_data = yaml.safe_load(raw)
+            except yaml.YAMLError:
+                _logger.warning("Failed to parse raw output as YAML. Returning raw string.")
+                return raw
+        elif fmt == "txt" or fmt == "text":  # Handle both 'txt' (from CLI) and 'text' (from tool's supported_output_formats)
+            return raw
+        else:
+            _logger.warning("Unknown output format '%s' for post-processing. Returning raw string.", output_format)
+            return raw
+
+        # Enrich JSON/YAML outputs if they resulted in a dictionary
+        if isinstance(parsed_data, dict):
+            parsed_data.setdefault("price", self._random_price())
+            parsed_data.setdefault("currency", random.choice(self._CURRENCIES))
+            parsed_data.setdefault("stock_quantity", self._random_stock())
+            if "rating" not in parsed_data and random.choice([True, False]):
+                parsed_data["rating"] = round(random.uniform(1.0, 5.0), 1)
+        
+        return parsed_data
 
     # ------------------------------------------------------------------ #
     # Misc.                                                              #

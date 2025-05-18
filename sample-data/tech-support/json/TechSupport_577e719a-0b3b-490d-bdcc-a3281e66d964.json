@@ -1,0 +1,53 @@
+{
+  "case_id": "577e719a-0b3b-490d-bdcc-a3281e66d964",
+  "created_at": "2025-05-18T04:39:48.271863+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Checkout process intermittently failed with 'Payment Authorization Timeout' errors for multiple users.",
+  "severity": "high",
+  "priority": "P2",
+  "status": "resolved",
+  "customer_name": "Jordan Malik",
+  "contact_email": "j.malik@fictionalcontoso.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "We're seeing a spike in checkout failures\u2014users report payment isn't going through and receive timeout messages.",
+      "timestamp": "2025-05-18T04:41:10.213Z"
+    },
+    {
+      "role": "support",
+      "message": "Thank you for reporting. We're investigating recent API logs for payment authorization timeouts. We'll update you shortly.",
+      "timestamp": "2025-05-18T04:44:28.901Z"
+    },
+    {
+      "role": "support",
+      "message": "Identified elevated latency between the front-end and the payment authorization REST endpoint. Rolling back a recent deployment to isolate the issue.",
+      "timestamp": "2025-05-18T05:02:57.117Z"
+    },
+    {
+      "role": "customer",
+      "message": "Please advise when checkout is stable again\u2014this is impacting sales.",
+      "timestamp": "2025-05-18T05:04:48.605Z"
+    },
+    {
+      "role": "support",
+      "message": "Rollback completed. Monitoring shows error rates have returned to normal. Can you confirm checkout is working for your users now?",
+      "timestamp": "2025-05-18T05:17:43.329Z"
+    },
+    {
+      "role": "customer",
+      "message": "Confirmed\u2014checkout is working and no more timeouts are reported. Thanks for the quick resolution.",
+      "timestamp": "2025-05-18T05:19:10.011Z"
+    },
+    {
+      "role": "support",
+      "message": "We're marking this case as resolved. We'll follow up with a root cause summary.",
+      "timestamp": "2025-05-18T05:20:57.002Z"
+    }
+  ],
+  "resolved_at": "2025-05-18T05:21:00.000Z",
+  "resolution": "Rolled back a recent REST API deployment that introduced latency in payment authorization calls; checkout process confirmed stable by customer.",
+  "area": "backend",
+  "is_bug": true,
+  "root_cause": "A recent update to the payment authorization API introduced inefficient database queries, causing timeouts during peak load."
+}

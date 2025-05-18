@@ -1,0 +1,35 @@
+{
+  "case_id": "ffb4db44-d538-4c28-8672-3b791e0ed104",
+  "created_at": "2025-05-18T04:39:54.234088+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Checkout process intermittently fails with 'Order Not Processed' error for multiple users.",
+  "severity": "high",
+  "priority": "P3",
+  "status": "investigating",
+  "customer_name": "Jordan Mendez",
+  "contact_email": "jordan.mendez@fictionalcorp.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Several customers have reported that their orders are not being processed successfully. They see an 'Order Not Processed' message after submitting payment.",
+      "timestamp": "2025-05-18T04:41:12+00:00"
+    },
+    {
+      "role": "support_agent",
+      "message": "Thank you for reporting the issue, Jordan. We are currently reviewing the transaction logs and monitoring the checkout workflow.",
+      "timestamp": "2025-05-18T04:44:28+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Please keep us updated, as this is impacting active sales.",
+      "timestamp": "2025-05-18T04:45:55+00:00"
+    },
+    {
+      "role": "support_agent",
+      "message": "Understood. We'll provide updates as soon as we identify any anomalies or root causes.",
+      "timestamp": "2025-05-18T04:46:37+00:00"
+    }
+  ],
+  "area": "backend",
+  "is_bug": true
+}

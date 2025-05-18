@@ -1,0 +1,21 @@
+case_id: b32f7c3d-b62d-4588-80b9-d8e95ed3de04
+created_at: 2025-05-18 04:33:04.837332+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Product search results intermittently fail to load for some users.
+severity: low
+priority: P4
+status: open
+customer_name: Vanessa Lin
+contact_email: vanessa.lin@fakesamplemail.com
+conversation_history:
+- role: customer
+  message: 'Hi team, a few of our customers have reported that the product search
+    results sometimes don''t load on the site. Refreshing the page usually fixes it,
+    but it''s causing some confusion. Can you check if there''s anything wrong with
+    the search functionality?
+
+    '
+  timestamp: 2025-05-18 04:32:59+00:00
+area: frontend
+is_bug: true

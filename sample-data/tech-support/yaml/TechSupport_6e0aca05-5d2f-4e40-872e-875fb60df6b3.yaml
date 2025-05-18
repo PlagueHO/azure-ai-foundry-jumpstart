@@ -1,0 +1,24 @@
+case_id: 6e0aca05-5d2f-4e40-872e-875fb60df6b3
+created_at: 2025-05-18 04:33:04.490832+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Product images are intermittently failing to load on the storefront.
+severity: low
+priority: P1
+status: open
+customer_name: Jordan Bell
+contact_email: jordan.bell@fakeshopmail.com
+conversation_history:
+- role: customer
+  message: Hello, we've noticed that some of our product images are not loading on
+    the main shop page. This doesn't seem to affect every product or every refresh,
+    but it's inconsistent and is causing a poor user experience. Can you please investigate?
+  timestamp: 2025-05-18 04:31:57+00:00
+- role: agent
+  message: Thank you for reporting this issue, Jordan. We'll start investigating the
+    image loading problems on the storefront. Could you let us know if this affects
+    certain products more than others, or if you have any relevant error messages
+    or browser console logs?
+  timestamp: 2025-05-18 04:38:12+00:00
+area: frontend
+is_bug: true

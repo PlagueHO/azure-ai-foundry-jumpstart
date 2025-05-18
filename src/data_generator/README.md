@@ -48,7 +48,7 @@ pip install -e ".[dev]"
 | `--scenario`                 | Y        | Which tool to run (`tech-support`, `retail-product`, ...) |          |
 | `--count`                    |          | Number of records to create                               | `1`      |
 | `--out-dir`                  |          | Output folder (auto-created)                              | `./data` |
-| `--output-format`            |          | `json`, `yaml`, `text`                                    | `json`   |
+| `--output-format`            |          | `json`, `yaml`, `txt`                                     | `json`   |
 | `--azure-openai-endpoint`    |          | Override env var                                          |          |
 | `--azure-openai-deployment`  |          | Override env var                                          |          |
 | `--azure-openai-api-key`     |          | Bypass Managed Identity                                   |          |

@@ -1,0 +1,53 @@
+{
+  "case_id": "fb3cbb0b-c4d5-4d87-974d-981d153984bb",
+  "created_at": "2025-05-18T04:48:24.035474+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Order confirmation page intermittently fails to display order details after checkout.",
+  "severity": "medium",
+  "priority": "P3",
+  "status": "closed",
+  "customer_name": "Jordan Kim",
+  "contact_email": "jordan.kim@contoso-demo.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Some customers are reporting that after checking out, the order confirmation page sometimes doesn't show their order details.",
+      "timestamp": "2025-05-18T04:52:19+00:00"
+    },
+    {
+      "role": "support",
+      "message": "Thank you for reporting this. Can you provide any specific steps or browser details from affected users?",
+      "timestamp": "2025-05-18T05:01:30+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "It seems to happen randomly, mostly in Chrome and Edge, regardless of device.",
+      "timestamp": "2025-05-18T05:03:12+00:00"
+    },
+    {
+      "role": "support",
+      "message": "We are investigating possible delays in the transaction confirmation flow between the API and the Service Bus.",
+      "timestamp": "2025-05-18T05:20:41+00:00"
+    },
+    {
+      "role": "support",
+      "message": "We have identified a race condition where the SPA fetches order details before the transaction is committed to the database. A fix has been deployed to delay the request until confirmation is received.",
+      "timestamp": "2025-05-19T12:14:27+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Looks good now, we haven't seen any more reports since the fix.",
+      "timestamp": "2025-05-20T08:42:06+00:00"
+    },
+    {
+      "role": "support",
+      "message": "Glad to hear it! We'll close this ticket, but let us know if you see any recurrence.",
+      "timestamp": "2025-05-20T09:05:55+00:00"
+    }
+  ],
+  "resolved_at": "2025-05-20T09:05:55+00:00",
+  "resolution": "Deployed a code fix to ensure the order confirmation page waits for transaction commit before fetching order details.",
+  "area": "frontend",
+  "is_bug": true,
+  "root_cause": "Race condition in the React SPA caused premature API calls for order details before the database transaction was completed."
+}

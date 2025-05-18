@@ -1,0 +1,27 @@
+Case ID: 23773970-3e0b-4e6d-b167-1760af742ace  
+Created At: 2025-05-18T05:33:02.696945+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Checkout transactions were failing for all users due to API timeouts.  
+Severity: high  
+Priority: P1  
+Status: resolved  
+Customer Name: Jordan R. Epps  
+Contact Email: jordan.epps@contososhop-demo.com  
+Conversation History:
+  - 2025-05-18T05:34:12Z [customer] We’re getting “Request timed out” errors when customers try to check out. Payments aren’t processing at all. We need urgent help—this is blocking all sales.
+  - 2025-05-18T05:36:07Z [agent] Thank you for reaching out, Jordan. Can you confirm if the issue is affecting all users or just certain regions? Also, do you see any specific error codes in the browser console or API logs?
+  - 2025-05-18T05:39:42Z [customer] It’s everyone, globally. Browser shows “504 Gateway Timeout”. Our API logs show lots of “Execution Timeout Expired. The timeout period elapsed prior to completion of the operation or the server is not responding.”
+  - 2025-05-18T05:41:25Z [agent] Understood, thanks. This appears to be a backend/API issue possibly related to the database or a service dependency. Are you seeing high CPU or memory usage on the SQL back-end or App Service? Any recent deployments or changes?
+  - 2025-05-18T05:44:11Z [customer] No recent deployments. Azure metrics show the SQL database is at 100% DTU. App Service CPU is normal.
+  - 2025-05-18T05:45:37Z [agent] The database hitting 100% DTU could explain the timeouts. Can you check for any long-running queries or blocking sessions on the SQL instance? If possible, please share the top queries.
+  - 2025-05-18T05:50:54Z [customer] Found a query that’s taking over 30 seconds—related to order inserts. Looks like a lock on the “Orders” table.
+  - 2025-05-18T05:53:12Z [agent] Thank you. This may be due to a blocking transaction or missing index. As an immediate workaround, try scaling up the SQL tier to add resources, and restart the App Service to clear any lingering connections. Let me know if that helps.
+  - 2025-05-18T06:10:32Z [customer] We scaled up the SQL database and restarted App Service. Checkout is working again! DTU usage is down and queries are completing in under 2 seconds.
+  - 2025-05-18T06:13:00Z [agent] That’s great news! As a next step, we recommend reviewing the query plan for the order insert and checking for missing indexes on the “Orders” table to prevent recurrence. Would you like assistance with query optimization?
+  - 2025-05-18T06:15:28Z [customer] Yes, please open a follow-up for performance tuning. Thank you for your help resolving the outage.
+
+Resolved At: 2025-05-18T06:15:28Z  
+Resolution: Issue resolved by scaling up the Azure SQL tier and restarting the App Service, which restored normal operation. Customer to follow up on query/index optimization.  
+Area: backend  
+Is Bug: false  
+Root Cause: Database resource exhaustion (100% DTU) due to suboptimal query and table locking during order inserts, causing API timeouts.

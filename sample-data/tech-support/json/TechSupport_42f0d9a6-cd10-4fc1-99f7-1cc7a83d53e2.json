@@ -1,0 +1,38 @@
+{
+  "case_id": "42f0d9a6-cd10-4fc1-99f7-1cc7a83d53e2",
+  "created_at": "2025-05-18T04:39:40.425244+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Checkout process intermittently fails with 'Payment could not be processed' error.",
+  "severity": "critical",
+  "priority": "P2",
+  "status": "open",
+  "customer_name": "Jordan Bennett",
+  "contact_email": "jordan.bennett@contososhop-demo.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "We're seeing a surge in failed checkouts\u2014customers are getting an error saying 'Payment could not be processed.' This started about an hour ago. We need urgent help.",
+      "timestamp": "2025-05-18T04:42:12+00:00"
+    },
+    {
+      "role": "support_agent",
+      "message": "Thank you for reporting this issue, Jordan. Can you confirm if all payment methods are affected, and whether the failures are consistent or intermittent?",
+      "timestamp": "2025-05-18T04:44:29+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "It seems to be affecting all payment types, but not every transaction fails\u2014maybe half go through, half return the error.",
+      "timestamp": "2025-05-18T04:46:02+00:00"
+    },
+    {
+      "role": "support_agent",
+      "message": "Understood. We're escalating this as a critical case and beginning our investigation. We'll update you as soon as we have findings.",
+      "timestamp": "2025-05-18T04:47:10+00:00"
+    }
+  ],
+  "resolved_at": null,
+  "resolution": null,
+  "area": "backend",
+  "is_bug": true,
+  "root_cause": null
+}

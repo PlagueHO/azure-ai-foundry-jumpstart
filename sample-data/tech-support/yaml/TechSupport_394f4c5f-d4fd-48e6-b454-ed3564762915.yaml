@@ -1,0 +1,28 @@
+case_id: 394f4c5b-d4fd-48e6-b454-ed3564762915
+created_at: 2025-05-18 04:33:10.042550+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Customers are unable to complete checkout due to persistent "Payment
+  Processing Error" messages.
+severity: critical
+priority: P1
+status: investigating
+customer_name: Jamie Thornton
+contact_email: jamie.thornton@fakesamplemail.com
+conversation_history:
+- role: customer
+  message: "Our users have started reporting that they can't complete purchases on\
+    \ ContosoShop\u2014after submitting payment, they're getting a \"Payment Processing\
+    \ Error\" and no orders are being created in the system. This started about 10\
+    \ minutes ago and is affecting all users.\n"
+  timestamp: 2025-05-18 04:35:21+00:00
+- role: agent
+  message: 'Thank you for reporting this, Jamie. We''re escalating this as a critical
+    P1 incident and have begun investigating the payment workflow, REST API logs,
+    and Service Bus queues for anomalies. We''ll provide an update as soon as we have
+    more information.
+
+    '
+  timestamp: 2025-05-18 04:38:10+00:00
+area: backend
+is_bug: true

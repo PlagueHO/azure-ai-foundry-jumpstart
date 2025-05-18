@@ -1,0 +1,48 @@
+{
+  "case_id": "73fd10c4-6453-4beb-84e9-4311d4c1bc23",
+  "created_at": "2025-05-18T04:39:54.798965+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Order confirmation page intermittently fails to display recent orders for users.",
+  "severity": "medium",
+  "priority": "P3",
+  "status": "resolved",
+  "customer_name": "Jordan Parker",
+  "contact_email": "jordan.parker@contososhop-demo.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Some customers report that after placing an order, the confirmation page does not show their latest order. Refreshing sometimes fixes it.",
+      "timestamp": "2025-05-18T04:41:12+00:00"
+    },
+    {
+      "role": "support",
+      "message": "Thank you for reporting this, Jordan. Can you confirm if this is affecting all users or only some? Also, are there any errors in the browser console?",
+      "timestamp": "2025-05-18T04:45:26+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "It seems to affect only some users, and there are no visible errors in the browser console. Orders do go through, but the confirmation page doesn't always show them.",
+      "timestamp": "2025-05-18T04:50:09+00:00"
+    },
+    {
+      "role": "support",
+      "message": "We are investigating possible delays in the Service Bus message handling that might cause this. We will update you as soon as we have more information.",
+      "timestamp": "2025-05-18T05:01:43+00:00"
+    },
+    {
+      "role": "support",
+      "message": "We identified a timing issue where the front-end was fetching recent orders before the back-end transaction was fully committed. We've deployed a fix to ensure order data is available before rendering the confirmation.",
+      "timestamp": "2025-05-18T08:30:57+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Thanks for the quick turnaround. We've tested and the confirmation page now consistently shows new orders.",
+      "timestamp": "2025-05-18T09:02:12+00:00"
+    }
+  ],
+  "resolved_at": "2025-05-18T09:05:00+00:00",
+  "resolution": "Deployed code update to ensure the order confirmation page waits for the order to be fully committed in the database before fetching and displaying order details.",
+  "area": "backend",
+  "is_bug": true,
+  "root_cause": "Race condition between order creation and confirmation page API call, caused by asynchronous Service Bus processing not guaranteeing immediate data consistency."
+}

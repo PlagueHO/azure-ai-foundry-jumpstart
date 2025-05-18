@@ -1,0 +1,42 @@
+case_id: dba866ec-2fcb-47c1-975d-60992782ff91
+created_at: 2025-05-18 04:33:12.588173+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Product images were intermittently failing to load on the storefront
+  page.
+severity: low
+priority: P2
+status: resolved
+customer_name: Jordan Lin
+contact_email: jordan.lin@fakesamplemail.com
+conversation_history:
+- role: customer
+  message: Hi, we're seeing some product images not loading on our main shop page.
+    This started a few hours ago and seems random.
+  timestamp: 2025-05-18 05:01:17+00:00
+- role: agent
+  message: Thank you for reporting this, Jordan. Are you able to confirm if the image
+    URLs are returning any errors in the browser console?
+  timestamp: 2025-05-18 05:04:45+00:00
+- role: customer
+  message: Yes, some are giving 404 errors, but the files should exist. Others load
+    fine after a refresh.
+  timestamp: 2025-05-18 05:12:30+00:00
+- role: agent
+  message: Understood. We are investigating possible CDN or API caching issues that
+    may be causing this intermittent behavior.
+  timestamp: 2025-05-18 05:14:55+00:00
+- role: agent
+  message: We identified a cache invalidation misconfiguration on the CDN endpoint
+    used for static images. We have applied a fix and purged the cache.
+  timestamp: 2025-05-18 05:41:10+00:00
+- role: customer
+  message: Thanks, images are loading consistently now. Appreciate the quick resolution.
+  timestamp: 2025-05-18 05:43:55+00:00
+resolved_at: 2025-05-18 05:41:10+00:00
+resolution: The CDN cache settings were corrected and the cache was purged, resolving
+  the intermittent image loading issue.
+area: frontend
+is_bug: true
+root_cause: Misconfigured CDN cache invalidation led to outdated image references
+  being served, causing 404 errors for some product images.

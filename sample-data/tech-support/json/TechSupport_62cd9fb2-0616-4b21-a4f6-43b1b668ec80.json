@@ -1,0 +1,35 @@
+{
+  "case_id": "62cd9fb2-0616-4b21-a4f6-43b1b668ec80",
+  "created_at": "2025-05-18T04:39:40.430080+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Product images intermittently fail to load on the main product listing page.",
+  "severity": "low",
+  "priority": "P2",
+  "status": "investigating",
+  "customer_name": "Jordan Lee",
+  "contact_email": "jordan.lee@contoso-demo.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Hi, we've noticed that some product images aren't loading for users on the main shop page. It doesn't happen all the time but seems to affect random products each visit.",
+      "timestamp": "2025-05-18T04:39:40.550080+00:00"
+    },
+    {
+      "role": "support_agent",
+      "message": "Thank you for reporting the issue, Jordan. Can you confirm if this is affecting all browsers or specific ones, and whether it happens on both desktop and mobile?",
+      "timestamp": "2025-05-18T05:02:12.320080+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "It looks like it happens in both Chrome and Edge, and we've had reports from users on both desktop and mobile devices.",
+      "timestamp": "2025-05-18T05:17:03.110080+00:00"
+    },
+    {
+      "role": "support_agent",
+      "message": "Understood. We are currently investigating the image load failures and will provide an update as soon as we identify the root cause.",
+      "timestamp": "2025-05-18T05:28:45.210080+00:00"
+    }
+  ],
+  "area": "frontend",
+  "is_bug": true
+}

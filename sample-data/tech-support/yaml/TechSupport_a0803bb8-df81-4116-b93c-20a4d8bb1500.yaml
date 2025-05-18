@@ -1,0 +1,26 @@
+case_id: a0803bb8-df81-4116-b93c-20a4d8bb1500
+created_at: 2025-05-18 04:33:05.832522+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Orders placed via the website are intermittently failing to appear
+  in the order history for some users.
+severity: medium
+priority: P1
+status: open
+customer_name: Jordan Mendez
+contact_email: jordan.mendez@contosofake.com
+conversation_history:
+- role: customer
+  message: Hello, we're seeing reports from several customers that when they place
+    an order, it sometimes doesn't show up in their order history. The payment goes
+    through, but the order isn't visible on the frontend and we can't find it in the
+    admin dashboard either. Can you help us investigate this?
+  timestamp: 2025-05-18 04:32:48.920000+00:00
+- role: agent
+  message: Thank you for reaching out, Jordan. We're sorry to hear about this issue.
+    To help us investigate, could you provide any recent order IDs or affected user
+    accounts? Additionally, do you know if this is happening for all products or just
+    specific ones?
+  timestamp: 2025-05-18 04:37:29.150000+00:00
+area: backend
+is_bug: true

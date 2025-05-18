@@ -1,0 +1,48 @@
+{
+  "case_id": "b0dba4ae-2344-49bb-ba41-5324aee289a2",
+  "created_at": "2025-05-18T04:39:40.416399+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Product images intermittently failed to load on the product listing page.",
+  "severity": "low",
+  "priority": "P2",
+  "status": "closed",
+  "customer_name": "Dana Lin",
+  "contact_email": "dana.lin@fictionalcontoso.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Some product images are not loading on the main shop page, but refreshing sometimes fixes it.",
+      "timestamp": "2025-05-18T04:41:07+00:00"
+    },
+    {
+      "role": "support",
+      "message": "Thank you for letting us know, Dana. Are you seeing any error messages, or just blank image placeholders?",
+      "timestamp": "2025-05-18T04:43:26+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Just the grey image placeholders, no error messages.",
+      "timestamp": "2025-05-18T04:44:10+00:00"
+    },
+    {
+      "role": "support",
+      "message": "We are investigating the image loading sequence on the frontend and will update you soon.",
+      "timestamp": "2025-05-18T04:46:03+00:00"
+    },
+    {
+      "role": "support",
+      "message": "Hi Dana, we've identified a timing issue in the React component responsible for fetching image URLs. A fix has been deployed and you should no longer experience this problem. Please let us know if the issue persists.",
+      "timestamp": "2025-05-18T11:22:18+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Just checked\u2014it looks good now. Thanks for the quick turnaround!",
+      "timestamp": "2025-05-18T11:27:33+00:00"
+    }
+  ],
+  "resolved_at": "2025-05-18T11:30:00+00:00",
+  "resolution": "Frontend image component was updated to handle asynchronous URL fetches more reliably, preventing intermittent failures.",
+  "area": "frontend",
+  "is_bug": true,
+  "root_cause": "A race condition in the React SPA image component caused image URLs to be undefined when the component attempted to render, resulting in intermittent missing images."
+}

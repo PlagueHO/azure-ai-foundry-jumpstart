@@ -1,0 +1,25 @@
+Case ID: aef24215-1379-4975-81e0-25517b0a3852  
+Created At: 2025-05-18T05:33:02.698819+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Product images intermittently fail to load on the storefront page.  
+Severity: low  
+Priority: P2  
+Status: closed  
+Customer Name: Jamie Nguyen  
+Contact Email: jamie.nguyen@contososhopdemo.com  
+Conversation History:
+- 2025-05-18T05:33:02.698819+00:00 [customer] Some of our product images are not loading on the main page, but if I refresh sometimes they show up. Can you help?
+- 2025-05-18T05:35:14.234112+00:00 [agent] Thanks for reaching out, Jamie. Could you let us know if you are seeing any error messages in the browser console when the images fail to load? Also, does this happen for specific products or randomly across the catalog?
+- 2025-05-18T06:01:56.871321+00:00 [customer] I checked the console and see some 404 errors for a few image URLs, but it's not always the same ones. It seems random.
+- 2025-05-18T06:12:43.002187+00:00 [agent] Understood. Are you aware of any recent changes to the product catalog or image uploads? Also, can you confirm if this is happening for other users or just you?
+- 2025-05-18T06:30:08.331449+00:00 [customer] No catalog changes recently, and a couple of my colleagues also see it.
+- 2025-05-18T07:14:29.402117+00:00 [agent] Thank you for confirming. We'll investigate potential caching or CDN issues that could be causing intermittent 404s for images.
+- 2025-05-18T09:45:02.109813+00:00 [agent] Hi Jamie, our investigation found that the Azure CDN cache rules were set to aggressively purge images, leading to temporary 404s during cache refresh. We've adjusted the cache duration to prevent this. Could you please check if the issue persists?
+- 2025-05-18T10:12:17.987442+00:00 [customer] Looks good now! I haven't seen any missing images since this morning. Thanks for the help.
+- 2025-05-18T10:15:09.550007+00:00 [agent] Great to hear, Jamie! We'll close this case now, but please reach out if you see any further issues.
+
+Resolved At: 2025-05-18T10:15:09.550007+00:00  
+Resolution: Adjusted Azure CDN cache rules to prevent aggressive purging of product images, which resolved intermittent 404 errors.  
+Area: frontend  
+Is Bug: false  
+Root Cause: Azure CDN cache configuration was causing temporary 404 errors for product images during cache refreshes.

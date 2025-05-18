@@ -1,0 +1,25 @@
+Case ID: bf1b59fc-d9c3-47e0-94d2-ffcde7622bc5  
+Created At: 2025-05-18T05:33:14.871501+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Users unable to view order history intermittently on the website  
+Severity: medium  
+Priority: P3  
+Status: closed  
+Customer Name: Jamie Carter  
+Contact Email: jamie.carter@fakeshopmail.com  
+Conversation History:
+  - 2025-05-18T05:35:02Z [customer] Some customers are reporting that their order history isn’t showing up on their profile page, but it works for others. No errors on the page, just a blank list.
+  - 2025-05-18T05:40:14Z [agent] Thank you for letting us know, Jamie. Are all users affected, or only some? Can you confirm if there are any errors in the browser console or network tab when this happens?
+  - 2025-05-18T06:02:51Z [customer] Seems random, only a few users so far. I checked the console and there’s a 500 error from /api/orders/history for some accounts.
+  - 2025-05-18T06:13:07Z [agent] Understood, thanks for checking. Could you provide a couple of affected user IDs? Also, have there been any recent changes to the API or database?
+  - 2025-05-18T06:25:23Z [customer] User IDs 10234 and 10678 are two we’ve seen. No recent backend changes that I know of.
+  - 2025-05-18T07:01:47Z [agent] Thank you, Jamie. We’ll review the API logs for those users and check the database for any anomalies.
+  - 2025-05-18T09:18:16Z [agent] Hi Jamie, we found that for users with a large number of orders, the API was timing out due to an unoptimized query. We’re preparing a fix and will update you shortly.
+  - 2025-05-18T11:47:59Z [agent] The API query has been optimized and deployed. Order history now loads correctly for affected users. Please confirm if you’re still seeing any issues.
+  - 2025-05-18T12:09:31Z [customer] Looks good now, thanks for the quick fix!
+
+Resolved At: 2025-05-18T12:10:00Z  
+Resolution: Optimized the order history API query to handle users with large order volumes, resolving intermittent loading issues.  
+Area: backend  
+Is Bug: true  
+Root Cause: Unoptimized database query caused API timeouts for users with extensive order histories, resulting in intermittent blank order history pages.

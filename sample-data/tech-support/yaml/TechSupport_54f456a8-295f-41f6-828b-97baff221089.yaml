@@ -1,0 +1,42 @@
+case_id: 54f456a8-295f-41f6-828b-97baff221089
+created_at: 2025-05-18 04:32:51.812045+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Orders were failing to process due to a sudden spike in Service Bus
+  message delivery failures.
+severity: critical
+priority: P3
+status: resolved
+customer_name: Jordan Kim
+contact_email: jordan.kim@fakemailcorp.com
+conversation_history:
+- role: customer
+  message: "We are seeing a high rate of failed orders since about 3am UTC\u2014checkout\
+    \ attempts are returning errors for customers."
+  timestamp: 2025-05-18 04:35:20+00:00
+- role: agent
+  message: Thank you for reporting this. We are investigating the backend services
+    and Service Bus metrics for abnormal activity.
+  timestamp: 2025-05-18 04:37:10+00:00
+- role: agent
+  message: We have identified a spike in Service Bus message delivery failures starting
+    at 03:02 UTC. Our team is working to mitigate the issue and reprocess failed messages.
+  timestamp: 2025-05-18 05:01:44+00:00
+- role: customer
+  message: "Please keep us updated\u2014this is impacting our peak morning traffic."
+  timestamp: 2025-05-18 05:03:15+00:00
+- role: agent
+  message: The underlying cause was a misconfigured Service Bus access policy that
+    expired overnight. We have restored access and re-queued failed messages. Order
+    processing has resumed.
+  timestamp: 2025-05-18 05:25:08+00:00
+- role: customer
+  message: Confirmed, orders are processing again. Thanks for the quick resolution.
+  timestamp: 2025-05-18 05:27:42+00:00
+resolved_at: 2025-05-18 05:25:08+00:00
+resolution: Service Bus access policy was renewed and failed messages were reprocessed;
+  order flow restored to normal.
+area: backend
+is_bug: true
+root_cause: Expired Service Bus access policy caused message delivery failures, interrupting
+  order processing.

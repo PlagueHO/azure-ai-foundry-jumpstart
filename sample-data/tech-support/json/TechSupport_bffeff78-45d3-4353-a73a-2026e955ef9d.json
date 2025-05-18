@@ -1,0 +1,38 @@
+{
+  "case_id": "bffeff78-45d3-4353-a73a-2026e955ef9d",
+  "created_at": "2025-05-18T04:39:40.420914+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Customers are intermittently unable to complete purchases due to transaction timeouts.",
+  "severity": "high",
+  "priority": "P3",
+  "status": "investigating",
+  "customer_name": "Jordan McAllister",
+  "contact_email": "jordan.mcallister@fakesupportmail.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Several customers have reported that their orders fail to complete, with a timeout error displayed on checkout.",
+      "timestamp": "2025-05-18T04:35:12+00:00"
+    },
+    {
+      "role": "support_agent",
+      "message": "Thank you for reporting this. Can you confirm if this is affecting all users or only specific segments?",
+      "timestamp": "2025-05-18T04:37:03+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "It seems random, but we noticed a spike in failed transactions over the last hour. No pattern by device or location.",
+      "timestamp": "2025-05-18T04:38:21+00:00"
+    },
+    {
+      "role": "support_agent",
+      "message": "We are escalating this to engineering and will update you as soon as we have more information.",
+      "timestamp": "2025-05-18T04:39:40+00:00"
+    }
+  ],
+  "resolved_at": null,
+  "resolution": null,
+  "area": "backend",
+  "is_bug": true,
+  "root_cause": null
+}

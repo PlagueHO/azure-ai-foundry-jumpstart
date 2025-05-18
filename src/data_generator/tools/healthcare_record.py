@@ -157,18 +157,20 @@ class HealthcareRecordTool(DataGeneratorTool):
             "Author Details: Dr. Fictional, Fictional Clinic\n"
         )
 
-    def post_process(self, raw: str) -> Any:
-        """Parse YAML/JSON, else return raw text."""
-        if raw.lstrip().startswith("{"):
+    def post_process(self, raw: str, output_format: str) -> Any:
+        """Deserialize based on output_format; fallback to raw text."""
+        fmt = output_format.lower()
+        if fmt == "json":
             try:
                 return json.loads(raw)
             except json.JSONDecodeError:
-                pass
-        if ":" in raw and "\n" in raw:
+                return raw
+        if fmt == "yaml":
             try:
                 return yaml.safe_load(raw)
             except yaml.YAMLError:
-                pass
+                return raw
+        # plain-text or unrecognized format
         return raw
 
     def get_system_description(self) -> str:

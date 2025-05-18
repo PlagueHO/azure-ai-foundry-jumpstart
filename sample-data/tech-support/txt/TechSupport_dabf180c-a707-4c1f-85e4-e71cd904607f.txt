@@ -1,0 +1,28 @@
+Case ID: dabf180c-a707-4c1f-85e4-e71cd904607f  
+Created At: 2025-05-18T05:33:02.686091+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Order placements were timing out and not being processed during peak hours.  
+Severity: high  
+Priority: P2  
+Status: closed  
+Customer Name: Michael Ruan  
+Contact Email: michael.ruan@contososhop.com  
+Conversation History:  
+  - 2025-05-18T05:34:12Z [customer] We're seeing a lot of failed orders this morning – users are getting "Order processing timed out, please try again" errors on checkout. This is impacting sales.
+  - 2025-05-18T05:36:55Z [agent] Thank you for reporting this, Michael. Can you provide us with a recent Order ID that failed? Also, do you see any errors in your backend logs or Azure portal metrics?
+  - 2025-05-18T05:39:21Z [customer] Order ID 123456789 failed at 5:32am UTC. In App Insights, I see "ServiceBusTimeoutException" in the logs.
+  - 2025-05-18T05:43:10Z [agent] Thank you for the details. The ServiceBusTimeoutException suggests there may be a delay or outage with Azure Service Bus. Is the issue still ongoing, or was it intermittent?
+  - 2025-05-18T05:44:48Z [customer] Still happening now. Some orders eventually go through after a retry, but most fail.
+  - 2025-05-18T05:49:02Z [agent] Understood. We'll escalate this to our Azure team and monitor Service Bus health. In the meantime, can you confirm if any recent deployment or configuration change was made?
+  - 2025-05-18T05:54:12Z [customer] No deployments in the last 24 hours. Last change was Friday, and this only started today.
+  - 2025-05-18T06:12:39Z [agent] We've identified increased latency and throttling on your Azure Service Bus namespace. We've requested a temporary scale-up and are monitoring for improvement.
+  - 2025-05-18T06:34:50Z [customer] Order processing seems to be recovering now, but some orders are still slower than usual.
+  - 2025-05-18T06:49:10Z [agent] The scale-up has been applied. Metrics show message processing delays are dropping. We'll keep monitoring for the next hour.
+  - 2025-05-18T07:45:22Z [customer] Looks stable now. No new timeouts since 7:10am UTC. Thanks for the quick response.
+  - 2025-05-18T07:47:58Z [agent] Glad to hear it! We recommend keeping the Service Bus tier at the current level during peak periods. Please let us know if you see any further issues.
+
+Resolved At: 2025-05-18T07:47:58Z  
+Resolution: Issue caused by Service Bus throttling due to high load. Scaling up the Azure Service Bus namespace resolved the processing delays and order timeouts.  
+Area: backend  
+Is Bug: false  
+Root Cause: Azure Service Bus namespace was under-provisioned for peak traffic, resulting in throttling and timeouts on order processing. Scaling up resolved the issue.

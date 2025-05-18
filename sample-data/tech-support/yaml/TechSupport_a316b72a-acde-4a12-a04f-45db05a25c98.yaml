@@ -1,0 +1,34 @@
+case_id: a316b72a-acde-4a12-a04f-45db05a25c98
+created_at: 2025-05-18 04:33:10.386260+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Product images failed to load intermittently on the storefront.
+severity: low
+priority: P1
+status: resolved
+customer_name: Jordan Whitaker
+contact_email: jordan.whitaker@fakeshopmail.com
+conversation_history:
+- role: customer
+  message: We've noticed that some product images occasionally don't display on the
+    main shop page. Refreshing sometimes fixes it, but it's intermittent.
+  timestamp: 2025-05-18 04:35:42+00:00
+- role: agent
+  message: Thank you for reporting this. We are reviewing the front-end image loading
+    logic and checking API responses for image URLs.
+  timestamp: 2025-05-18 05:01:17+00:00
+- role: agent
+  message: We've identified a timing issue in the front-end where image requests were
+    made before the product data was fully loaded. A fix has been deployed to ensure
+    proper sequencing.
+  timestamp: 2025-05-18 10:22:08+00:00
+- role: customer
+  message: Thanks, the images are now loading correctly every time. Issue resolved.
+  timestamp: 2025-05-18 11:10:56+00:00
+resolved_at: 2025-05-18 11:10:56+00:00
+resolution: A front-end update was released to sequence image loading after product
+  data fetch, resolving the intermittent display problem.
+area: frontend
+is_bug: true
+root_cause: Front-end code triggered image loads before product data was available,
+  causing occasional missing images.

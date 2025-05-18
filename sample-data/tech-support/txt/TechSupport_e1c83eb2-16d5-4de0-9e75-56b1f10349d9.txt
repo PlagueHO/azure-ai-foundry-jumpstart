@@ -1,0 +1,24 @@
+Case ID: e1c83eb2-16d5-4de0-9e75-56b1f10349d9  
+Created At: 2025-05-18T05:33:14.605393+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Product search results intermittently fail to load, showing "Unexpected error occurred" in the UI.  
+Severity: medium  
+Priority: P1  
+Status: closed  
+Customer Name: Jordan McAllister  
+Contact Email: jordan.mcallister@fictionalmail.com  
+Conversation History:
+  - 2025-05-18T05:34:11Z [customer] We're getting a lot of "Unexpected error occurred" messages when users try to search for products. Sometimes it works, sometimes not. Can you look into this?
+  - 2025-05-18T05:36:58Z [agent] Thank you for reporting this, Jordan. Could you provide a few example timestamps when this occurred and let us know if it's affecting all users or just some?
+  - 2025-05-18T05:41:22Z [customer] Sure, last one was at 05:29 UTC, but it happened several times this morning. It seems random, but multiple users reported it. No pattern I can see.
+  - 2025-05-18T06:02:15Z [agent] Understood. We're checking the API and backend logs for that timeframe. Are you seeing any specific error codes, or just the "Unexpected error occurred" message?
+  - 2025-05-18T06:07:30Z [customer] Just that generic message in the UI, nothing else.
+  - 2025-05-18T06:25:48Z [agent] Thanks. Initial logs show intermittent 502 errors from the API during those periods. We're investigating further and will update you shortly.
+  - 2025-05-18T07:04:51Z [agent] We identified elevated latency and failed connections between the frontend and API App Service, linked to a recent autoscale event. We've implemented a configuration change to improve connection pooling and are monitoring the results.
+  - 2025-05-18T09:16:02Z [customer] Seems stable now, haven't seen the error again since your update. Thanks for the quick response.
+  - 2025-05-18T09:18:13Z [agent] Great to hear! We'll continue monitoring for another few hours, but please let us know if the issue returns.
+Resolved At: 2025-05-18T15:22:10Z  
+Resolution: Issue caused by API App Service connection pool exhaustion during autoscale. Applied configuration changes to increase pool size and optimize resource usage. Monitored post-change, and no further errors observed.  
+Area: backend  
+Is Bug: false  
+Root Cause: API connection pool exhaustion during App Service autoscale caused intermittent failures; resolved with configuration tuning.

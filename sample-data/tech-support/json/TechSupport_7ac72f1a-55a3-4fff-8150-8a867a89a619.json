@@ -1,0 +1,48 @@
+{
+  "case_id": "7ac72f1a-55a3-4fff-8150-8a867a89a619",
+  "created_at": "2025-05-18T04:39:50.414204+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Customers intermittently received duplicate order confirmation emails after completing a purchase.",
+  "severity": "medium",
+  "priority": "P2",
+  "status": "resolved",
+  "customer_name": "Harold Kim",
+  "contact_email": "harold.kim@fictionalcontoso.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Several of our customers have reported getting two confirmation emails for the same order placed this morning.",
+      "timestamp": "2025-05-18T04:41:23Z"
+    },
+    {
+      "role": "support_agent",
+      "message": "Thank you for reporting this. We are looking into potential causes and will update you shortly.",
+      "timestamp": "2025-05-18T05:02:10Z"
+    },
+    {
+      "role": "support_engineer",
+      "message": "Initial investigation shows duplicate messages in the Service Bus queue. We are tracing the transaction flow.",
+      "timestamp": "2025-05-18T05:31:54Z"
+    },
+    {
+      "role": "support_engineer",
+      "message": "We've identified that under certain conditions, a retry logic in the API was submitting the same message twice to Service Bus.",
+      "timestamp": "2025-05-18T06:10:11Z"
+    },
+    {
+      "role": "support_agent",
+      "message": "A patch has been deployed to address the duplicate submission issue. Monitoring for further occurrences.",
+      "timestamp": "2025-05-18T07:03:42Z"
+    },
+    {
+      "role": "customer",
+      "message": "Looks good now. No new duplicate emails reported since the fix.",
+      "timestamp": "2025-05-18T08:12:00Z"
+    }
+  ],
+  "resolved_at": "2025-05-18T08:10:00Z",
+  "resolution": "Patched the backend API to ensure idempotent message submission to Service Bus, preventing duplicate order processing and confirmation emails.",
+  "area": "backend",
+  "is_bug": true,
+  "root_cause": "Improper handling of API retries caused duplicate messages to be sent to Service Bus, resulting in repeated confirmation emails."
+}

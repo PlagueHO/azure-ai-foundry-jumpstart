@@ -1,0 +1,48 @@
+{
+  "case_id": "8da810c8-29e8-4e17-a7a0-00001f69bd3d",
+  "created_at": "2025-05-18T04:39:48.417061+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Product images intermittently fail to load on the product details page.",
+  "severity": "low",
+  "priority": "P1",
+  "status": "closed",
+  "customer_name": "Jordan Blake",
+  "contact_email": "jordan.blake@fictionalcontoso.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "We're seeing that sometimes product images don't appear on the product details page. This doesn't seem to affect purchases, but customers have mentioned it.",
+      "timestamp": "2025-05-18T04:42:10+00:00"
+    },
+    {
+      "role": "support",
+      "message": "Thank you for reporting this. Is this happening for all products or only certain ones? Any error messages or patterns you've noticed?",
+      "timestamp": "2025-05-18T04:49:23+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "It looks random, but mostly with newly added products. No error messages, just a broken image icon.",
+      "timestamp": "2025-05-18T04:51:10+00:00"
+    },
+    {
+      "role": "support",
+      "message": "We're investigating. It may be related to image URL generation or propagation delays. We'll update you soon.",
+      "timestamp": "2025-05-18T05:00:40+00:00"
+    },
+    {
+      "role": "support",
+      "message": "We identified a bug where the product image URL was not immediately available after product creation due to a cache timing issue in the front-end. We've deployed a fix and cleared the affected cache.",
+      "timestamp": "2025-05-18T06:18:33+00:00"
+    },
+    {
+      "role": "customer",
+      "message": "Thanks, images seem to be loading fine now for new products.",
+      "timestamp": "2025-05-18T06:41:01+00:00"
+    }
+  ],
+  "resolved_at": "2025-05-18T06:18:33+00:00",
+  "resolution": "Fixed a cache timing bug in the front-end that prevented immediate loading of product images for newly added products. Deployed patch and cleared cache.",
+  "area": "frontend",
+  "is_bug": true,
+  "root_cause": "Front-end caching logic fetched product data before image URLs were fully propagated, leading to intermittent broken images for new products."
+}

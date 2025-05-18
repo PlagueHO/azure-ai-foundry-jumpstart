@@ -1,0 +1,62 @@
+case_id: 99336a0d-a85b-4c34-8d69-f21b1e902c21
+created_at: 2025-05-18 04:33:08.203875+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Checkout process was failing for all users with a "Payment Service
+  Unavailable" error.
+severity: high
+priority: P1
+status: closed
+customer_name: Jordan Michaels
+contact_email: jordan.michaels@contoso-demo.com
+conversation_history:
+- role: customer
+  message: "We are experiencing a critical outage\u2014customers are unable to complete\
+    \ purchases due to a \"Payment Service Unavailable\" error shown at checkout.\
+    \ This started about 15 minutes ago and affects all users. Please investigate\
+    \ immediately.\n"
+  timestamp: 2025-05-18 04:36:11+00:00
+- role: agent
+  message: 'Thank you for reporting this urgent issue, Jordan. We are escalating this
+    as a P1 incident and beginning our investigation immediately. We''ll update you
+    as soon as we have more information.
+
+    '
+  timestamp: 2025-05-18 04:37:28+00:00
+- role: agent
+  message: 'Initial analysis shows failures in the backend API when attempting to
+    enqueue payment transactions to the Azure Service Bus. We are reviewing the logs
+    for connection or authentication errors.
+
+    '
+  timestamp: 2025-05-18 04:44:54+00:00
+- role: agent
+  message: 'We''ve identified an expired shared access key for the Service Bus namespace
+    used by the payment processor. We are renewing credentials and will redeploy the
+    API configuration.
+
+    '
+  timestamp: 2025-05-18 05:02:17+00:00
+- role: agent
+  message: 'The Service Bus credentials have been updated and the API configuration
+    is now redeployed. Transactions are processing successfully in our testing. Can
+    you confirm recovery on your end?
+
+    '
+  timestamp: 2025-05-18 05:15:33+00:00
+- role: customer
+  message: 'Confirming checkout is working again for our users. Thank you for the
+    rapid response and resolution.
+
+    '
+  timestamp: 2025-05-18 05:18:10+00:00
+resolved_at: 2025-05-18 05:18:30+00:00
+resolution: 'Resolved by renewing the expired Azure Service Bus shared access key
+  and updating the backend API configuration. Confirmed that transactions now process
+  successfully.
+
+  '
+area: backend
+is_bug: true
+root_cause: Expired Azure Service Bus shared access key prevented payment transaction
+  messages from being enqueued, causing checkout failures.

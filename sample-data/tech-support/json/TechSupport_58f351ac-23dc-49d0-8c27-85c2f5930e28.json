@@ -1,0 +1,30 @@
+{
+  "case_id": "58f351ac-23dc-49d0-8c27-85c2f5930e28",
+  "created_at": "2025-05-18T04:39:47.714814+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Customers are unable to complete checkout due to persistent 500 errors from the API.",
+  "severity": "critical",
+  "priority": "P1",
+  "status": "investigating",
+  "customer_name": "Jordan Keller",
+  "contact_email": "jordan.keller@contososhop-demo.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "Checkout is failing for all users with a generic error. We are seeing a spike in 500 errors on the /api/orders endpoint since 04:25 UTC. Can you investigate urgently?",
+      "timestamp": "2025-05-18T04:39:47.900000+00:00"
+    },
+    {
+      "role": "support_agent",
+      "message": "Thank you for reporting this, Jordan. We are currently investigating the API errors and will update you with our findings as soon as possible.",
+      "timestamp": "2025-05-18T04:42:15.412000+00:00"
+    },
+    {
+      "role": "support_agent",
+      "message": "Initial logs indicate repeated SQL timeouts during order creation. We are reviewing the database performance metrics and will escalate to the infrastructure team if necessary.",
+      "timestamp": "2025-05-18T04:54:08.233000+00:00"
+    }
+  ],
+  "area": "backend",
+  "is_bug": true
+}

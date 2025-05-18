@@ -1,0 +1,18 @@
+Case ID: 874ab26f-d00f-4b75-b635-129a4e436c4a  
+Created At: 2025-05-18T05:33:02.691813+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Customers can't place orders—checkout fails with 502 Bad Gateway error.  
+Severity: critical  
+Priority: P4  
+Status: open  
+Customer Name: Jordan N.  
+Contact Email: jordan.norris@contososhop-demo.com  
+Conversation History:  
+  - 2025-05-18T05:33:02.691813+00:00 [customer] We're seeing a lot of failed checkouts since last night. Users get a 502 Bad Gateway when they try to place an order. Our ops dashboard shows API timeouts, but the site loads otherwise. Can you help ASAP?  
+  - 2025-05-18T05:40:24.317413+00:00 [agent] Thank you for reaching out, Jordan. To help us investigate, could you provide the following:  
+    - The approximate time the issue started  
+    - Any recent deployments or configuration changes  
+    - If the 502 occurs on all orders or only certain products/users  
+    - A sample request ID or error log from your API gateway  
+
+This information will help us pinpoint the cause quickly. Looking forward to your reply.

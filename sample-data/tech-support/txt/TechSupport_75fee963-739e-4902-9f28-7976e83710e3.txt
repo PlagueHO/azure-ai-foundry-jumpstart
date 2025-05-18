@@ -1,0 +1,23 @@
+Case ID: 75fee963-739e-4902-9f28-7976e83710e3  
+Created At: 2025-05-18T05:33:14.888919+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Users intermittently experienced "Failed to fetch products" errors on the shop homepage.  
+Severity: medium  
+Priority: P3  
+Status: resolved  
+Customer Name: Jordan Willis  
+Contact Email: jordan.willis@fakeshopmail.com  
+Conversation History:
+  - 2025-05-18T05:34:10Z [customer] I'm seeing "Failed to fetch products" when loading the home page sometimes. Not every time, but it's happening more today.
+  - 2025-05-18T06:02:44Z [agent] Thank you for reporting this, Jordan. Can you confirm if this occurs across different browsers or devices? Are there any other error details in the console or network logs?
+  - 2025-05-18T06:15:21Z [customer] Happens in Chrome and Edge, both desktop and mobile. In the dev tools, I see a 502 Bad Gateway response from /api/products when it fails.
+  - 2025-05-18T06:41:03Z [agent] Appreciate the details. We're investigating potential backend issues. Are you seeing any patterns, like time of day or specific product categories?
+  - 2025-05-18T07:02:50Z [customer] No pattern I can see. Just random, sometimes reload fixes it.
+  - 2025-05-18T08:12:14Z [agent] Thanks, Jordan. We've identified intermittent scaling issues on our Azure App Service causing brief outages. We're applying a fix and will monitor.
+  - 2025-05-18T11:27:33Z [customer] Haven't seen the error in the last hour. Looks good now.
+  - 2025-05-18T11:30:08Z [agent] Glad to hear it! We’ve increased App Service instance limits and adjusted auto-scaling rules. Please let us know if the issue returns.
+Resolved At: 2025-05-18T11:30:08Z  
+Resolution: Scaling configuration for Azure App Service was updated to handle higher concurrent traffic, resolving intermittent 502 errors on the /api/products endpoint.  
+Area: backend  
+Is Bug: false  
+Root Cause: Insufficient App Service scaling configuration led to backend API intermittently returning 502 errors during peak usage periods.

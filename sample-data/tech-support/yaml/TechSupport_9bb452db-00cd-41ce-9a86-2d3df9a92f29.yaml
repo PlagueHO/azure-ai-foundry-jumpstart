@@ -1,0 +1,41 @@
+case_id: 9bb452db-00cd-41ce-9a86-2d3df9a92f29
+created_at: 2025-05-18 04:32:51.825242+00:00
+system_description: "ContosoShop \u2013 React SPA front-end with REST API in Azure\
+  \ App Service + SQL back-end + Service Bus for transaction decoupling."
+issue_summary: Checkout transactions failed for all users due to a Service Bus message
+  processing error.
+severity: critical
+priority: P3
+status: closed
+customer_name: Jamie Thornton
+contact_email: jamie.thornton@fauxmail.com
+conversation_history:
+- role: customer
+  message: "Customers are unable to complete purchases\u2014checkout fails with an\
+    \ unknown error message."
+  timestamp: 2025-05-18 04:34:10+00:00
+- role: agent
+  message: Thank you for reporting this. We are investigating the checkout failures
+    and will update you as soon as possible.
+  timestamp: 2025-05-18 04:36:27+00:00
+- role: agent
+  message: We've identified a Service Bus message processing issue causing checkout
+    transactions to fail. Our engineering team is working on a fix.
+  timestamp: 2025-05-18 05:02:18+00:00
+- role: customer
+  message: Please keep us posted. This is impacting all our customers right now.
+  timestamp: 2025-05-18 05:05:03+00:00
+- role: agent
+  message: Service has been restored. All pending transactions have been reprocessed
+    and checkout is functioning normally. Please confirm on your end.
+  timestamp: 2025-05-18 05:37:46+00:00
+- role: customer
+  message: Confirmed, checkout is working again. Thank you for the quick resolution.
+  timestamp: 2025-05-18 05:41:00+00:00
+resolved_at: 2025-05-18 05:37:46+00:00
+resolution: Engineering team patched the message handler to correctly process Service
+  Bus payloads, and reprocessed affected transactions; checkout is fully operational.
+area: backend
+is_bug: true
+root_cause: Recent deployment introduced a deserialization bug in the Service Bus
+  message handler, preventing order processing.

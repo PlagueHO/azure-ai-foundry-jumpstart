@@ -1,0 +1,14 @@
+Case ID: 84fdb285-13ed-43df-8810-590c2b662d16  
+Created At: 2025-05-18T05:38:06.455599+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.  
+Issue Summary: Payment processing is failing for all customers and orders are not being completed.  
+Severity: critical  
+Priority: P1  
+Status: open  
+Customer Name: James Taylor  
+Contact Email: james.taylor@contoso-demo.com  
+Conversation History:
+- 2025-05-18T05:38:06Z [customer] We’re getting reports from customers that nobody can place an order — after submitting payment, they see a generic “Payment failed. Please try again later.” message. We’ve tested with multiple cards and accounts, same issue. Nothing’s showing up in the Orders table in SQL.
+- 2025-05-18T05:41:13Z [agent] Hi James, thank you for reporting this. To help diagnose the issue, can you confirm if you’re seeing any errors in the Application Insights logs for the API or if there are any dead-letter messages in the Service Bus? Also, has anything changed in your payment provider configuration or recent deployments?
+Area: backend  
+Is Bug: true

@@ -1,0 +1,38 @@
+{
+  "case_id": "d0393386-c857-40bb-aaf7-e458d7202ba6",
+  "created_at": "2025-05-18T04:39:49.009602+00:00",
+  "system_description": "ContosoShop \u2013 React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.",
+  "issue_summary": "Product search returns duplicate results for some queries.",
+  "severity": "medium",
+  "priority": "P4",
+  "status": "resolved",
+  "customer_name": "Lisa Tran",
+  "contact_email": "lisa.tran@fictionalcontoso.com",
+  "conversation_history": [
+    {
+      "role": "customer",
+      "message": "We're seeing duplicate items in product search results since yesterday. Can you investigate?",
+      "timestamp": "2025-05-18T04:41:17.213Z"
+    },
+    {
+      "role": "support",
+      "message": "Thank you for reporting. We'll look into possible causes and update you shortly.",
+      "timestamp": "2025-05-18T04:45:52.438Z"
+    },
+    {
+      "role": "support",
+      "message": "We identified a recent backend API change that did not properly deduplicate SQL results. Rolling back the change resolved the issue. Can you confirm search results are correct now?",
+      "timestamp": "2025-05-18T06:19:10.582Z"
+    },
+    {
+      "role": "customer",
+      "message": "Confirmed, search results no longer show duplicates. Thanks for the quick fix.",
+      "timestamp": "2025-05-18T06:25:33.601Z"
+    }
+  ],
+  "resolved_at": "2025-05-18T06:19:10.582Z",
+  "resolution": "Rolled back a recent backend API update that caused SQL queries to return duplicate rows. Search results are now deduplicated as expected.",
+  "area": "backend",
+  "is_bug": true,
+  "root_cause": "A recent API update modified the SQL query logic, removing a DISTINCT clause and causing duplicate products to be returned for certain searches."
+}

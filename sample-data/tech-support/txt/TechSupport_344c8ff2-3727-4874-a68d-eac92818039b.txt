@@ -1,0 +1,18 @@
+Case ID: 344c8ff2-3727-4874-a68d-eac92818039b  
+Created At: 2025-05-18T05:33:11.496606+00:00  
+System Description: ContosoShop – React SPA front-end with REST API in Azure App Service + SQL back-end + Service Bus for transaction decoupling.
+
+Issue Summary: Users intermittently receive "Failed to load products" errors on the home page.
+
+Severity: medium  
+Priority: P1  
+Status: investigating  
+Customer Name: Janelle Torres  
+Contact Email: janelle.torres@fakeshopmail.com  
+
+Conversation History:
+- 2025-05-18T05:33:11Z [customer] We're getting a lot of "Failed to load products" messages on the home page since last night. Sometimes it loads after refreshing, but it's pretty inconsistent. Can you check what's going on?
+- 2025-05-18T05:36:52Z [agent] Hi Janelle, thanks for reporting this. Can you confirm if all users are affected, or is it limited to certain locations or browsers? Also, do you see any error codes or messages in the browser console?
+
+Area: frontend  
+Is Bug: true
