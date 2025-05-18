@@ -158,14 +158,14 @@ the public contract explicit.
 python -m generate_data \
   --scenario tech-support \
   --count 10 \
-  --out-dir ./data/tech_support
+  --out-dir ./sample-data/tech-support
   --output-format yaml
 
 # 2. Produce 1 000 financial transactions as CSV in a custom folder
 python -m generate_data \
   --scenario financial \
   --count 1000 \
-  --out-dir ./data/finance/csv \
+  --out-dir ./sample-data/financial-transactions/csv \
   --output-format csv \
   --transaction-type credit-card \
   --transaction-count-max 25

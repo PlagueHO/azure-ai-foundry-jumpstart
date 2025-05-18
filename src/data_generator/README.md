@@ -73,7 +73,7 @@ python -m data_generator \
   --count 50 \
   --system-description "ContosoShop – React SPA + Azure SQL back-end" \
   --output-format yaml \
-  --out-dir ./data/tech_support
+  --out-dir ./sample-data/tech-support
 ```
 
 ### 4.2 Retail-Product (`retail-product`)
@@ -92,7 +92,51 @@ python -m data_generator \
   --count 100 \
   --industry electronics \
   --output-format json \
-  --out-dir ./data/retail_products
+  --out-dir ./sample-data/retail-products
+```
+
+### 4.3 Healthcare-Record (`healthcare-record`)
+
+Generate anonymized healthcare documents.
+
+| Flag               | Required | Description                                                      | Default            |
+|--------------------|----------|------------------------------------------------------------------|--------------------|
+| `--document-type`  | N        | Type of medical document (e.g. Clinic Note, Discharge Summary)   | `Clinic Note`      |
+| `--specialty`      | N        | Medical specialty (e.g. Cardiology, Oncology)                    | `General Medicine` |
+
+Example:
+
+```bash
+python -m data_generator \
+  --scenario healthcare-record \
+  --count 10 \
+  --document-type "Discharge Summary" \
+  --specialty Cardiology \
+  --output-format yaml \
+  --out-dir ./sample-data/healthcare-records
+```
+
+### 4.4 Financial-Transaction (`financial-transaction`)
+
+Generate synthetic bank-account statements with ≥50 transactions.
+
+| Flag                  | Required | Description                                        | Default    |
+|-----------------------|----------|----------------------------------------------------|------------|
+| `-a, --account-type`  | N        | Account kind (checking, savings, credit)           | `checking` |
+| `--transactions-max`  | N        | Max transactions per statement                     | `50`       |
+| `--fraud-percent`     | N        | % chance to include a subtle fraudulent transaction| `0`        |
+
+Example:
+
+```bash
+python -m data_generator \
+  --scenario financial-transaction \
+  --count 20 \
+  --account-type savings \
+  --transactions-max 100 \
+  --fraud-percent 5 \
+  --output-format yaml \
+  --out-dir ./data/financial
 ```
 
 ---
