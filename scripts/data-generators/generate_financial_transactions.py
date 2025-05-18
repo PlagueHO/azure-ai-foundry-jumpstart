@@ -3,7 +3,7 @@ Generate synthetic bank-account statements with ≥50 transactions each, using A
 OpenAI via Semantic Kernel.
 
 Example:
-python financial_transactions_generator.py -n 20 -a checking -f json -o ./sample-data/financial-transactions/
+python generate_financial_transactions.py -n 20 -a checking -f json -o ./sample-data/financial-transactions/
 
 Prerequisites
 -------------
