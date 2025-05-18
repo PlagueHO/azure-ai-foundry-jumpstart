@@ -73,7 +73,7 @@ class TechSupportTool(DataGeneratorTool):
             "python -m generate_data "
             "--scenario tech-support "
             "--count 50 "
-            '--system-description "ContosoShop – React SPA front-end with Azure App Service + SQL back-end" '
+            '--system-description "ContosoShop - React SPA front-end with Azure App Service + SQL back-end" '
             "--output-format yaml",
         ]
 
@@ -92,10 +92,10 @@ class TechSupportTool(DataGeneratorTool):
             random.choice(self._PRIORITY),
         )
 
-    def _prompt_common(self) -> str:
+    def _prompt_common(self, *, unique_id: str | None = None) -> str:
         """Return the invariant part of the prompt shared across formats."""
         status, severity, priority = self._random_attributes()
-        case_id = str(uuid.uuid4())
+        case_id = unique_id or str(uuid.uuid4())
         created_at = datetime.now(timezone.utc).isoformat()
 
         return (
@@ -107,17 +107,21 @@ class TechSupportTool(DataGeneratorTool):
             "Use ISO-8601 timestamps and do NOT invent real PII.\n\n"
         )
 
-    def build_prompt(self, output_format: str) -> str:  # noqa: D401
+    def build_prompt(self, output_format: str, *, unique_id: str | None = None) -> str:  # noqa: D401
         """
         Construct the full system-prompt string for the requested *output_format*.
         All variable data (status, ids, etc.) are pre-baked so the kernel only
         receives the `index` placeholder supplied by the engine.
+        ## ON CONVERSATION HISTORY
+        User messages should be realistic, sometimes unclear, contain realistic
+        error messages and information. The agent's replies should be helpful
+        and ask clarifying questions or to provide specific information.
         """
         base = (
             "You are a helpful support agent generating REALISTIC BUT ENTIRELY "
             "FICTIONAL technical support cases for demonstrations.\n\n"
             f"Target system:\n- {self.system_description}\n\n"
-            f"{self._prompt_common()}"
+            f"{self._prompt_common(unique_id=unique_id)}"
         )
 
         if output_format == "yaml":

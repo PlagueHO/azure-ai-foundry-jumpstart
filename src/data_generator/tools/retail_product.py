@@ -90,9 +90,9 @@ class RetailProductTool(DataGeneratorTool):
         """Return a random realistic stock quantity."""
         return random.randint(0, 500)
 
-    def _prompt_common(self) -> str:
-        """Common immutable prompt section shared by all output formats."""
-        product_id = str(uuid.uuid4())
+    def _prompt_common(self, *, unique_id: str | None = None) -> str:
+        """Shared prompt header including an optional caller-supplied id."""
+        product_id = unique_id or str(uuid.uuid4())
         created_at = datetime.now(timezone.utc).isoformat()
         return (
             f"Product ID (immutable): {product_id}\n"
@@ -100,12 +100,12 @@ class RetailProductTool(DataGeneratorTool):
             f"Industry Theme: {self.industry}\n\n"
         )
 
-    def build_prompt(self, output_format: str) -> str:
+    def build_prompt(self, output_format: str, *, unique_id: str | None = None) -> str:
         """Return the full prompt for the requested *output_format*."""
         base = (
             "You are a seasoned e-commerce copy-writer producing REALISTIC BUT "
             "ENTIRELY FICTIONAL retail-product catalogue entries.\n\n"
-            f"{self._prompt_common()}"
+            f"{self._prompt_common(unique_id=unique_id)}"
             "Always output ONLY the requested data structure – no markdown fences, "
             "no commentary.\n\n"
         )

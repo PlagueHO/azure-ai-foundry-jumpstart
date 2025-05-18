@@ -43,7 +43,7 @@ class DataGeneratorTool(ABC):
     toolName: str  # Semantic Kernel tool name (e.g. "TechSupport"). Match: '^[0-9A-Za-z_]+$'
 
     @abstractmethod
-    def build_prompt(self, output_format: str) -> str:
+    def build_prompt(self, output_format: str, *, unique_id: str | None = None) -> str:
         """Return the full prompt string for the given output format."""
 
     @abstractmethod
