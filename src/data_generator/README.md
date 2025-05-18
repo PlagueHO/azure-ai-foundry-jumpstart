@@ -1,8 +1,6 @@
 # Synthetic Data Generator (Package-level Guide)
 
-This package provides the **engine, interfaces and scenario plug-ins** used by
-the Azure AI Foundry Jumpstart Solution Accelerator to create realistic yet
-*entirely fictional* datasets with Azure OpenAI + Semantic Kernel.
+This package provides the **engine, interfaces and scenario plug-ins** used by the Azure AI Foundry Jumpstart Solution Accelerator to create realistic yet *entirely fictional* datasets with Azure OpenAI + Semantic Kernel.
 
 ## 1. Quick Start (One-liner)
 
@@ -13,8 +11,8 @@ python -m data_generator --scenario tech-support --count 10 --out-dir ./data
 The command above:
 
 1. Loads environment variables / `.env` for Azure OpenAI connectivity.  
-2. Instantiates the requested `DataGeneratorTool` (`tech-support`).  
-3. Generates `10` records in parallel and writes them to `./data`  
+1. Instantiates the requested `DataGeneratorTool` (`tech-support`).  
+1. Generates `10` records in parallel and writes them to `./data`  
    (`0001.json`, `0002.json`, …).
 
 ---
@@ -144,9 +142,8 @@ python -m data_generator \
 ## 5.  Extending with New Scenarios
 
 1. Add `<new>.py` under `src/data_generator/tools/`.
-2. Subclass `DataGeneratorTool`, set unique `name` + `toolName`.
-3. Implement `build_prompt`, `cli_arguments`, `validate_args`, etc.
-4. No core changes required – the registry auto-discovers the new tool.
+1. Subclass `DataGeneratorTool`, set unique `name` + `toolName`.
+1. Implement `build_prompt`, `cli_arguments`, `validate_args`, etc.
+1. No core changes required – the registry auto-discovers the new tool.
 
-For full architectural details refer to
-[`docs/DESIGN.md`](../docs/DESIGN.md).
+For full architectural details refer to [`docs/DESIGN.md`](../docs/DESIGN.md).
