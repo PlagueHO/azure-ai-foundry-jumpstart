@@ -4,6 +4,8 @@
 
 Provide a reusable, secure, and easily extensible Python CLI for generating scenario-specific synthetic data with Azure OpenAI and the Semantic-Kernel SDK. The tool will be used by the **Azure AI Foundry Jumpstart Solution Accelerator** to seed demonstration environments, but maybe used for general synthetic data generation.
 
+This tool is intended to superceed the version found in [/scripts/data-generators/](/scripts/data-generators/), but refer back to that for the original implementation, especially around Semantic Kernel usage.
+
 ## 2. Design Principles  
 
 1. **Separation of Concerns** – Prompt construction is isolated from execution.  
@@ -204,6 +206,31 @@ python -m generate_data \
 If neither CLI flags nor variables are found, startup fails with a clear
 `EnvironmentError`, ensuring credentials are never implicitly guessed.
 
+### 5.3  Run in-place (no install)
+
+```powershell
+# Repo root
+cd D:\source\GitHub\PlagueHO\azure-ai-foundry-jumpstart
+
+# Expose the src-layout for the current shell only
+$env:PYTHONPATH = "$PWD\src"
+
+# Invoke the CLI
+python -m data_generator `
+  --scenario tech-support `
+  --count 50 `
+  --system-description "ContosoShop – React SPA front-end with Azure App Service + SQL back-end" `
+  --output-format yaml `
+  --out-dir .\data\tech_support
+```
+
+Linux/WSL:
+
+```bash
+export PYTHONPATH="$PWD/src"
+python -m data_generator --scenario tech-support ...
+```
+
 ## 6. Extensibility Guide
 
 1. Create new file `ai_foundry_gen/prompts/my_scenario.py`.
@@ -281,7 +308,7 @@ If neither CLI flags nor variables are found, startup fails with a clear
 
 ### 12.5  Packaging & Versioning
 
-- Library code lives under `src/data-generator/`; CLI entry point is declared in `pyproject.toml` (`[project.scripts]`).  
+- Library code lives under `src/data_generator/`; CLI entry point is declared in `pyproject.toml` (`[project.scripts]`).  
 - Semantic versioning (`MAJOR.MINOR.PATCH`) with automated bump & changelog via GitHub Actions.
 
 ### 12.6  Testing Conventions

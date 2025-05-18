@@ -15,7 +15,8 @@
                 "ms-azuretools.vscode-bicep",
                 "ms-azuretools.vscode-docker",
                 "TeamsDevApp.vscode-ai-foundry",
-                "ms-python.vscode-pylance"
+                "ms-python.vscode-pylance",
+                "ms-python.pylint"
             ]
         }
     },

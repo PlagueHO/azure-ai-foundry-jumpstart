@@ -1,0 +1,5 @@
+semantic-kernel[azure]>=1.29.0
+azure-identity>=1.22.0
+python-dotenv>=1.1.0
+colorama>=0.4.6
+PyYAML>=6.0.2
