@@ -1,0 +1,15 @@
+Product ID: 550dcbb4-dfe5-4575-a6e8-322c2f0ce92c
+Created At: 2025-05-18T05:49:39.556388+00:00
+Name: SonicWave True Wireless Earbuds
+Category: Audio & Headphones
+Description: Experience immersive, high-fidelity sound with the SonicWave True Wireless Earbuds. Designed for comfort and durability, these earbuds feature active noise cancellation, touch controls, and up to 36 hours of playtime with the included charging case. The ergonomic fit ensures long-wearing comfort, while Bluetooth 5.3 technology guarantees a stable, lag-free connection for calls and music. Whether you’re on the go or at home, elevate your listening experience with SonicWave.
+Price: 123.45 USD
+Tags: earbuds, wireless, audio, bluetooth, noise-cancelling
+Attributes:
+  Color: Midnight Black
+  Connectivity: Bluetooth 5.3
+  Battery Life: 36 hours (with case)
+  Water Resistance: IPX7
+  Noise Cancellation: Active
+Stock Quantity: 123
+Rating: 4.6

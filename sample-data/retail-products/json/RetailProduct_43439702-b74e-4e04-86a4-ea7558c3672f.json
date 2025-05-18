@@ -1,0 +1,25 @@
+{
+  "product_id": "43439702-b74e-4e04-86a4-ea7558c3672f",
+  "created_at": "2025-05-18T05:51:56.569233+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Caramelized Pistachio & Rosemary Brittle",
+  "description": "Indulge your taste buds with our Caramelized Pistachio & Rosemary Brittle, a sophisticated twist on a classic treat. Each batch is handcrafted using premium California pistachios, gently roasted and embedded in golden, buttery caramel, then delicately infused with fresh rosemary for an aromatic finish. Perfect as a luxurious snack, elegant party favor, or creative cheese board addition. Free from artificial flavors and preservatives, this brittle delivers a balanced sweetness and savory crunch in every bite.",
+  "price": 14.5,
+  "currency": "USD",
+  "tags": [
+    "gourmet",
+    "snack",
+    "brittle",
+    "pistachio",
+    "rosemary"
+  ],
+  "attributes": {
+    "weight": "150g",
+    "allergen_info": "Contains nuts (pistachios), dairy",
+    "ingredients": "Sugar, pistachios, butter, rosemary, sea salt",
+    "origin": "USA",
+    "packaging": "Resealable pouch"
+  },
+  "stock_quantity": 87,
+  "rating": 4.6
+}

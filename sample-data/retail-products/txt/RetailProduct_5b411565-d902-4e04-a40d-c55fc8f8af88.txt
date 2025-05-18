@@ -1,0 +1,15 @@
+Product ID: 5b411565-d902-4e04-a40d-c55fc8f8af88
+Created At: 2025-05-18T05:49:27.687926+00:00
+Name: Audivex SonaBeam Wireless Soundbar
+Category: Home Audio
+Description: Elevate your home entertainment experience with the Audivex SonaBeam Wireless Soundbar. Featuring immersive 3D surround sound, a slim minimalist design, and seamless Bluetooth 5.2 connectivity, it’s the perfect centerpiece for your living room. Enjoy rich, balanced audio whether you’re watching movies, gaming, or streaming music. The SonaBeam also supports voice-assistant integration and has a convenient remote control for effortless operation. Easy wall-mounting options and multiple input ports ensure compatibility with any setup.
+Price: 123.45 USD
+Tags: soundbar, wireless, home audio
+Attributes:
+  Color: Matte Black
+  Connectivity: Bluetooth 5.2, Optical, HDMI ARC
+  Power Output: 120W
+  Dimensions: 36" x 3.5" x 2.4"
+  Voice Assistant: Yes
+Stock Quantity: 123
+Rating: 4.6

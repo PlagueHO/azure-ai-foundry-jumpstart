@@ -1,0 +1,25 @@
+{
+  "product_id": "43f2c4f3-8d9b-4bb9-85ab-2bc68c03e481",
+  "created_at": "2025-05-18T05:58:57.491456+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Maple Bourbon Pecan Brittle",
+  "description": "Indulge in the irresistible crunch of our Maple Bourbon Pecan Brittle, a decadent treat that masterfully combines roasted pecans, pure maple syrup, and a touch of small-batch bourbon. Each batch is handcrafted in copper kettles for a perfectly caramelized texture and a rich, buttery flavor profile. Enjoy it as a sophisticated snack, a unique dessert topping, or a memorable gift for food lovers. Gluten-free and free from artificial additives, this brittle delivers an authentic taste experience in every bite.",
+  "price": 14.95,
+  "currency": "USD",
+  "tags": [
+    "brittle",
+    "pecan",
+    "gourmet",
+    "maple",
+    "bourbon"
+  ],
+  "attributes": {
+    "weight": "8 oz",
+    "allergens": "Pecans",
+    "gluten_free": true,
+    "artificial_additives": false,
+    "handcrafted": true
+  },
+  "stock_quantity": 76,
+  "rating": 4.6
+}

@@ -1,0 +1,35 @@
+product_id: 256f562e-38a7-47c7-a878-a403ba17f94d
+created_at: 2025-05-18 06:00:20.444187+00:00
+name: Lumina ProShot X7 Mirrorless Camera
+category: mirrorless cameras
+description: Capture every moment in brilliant detail with the Lumina ProShot X7,
+  a compact mirrorless camera designed for both enthusiasts and professionals. Its
+  28MP CMOS sensor and lightning-fast autofocus ensure sharp, vibrant photos even
+  in challenging light. The intuitive touchscreen, 4K video recording, and built-in
+  WiFi make sharing and shooting effortless. Lightweight and stylish, the X7 is perfect
+  for travel, street photography, or studio work. Unleash your creativity and never
+  miss the perfect shot!
+price: 899.99
+currency: USD
+tags:
+- mirrorless
+- camera
+- 4K
+- photography
+- WiFi
+- touchscreen
+- travel
+- professional
+- compact
+attributes:
+  colour: graphite black
+  sensor: 28MP CMOS
+  lens_mount: Lumina X-mount
+  video_resolution: 4K UHD
+  screen: 3.2-inch touchscreen
+  connectivity: WiFi, Bluetooth
+  weight: 468g
+  battery_life: 420 shots
+  warranty: 2 years
+stock_quantity: 67
+rating: 4.7

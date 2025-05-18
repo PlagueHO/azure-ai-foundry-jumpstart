@@ -1,0 +1,26 @@
+{
+  "product_id": "32572e2b-69ac-4a6c-ae75-82f68359735d",
+  "created_at": "2025-05-18T05:51:45.717010+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Sable & Thyme Truffle-Infused Almonds",
+  "description": "Experience indulgence in every bite with Sable & Thyme Truffle-Infused Almonds. These hand-selected California almonds are gently roasted and then enrobed in an aromatic black truffle oil blend, finishing with a delicate sprinkle of sea salt. Perfect for sophisticated snacking, elegant charcuterie boards, or as a unique gift for food lovers, each resealable pouch guarantees freshness and rich, earthy flavor. Elevate your everyday snack with this luxurious gourmet treat.",
+  "price": 14.99,
+  "currency": "USD",
+  "tags": [
+    "truffle",
+    "almonds",
+    "gourmet",
+    "snack",
+    "gift"
+  ],
+  "attributes": {
+    "weight": "150g",
+    "allergens": "contains tree nuts",
+    "origin": "USA",
+    "storage": "store in a cool, dry place",
+    "packaging": "resealable pouch",
+    "vegan": "no"
+  },
+  "stock_quantity": 237,
+  "rating": 4.6
+}

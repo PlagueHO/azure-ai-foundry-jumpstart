@@ -1,0 +1,25 @@
+{
+  "product_id": "995bda25-93e0-45d7-848d-a33b90bfbde3",
+  "created_at": "2025-05-18T05:58:57.486438+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Golden Orchard Honey-Glazed Cashews",
+  "description": "Indulge in the exquisite taste of Golden Orchard Honey-Glazed Cashews, where crunchy whole cashews are lovingly coated in a delicate layer of golden wildflower honey. Expertly roasted in small batches, these premium nuts offer the perfect balance of sweet and savory, making them an irresistible snack for any occasion. Enjoy them straight from the bag, sprinkled over salads, or as an elegant addition to your charcuterie board. Naturally gluten-free and free from artificial additives, these cashews are a treat you can feel good about.",
+  "price": 11.99,
+  "currency": "USD",
+  "tags": [
+    "cashews",
+    "honey",
+    "snack",
+    "gourmet",
+    "roasted"
+  ],
+  "attributes": {
+    "weight": "200g",
+    "ingredients": "Cashews, Wildflower Honey, Sea Salt",
+    "allergens": "Tree nuts (cashews)",
+    "gluten_free": true,
+    "origin": "USA"
+  },
+  "stock_quantity": 74,
+  "rating": 4.6
+}

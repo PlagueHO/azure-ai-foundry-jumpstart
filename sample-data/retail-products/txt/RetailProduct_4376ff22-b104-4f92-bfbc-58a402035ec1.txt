@@ -1,0 +1,16 @@
+Product ID: 4376ff22-b104-4f92-bfbc-58a402035ec1
+Created At: 2025-05-18T05:49:27.696873+00:00
+Name: Voltique Wireless Charging Pad Pro
+Category: Mobile Accessories
+Description: Experience seamless, ultra-fast charging with the Voltique Wireless Charging Pad Pro. Designed for Qi-enabled smartphones and earbuds, this sleek pad delivers up to 15W power output, ensuring your devices are powered up quickly and safely. A non-slip silicone base keeps your device secure, while the minimalist LED indicator displays charging status without being intrusive. Compatible with most modern cases, the Voltique Pad Pro is perfect for nightstands, desks, or travel bags. Say goodbye to tangled cables and enjoy effortless charging every time.
+Price: 39.99 USD
+Tags: wireless charging, mobile accessories
+Attributes:
+  Power Output: 15W
+  Compatibility: Qi-enabled devices
+  Material: ABS plastic, silicone
+  Dimensions: 98mm x 98mm x 8mm
+  LED Indicator: Yes
+  Cable Included: USB-C
+Stock Quantity: 123
+Rating: 4.6

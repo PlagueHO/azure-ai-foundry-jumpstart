@@ -1,0 +1,25 @@
+{
+  "product_id": "fecc4b12-4484-4c77-a724-8fef885da8c2",
+  "created_at": "2025-05-18T05:51:53.311262+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Truffle-Infused Sea Salt Popcorn",
+  "description": "Elevate your snacking experience with our Truffle-Infused Sea Salt Popcorn, crafted for gourmet enthusiasts. Each fluffy kernel is air-popped and lightly coated in aromatic truffle oil, then finished with a sprinkle of hand-harvested sea salt. The result is a rich, earthy flavor balanced perfectly with a hint of oceanic freshness. Ideal for movie nights, elegant gatherings, or as a luxurious treat on the go. Made with non-GMO corn and no artificial flavors, it\u2019s a sophisticated snack you can feel good about.",
+  "price": 8.99,
+  "currency": "USD",
+  "tags": [
+    "popcorn",
+    "gourmet",
+    "snack",
+    "truffle",
+    "sea salt",
+    "non-GMO"
+  ],
+  "attributes": {
+    "weight": "120g",
+    "ingredients": "Non-GMO corn, truffle oil, sea salt, sunflower oil",
+    "dietary": "Vegetarian, Gluten-Free",
+    "packaging": "Resealable pouch"
+  },
+  "stock_quantity": 76,
+  "rating": 4.6
+}

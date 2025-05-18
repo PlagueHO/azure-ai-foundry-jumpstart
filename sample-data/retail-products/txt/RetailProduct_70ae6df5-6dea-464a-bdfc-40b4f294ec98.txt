@@ -1,0 +1,16 @@
+Product ID: 70ae6df5-6dea-464a-bdfc-40b4f294ec98
+Created At: 2025-05-18T05:49:39.156797+00:00
+Name: NovaSound Wireless Smart Speaker
+Category: Portable Audio
+Description: Experience premium sound wherever you go with the NovaSound Wireless Smart Speaker. Engineered with dual high-fidelity drivers and deep bass radiators, this compact speaker delivers crisp highs and punchy lows for a truly immersive listening experience. Equipped with Bluetooth 5.3, voice assistant integration, and up to 18 hours of battery life, NovaSound is perfect for both home and outdoor use. The splash-proof design and intuitive touch controls make music more accessible and enjoyable anytime, anywhere.
+Price: 123.45 USD
+Tags: wireless, smart speaker, bluetooth, portable audio
+Attributes:
+  Color: Midnight Black
+  Connectivity: Bluetooth 5.3
+  Battery Life: 18 hours
+  Water Resistance: IPX5
+  Voice Assistant: Compatible
+  Weight: 1.2 lbs
+Stock Quantity: 123
+Rating: 4.6

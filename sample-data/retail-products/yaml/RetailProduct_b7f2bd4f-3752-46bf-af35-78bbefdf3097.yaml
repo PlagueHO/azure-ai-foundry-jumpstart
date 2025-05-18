@@ -1,0 +1,33 @@
+product_id: b7f2bd4f-3752-46bf-af35-78bbefdf3097
+created_at: 2025-05-18 05:59:29.497485+00:00
+name: Lumina X1 Mirrorless Pro Camera
+category: Mirrorless Cameras
+description: "Experience photography like never before with the Lumina X1 Mirrorless\
+  \ Pro Camera. Engineered for both passionate enthusiasts and professionals, the\
+  \ X1 delivers stunning 32MP images and crystal-clear 4K video. Its fast autofocus,\
+  \ intuitive touchscreen, and lightweight magnesium body make it perfect for travel,\
+  \ events, and studio shoots alike. Wi-Fi and Bluetooth connectivity ensure seamless\
+  \ sharing, while the advanced image stabilization lets you shoot handheld with confidence.\
+  \ Elevate your creativity with the Lumina X1\u2014where innovation meets reliability."
+price: 1249.99
+currency: USD
+tags:
+- mirrorless
+- 4K video
+- professional
+- photography
+- lightweight
+- Wi-Fi
+- autofocus
+- image stabilization
+attributes:
+  colour: graphite black
+  sensor: APS-C CMOS 32MP
+  video_resolution: 4K UHD
+  connectivity: Wi-Fi, Bluetooth
+  screen: 3.2" touchscreen LCD
+  weight: 540g
+  battery_life: 420 shots
+  mount: L-Mount
+stock_quantity: 74
+rating: 4.7

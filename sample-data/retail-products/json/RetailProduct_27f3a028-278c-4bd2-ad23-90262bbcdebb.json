@@ -1,0 +1,25 @@
+{
+  "product_id": "27f3a028-278c-4bd2-ad23-90262bbcdebb",
+  "created_at": "2025-05-18T05:52:00.368991+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Golden Thyme Artisan Olive Crisps",
+  "description": "Experience snacking redefined with Golden Thyme Artisan Olive Crisps. Each batch is slow-baked from hand-rolled dough, infused with cold-pressed extra virgin olive oil and freshly chopped thyme. These crisps deliver a perfect balance of savory richness and herbaceous zest, making them an ideal companion for cheese boards, dips, or enjoyed straight from the bag. Crafted with natural ingredients and free from preservatives, they offer a guilt-free treat for discerning palates seeking a sophisticated crunch.",
+  "price": 7.99,
+  "currency": "USD",
+  "tags": [
+    "snacks",
+    "crisps",
+    "artisan",
+    "herbs",
+    "gourmet"
+  ],
+  "attributes": {
+    "weight": "120g",
+    "ingredients": "Wheat flour, extra virgin olive oil, thyme, sea salt, yeast",
+    "allergen_info": "Contains wheat; made in a facility that processes nuts",
+    "shelf_life": "6 months",
+    "vegan": "yes"
+  },
+  "stock_quantity": 184,
+  "rating": 4.6
+}

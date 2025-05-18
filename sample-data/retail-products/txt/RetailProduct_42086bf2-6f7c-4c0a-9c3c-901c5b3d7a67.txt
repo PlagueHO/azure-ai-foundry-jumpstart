@@ -1,0 +1,16 @@
+Product ID: 42086bf2-6f7c-4c0a-9c3c-901c5b3d7a67
+Created At: 2025-05-18T05:49:27.693391+00:00
+Name: Vireo X3 Wireless Noise-Cancelling Headphones
+Category: Audio Headphones
+Description: Experience pure sound with the Vireo X3 Wireless Noise-Cancelling Headphones. Designed for audiophiles and commuters alike, these over-ear headphones feature advanced adaptive noise cancellation, 40-hour battery life, and ultra-soft memory foam ear cushions. Effortlessly switch between devices with Bluetooth 5.3 connectivity and enjoy crystal-clear calls thanks to dual beamforming microphones. The sleek aluminum frame ensures durability while remaining lightweight for all-day comfort. Discover music the way it was meant to be heard.
+Price: 123.45 USD
+Tags: wireless, headphones, noise-cancelling, bluetooth, audio
+Attributes:
+  Color: Midnight Black
+  Battery Life: 40 hours
+  Connectivity: Bluetooth 5.3, 3.5mm AUX
+  Microphone: Dual beamforming
+  Weight: 245g
+  Warranty: 2 years
+Stock Quantity: 123
+Rating: 4.6

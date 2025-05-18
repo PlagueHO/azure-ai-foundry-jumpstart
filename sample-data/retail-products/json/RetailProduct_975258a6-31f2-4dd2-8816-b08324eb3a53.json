@@ -1,0 +1,25 @@
+{
+  "product_id": "975258a6-31f2-4dd2-8816-b08324eb3a53",
+  "created_at": "2025-05-18T05:51:53.551391+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Golden Valley Truffle-Infused Almonds",
+  "description": "Experience pure indulgence with Golden Valley Truffle-Infused Almonds. Each premium California almond is delicately roasted and finished with a whisper of sea salt, then elegantly dusted with aromatic black truffle essence. The result is a perfectly balanced snack that\u2019s rich, savory, and irresistibly crunchy. Ideal for sophisticated entertaining, a luxurious gift, or an everyday treat, these gourmet almonds elevate any occasion. Free from artificial flavors and preservatives, they\u2019re an all-natural delight for discerning palates.",
+  "price": 14.99,
+  "currency": "USD",
+  "tags": [
+    "gourmet",
+    "snack",
+    "truffle",
+    "almonds",
+    "premium"
+  ],
+  "attributes": {
+    "weight": "150g",
+    "allergen_info": "Contains tree nuts (almonds)",
+    "origin": "California, USA",
+    "dietary": "Gluten-free, Vegetarian",
+    "packaging": "Resealable pouch"
+  },
+  "stock_quantity": 248,
+  "rating": 4.6
+}

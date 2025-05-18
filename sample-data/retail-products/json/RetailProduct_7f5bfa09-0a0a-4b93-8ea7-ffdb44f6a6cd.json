@@ -1,0 +1,24 @@
+{
+  "product_id": "7f5bfa09-0a0a-4b93-8ea7-ffdb44f6a6cd",
+  "created_at": "2025-05-18T06:02:26.420547+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Truffle-Infused Artisan Popcorn",
+  "description": "Experience the ultimate in snacking luxury with our Truffle-Infused Artisan Popcorn. Handcrafted in small batches, each kernel is delicately popped and seasoned with a unique blend of earthy black truffle oil, sea salt, and a hint of cracked pepper. The result is an indulgent, aromatic treat perfect for special occasions or elevating everyday movie nights. This gourmet snack is made with non-GMO corn and contains no artificial flavors or preservatives, ensuring a pure, satisfying crunch in every bite.",
+  "price": 14.99,
+  "currency": "USD",
+  "tags": [
+    "gourmet",
+    "snack",
+    "truffle",
+    "popcorn",
+    "artisan"
+  ],
+  "attributes": {
+    "weight": "150g",
+    "ingredients": "Non-GMO corn, black truffle oil, sea salt, cracked pepper",
+    "allergen_info": "May contain traces of dairy",
+    "packaging": "Resealable pouch"
+  },
+  "stock_quantity": 57,
+  "rating": 4.6
+}

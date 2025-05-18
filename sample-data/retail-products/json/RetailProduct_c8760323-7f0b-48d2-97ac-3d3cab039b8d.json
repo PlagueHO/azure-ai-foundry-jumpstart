@@ -1,0 +1,24 @@
+{
+  "product_id": "c8760323-7f0b-48d2-97ac-3d3cab039b8d",
+  "created_at": "2025-05-18T05:51:45.723250+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Sun-Dried Tomato & Olive Artisan Crisps",
+  "description": "Experience the bold flavors of the Mediterranean with our Sun-Dried Tomato & Olive Artisan Crisps. Handcrafted in small batches, these crunchy snacks combine ripe, sun-dried tomatoes and Kalamata olives with a touch of sea salt and extra virgin olive oil. Perfect for pairing with cheeses, hummus, or enjoying straight from the bag, these crisps offer a savory, aromatic bite that elevates any snack platter. Non-GMO and free of artificial additives, they\u2019re ideal for discerning palates seeking a gourmet treat.",
+  "price": 8.99,
+  "currency": "USD",
+  "tags": [
+    "gourmet",
+    "snack",
+    "artisan",
+    "vegan",
+    "mediterranean"
+  ],
+  "attributes": {
+    "weight": "150g",
+    "ingredients": "Wheat flour, sun-dried tomatoes, Kalamata olives, sea salt, extra virgin olive oil, rosemary",
+    "allergens": "Contains wheat; may contain traces of nuts",
+    "dietary": "Vegan, Non-GMO"
+  },
+  "stock_quantity": 284,
+  "rating": 4.6
+}

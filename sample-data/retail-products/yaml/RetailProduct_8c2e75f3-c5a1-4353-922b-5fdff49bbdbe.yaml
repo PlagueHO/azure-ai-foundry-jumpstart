@@ -1,0 +1,32 @@
+product_id: 8c2e75f3-c5a1-4353-922b-5fdff49bbdbe
+created_at: 2025-05-18 05:59:29.504911+00:00
+name: LuminaX ProShot Mirrorless Camera
+category: Mirrorless Cameras
+description: Capture your world in stunning detail with the LuminaX ProShot Mirrorless
+  Camera. Designed for both professionals and passionate hobbyists, this camera boasts
+  a 32MP sensor, lightning-fast autofocus, and 4K video recording capabilities. Its
+  lightweight magnesium alloy body ensures portability without sacrificing durability,
+  while the intuitive touchscreen makes navigation effortless. Whether you're shooting
+  in low light or capturing high-speed action, the ProShot delivers vibrant, sharp
+  images every time. Elevate your photography with LuminaX.
+price: 1199.99
+currency: USD
+tags:
+- mirrorless
+- camera
+- 4K
+- photography
+- professional
+- touchscreen
+- lightweight
+attributes:
+  sensor_resolution: 32MP
+  video_resolution: 4K
+  autofocus: Fast Hybrid AF
+  screen_type: 3-inch Touchscreen LCD
+  connectivity: Wi-Fi, Bluetooth
+  weight: 410g
+  colour: Black
+  body_material: Magnesium Alloy
+stock_quantity: 76
+rating: 4.7

@@ -1,0 +1,23 @@
+{
+  "product_id": "1874b079-cde7-461a-87e2-a4bcb2bad234",
+  "created_at": "2025-05-18T05:58:57.485035+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Truffle-Infused Artisan Popcorn",
+  "description": "Elevate your snacking experience with our Truffle-Infused Artisan Popcorn. Handcrafted in small batches, each kernel is lightly air-popped and tossed with a delicate blend of white truffle oil, Himalayan pink salt, and a hint of cracked black pepper. Perfect for gourmet gatherings or a luxurious treat at home, this popcorn is free from artificial flavors and preservatives. Enjoy a sophisticated crunch that lingers with earthy, savory notes and a satisfying finish. Indulge yourself or share with friends\u2014either way, it\u2019s an irresistible upgrade to traditional popcorn.",
+  "price": 14.99,
+  "currency": "USD",
+  "tags": [
+    "gourmet",
+    "popcorn",
+    "truffle",
+    "snack"
+  ],
+  "attributes": {
+    "weight": "150g",
+    "organic": "no",
+    "gluten_free": "yes",
+    "allergens": "contains milk"
+  },
+  "stock_quantity": 68,
+  "rating": 4.6
+}

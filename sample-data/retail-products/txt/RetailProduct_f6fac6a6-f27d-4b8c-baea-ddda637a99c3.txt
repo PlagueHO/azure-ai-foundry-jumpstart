@@ -1,0 +1,15 @@
+Product ID: f6fac6a6-f27d-4b8c-baea-ddda637a99c3
+Created At: 2025-05-18T05:49:37.542703+00:00
+Name: NovaPulse Wireless ANC Headphones
+Category: Audio & Headphones
+Description: Experience premium sound without distractions with the NovaPulse Wireless ANC Headphones. Featuring advanced active noise cancellation, 40-hour battery life, and plush memory foam ear cushions, these headphones are perfect for travel, work, or relaxation. With intuitive touch controls and dual-device connectivity, you can seamlessly switch between music and calls. Enjoy crystal-clear audio, deep bass, and a sleek foldable design for easy portability. Elevate your listening with comfort and style.
+Price: 123.45 USD
+Tags: headphones, wireless, noise-cancelling, audio
+Attributes:
+  Color: Midnight Black
+  Connectivity: Bluetooth 5.3
+  Battery Life: Up to 40 hours
+  Weight: 240g
+  Foldable: Yes
+Stock Quantity: 123
+Rating: 4.6

@@ -1,0 +1,15 @@
+Product ID: 96e39dd5-c8ca-47c2-a8ca-711dee51679c
+Created At: 2025-05-18T05:49:27.689772+00:00
+Name: NimbusWave Bluetooth Soundbar Pro
+Category: Home Audio & Theater
+Description: Elevate your home entertainment with the NimbusWave Bluetooth Soundbar Pro. Featuring immersive 3D surround sound, deep bass, and crystal-clear highs, this sleek soundbar is designed to seamlessly integrate with any TV or smart device. Bluetooth 5.3 ensures effortless wireless streaming, while the included remote and multiple input options (HDMI ARC, optical, AUX) offer ultimate flexibility. With a minimalist brushed aluminum finish, the NimbusWave brings both style and substance to your living space—perfect for movie nights, gaming, or streaming music.
+Price: 123.45 USD
+Tags: bluetooth, soundbar, home-audio, surround-sound, wireless
+Attributes:
+  Connectivity: Bluetooth 5.3, HDMI ARC, Optical, AUX
+  Power Output: 120W RMS
+  Dimensions: 36" x 3.5" x 2.8"
+  Color: Brushed Aluminum
+  Warranty: 2 Years
+Stock Quantity: 123
+Rating: 4.6

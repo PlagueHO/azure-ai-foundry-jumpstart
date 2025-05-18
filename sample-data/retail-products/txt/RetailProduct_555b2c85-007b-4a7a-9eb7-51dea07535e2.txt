@@ -1,0 +1,15 @@
+Product ID: 555b2c85-007b-4a7a-9eb7-51dea07535e2
+Created At: 2025-05-18T05:49:39.246807+00:00
+Name: NovaPulse Wireless Charging Pad
+Category: Mobile Accessories
+Description: Experience effortless charging with the NovaPulse Wireless Charging Pad, designed for maximum convenience and style. Compatible with all Qi-enabled devices, this ultra-slim pad delivers fast, efficient charging—just place your smartphone or earbuds on top and power up instantly. The soft-touch, non-slip surface ensures your devices stay secure, while the discreet LED indicator lets you know when charging is active. Perfect for desks, nightstands, or travel, NovaPulse keeps your tech powered and your space clutter-free.
+Price: 39.99 USD
+Tags: wireless, charging, mobile, Qi-compatible, tech-accessory
+Attributes:
+  Color: Midnight Black
+  Output Power: 15W Fast Charge
+  Compatibility: Universal Qi-enabled devices
+  Dimensions: 9.5cm x 9.5cm x 0.7cm
+  Cable Included: Yes (USB-C)
+Stock Quantity: 123
+Rating: 4.6

@@ -1,0 +1,16 @@
+Product ID: 96818cb8-d15f-42f3-8050-1e059be65fec
+Created At: 2025-05-18T05:49:27.695905+00:00
+Name: PulseWave Wireless Noise-Cancelling Headphones
+Category: Headphones & Audio Accessories
+Description: Experience unparalleled sound clarity with the PulseWave Wireless Noise-Cancelling Headphones. Designed for audiophiles and commuters alike, these headphones feature adaptive noise cancellation, 40-hour battery life, and intuitive touch controls. With plush memory foam ear cups and a lightweight frame, comfort is guaranteed even during long listening sessions. The advanced Bluetooth 5.3 connectivity ensures seamless pairing with all your devices, while the built-in microphone delivers crystal-clear calls. Perfect for music, movies, and work calls on the go.
+Price: 123.45 USD
+Tags: headphones, wireless, noise-cancelling, bluetooth, audio
+Attributes:
+  Color: Midnight Black
+  Battery Life: 40 hours
+  Connectivity: Bluetooth 5.3
+  Weight: 240g
+  Microphone: Built-in
+  Warranty: 2 years
+Stock Quantity: 123
+Rating: 4.6

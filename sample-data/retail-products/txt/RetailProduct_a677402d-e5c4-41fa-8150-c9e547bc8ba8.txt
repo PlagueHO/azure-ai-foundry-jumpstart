@@ -1,0 +1,16 @@
+Product ID: a677402d-e5c4-41fa-8150-c9e547bc8ba8
+Created At: 2025-05-18T05:49:35.391769+00:00
+Name: ArcSync Wireless Charging Dock Pro
+Category: Wireless Charging Stations
+Description: Experience next-level convenience with the ArcSync Wireless Charging Dock Pro, designed for seamless charging of all your Qi-enabled devices. Its sleek, non-slip base supports fast-charging for smartphones, earbuds, and smartwatches—simultaneously. With built-in overcharge and temperature protection, your devices stay safe while powering up. The minimalist LED indicator keeps you informed without being intrusive, making this dock perfect for nightstands, desks, or living rooms. Elevate your daily routine with effortless, cable-free charging.
+Price: 123.45 USD
+Tags: wireless charging, smart home, Qi-compatible, fast charge
+Attributes:
+  Color: Matte Black
+  Compatibility: Qi-enabled devices
+  Output Power: 15W max
+  Ports: USB-C input
+  Dimensions: 7.2 x 4.5 x 1.1 in
+  Warranty: 18 months
+Stock Quantity: 123
+Rating: 4.6

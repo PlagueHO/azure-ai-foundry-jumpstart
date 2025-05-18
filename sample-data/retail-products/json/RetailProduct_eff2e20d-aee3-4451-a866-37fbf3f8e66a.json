@@ -1,0 +1,24 @@
+{
+  "product_id": "eff2e20d-aee3-4451-a866-37fbf3f8e66a",
+  "created_at": "2025-05-18T05:51:45.681826+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Crimson Orchard Cherry & Dark Chocolate Clusters",
+  "description": "Indulge in the perfect harmony of tangy cherries and rich dark chocolate with our Crimson Orchard Cherry & Dark Chocolate Clusters. Each bite combines dried, hand-picked cherries with velvety 70% cacao chocolate, resulting in a luxurious snack that\u2019s both tart and sweet. Great as an afternoon pick-me-up or an elegant dessert topping, these clusters are crafted in small batches to preserve their vibrant flavor and chewy-crunchy texture. Free from artificial flavors and gluten, they\u2019re a treat you can feel good about savoring.",
+  "price": 11.99,
+  "currency": "USD",
+  "tags": [
+    "gourmet",
+    "chocolate",
+    "fruit",
+    "snack",
+    "gluten-free"
+  ],
+  "attributes": {
+    "weight": "150g",
+    "ingredients": "Dried cherries, dark chocolate (cocoa mass, sugar, cocoa butter, soy lecithin), sea salt",
+    "allergen_info": "Contains soy. Made in a facility that processes nuts.",
+    "storage": "Store in a cool, dry place"
+  },
+  "stock_quantity": 87,
+  "rating": 4.6
+}

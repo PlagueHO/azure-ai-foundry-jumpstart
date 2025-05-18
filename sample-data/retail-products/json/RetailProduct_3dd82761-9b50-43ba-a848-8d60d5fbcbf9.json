@@ -1,0 +1,24 @@
+{
+  "product_id": "3dd82761-9b50-43ba-a848-8d60d5fbcbf9",
+  "created_at": "2025-05-18T05:51:58.000249+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Crisp & Savory Truffle Sea Salt Popcorn",
+  "description": "Indulge your senses with our Crisp & Savory Truffle Sea Salt Popcorn, crafted for the discerning snack lover. Each fluffy kernel is air-popped and lightly tossed with real Italian black truffle oil, then finished with a delicate sprinkle of hand-harvested sea salt. The result is an irresistible blend of earthy umami and satisfying crunch, perfect for movie nights, parties, or a luxurious snack break. No artificial flavors or preservatives\u2014just authentic gourmet taste in every bite.",
+  "price": 7.99,
+  "currency": "USD",
+  "tags": [
+    "popcorn",
+    "truffle",
+    "gourmet",
+    "snack"
+  ],
+  "attributes": {
+    "weight": "120g",
+    "ingredients": "Non-GMO popcorn, black truffle oil, sea salt, sunflower oil",
+    "allergen_info": "May contain traces of milk",
+    "gluten_free": "Yes",
+    "vegan": "Yes"
+  },
+  "stock_quantity": 84,
+  "rating": 4.6
+}

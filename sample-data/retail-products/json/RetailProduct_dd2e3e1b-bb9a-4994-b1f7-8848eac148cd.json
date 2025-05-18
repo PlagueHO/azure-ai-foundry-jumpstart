@@ -1,0 +1,26 @@
+{
+  "product_id": "dd2e3e1b-bb9a-4994-b1f7-8848eac148cd",
+  "created_at": "2025-05-18T05:58:57.486063+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Golden Fig & Pistachio Biscotti",
+  "description": "Experience a refined twist on a classic treat with our Golden Fig & Pistachio Biscotti. Handcrafted in small batches, each biscotti features sun-dried Turkish figs and premium roasted pistachios, combined in a delicately crisp Italian-style dough. Perfect for pairing with coffee, tea, or dessert wine, these elegant cookies offer a harmonious balance of sweetness and nuttiness. Free from artificial preservatives and made with all-natural ingredients, they\u2019re a thoughtful gift or a sophisticated indulgence for any occasion.",
+  "price": 13.99,
+  "currency": "USD",
+  "tags": [
+    "biscotti",
+    "gourmet",
+    "snack",
+    "fig",
+    "pistachio",
+    "artisan"
+  ],
+  "attributes": {
+    "weight": "200g",
+    "allergens": "wheat, tree nuts (pistachios)",
+    "dietary": "vegetarian",
+    "origin": "Italy-inspired, baked in USA",
+    "ingredients": "wheat flour, dried figs, pistachios, cane sugar, eggs, butter, natural flavors"
+  },
+  "stock_quantity": 74,
+  "rating": 4.6
+}

@@ -1,0 +1,24 @@
+{
+  "product_id": "fbd9f222-3fce-4c1f-86b4-f61541acd254",
+  "created_at": "2025-05-18T05:51:45.737788+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Maple Pecan Crunch Clusters",
+  "description": "Indulge your senses with our Maple Pecan Crunch Clusters, a premium snack crafted for those who appreciate the finer things. Each cluster is a harmonious blend of roasted pecans and crispy oats, bound together with rich, organic maple syrup and a hint of sea salt. Perfect for elevating your breakfast, topping desserts, or enjoying straight from the bag. Handcrafted in small batches to ensure peak freshness and flavor, these clusters deliver a satisfying crunch with every bite. Treat yourself or gift a bag to a fellow foodie.",
+  "price": 11.99,
+  "currency": "USD",
+  "tags": [
+    "pecan",
+    "maple",
+    "snack",
+    "gourmet",
+    "clusters"
+  ],
+  "attributes": {
+    "weight": "200g",
+    "ingredients": "Pecans, rolled oats, organic maple syrup, sea salt",
+    "allergens": "Contains nuts (pecans), oats",
+    "servings_per_bag": "5"
+  },
+  "stock_quantity": 86,
+  "rating": 4.6
+}

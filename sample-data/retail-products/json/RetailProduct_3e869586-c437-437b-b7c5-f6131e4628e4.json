@@ -1,0 +1,23 @@
+{
+  "product_id": "3e869586-c437-437b-b7c5-f6131e4628e4",
+  "created_at": "2025-05-18T05:51:53.906984+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Sundried Tomato & Basil Artisan Crisps",
+  "description": "Experience a burst of Mediterranean flavor with our Sundried Tomato & Basil Artisan Crisps. Baked in small batches using premium whole grains, each crisp is infused with sun-ripened tomatoes and fragrant basil for a perfectly balanced snack. Ideal for pairing with cheeses, dips, or enjoying straight from the bag, these gourmet crisps offer a crunchy, satisfying bite without artificial flavors or preservatives. Elevate your snack time or add a sophisticated touch to your next gathering with these irresistible treats.",
+  "price": 7.99,
+  "currency": "USD",
+  "tags": [
+    "gourmet",
+    "snack",
+    "artisanal",
+    "vegetarian"
+  ],
+  "attributes": {
+    "weight": "150g",
+    "ingredients": "Whole wheat flour, sundried tomato, basil, olive oil, sea salt",
+    "allergens": "Contains wheat. Made in a facility that processes nuts.",
+    "storage": "Store in a cool, dry place"
+  },
+  "stock_quantity": 84,
+  "rating": 4.6
+}

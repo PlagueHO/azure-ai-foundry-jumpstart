@@ -1,0 +1,25 @@
+{
+  "product_id": "628876a5-646b-4b8f-a558-5d220c292b37",
+  "created_at": "2025-05-18T05:51:45.729984+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Cedar & Thyme Artisan Olive Crackers",
+  "description": "Elevate your snack time with Cedar & Thyme Artisan Olive Crackers. Handcrafted in small batches using cold-pressed olive oil, sun-dried green olives, and a touch of wild thyme, these crackers deliver a savory Mediterranean flavor in every bite. Perfect for pairing with cheeses, dips, or enjoying solo, they are baked to a delicate crispness with no artificial flavors or preservatives. Ideal for entertaining or as a thoughtful gourmet gift, these crackers bring a taste of the Mediterranean coast to your table.",
+  "price": 7.99,
+  "currency": "USD",
+  "tags": [
+    "artisan",
+    "snack",
+    "crackers",
+    "Mediterranean",
+    "gourmet"
+  ],
+  "attributes": {
+    "weight": "150g",
+    "ingredients": "Wheat flour, cold-pressed olive oil, sun-dried olives, wild thyme, sea salt, yeast",
+    "allergen_info": "Contains wheat; may contain traces of sesame",
+    "shelf_life": "8 months",
+    "vegan": "yes"
+  },
+  "stock_quantity": 214,
+  "rating": 4.6
+}

@@ -1,0 +1,15 @@
+Product ID: 89fd0a9c-f4d4-4f1a-aa31-2f6f4d8625d7
+Created At: 2025-05-18T05:49:39.593009+00:00
+Name: SonicPulse Wireless Noise-Cancelling Headphones
+Category: Audio & Headphones
+Description: Experience your music like never before with SonicPulse Wireless Noise-Cancelling Headphones. Engineered for ultimate comfort and crystal-clear sound, these headphones feature advanced active noise cancellation, 40 hours of battery life, and intuitive touch controls. Whether you're traveling, working, or relaxing at home, enjoy immersive audio and seamless Bluetooth connectivity. The sleek, foldable design and premium ear cushions make them perfect for all-day wear. Elevate your listening—wherever life takes you.
+Price: 123.45 USD
+Tags: wireless, headphones, noise-cancelling, audio, bluetooth
+Attributes:
+  Color: Matte Black
+  Battery Life: 40 hours
+  Connectivity: Bluetooth 5.2
+  Weight: 245g
+  Warranty: 2 years
+Stock Quantity: 123
+Rating: 4.6

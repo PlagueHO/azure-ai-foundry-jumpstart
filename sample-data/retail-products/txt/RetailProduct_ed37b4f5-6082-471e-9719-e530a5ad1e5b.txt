@@ -1,0 +1,15 @@
+Product ID: ed37b4f5-6082-471e-9719-e530a5ad1e5b
+Created At: 2025-05-18T05:49:27.694258+00:00
+Name: Solivox EchoPulse Wireless Smart Speaker
+Category: Smart Home Audio
+Description: Experience immersive sound and intelligent connectivity with the Solivox EchoPulse Wireless Smart Speaker. Designed for seamless integration into any home, this sleek speaker features adaptive voice recognition, multi-room playback, and a 360° audio field. Effortlessly control your music, smart devices, and daily routines with intuitive touch controls or hands-free voice commands. Compatible with major streaming services and smart home ecosystems, the EchoPulse delivers rich, dynamic sound and a smarter living experience in a compact, modern design.
+Price: 123.45 USD
+Tags: smart speaker, wireless audio, home automation, voice control
+Attributes:
+  Color: Graphite Black
+  Connectivity: Wi-Fi, Bluetooth 5.2
+  Voice Assistant: Built-in Solivox AI
+  Battery Life: Up to 14 hours
+  Dimensions: 7.2 x 3.1 x 3.1 inches
+Stock Quantity: 123
+Rating: 4.6

@@ -1,0 +1,25 @@
+{
+  "product_id": "b147b440-2092-4a79-95c7-18ce779a96d3",
+  "created_at": "2025-05-18T05:51:45.724445+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Truffle-Infused Sea Salt Cashews",
+  "description": "Elevate your snacking experience with our Truffle-Infused Sea Salt Cashews. Each batch features premium, whole cashews gently roasted and coated in a delicate blend of Italian black truffle essence and hand-harvested sea salt. The result is a luxurious, savory snack with an irresistibly earthy aroma and a rich, buttery crunch. Perfect as an upscale treat for yourself or as a sophisticated addition to charcuterie boards and gift baskets. Non-GMO and packaged in a resealable pouch to preserve freshness.",
+  "price": 16.99,
+  "currency": "USD",
+  "tags": [
+    "gourmet",
+    "cashews",
+    "truffle",
+    "snack",
+    "non-GMO"
+  ],
+  "attributes": {
+    "weight": "200g",
+    "origin": "Italy",
+    "allergen_information": "Contains tree nuts",
+    "packaging": "Resealable pouch",
+    "ingredients": "Cashews, sea salt, black truffle essence, olive oil"
+  },
+  "stock_quantity": 84,
+  "rating": 4.6
+}

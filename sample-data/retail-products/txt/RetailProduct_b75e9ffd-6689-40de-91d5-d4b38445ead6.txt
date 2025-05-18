@@ -1,0 +1,15 @@
+Product ID: b75e9ffd-6689-40de-91d5-d4b38445ead6
+Created At: 2025-05-18T05:49:39.358395+00:00
+Name: VertexPulse Smart Home Hub Pro
+Category: Smart Home Devices
+Description: Experience seamless control over your connected home with the VertexPulse Smart Home Hub Pro. This advanced hub integrates effortlessly with leading smart devices, including lights, security cameras, thermostats, and voice assistants. Enjoy intuitive app controls, customizable automation routines, and robust security features—all in a sleek, compact design that fits any décor. With lightning-fast response times and support for the latest wireless protocols, the VertexPulse Hub Pro is your gateway to a smarter, safer, and more convenient home environment.
+Price: 123.45 USD
+Tags: smart home, hub, automation, IoT
+Attributes:
+  Wireless Protocols: Wi-Fi 6, Zigbee, Bluetooth 5.2
+  Voice Assistant Compatibility: Alexa, Google Assistant, Siri
+  Connectivity: Dual-band Wi-Fi, Ethernet
+  Dimensions: 4.2 x 4.2 x 1.1 inches
+  Warranty: 2 years
+Stock Quantity: 123
+Rating: 4.6

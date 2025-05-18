@@ -1,0 +1,36 @@
+product_id: 14434ef8-03a6-4488-946d-747fee38ed9a
+created_at: 2025-05-18 05:59:29.498674+00:00
+name: Lumina S20 Mirrorless Pro Kit
+category: mirrorless cameras
+description: "Capture every moment in stunning detail with the Lumina S20 Mirrorless\
+  \ Pro Kit. Featuring a 24.2MP APS-C sensor, lightning-fast autofocus, and 4K video\
+  \ recording, this camera is perfect for both budding photographers and seasoned\
+  \ pros. Its lightweight magnesium alloy body makes it ideal for travel, while Wi-Fi\
+  \ and Bluetooth connectivity ensure seamless sharing. The kit includes a versatile\
+  \ 18-55mm lens, rechargeable battery, and a padded shoulder strap\u2014everything\
+  \ you need to start shooting right out of the box."
+price: 899.99
+currency: USD
+tags:
+- mirrorless
+- camera
+- 4K
+- photography
+- Wi-Fi
+- beginner
+- professional
+- APS-C
+- kit
+- Lumina
+attributes:
+  colour: black
+  sensor: 24.2MP APS-C CMOS
+  connectivity: Wi-Fi, Bluetooth
+  lens_mount: Lumina E-mount
+  video_resolution: 4K UHD
+  weight: 430g
+  battery_type: rechargeable Li-ion
+  display: 3" tilting touchscreen
+  kit_contents: camera body, 18-55mm lens, battery, charger, shoulder strap
+stock_quantity: 74
+rating: 4.7

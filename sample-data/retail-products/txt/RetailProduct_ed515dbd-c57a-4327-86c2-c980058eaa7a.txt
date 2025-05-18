@@ -1,0 +1,16 @@
+Product ID: ed515dbd-c57a-4327-86c2-c980058eaa7a
+Created At: 2025-05-18T05:48:58.591417+00:00
+Name: Vistara UltraHD Smart Projector X500
+Category: Home Theater Projectors
+Description: Transform your living room into a cinematic paradise with the Vistara UltraHD Smart Projector X500. Experience breathtaking 4K resolution, vibrant color accuracy, and immersive 360° surround sound. Its integrated Wi-Fi and Bluetooth connectivity let you stream your favorite shows and mirror your devices seamlessly. The ultra-quiet cooling system ensures distraction-free viewing, while the compact design fits any space. Ideal for movie nights, gaming, or professional presentations, the X500 delivers unrivaled performance and convenience.
+Price: 749.99 USD
+Tags: projector, smart home, 4K, home theater
+Attributes:
+  Resolution: 3840x2160 (4K UHD)
+  Brightness: 3200 lumens
+  Connectivity: Wi-Fi, Bluetooth, HDMI, USB
+  Sound: Built-in 360° surround speakers
+  Lamp Life: 30,000 hours
+  Weight: 5.2 lbs
+Stock Quantity: 123
+Rating: 4.6

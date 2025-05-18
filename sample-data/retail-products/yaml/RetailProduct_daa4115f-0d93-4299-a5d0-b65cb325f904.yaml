@@ -1,0 +1,32 @@
+product_id: daa4115f-0d93-4299-a5d0-b65cb325f904
+created_at: 2025-05-18 06:00:28.918771+00:00
+name: LuminaPro X7 Mirrorless Camera
+category: Mirrorless Cameras
+description: "Capture stunning photos and cinematic 4K video with the LuminaPro X7\
+  \ Mirrorless Camera. Designed for both passionate hobbyists and seasoned professionals,\
+  \ the X7 features a 28.2MP CMOS sensor, lightning-fast autofocus, and intuitive\
+  \ touchscreen controls. Its lightweight magnesium alloy body ensures comfort during\
+  \ long shoots, while built-in Wi-Fi and Bluetooth make sharing your masterpieces\
+  \ effortless. Whether you\u2019re shooting landscapes, portraits, or action scenes,\
+  \ the LuminaPro X7 delivers exceptional clarity and color accuracy in every frame."
+price: 1299.99
+currency: USD
+tags:
+- mirrorless
+- camera
+- photography
+- 4K
+- Wi-Fi
+- professional
+- touchscreen
+- lightweight
+attributes:
+  colour: graphite black
+  sensor: 28.2MP CMOS
+  video: 4K UHD
+  connectivity: Wi-Fi, Bluetooth
+  screen: 3-inch touchscreen
+  weight: 510g
+  lens_mount: Lumina X
+stock_quantity: 46
+rating: 4.7

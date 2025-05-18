@@ -1,0 +1,31 @@
+product_id: fb50b017-0ec6-4ea6-86d9-65bb9cebd5b2
+created_at: 2025-05-18 06:00:28.594511+00:00
+name: LuminaX ProShot 4K Mirrorless Camera
+category: mirrorless cameras
+description: "Capture stunning photos and cinematic 4K videos with the LuminaX ProShot,\
+  \ a lightweight mirrorless camera designed for both aspiring creators and seasoned\
+  \ professionals. With a 24.2MP CMOS sensor, lightning-fast autofocus, and intuitive\
+  \ touchscreen controls, this camera delivers exceptional clarity and creative flexibility.\
+  \ Built-in Wi-Fi and Bluetooth let you instantly share your moments, while the compact\
+  \ magnesium alloy body ensures durability on every adventure. Elevate your photography\
+  \ with the LuminaX ProShot\u2014where innovation meets inspiration."
+price: 999.99
+currency: USD
+tags:
+- mirrorless
+- 4K video
+- photography
+- Wi-Fi
+- professional
+- compact
+- LuminaX
+attributes:
+  colour: graphite black
+  sensor: 24.2MP CMOS
+  connectivity: Wi-Fi, Bluetooth
+  weight: 430g
+  screen: 3-inch touchscreen LCD
+  lens_mount: LuminaX E-mount
+  battery_life: 420 shots
+stock_quantity: 78
+rating: 4.7

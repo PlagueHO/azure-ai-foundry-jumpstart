@@ -1,0 +1,32 @@
+product_id: daddc34c-f99c-42ab-a29e-649ff6e9537c
+created_at: 2025-05-18 06:00:20.447213+00:00
+name: Lumina X7 Pro Mirrorless Camera
+category: Mirrorless Cameras
+description: Capture every moment in stunning clarity with the Lumina X7 Pro Mirrorless
+  Camera. Engineered for both amateurs and professionals, the X7 Pro features a 32MP
+  APS-C sensor, lightning-fast autofocus, and 4K Ultra HD video recording. Its compact,
+  lightweight body is perfect for travel, while built-in Wi-Fi lets you share your
+  shots instantly. With intuitive controls and a crisp OLED viewfinder, the Lumina
+  X7 Pro is your ultimate creative companion for photography and videography adventures.
+price: 1199.99
+currency: USD
+tags:
+- mirrorless
+- 4K
+- APS-C
+- camera
+- photography
+- Wi-Fi
+- OLED
+- professional
+- travel
+attributes:
+  colour: graphite black
+  sensor: 32MP APS-C CMOS
+  lens_mount: Lumina X
+  screen: 3-inch tilting touchscreen
+  connectivity: Wi-Fi, Bluetooth
+  video_resolution: 4K Ultra HD
+  weight: 410g
+stock_quantity: 78
+rating: 4.7

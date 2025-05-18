@@ -1,0 +1,24 @@
+{
+  "product_id": "d8660311-f8ab-45fd-8292-8fb1feaed706",
+  "created_at": "2025-05-18T05:51:53.547731+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Soleil Citrus & Herb Olive Medley",
+  "description": "Elevate your appetizer game with Soleil Citrus & Herb Olive Medley. This handpicked assortment of green and black olives is marinated in a zesty blend of sun-ripened citrus peels, fresh rosemary, thyme, and a touch of garlic. A splash of cold-pressed olive oil enhances the flavor profile, making these olives the perfect companion for cheese boards, salads, or Mediterranean-inspired dishes. Naturally gluten-free and vegan, this medley is a gourmet treat for discerning palates.",
+  "price": 8.99,
+  "currency": "USD",
+  "tags": [
+    "olives",
+    "gourmet",
+    "vegan",
+    "snack"
+  ],
+  "attributes": {
+    "weight": "200g",
+    "ingredients": "Green olives, black olives, olive oil, citrus peel, rosemary, thyme, garlic, sea salt",
+    "allergens": "None",
+    "shelf_life": "12 months",
+    "origin": "Spain"
+  },
+  "stock_quantity": 74,
+  "rating": 4.6
+}

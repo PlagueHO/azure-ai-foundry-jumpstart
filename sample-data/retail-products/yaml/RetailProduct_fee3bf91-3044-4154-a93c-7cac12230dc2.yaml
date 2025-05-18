@@ -1,0 +1,31 @@
+product_id: fee3bf91-3044-4154-a93c-7cac12230dc2
+created_at: 2025-05-18 06:00:28.825742+00:00
+name: LuminaX UltraZoom Pro 28X
+category: digital cameras
+description: Capture every moment in stunning detail with the LuminaX UltraZoom Pro
+  28X. Featuring a powerful 28x optical zoom lens and 24MP sensor, this camera lets
+  you shoot crisp photos and vibrant 4K videos from any distance. Its intuitive touchscreen,
+  fast autofocus, and built-in Wi-Fi make sharing and editing a breeze. Whether you're
+  a seasoned photographer or just getting started, the UltraZoom Pro 28X will elevate
+  your creativity and ensure you never miss a shot.
+price: 429.99
+currency: USD
+tags:
+- zoom camera
+- digital camera
+- 4K video
+- Wi-Fi
+- photography
+- high resolution
+- touchscreen
+attributes:
+  colour: black
+  sensor_resolution: 24MP
+  optical_zoom: 28x
+  video_resolution: 4K UHD
+  connectivity: Wi-Fi, USB-C
+  screen: 3-inch touchscreen LCD
+  battery_life: 450 shots per charge
+  weight: 540g
+stock_quantity: 87
+rating: 4.7

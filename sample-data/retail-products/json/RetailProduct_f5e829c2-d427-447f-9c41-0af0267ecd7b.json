@@ -1,0 +1,23 @@
+{
+  "product_id": "f5e829c2-d427-447f-9c41-0af0267ecd7b",
+  "created_at": "2025-05-18T05:51:58.371376+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Golden Olive Tapenade & Sea Salt Crisp Set",
+  "description": "Elevate your next gathering with our Golden Olive Tapenade & Sea Salt Crisp Set. The hand-blended tapenade features sun-ripened olives, a hint of preserved lemon, and a drizzle of cold-pressed olive oil, delivering a rich and tangy Mediterranean flavor. Paired with crunchy, artisan-baked sea salt crisps, this set is perfect for entertaining or indulging in a savory snack. Ready to serve and beautifully packaged, it's a delightful gift or a treat for your own table.",
+  "price": 18.95,
+  "currency": "USD",
+  "tags": [
+    "tapenade",
+    "gourmet",
+    "snack",
+    "gift"
+  ],
+  "attributes": {
+    "weight": "320g",
+    "origin": "Spain",
+    "dietary": "Vegetarian",
+    "packaging": "Recyclable glass jar and paper box"
+  },
+  "stock_quantity": 87,
+  "rating": 4.6
+}

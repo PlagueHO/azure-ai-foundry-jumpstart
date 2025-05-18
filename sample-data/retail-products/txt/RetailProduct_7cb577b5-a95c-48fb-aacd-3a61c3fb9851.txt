@@ -1,0 +1,15 @@
+Product ID: 7cb577b5-a95c-48fb-aacd-3a61c3fb9851
+Created At: 2025-05-18T05:49:35.295043+00:00
+Name: LuminaSync Smart Wi-Fi LED Strip (5m)
+Category: Smart Home Lighting
+Description: Transform your living space with the LuminaSync Smart Wi-Fi LED Strip. Offering 16 million customizable colors, dynamic scene modes, and music-sync capabilities, this 5-meter strip lets you set the perfect mood for any occasion. Control lighting from anywhere using the Lumina app or voice assistants like Alexa and Google Home. Easy installation with strong adhesive backing makes it ideal for bedrooms, kitchens, or entertainment centers. Energy efficient and long-lasting, LuminaSync brings vibrant ambiance to your home effortlessly.
+Price: 49.99 USD
+Tags: smart lighting, LED strip, Wi-Fi, home automation
+Attributes:
+  Length: 5 meters
+  Connectivity: Wi-Fi (2.4GHz)
+  Compatibility: Alexa, Google Home, Lumina app
+  Color Options: 16 million RGB
+  Power: 24W
+Stock Quantity: 123
+Rating: 4.6

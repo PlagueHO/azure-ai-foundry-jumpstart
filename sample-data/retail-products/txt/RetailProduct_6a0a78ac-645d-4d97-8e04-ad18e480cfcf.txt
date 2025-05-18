@@ -1,0 +1,15 @@
+Product ID: 6a0a78ac-645d-4d97-8e04-ad18e480cfcf
+Created At: 2025-05-18T05:49:35.319339+00:00
+Name: NovaPulse Wireless Charging Pad Pro
+Category: Wireless Chargers
+Description: Experience effortless charging with the NovaPulse Wireless Charging Pad Pro. Featuring ultra-fast 15W output, universal Qi compatibility, and a non-slip surface, this sleek charging pad keeps your devices powered up and secure. Its slim profile fits seamlessly into any workspace or nightstand, while integrated overheat and surge protection ensures safe charging every time. Perfect for smartphones, earbuds, and other Qi-enabled devices—simply place and power up. Redefine convenience with NovaPulse.
+Price: 39.99 USD
+Tags: wireless, charging, Qi-compatible, fast-charge, electronics
+Attributes:
+  Color: Midnight Black
+  Output Power: 15W
+  Compatibility: Qi-enabled devices
+  Material: Aluminum Alloy & Silicone
+  Dimensions: 98mm x 98mm x 7mm
+Stock Quantity: 123
+Rating: 4.6

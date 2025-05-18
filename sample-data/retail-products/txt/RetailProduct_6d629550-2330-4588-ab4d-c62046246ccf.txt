@@ -1,0 +1,17 @@
+Product ID: 6d629550-2330-4588-ab4d-c62046246ccf
+Created At: 2025-05-18T05:49:38.602608+00:00
+Name: Sonitrek Pulse 400 Wireless Bluetooth Headphones
+Category: Audio & Headphones
+Description: Experience immersive sound with the Sonitrek Pulse 400 Wireless Bluetooth Headphones. Featuring dynamic 40mm drivers, plush memory foam ear cushions, and a 30-hour battery life, these headphones are designed for all-day comfort and superior audio quality. Built-in touch controls let you manage calls, music, and voice assistants with ease, while active noise cancellation ensures uninterrupted listening. Sleek, foldable, and lightweight, the Pulse 400 is perfect for travel, work, or home use. Elevate your listening experience and enjoy true wireless freedom.
+Price: 123.45 USD
+Tags: wireless, bluetooth, headphones, audio, noise-cancelling
+Attributes:
+  Color: Matte Black
+  Connectivity: Bluetooth 5.3
+  Battery Life: Up to 30 hours
+  Weight: 235g
+  Noise Cancellation: Active
+  Microphone: Built-in
+  Foldable: Yes
+Stock Quantity: 123
+Rating: 4.6

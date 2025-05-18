@@ -1,0 +1,15 @@
+Product ID: 4561e8b4-ce0c-4699-905f-24d9e621ff1f
+Created At: 2025-05-18T05:49:35.450599+00:00
+Name: Vistara SmartView 4K Ultra HD Streaming Stick
+Category: Streaming Devices
+Description: Experience seamless entertainment with the Vistara SmartView 4K Ultra HD Streaming Stick. Delivering vibrant visuals and crisp audio, this pocket-sized device transforms any TV into a smart hub. Effortlessly access all your favorite apps, including Netflix, Hulu, and Disney+, with lightning-fast Wi-Fi 6 connectivity. Voice control and an ergonomic remote make navigation a breeze, while automatic updates ensure you always enjoy the latest features. Perfect for movie nights or binge-watching your favorite series.
+Price: 123.45 USD
+Tags: streaming, 4K, smart-TV, entertainment
+Attributes:
+  Resolution: 4K Ultra HD
+  Connectivity: Wi-Fi 6, HDMI 2.1
+  Voice Control: Yes (Alexa & Google Assistant)
+  Included Accessories: Remote, USB Power Adapter, HDMI Extender
+  Compatibility: All HDMI-enabled TVs
+Stock Quantity: 123
+Rating: 4.6

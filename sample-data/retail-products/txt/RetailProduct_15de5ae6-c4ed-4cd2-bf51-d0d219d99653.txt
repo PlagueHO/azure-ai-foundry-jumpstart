@@ -1,0 +1,15 @@
+Product ID: 15de5ae6-c4ed-4cd2-bf51-d0d219d99653
+Created At: 2025-05-18T05:49:35.400952+00:00
+Name: SonicWave Bluetooth Soundbar X400
+Category: Home Audio
+Description: Transform your living room into a cinematic soundscape with the SonicWave Bluetooth Soundbar X400. Featuring immersive 3D surround sound, deep bass technology, and seamless wireless connectivity, the X400 elevates movie nights, gaming sessions, and music streaming. Its sleek, low-profile design fits effortlessly under any TV, while intuitive touch controls and a convenient remote put audio mastery at your fingertips. Compatible with all major streaming devices and smart TVs, the X400 delivers crystal-clear audio with minimal setup.
+Price: 123.45 USD
+Tags: bluetooth, soundbar, home-audio, wireless
+Attributes:
+  Color: Midnight Black
+  Connectivity: Bluetooth 5.2, Optical, AUX, HDMI ARC
+  Output Power: 120W
+  Dimensions: 35" x 3" x 2.5"
+  Warranty: 2 Years
+Stock Quantity: 123
+Rating: 4.6

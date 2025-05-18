@@ -1,0 +1,16 @@
+Product ID: 33b0d945-5b89-4e77-ab96-c8e988fe12ae
+Created At: 2025-05-18T05:49:34.484961+00:00
+Name: NovaPulse Bluetooth Smart Speaker
+Category: Portable Audio
+Description: Experience immersive sound on-the-go with the NovaPulse Bluetooth Smart Speaker. Featuring 360° stereo audio, a 16-hour rechargeable battery, and intuitive touch controls, this compact device is engineered for both indoor and outdoor adventures. Seamlessly pair with any Bluetooth-enabled device for crisp calls and dynamic music playback. The NovaPulse is IPX7 water-resistant and includes a built-in LED light ring for ambient mood lighting, making it the perfect companion for parties, camping, or relaxing at home.
+Price: 123.45 USD
+Tags: bluetooth, speaker, portable, audio, waterproof
+Attributes:
+  Connectivity: Bluetooth 5.2
+  Battery Life: 16 hours
+  Water Resistance: IPX7
+  Weight: 420g
+  Dimensions: 85x85x110mm
+  LED Lighting: Yes
+Stock Quantity: 123
+Rating: 4.6

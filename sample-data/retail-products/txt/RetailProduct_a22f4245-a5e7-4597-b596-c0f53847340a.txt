@@ -1,0 +1,16 @@
+Product ID: a22f4245-a5e7-4597-b596-c0f53847340a
+Created At: 2025-05-18T05:49:27.689178+00:00
+Name: SoniqWave True Wireless Earbuds Pro
+Category: Audio Accessories
+Description: Elevate your listening experience with the SoniqWave True Wireless Earbuds Pro. Featuring advanced noise-cancelling technology and immersive 3D surround sound, these lightweight earbuds deliver crisp highs and deep bass for music, calls, and podcasts. The ergonomic design ensures a secure, comfortable fit, while the IPX5 water-resistance rating makes them perfect for workouts or commutes. Enjoy up to 36 hours of playtime with the sleek charging case and seamless Bluetooth 5.3 connectivity for instant pairing with any device.
+Price: 123.45 USD
+Tags: earbuds, wireless, audio, bluetooth, electronics
+Attributes:
+  Color: Midnight Black
+  Connectivity: Bluetooth 5.3
+  Battery Life: Up to 36 hours
+  Water Resistance: IPX5
+  Noise Cancellation: Active
+  Weight: 4.5g per earbud
+Stock Quantity: 123
+Rating: 4.6

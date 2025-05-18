@@ -1,0 +1,25 @@
+{
+  "product_id": "97292f61-9bd2-4851-bdfc-a8ced0a59283",
+  "created_at": "2025-05-18T05:51:57.892443+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Sundried Tomato & Basil Artisan Crackers",
+  "description": "Elevate your snacking experience with our Sundried Tomato & Basil Artisan Crackers. Handcrafted in small batches, these crispy crackers blend sun-ripened tomatoes with fragrant basil for a burst of Mediterranean flavor in every bite. Perfect for pairing with cheeses, dips, or enjoying solo, each cracker offers a satisfying crunch and a savory, herby aroma. Made with non-GMO ingredients and olive oil, they\u2019re a delicious, wholesome treat for gatherings or everyday enjoyment.",
+  "price": 7.99,
+  "currency": "USD",
+  "tags": [
+    "artisan",
+    "snack",
+    "crackers",
+    "gourmet",
+    "vegetarian"
+  ],
+  "attributes": {
+    "weight": "150g",
+    "ingredients": "Wheat flour, sundried tomato, basil, olive oil, sea salt, yeast",
+    "allergens": "Contains wheat; may contain traces of sesame and nuts",
+    "shelf_life": "10 months",
+    "origin": "USA"
+  },
+  "stock_quantity": 87,
+  "rating": 4.6
+}

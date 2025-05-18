@@ -1,0 +1,23 @@
+{
+  "product_id": "19f70e7b-d326-4ec9-86d2-e8ba1406c247",
+  "created_at": "2025-05-18T05:51:58.120439+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Golden Sunlight Truffle Popcorn",
+  "description": "Indulge in the luxurious taste of Golden Sunlight Truffle Popcorn, a gourmet snack crafted with hand-popped corn kernels, tossed in extra-virgin olive oil and dusted with real black truffle flakes. Each bite delivers an irresistible, earthy aroma and a satisfying crunch, perfect for elevating movie nights or impressing guests. Free from artificial additives and preservatives, this popcorn offers a sophisticated flavor experience for discerning snackers. Enjoy it straight from the bag or pair with your favorite sparkling beverage for a truly decadent treat.",
+  "price": 14.99,
+  "currency": "USD",
+  "tags": [
+    "popcorn",
+    "truffle",
+    "gourmet",
+    "snack"
+  ],
+  "attributes": {
+    "weight": "120g",
+    "ingredients": "Non-GMO corn, extra-virgin olive oil, black truffle flakes, sea salt",
+    "allergens": "May contain traces of milk and soy",
+    "shelf_life": "9 months"
+  },
+  "stock_quantity": 87,
+  "rating": 4.6
+}

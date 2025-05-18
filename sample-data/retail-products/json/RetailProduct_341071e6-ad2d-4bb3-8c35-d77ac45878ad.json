@@ -1,0 +1,24 @@
+{
+  "product_id": "341071e6-ad2d-4bb3-8c35-d77ac45878ad",
+  "created_at": "2025-05-18T05:51:58.157876+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Truffle-Infused Sea Salt Almonds",
+  "description": "Elevate your snacking experience with our Truffle-Infused Sea Salt Almonds. Hand-selected California almonds are delicately roasted and tossed with a blend of natural sea salt and decadent truffle essence, creating an irresistible savory treat. Perfect for entertaining guests or indulging on your own, these premium nuts offer a harmonious balance of crunch and umami flavor. Enjoy them as a sophisticated party snack, a luxurious addition to cheese boards, or a gourmet topping for salads and pasta.",
+  "price": 13.99,
+  "currency": "USD",
+  "tags": [
+    "almonds",
+    "truffle",
+    "gourmet",
+    "snack"
+  ],
+  "attributes": {
+    "weight": "6 oz (170 g)",
+    "allergen_info": "Contains tree nuts (almonds)",
+    "origin": "California, USA",
+    "packaging": "Resealable pouch",
+    "suitable_for": "Vegetarian"
+  },
+  "stock_quantity": 87,
+  "rating": 4.6
+}

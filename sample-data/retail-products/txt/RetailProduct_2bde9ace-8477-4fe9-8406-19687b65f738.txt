@@ -1,0 +1,15 @@
+Product ID: 2bde9ace-8477-4fe9-8406-19687b65f738
+Created At: 2025-05-18T05:49:33.978801+00:00
+Name: Vyntrix EchoSound Wireless Earbuds
+Category: Audio Accessories
+Description: Elevate your listening experience with the Vyntrix EchoSound Wireless Earbuds. Designed for audiophiles and casual listeners alike, these earbuds deliver crisp highs, deep bass, and immersive sound clarity. Featuring advanced noise cancellation, up to 36 hours of playtime with a wireless charging case, and an ergonomic design for all-day comfort, EchoSound keeps you connected and entertained wherever you go. Instantly pair with any Bluetooth-enabled device and enjoy seamless touch controls for music and calls. Perfect for commutes, workouts, or simply relaxing at home.
+Price: 123.45 USD
+Tags: wireless, earbuds, audio, bluetooth, noise-cancelling
+Attributes:
+  Color: Midnight Black
+  Connectivity: Bluetooth 5.3
+  Battery Life: 36 hours (with case)
+  Water Resistance: IPX6
+  Charging: Wireless & USB-C
+Stock Quantity: 123
+Rating: 4.6

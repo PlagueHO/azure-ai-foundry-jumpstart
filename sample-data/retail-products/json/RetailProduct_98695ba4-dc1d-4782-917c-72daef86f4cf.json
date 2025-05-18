@@ -1,0 +1,25 @@
+{
+  "product_id": "98695ba4-dc1d-4782-917c-72daef86f4cf",
+  "created_at": "2025-05-18T05:51:45.703509+00:00",
+  "category": "Gourmet Snacks",
+  "name": "Truffle-Infused Parmesan Crisps",
+  "description": "Elevate your snacking experience with our Truffle-Infused Parmesan Crisps. Crafted from aged Parmesan cheese and delicately infused with aromatic black truffle oil, each crisp delivers a savory crunch and a luxurious burst of umami flavor. Perfect for entertaining guests, pairing with fine wines, or adding a gourmet touch to salads and soups. Gluten-free and high in protein, these artisanal crisps are both indulgent and guilt-free. Presented in a resealable 150g pouch to preserve freshness.",
+  "price": 14.99,
+  "currency": "USD",
+  "tags": [
+    "gourmet",
+    "truffle",
+    "snack",
+    "parmesan",
+    "gluten-free"
+  ],
+  "attributes": {
+    "weight": "150g",
+    "ingredients": "Parmesan cheese, black truffle oil, sea salt",
+    "allergens": "Contains milk",
+    "shelf_life": "9 months",
+    "origin": "Italy"
+  },
+  "stock_quantity": 87,
+  "rating": 4.6
+}
