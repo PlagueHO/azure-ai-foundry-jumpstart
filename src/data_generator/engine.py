@@ -299,7 +299,11 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
             Synchronisation primitive controlling overall concurrency.
         """
         async with semaphore:
-            prompt = self.tool.build_prompt(output_format)
+            unique_id = self.tool.get_unique_id()       # use tool-provided id
+            prompt = self.tool.build_prompt(
+                output_format,
+                unique_id=unique_id,                    # pass to prompt builder
+            )
             prompt_fn = self.create_prompt_function(
                 template=prompt,
                 function_name="generate",
@@ -313,7 +317,7 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
 
             await asyncio.to_thread(
                 self._persist,
-                index=index,
+                unique_id=unique_id,                    # drive filename
                 data=processed,
                 out_dir=out_dir,
                 output_format=output_format,
@@ -326,10 +330,11 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
     def _persist(
         self,
         *,
-        index: int,
         data: Any,
         out_dir: Path,
         output_format: str,
+        unique_id: str | None = None,
+        index: int | None = None,
     ) -> None:
         """
         Persist **data** to disk using the requested *output_format*.
@@ -347,7 +352,13 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
             default branch which falls back to ``str(data)``.
         """
         out_dir.mkdir(parents=True, exist_ok=True)
-        file_path = out_dir / f"{index:04d}.{output_format}"
+        if unique_id:
+            filename = f"{self.tool.toolName}_{unique_id}.{output_format}"
+        elif index is not None:
+            filename = f"{index:04d}.{output_format}"
+        else:
+            raise ValueError("Either unique_id or index must be provided.")
+        file_path = out_dir / filename
 
         if output_format == "json":
             with file_path.open("w", encoding="utf-8") as fp:

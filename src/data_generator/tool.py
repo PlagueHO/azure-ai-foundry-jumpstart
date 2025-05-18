@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import uuid
 from abc import ABC, abstractmethod
 from typing import Any, ClassVar, Dict, List, Type
 
@@ -70,6 +71,10 @@ class DataGeneratorTool(ABC):
     # ------------------------------------------------------------------ #
     # Optional / overridable                                             #
     # ------------------------------------------------------------------ #
+    def get_unique_id(self) -> str:
+        """Return a unique identifier for the item. Override to use custom IDs."""
+        return str(uuid.uuid4())
+
     def supported_output_formats(self) -> List[str]:
         """Override to narrow/widen acceptable output formats."""
         return ["json"]
