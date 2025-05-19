@@ -31,7 +31,7 @@ param aiFoundryProjectDescription = readEnvironmentVariable('AZURE_AI_FOUNDRY_PR
 param aiFoundryProjectFriendlyName = readEnvironmentVariable('AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME', 'Sample Project')
 
 // Sample data parameters
-param deploySampleOpenAiModels = toLower(readEnvironmentVariable('DEPLOY_SAMPLE_OPENAI_MODELS', 'false')) == 'true'
+param deploySampleOpenAiModels = toLower(readEnvironmentVariable('DEPLOY_SAMPLE_OPENAI_MODELS', 'true')) == 'true'
 param deploySampleData = toLower(readEnvironmentVariable('DEPLOY_SAMPLE_DATA', 'false')) == 'true'
 
 // Bastion host parameters

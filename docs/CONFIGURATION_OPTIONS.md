@@ -26,7 +26,7 @@ These options control the creation of sample data and configuration in the Azure
 ### DEPLOY_SAMPLE_OPENAI_MODELS
 
 Deploy seme common OpenAI models into the Azure OpenAI Service connected to the Azure AI Foundry Hub.
-Default: `false`.
+Default: `true`.
 
 This will deploy the following models into the Azure OpenAI Service. If the models aren't available in the selected region, or the quota is exceeded, the deployment will fail:
 
@@ -46,7 +46,7 @@ This will deploy the following models into the Azure OpenAI Service. If the mode
 The list of models, versions, quota and TPM are defined in the [infra/sample-openai-models.json](../infra/sample-openai-models.json) file. If you wish to define an alternate models, you can edit this file or alternatively set the [AZURE_OPENAI_MODELS](#azure-openai-models) environment variable.
 
 ```powershell
-azd env set DEPLOY_SAMPLE_OPENAI_MODELS true
+azd env set DEPLOY_SAMPLE_OPENAI_MODELS false
 ```
 
 ### DEPLOY_SAMPLE_DATA

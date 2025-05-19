@@ -43,7 +43,7 @@ There are several features of the solution accelerator that are worth highlighti
 - **Hub deployment and supporting resources**: Deployment of an Azure AI Hub and required supporting resources.
 - **Project deployment**: Optional deployment of an [Azure AI Foundry project during](https://learn.microsoft.com/azure/ai-foundry/concepts/ai-resources#organize-work-in-projects-for-customization) in the hub.
 - **Diagnostic settings**: Diagnostic settings are configured for all resources to send logs to a Log Analytics workspace.
-- **Model deployment**: Optionally deploy a selection of current AI models, speeding up getting started.
+- **Model deployment**: Deploy a selection of current AI models, speeding up getting started.
 - **Sample data deployment**: Optionally upload sample data to the storage accounts help you get started with Azure AI Foundry.
 - **Sample data creation**: Scripts to create custom sample data for using with Azure AI Foundry.
 
