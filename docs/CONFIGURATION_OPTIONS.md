@@ -58,6 +58,10 @@ Default: `false`.
 When set to `true`, the following containers will be created in the storage account:
 
 - `tech-support`
+- `retail-products`
+- `healthcare-records`
+- `financial-transactions`
+- `insurance-claims`
 
 ```powershell
 azd env set DEPLOY_SAMPLE_DATA true

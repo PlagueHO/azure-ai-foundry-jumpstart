@@ -122,13 +122,7 @@ var bastionHostName = '${abbrs.networkBastionHosts}${environmentName}'
 var networkDefaultAction = azureNetworkIsolation ? 'Deny' : 'Allow'
 
 // List of sample data containers
-var sampleDataContainersArray array = [
-  'tech-support'
-  'retail-products'
-  'healthcare-records'
-  'financial-transactions'
-  'insurance-claims'
-]
+var sampleDataContainersArray = loadJsonContent('./sample-data-containers.json')
 
 // ---------- RESOURCE GROUP ----------
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
