@@ -51,8 +51,8 @@ There are several features of the solution accelerator that are worth highlighti
 
 You can deploy the application using one of the following methods:
 
-- [1. Azure Developer CLI](#1-azure-developer-cli)
-- [2. Azure Portal Deployment](#2-azure-portal-deployment)
+- [Azure Developer CLI](azure-developer-cli)
+- [Azure Portal Deployment](azure-portal-deployment)
 
 ---
 
@@ -61,13 +61,10 @@ You can deploy the application using one of the following methods:
 > [!IMPORTANT]
 > This section will create Azure resources and deploy the solution from your local environment using the Azure Developer CLI. You do not need to clone this repo to complete these steps.
 
-1. Download the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/overview)
-
 <details>
   <summary><b>If you have not cloned this repo</b></summary>
 
-#### If you have not cloned this repo
-
+1. Download the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/overview)
 1. If you have not cloned this repo, you can use the `azd init -t PlagueHO/azure-ai-foundry-jumpstart` command to clone the repo and initialize it.
 
    ```powershell
@@ -99,8 +96,7 @@ You can deploy the application using one of the following methods:
 <details>
   <summary><b>If you have already cloned this repo</b></summary>
 
-#### If you have already cloned this repo
-
+1. Download the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/overview)
 1. If you have already cloned this repo, change directory to the repo root directory.
 
    ```powershell
@@ -131,20 +127,20 @@ You can deploy the application using one of the following methods:
 </details>
 
 <details>
-  <summary><b>Customize the solution accelerator deployment</b></summary>
-
-#### Customize the solution accelerator deployment
+  <summary><b>Customize the solution accelerator settings</b></summary>
 
 You can control many aspects of the AI Foundry environment during deployment by setting the environment values using the `azd env set` command before running the `azd up` command. For example:
 
 ```powershell
 azd env set AZURE_NETWORK_ISOLATION false
 azd env set DEPLOY_SAMPLE_OPENAI_MODELS true
+azd env set DEPLOY_SAMPLE_DATA true
 azd env set AZURE_CONTAINER_REGISTRY_DEPLOY false
 azd env set AZURE_AI_SEARCH_DEPLOY false
 azd env set AZURE_AI_FOUNDRY_PROJECT true
 azd env set AZURE_AI_FOUNDRY_HUB_DESCRIPTION "Sandbox hub for PoC work"
 azd env set AZURE_AI_FOUNDRY_HUB_FRIENDLY_NAME "My AI Hub"
+azd env set AZURE_AI_FOUNDRY_PROJECT_DEPLOY true
 azd env set AZURE_AI_FOUNDRY_PROJECT_NAME "my-ai-project"
 azd env set AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION "This is my first AI project."
 azd env set AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME "My AI Project"
