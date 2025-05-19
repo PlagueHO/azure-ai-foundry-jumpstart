@@ -25,6 +25,13 @@ from .tool import DataGeneratorTool
 
 
 def _add_common_args(p: argparse.ArgumentParser) -> None:
+    """Register the arguments shared by all scenarios.
+
+    Parameters
+    ----------
+    p:
+        The argparse parser to which the common arguments will be added.
+    """
     p.add_argument("--scenario", required=True, help="Registered scenario name.")
     p.add_argument("--count", type=int, default=1, help="Number of records.")
     p.add_argument("--out-dir", type=Path, required=True, help="Output directory.")
@@ -41,12 +48,20 @@ def _add_common_args(p: argparse.ArgumentParser) -> None:
 
 
 def main(argv: List[str] | None = None) -> None:  # noqa: C901 (argparse flow)
+    """Entry point for the `generate-data` CLI.
+
+    This function performs a *two-phase* parsing:
+    1.  Parse only the common arguments so we can discover the requested
+        `DataGeneratorTool`.
+    2.  After injecting scenario-specific arguments we re-parse the full
+        command line and delegate validation to the tool instance.
+    """
     argv = argv or sys.argv[1:]
 
     # ---------------- Phase-1: minimal parse --------------------------- #
     phase1 = argparse.ArgumentParser(add_help=False)
     _add_common_args(phase1)
-    known, unknown = phase1.parse_known_intermixed_args(argv)
+    known, _unknown = phase1.parse_known_intermixed_args(argv)  # renamed variable
 
     # Retrieve the requested tool
     try:

@@ -6,7 +6,7 @@ import logging
 import uuid
 
 from abc import ABC, abstractmethod
-from typing import Any, ClassVar, Dict, List, Type
+from typing import Any, ClassVar, Dict, List, Type, Callable
 
 import yaml
 
@@ -78,31 +78,48 @@ class DataGeneratorTool(ABC):
         """Return a unique identifier for the item. Override to use custom IDs."""
         return str(uuid.uuid4())
 
-    def supported_output_formats(self) -> List[str]:
-        """Override to narrow/widen acceptable output formats."""
-        return ["json"]
+    # ------------------------------------------------------------------ #
+    # Format helpers                                                     #
+    # ------------------------------------------------------------------ #
+    _FORMAT_PARSERS: ClassVar[Dict[str, Callable[[str], Any]]] = {
+        "json": json.loads,
+        "yaml": yaml.safe_load,
+    }
 
-    def post_process(self, raw: str, output_format: str) -> Any:  # noqa: ANN401 (Any is intentional)
+    def supported_output_formats(self) -> List[str]:
+        """Return the list of output formats recognised by ``post_process``."""
+        return [*self._FORMAT_PARSERS.keys(), "txt"]
+
+    def post_process(self, raw: str, output_format: str) -> Any:  # noqa: ANN401
         """
-        Deserialize based on the requested output_format:
-        - json: parse with json.loads
-        - yaml: parse with yaml.safe_load
-        - text/txt: return raw string
-        Fallback to raw if parsing fails.
+        Convert ``raw`` model output into a structured Python object.
+
+        The method relies on the internal ``_FORMAT_PARSERS`` registry to
+        dispatch to the correct parser. Unsupported or parsing-error cases
+        gracefully fall back to returning the original string.
+
+        Parameters
+        ----------
+        raw:
+            The unprocessed text returned by Azure OpenAI / SK.
+        output_format:
+            Desired format - e.g. ``json``, ``yaml`` or ``txt``.
+
+        Returns
+        -------
+        Any
+            Parsed object on success, otherwise the original *raw* text.
         """
         fmt = output_format.lower()
-        if fmt == "json":
-            try:
-                return json.loads(raw)
-            except json.JSONDecodeError:
-                return raw
-        if fmt == "yaml":
-            try:
-                return yaml.safe_load(raw)
-            except yaml.YAMLError:
-                return raw
-        # plain text or other formats
-        return raw
+        parser = self._FORMAT_PARSERS.get(fmt)
+        if parser is None:               # txt / unknown formats
+            return raw
+
+        try:
+            return parser(raw)
+        except Exception:                # noqa: BLE001 (broad but intentional)
+            _logger.debug("Failed to parse %s; returning raw string.", fmt, exc_info=True)
+            return raw
 
     # ------------------------------------------------------------------ #
     # Helper: factory                                                    #

@@ -38,7 +38,15 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
         arguments or via the corresponding environment variables.
     """
 
-    def __init__(
+    # ------------------------------------------------------------------ #
+    # Internal helpers                                                   #
+    # ------------------------------------------------------------------ #
+    @staticmethod
+    def _env_or_override(override: str | None, env_var: str) -> str | None:
+        """Return *override* if supplied, otherwise ``os.getenv(env_var)``."""
+        return override or os.getenv(env_var)
+
+    def __init__(                       # noqa: PLR0913
         self,
         tool: "DataGeneratorTool",
         *,
@@ -51,17 +59,14 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
         load_dotenv()  # Load .env from CWD or parent (no error if missing)
 
         # ---- Resolve connection settings ---------------------------------
-        self.azure_openai_endpoint: str | None = (
-            azure_openai_endpoint
-            or os.getenv("AZURE_OPENAI_ENDPOINT")
+        self.azure_openai_endpoint = self._env_or_override(
+            azure_openai_endpoint, "AZURE_OPENAI_ENDPOINT"
         )
-        self.azure_openai_deployment: str | None = (
-            azure_openai_deployment
-            or os.getenv("AZURE_OPENAI_DEPLOYMENT")
+        self.azure_openai_deployment = self._env_or_override(
+            azure_openai_deployment, "AZURE_OPENAI_DEPLOYMENT"
         )
-        self.azure_openai_api_key: str | None = (
-            azure_openai_api_key
-            or os.getenv("AZURE_OPENAI_API_KEY")
+        self.azure_openai_api_key = self._env_or_override(
+            azure_openai_api_key, "AZURE_OPENAI_API_KEY"
         )
 
         if not self.azure_openai_endpoint or not self.azure_openai_deployment:
@@ -71,12 +76,13 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
                 "or AZURE_OPENAI_ENDPOINT / AZURE_OPENAI_DEPLOYMENT environment variables."
             )
 
-        # --------------------------------------------------------------------- #
-        # Logging configuration                                                 #
-        # --------------------------------------------------------------------- #
+        # ------------------------------------------------------------------ #
+        # Logging configuration                                              #
+        # ------------------------------------------------------------------ #
         colorama.just_fix_windows_console()
-        logging.basicConfig(format=_DEFAULT_LOG_FORMAT, level=log_level)
-        self.logger: logging.Logger = logging.getLogger(_LOGGER_NAME)
+        if not logging.getLogger().handlers:          # prevent duplicate handlers
+            logging.basicConfig(format=_DEFAULT_LOG_FORMAT, level=log_level)
+        self.logger = logging.getLogger(_LOGGER_NAME)
         self.logger.debug(
             "Using Azure OpenAI endpoint '%s', deployment '%s'.",
             self.azure_openai_endpoint,
@@ -374,18 +380,19 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
             raise ValueError("Either unique_id or index must be provided.")
         file_path = out_dir / filename
 
-        if output_format == "json":
-            with file_path.open("w", encoding="utf-8") as fp:
-                json.dump(data, fp, indent=2)
-        elif output_format == "yaml":
-            with file_path.open("w", encoding="utf-8") as fp:
-                yaml.safe_dump(data, fp, sort_keys=False)
-        elif output_format == "txt":
-            with file_path.open("w", encoding="utf-8") as fp:
-                fp.write(str(data))
-        else:  # default to plain text
-            with file_path.open("w", encoding="utf-8") as fp:
-                fp.write(str(data))
+        match output_format:
+            case "json":
+                with file_path.open("w", encoding="utf-8") as fp:
+                    json.dump(data, fp, indent=2)
+            case "yaml":
+                with file_path.open("w", encoding="utf-8") as fp:
+                    yaml.safe_dump(data, fp, sort_keys=False)
+            case "txt":
+                with file_path.open("w", encoding="utf-8") as fp:
+                    fp.write(str(data))
+            case _:
+                with file_path.open("w", encoding="utf-8") as fp:
+                    fp.write(str(data))
 
     # --------------------------------------------------------------------- #
     # Backwards-compat / simple sync loop (non-async)                       #
