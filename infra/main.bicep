@@ -8,6 +8,11 @@ param environmentName string
 
 @sys.description('Primary location for all resources')
 @minLength(1)
+@metadata({
+  azd: {
+    type: 'location'
+  }
+})
 param location string
 
 @sys.description('Name of the resource group to create. If not specified, a unique name will be generated.')
@@ -67,12 +72,27 @@ param containerRegistryResourceId string = ''
 param containerRegistryDeploy bool = true
 
 @sys.description('The name of the Azure AI Foundry project to create.')
+@metadata({
+  azd: {
+    type: 'string'
+  }
+})
 param aiFoundryProjectName string
 
 @sys.description('The friendly name of the Azure AI Foundry project to create.')
+@metadata({
+  azd: {
+    type: 'string'
+  }
+})
 param aiFoundryProjectFriendlyName string
 
 @sys.description('The description of the Azure AI Foundry project to create.') 
+@metadata({
+  azd: {
+    type: 'string'
+  }
+})
 param aiFoundryProjectDescription string
 
 @sys.description('Deploy Azure AI Search and all dependent configuration. Set to false to skip its deployment.')
