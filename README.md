@@ -75,6 +75,15 @@ You can deploy the application using one of the following methods:
    azd auth login
    ```
 
+1. (Optional) If you want to deploy the solution accelerator without network isolation, set the `AZURE_NETWORK_ISOLATION` environment variable to `false`:
+
+   ```powershell
+   azd env set AZURE_NETWORK_ISOLATION false
+   ```
+
+   > [!NOTE]
+   > This will deploy the Azure AI Foundry hub and project with public endpoints. You can access the Azure AI Foundry hub and project from the public internet.
+
 1. Run `azd up` to provision and deploy the application
 
    ```powershell
@@ -99,11 +108,21 @@ You can deploy the application using one of the following methods:
    azd auth login
    ```
 
+1. (Optional) If you want to deploy the solution accelerator without network isolation, set the `AZURE_NETWORK_ISOLATION` environment variable to `false`:
+
+   ```powershell
+   azd env set AZURE_NETWORK_ISOLATION false
+   ```
+
+   > [!NOTE]
+   > This will deploy the Azure AI Foundry hub and project with public endpoints. You can access the Azure AI Foundry hub and project from the public internet.
+
 1. Run `azd up` to provision and deploy the application
 
    ```powershell
    azd up
    ```
+
 </details>
 
 ### 2. Azure Portal Deployment
@@ -170,7 +189,7 @@ TBC
 
 Thanks to the following people who have contributed to this project:
 
-- [Tim Shaw](https://www.linkedin.com/in/shaw-tim/) - Sr. Cloud Solution Architect, Data & AI, Microsoft
+- [Tim Shaw](https://github.com/Ancient13) - Partner Solution Architect, Data & AI, Microsoft
 
 <!-- Badge reference links -->
 [ci-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-foundry-jumpstart/continuous-integration.yml?branch=main&label=CI

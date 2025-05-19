@@ -13,6 +13,7 @@ The configuration options are grouped into the following categories:
 - [Create Sample Data](#create-sample-data)
 - [Networking & Isolation](#networking--isolation)
 - [Azure AI Foundry Hub Configuration](#azure-ai-foundry-hub-configuration)
+- [Azure AI Foundry Project](#azure-ai-foundry-project)
 - [Azure AI Search Service](#azure-ai-search-service)
 - [Identity & Access](#identity--access)
 - [Optional Infrastructure](#optional-infrastructure)
@@ -113,6 +114,45 @@ Default: `''` - the friendly name is automatically generated from the environmen
 azd env set AZURE_AI_FOUNDRY_HUB_DESCRIPTION "Sandbox hub for PoC work"
 ```
 
+## Azure AI Foundry Project
+
+### AZURE_AI_FOUNDRY_PROJECT_DEPLOY
+
+Deploy a sample Azure AI Foundry Project (`true`).
+When set to `false`, no project resources are created.
+Default: `true`.
+
+```powershell
+azd env set AZURE_AI_FOUNDRY_PROJECT_DEPLOY false
+```
+
+### AZURE_AI_FOUNDRY_PROJECT_NAME
+
+The name of the sample Azure AI Foundry Project. This is used in the resource name.
+Default: `sample-project`.
+
+```powershell
+azd env set AZURE_AI_FOUNDRY_PROJECT_NAME "my-ai-project"
+```
+
+### AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME
+
+Friendly display name for the sample Azure AI Foundry Project.
+Default: `Sample Project`.
+
+```powershell
+azd env set AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME "My AI Project"
+```
+
+### AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION
+
+Optional description for the sample Azure AI Foundry Project shown in the Azure portal.
+Default: `A sample project for Azure AI Foundry`.
+
+```powershell
+azd env set AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION "This is my first AI project."
+```
+
 ## Azure AI Search Service
 
 ### AZURE_AI_SEARCH_SKU
@@ -159,14 +199,14 @@ azd env set AZURE_PRINCIPAL_ID_TYPE serviceprincipal
 
 ## Optional Infrastructure
 
-### AZURE_CREATE_BASTION_HOST
+### AZURE_BASTION_HOST_DEPLOY
 
 Deploy an Azure Bastion host for secure RDP/SSH access (`true`).  
 
 Default: `false`.
 
 ```powershell
-azd env set AZURE_CREATE_BASTION_HOST true
+azd env set AZURE_BASTION_HOST_DEPLOY true
 ```
 
 ### AZURE_CONTAINER_REGISTRY_RESOURCE_ID

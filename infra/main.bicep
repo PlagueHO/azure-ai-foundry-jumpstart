@@ -1,12 +1,12 @@
 targetScope = 'subscription'
 extension microsoftGraphV1
 
-@sys.description('Name of the the environment which is used to generate a short unique hash used in all resources.')
+@sys.description('Name of the the environment which is used to generate a short unique hash used in all resources')
 @minLength(1)
 @maxLength(64)
 param environmentName string
 
-@sys.description('Primary location for all resources')
+@sys.description('Location for all resources')
 @minLength(1)
 @metadata({
   azd: {
@@ -15,7 +15,12 @@ param environmentName string
 })
 param location string
 
-@sys.description('Name of the resource group to create. If not specified, a unique name will be generated.')
+@sys.description('The Azure resource group where new resources will be deployed.')
+@metadata({
+  azd: {
+    type: 'resourceGroup'
+  }
+})
 param resourceGroupName string = 'rg-${environmentName}'
 
 @sys.description('Enable purge protection on the Key Vault. When set to true the vault cannot be permanently deleted until purge protection is disabled. Defaults to false.')
@@ -27,7 +32,7 @@ param aiFoundryHubFriendlyName string
 @sys.description('Optional description for the AI Foundry Hub workspace.')
 param aiFoundryHubDescription string
 
-@sys.description('Array of public IPv4 addresses or CIDR ranges that will be added to the Azure AI Foundry Hub allow‑list when `azureNetworkIsolation` is true.')
+@sys.description('Array of public IPv4 addresses or CIDR ranges that will be added to the Azure AI Foundry Hub allow-list when azureNetworkIsolation is true.')
 param aiFoundryHubIpAllowList array = []
 
 @sys.description('SKU for the Azure AI Search service. Defaults to standard.')
@@ -40,26 +45,26 @@ param aiFoundryHubIpAllowList array = []
 ])
 param aiSearchSku string = 'standard'
 
-@sys.description('Id of the user or app to assign application roles')
+@sys.description('Id of the user or app to assign application roles.')
 param principalId string
 
-@sys.description('Type of the principal referenced by *principalId*.')
+@sys.description('Type of the principal referenced by principalId.')
 @allowed([
   'User'
   'ServicePrincipal'
 ])
 param principalIdType string = 'User'
 
-@sys.description('Enable network isolation. When false no virtual network, private endpoint or private DNS resources are created and all services expose public endpoints.')
+@sys.description('Enable network isolation. When false no virtual network, private endpoint or private DNS resources are created and all services expose public endpoints')
 param azureNetworkIsolation bool = true
 
-@sys.description('Should an Azure Bastion be created?')
-param createBastionHost bool = false
+@sys.description('Deploy an Azure Bastion Host to the virtual network. This is required for private endpoint access to the AI Foundry Hub and AI Services. Defaults to false.')
+param bastionHostDeploy bool = false
 
 @sys.description('Disable API key authentication for AI Services and AI Search. Defaults to false.')
 param disableApiKeys bool = false
 
-@sys.description('Deploy the sample OpenAI model deployments listed in ./sample-openai-models.json.')
+@sys.description('Deploy the sample OpenAI model deployments listed in ./sample-openai-models.json. Defaults to false')
 param deploySampleOpenAiModels bool = false
 
 @sys.description('Deploy sample data containers into the Azure Storage Account. Defaults to false.')
@@ -71,28 +76,16 @@ param containerRegistryResourceId string = ''
 @sys.description('Deploy Azure Container Registry and all dependent configuration. Set to false to skip its deployment.')
 param containerRegistryDeploy bool = true
 
+@sys.description('Deploy an Azure AI Foundry project. Set to false to skip its deployment.')
+param aiFoundryProjectDeploy bool
+
 @sys.description('The name of the Azure AI Foundry project to create.')
-@metadata({
-  azd: {
-    type: 'string'
-  }
-})
 param aiFoundryProjectName string
 
 @sys.description('The friendly name of the Azure AI Foundry project to create.')
-@metadata({
-  azd: {
-    type: 'string'
-  }
-})
 param aiFoundryProjectFriendlyName string
 
 @sys.description('The description of the Azure AI Foundry project to create.') 
-@metadata({
-  azd: {
-    type: 'string'
-  }
-})
 param aiFoundryProjectDescription string
 
 @sys.description('Deploy Azure AI Search and all dependent configuration. Set to false to skip its deployment.')
@@ -127,8 +120,6 @@ var aiServicesCustomSubDomainName = toLower(replace(environmentName, '-', ''))
 var aiFoundryHubName = take('${abbrs.aiFoundryHubs}${environmentName}',32)
 var bastionHostName = '${abbrs.networkBastionHosts}${environmentName}'
 var networkDefaultAction = azureNetworkIsolation ? 'Deny' : 'Allow'
-// Should an AI Foundry project be deployed?
-var aiFoundryProjectDeploy = !empty(aiFoundryProjectName) && !empty(aiFoundryProjectFriendlyName) && !empty(aiFoundryProjectDescription)
 
 // List of sample data containers
 var sampleDataContainersArray array = [
@@ -881,7 +872,7 @@ module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
 ]
 
 // ------------- BASTION HOST (OPTIONAL) -------------
-module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (createBastionHost && azureNetworkIsolation) {
+module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (bastionHostDeploy && azureNetworkIsolation) {
   name: 'bastion-host-deployment'
   scope: rg
   params: {
@@ -936,5 +927,5 @@ output AI_FOUNDRY_HUB_RESOURCE_ID string = aiFoundryHub.outputs.resourceId
 output AI_FOUNDRY_HUB_PRIVATE_ENDPOINTS array = aiFoundryHub.outputs.privateEndpoints
 
 // Output the Bastion Host resources
-output BASTION_HOST_NAME string = createBastionHost && azureNetworkIsolation ? bastionHost.outputs.name : ''
-output BASTION_HOST_RESOURCE_ID string = createBastionHost && azureNetworkIsolation ? bastionHost.outputs.resourceId : ''
+output BASTION_HOST_NAME string = bastionHostDeploy && azureNetworkIsolation ? bastionHost.outputs.name : ''
+output BASTION_HOST_RESOURCE_ID string = bastionHostDeploy && azureNetworkIsolation ? bastionHost.outputs.resourceId : ''
