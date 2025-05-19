@@ -1,0 +1,45 @@
+record_id: a0d5f254-57da-4891-a515-09bbeba38190
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:52:15.395514+00:00
+patient_details:
+  fictional_name: Avery Morgan
+  age: 63
+  gender: Female
+  fictional_patient_id: FP-428917
+document_content:
+  title: Left Total Knee Arthroplasty Operation Note
+  sections:
+  - heading: Preoperative Diagnosis
+    content: Severe left knee osteoarthritis, refractory to conservative management.
+  - heading: Postoperative Diagnosis
+    content: Same as preoperative.
+  - heading: Procedure
+    content: Left total knee arthroplasty using cemented prosthesis.
+  - heading: Indications
+    content: Patient presented with chronic left knee pain, limited mobility, and
+      radiographic evidence of advanced osteoarthritis. Conservative measures failed
+      to provide relief.
+  - heading: Anesthesia
+    content: Spinal anesthesia with sedation.
+  - heading: Findings
+    content: Extensive degenerative changes in the left knee, including cartilage
+      loss and osteophyte formation. No evidence of infection or malignancy.
+  - heading: Details of Procedure
+    content: After informed consent, patient was brought to the operating room and
+      placed supine. The left lower limb was prepped and draped in sterile fashion.
+      A midline skin incision and medial parapatellar arthrotomy were performed. The
+      distal femur and proximal tibia were prepared using cutting guides. Osteophytes
+      were excised, and trial components placed to assess alignment and stability.
+      Cemented femoral, tibial, and patellar components were implanted. Hemostasis
+      achieved, and wound irrigated. Layered closure performed, and sterile dressing
+      applied. Patient tolerated procedure well.
+  - heading: Estimated Blood Loss
+    content: 200 mL
+  - heading: Complications
+    content: None.
+  - heading: Disposition
+    content: Patient transferred to recovery in stable condition.
+author_details:
+  fictional_doctor_name: Dr. Maren Ellis
+  fictional_clinic_name: Harborview Orthopaedic Center

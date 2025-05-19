@@ -1,0 +1,45 @@
+{
+  "record_id": "03a902c0-cd91-4da9-a127-f95b86918ad4",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:54:52.696861+00:00",
+  "patient_details": {
+    "fictional_name": "Samantha Rhodes",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to Internal Medicine for Evaluation of Fatigue and Joint Pain",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Samantha Rhodes is being referred to Internal Medicine for further evaluation of persistent fatigue and joint pain of unclear etiology."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports a 3-month history of progressive fatigue and intermittent joint pain affecting her wrists and knees. She denies any recent trauma, fever, or weight loss. The symptoms are worse in the mornings and improve somewhat with activity."
+      },
+      {
+        "heading": "Past Medical History",
+        "content": "No significant past medical history. No known allergies. Not currently taking any regular medications."
+      },
+      {
+        "heading": "Physical Examination",
+        "content": "On examination, Ms. Rhodes appears generally well. Mild tenderness is noted over both wrists, with no swelling or redness. No rashes or lymphadenopathy observed. Vital signs are within normal limits."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Recent laboratory tests revealed a mildly elevated ESR (28 mm/hr) and borderline low hemoglobin (11.2 g/dL). Renal and liver function tests are within normal limits. Rheumatoid factor and ANA are pending."
+      },
+      {
+        "heading": "Summary and Request",
+        "content": "Given the chronicity of her symptoms and preliminary lab findings, further evaluation by Internal Medicine is requested to determine the underlying cause and guide management. Please consider further rheumatological work-up as appropriate."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Linda Chen",
+    "fictional_clinic_name": "Riverside Family Practice"
+  }
+}

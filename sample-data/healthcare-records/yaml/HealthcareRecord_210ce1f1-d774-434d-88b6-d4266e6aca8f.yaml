@@ -1,0 +1,36 @@
+record_id: 210ce1f1-d774-434d-88b6-d4266e6aca8f
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:51:41.123264+00:00
+patient_details:
+  fictional_name: Samuel Grant
+  age: 54
+  gender: Male
+  fictional_patient_id: PAT-439201
+document_content:
+  title: Open Reduction and Internal Fixation of Left Distal Radius Fracture
+  sections:
+  - heading: Indication
+    content: The patient presented with a closed, displaced left distal radius fracture
+      following a fall from standing height. Surgical intervention was indicated due
+      to significant displacement and loss of alignment.
+  - heading: Procedure
+    content: Under general anesthesia, the patient was positioned supine with the
+      left arm on a hand table. A standard volar approach to the distal radius was
+      performed. Fracture fragments were identified, reduced anatomically, and provisionally
+      stabilized with K-wires. A volar locking plate was then applied and secured
+      with screws. Fluoroscopic imaging confirmed satisfactory reduction and hardware
+      placement.
+  - heading: Findings
+    content: Comminuted distal radius fracture with dorsal angulation. No intra-articular
+      extension. Reduction achieved with restoration of radial height and alignment.
+  - heading: Complications
+    content: No intraoperative complications encountered. Estimated blood loss less
+      than 50 mL.
+  - heading: Postoperative Plan
+    content: The left arm was placed in a volar splint. Patient to remain non-weight
+      bearing on the left wrist. Analgesia as needed. Follow-up in orthopaedic clinic
+      in 2 weeks for wound check and radiographs.
+author_details:
+  fictional_doctor_name: Dr. Fiona Lang
+  fictional_clinic_name: Summit Orthopaedic Center

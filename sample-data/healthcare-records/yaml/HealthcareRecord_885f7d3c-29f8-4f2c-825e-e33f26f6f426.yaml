@@ -1,0 +1,43 @@
+record_id: 885f7d3c-29f8-4f2c-825e-e33f26f6f426
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:49:28.999193+00:00
+patient_details:
+  fictional_name: Morgan Hayes
+  age: 47
+  gender: Female
+  fictional_patient_id: PX-325178
+document_content:
+  title: Open Reduction and Internal Fixation of Distal Radius Fracture
+  sections:
+  - heading: Indication
+    content: 'The patient presented with a closed, displaced distal radius fracture
+      following a fall from standing height. Indicated for operative management due
+      to loss of alignment and functional displacement.
+
+      '
+  - heading: Procedure
+    content: 'Under general anesthesia, a volar approach to the distal radius was
+      performed. Fracture fragments were identified, reduced under direct visualization,
+      and provisionally stabilized. A volar locking plate was contoured and applied
+      to the distal radius. Screw fixation achieved stable construct. Fluoroscopy
+      confirmed anatomic reduction and hardware placement. Wound irrigated and closed
+      in layers. Sterile dressing applied. No intraoperative complications.
+
+      '
+  - heading: Findings
+    content: 'Comminuted distal radius fracture with involvement of the articular
+      surface. Good reduction and stable fixation achieved.
+
+      '
+  - heading: Estimated Blood Loss
+    content: 50 mL
+  - heading: Postoperative Plan
+    content: 'Wrist immobilized in volar splint. Elevation and neurovascular checks
+      advised. Analgesia as needed. Follow-up in 10-14 days for wound review and suture
+      removal. Early range of motion to be started as tolerated.
+
+      '
+author_details:
+  fictional_doctor_name: Dr. Fiona McAllister
+  fictional_clinic_name: Summit Orthopaedic Group

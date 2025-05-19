@@ -1,0 +1,47 @@
+record_id: a1c4d945-73e8-4778-93f8-ed5b6ccd9c0f
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:51:05.092171+00:00
+patient_details:
+  fictional_name: Patricia Hensley
+  age: 62
+  gender: Female
+  fictional_patient_id: FP-203948
+document_content:
+  title: Open Reduction and Internal Fixation of Left Distal Radius
+  sections:
+  - heading: Preoperative Diagnosis
+    content: Displaced left distal radius fracture.
+  - heading: Postoperative Diagnosis
+    content: Displaced left distal radius fracture (confirmed intraoperatively).
+  - heading: Procedure
+    content: Open reduction and internal fixation (ORIF) of left distal radius using
+      volar locking plate.
+  - heading: Indications
+    content: Patient sustained a left wrist fracture following a fall at home. Imaging
+      confirmed a displaced distal radius fracture with dorsal angulation, necessitating
+      surgical intervention for optimal alignment and function.
+  - heading: Anesthesia
+    content: General anesthesia with regional block.
+  - heading: Findings
+    content: Comminuted, dorsally angulated distal radius fracture. No gross ligamentous
+      injury. Ulnar styloid intact.
+  - heading: Description of Procedure
+    content: After informed consent, the patient was brought to the operating room
+      and placed supine on the table. The left upper extremity was prepped and draped
+      in a sterile fashion. A standard volar approach to the distal radius was performed.
+      Fracture fragments were identified, reduced under direct visualization, and
+      provisional fixation obtained with K-wires. A volar locking plate was applied
+      and secured with screws. Fluoroscopy confirmed satisfactory reduction and hardware
+      placement. Wound was irrigated and closed in layers. Sterile dressing and volar
+      splint applied.
+  - heading: Estimated Blood Loss
+    content: 30 mL
+  - heading: Complications
+    content: None.
+  - heading: Disposition
+    content: Patient tolerated procedure well and was transferred to recovery in stable
+      condition.
+author_details:
+  fictional_doctor_name: Dr. Lena Groves
+  fictional_clinic_name: Summit Orthopaedic Center

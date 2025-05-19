@@ -1,0 +1,41 @@
+{
+  "record_id": "15b99307-c8bc-4921-9950-fbd4a1855920",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:54:52.693112+00:00",
+  "patient_details": {
+    "fictional_name": "Elena Marsh",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to General Medicine for Further Evaluation",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Marsh presents with persistent fatigue, intermittent low-grade fever, and unintentional weight loss over the past three months. Initial workup in the primary care setting has not identified a clear etiology."
+      },
+      {
+        "heading": "Relevant Medical History",
+        "content": "No known chronic illnesses. Past surgical history is unremarkable. No significant family history of autoimmune or malignant diseases. No recent travel or exposure to infectious diseases."
+      },
+      {
+        "heading": "Investigations to Date",
+        "content": "CBC shows mild normocytic anemia (Hb 10.8 g/dL). ESR and CRP are both mildly elevated. Liver and renal function tests are within normal limits. Chest X-ray is unremarkable. Basic metabolic panel and thyroid function are normal."
+      },
+      {
+        "heading": "Current Medications",
+        "content": "Occasionally takes acetaminophen for headache. No regular medications."
+      },
+      {
+        "heading": "Request",
+        "content": "We kindly request a comprehensive assessment in General Medicine to investigate the underlying cause of her symptoms and guide further management."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Maya Lin",
+    "fictional_clinic_name": "Willowbrook Family Practice"
+  }
+}

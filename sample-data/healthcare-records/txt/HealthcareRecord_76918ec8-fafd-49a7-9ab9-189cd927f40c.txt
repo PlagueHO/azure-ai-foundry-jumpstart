@@ -1,0 +1,45 @@
+Record ID: 76918ec8-fafd-49a7-9ab9-189cd927f40c  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:45:18.643655+00:00  
+
+Patient Details:  
+Name: Jordan Meyers  
+Age: 64  
+Gender: Male  
+Patient ID: FC-1023948  
+
+Document Content:  
+
+Title: Discharge Summary – Cardiology  
+
+Admission Date: 2025-05-13  
+Discharge Date: 2025-05-19  
+
+Reason for Admission:  
+Mr. Meyers was admitted with complaints of chest discomfort, palpitations, and mild shortness of breath. His medical history is significant for hypertension and hyperlipidemia.
+
+Hospital Course:  
+Upon admission, Mr. Meyers was evaluated in the emergency department. Initial ECG showed evidence of atrial fibrillation with rapid ventricular response. Cardiac enzymes were within normal limits. He was started on intravenous diltiazem for rate control and anticoagulation therapy with apixaban. Transthoracic echocardiogram revealed preserved left ventricular function, no significant valvular disease, and normal ejection fraction.
+
+During his stay, Mr. Meyers responded well to rate control and anticoagulation. He remained hemodynamically stable and was transitioned to oral medications. He underwent successful electrical cardioversion on 2025-05-17, restoring sinus rhythm. No complications occurred.
+
+Discharge Medications:  
+- Apixaban 5 mg twice daily  
+- Diltiazem ER 180 mg once daily  
+- Atorvastatin 40 mg nightly  
+- Lisinopril 10 mg once daily  
+
+Discharge Instructions:  
+- Follow up with cardiology clinic in 1 week.  
+- Monitor for signs of bleeding or recurrent palpitations.  
+- Continue home blood pressure monitoring.  
+- Engage in moderate physical activity as tolerated.  
+- Adhere to a low-sodium, heart-healthy diet.
+
+Prognosis and Follow-Up:  
+Mr. Meyers is stable at discharge. Prognosis is good with adherence to medications and lifestyle modifications. He should return immediately if he experiences chest pain, severe shortness of breath, or syncope.
+
+Author Details:  
+Dr. Fictional  
+Fictional Clinic

@@ -1,0 +1,43 @@
+record_id: b90f94ef-d614-457a-a617-728d2d423a44
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:49:28.996353+00:00
+patient_details:
+  fictional_name: Morgan Delaney
+  age: 47
+  gender: Female
+  fictional_patient_id: OP-20458
+document_content:
+  title: Open Reduction and Internal Fixation of Distal Radius Fracture
+  sections:
+  - heading: Preoperative Diagnosis
+    content: Displaced distal radius fracture, left wrist.
+  - heading: Postoperative Diagnosis
+    content: Displaced distal radius fracture, left wrist (same as preoperative).
+  - heading: Procedure Performed
+    content: Open reduction and internal fixation (ORIF) of left distal radius.
+  - heading: Indications
+    content: Patient sustained a fall onto an outstretched hand resulting in a displaced
+      distal radius fracture. Surgical intervention indicated due to instability and
+      displacement.
+  - heading: Anesthesia
+    content: General anesthesia administered without complications.
+  - heading: Operative Findings
+    content: Comminuted, dorsally displaced distal radius fracture with minimal articular
+      involvement. No gross neurovascular injury noted.
+  - heading: Procedure Description
+    content: The patient was positioned supine with the left arm on an arm board.
+      After prepping and draping in sterile fashion, a volar approach to the distal
+      radius was performed. Fracture fragments were identified and reduced anatomically.
+      A volar locking plate was applied and secured with screws. Fluoroscopy confirmed
+      satisfactory reduction and hardware position. The wound was irrigated and closed
+      in layers. Sterile dressing and a volar splint were applied.
+  - heading: Estimated Blood Loss
+    content: 50 mL
+  - heading: Complications
+    content: None.
+  - heading: Disposition
+    content: Patient transferred to recovery in stable condition.
+author_details:
+  fictional_doctor_name: Dr. Ada Sterling
+  fictional_clinic_name: Summit Orthopaedic Center

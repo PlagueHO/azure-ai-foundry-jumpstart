@@ -1,0 +1,57 @@
+{
+  "record_id": "fa09b6b0-6e18-41ed-89b7-f4e9514b3adf",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:56:05.365390+00:00",
+  "patient_details": {
+    "fictional_name": "Jessica Thornton",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to Internal Medicine for Evaluation of Persistent Fatigue",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Jessica Thornton is being referred to Internal Medicine for evaluation of persistent fatigue and generalized malaise ongoing for the past 3 months. Symptoms have not improved with initial primary care management."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports experiencing increasing fatigue, low energy, and mild headaches since February 2025. There is no significant weight change, fever, or night sweats. She denies chest pain, palpitations, or shortness of breath. No recent travel or sick contacts."
+      },
+      {
+        "heading": "Past Medical History",
+        "content": "No known chronic medical conditions. No previous surgeries. No history of anemia or thyroid disorder."
+      },
+      {
+        "heading": "Medications",
+        "content": "Occasional acetaminophen for headaches. No regular prescription medications."
+      },
+      {
+        "heading": "Allergies",
+        "content": "No known drug allergies."
+      },
+      {
+        "heading": "Family and Social History",
+        "content": "Non-smoker. Drinks alcohol occasionally. Works as a graphic designer. No family history of autoimmune or chronic diseases."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "Vitals stable. Physical examination unremarkable except for mild pallor. No lymphadenopathy or organomegaly."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Recent blood work showed mild microcytic anemia (Hb 10.9 g/dL, MCV 78 fL). Thyroid function tests within normal limits. Renal and liver function normal."
+      },
+      {
+        "heading": "Request",
+        "content": "Kindly evaluate for underlying causes of fatigue and anemia. Further investigations and management recommendations would be appreciated."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Elaine Hsu",
+    "fictional_clinic_name": "Greenwood Family Practice"
+  }
+}

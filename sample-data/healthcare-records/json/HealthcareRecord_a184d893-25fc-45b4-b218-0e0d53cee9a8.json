@@ -1,0 +1,49 @@
+{
+  "record_id": "a184d893-25fc-45b4-b218-0e0d53cee9a8",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:53:34.659212+00:00",
+  "patient_details": {
+    "fictional_name": "Maya Jenkins",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral for Evaluation of Chronic Fatigue and Joint Pain",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Jenkins is being referred for further assessment of persistent fatigue and migratory joint pain of unclear etiology."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports a 6-month history of progressive fatigue, generalized malaise, and intermittent joint pain affecting her wrists, knees, and ankles. She denies recent fever, weight loss, or rash. Over-the-counter analgesics have provided minimal relief. There is no prior history of autoimmune disease."
+      },
+      {
+        "heading": "Relevant Medical History",
+        "content": "Past medical history includes mild asthma, well controlled. No known drug allergies. Surgical history unremarkable."
+      },
+      {
+        "heading": "Medications",
+        "content": "Albuterol inhaler as needed for asthma symptoms."
+      },
+      {
+        "heading": "Physical Examination",
+        "content": "On examination, vital signs are within normal limits. Mild tenderness of bilateral wrists and knees, no synovitis or swelling noted. No skin changes or lymphadenopathy."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Recent laboratory tests: CBC and metabolic panel within normal limits; ESR mildly elevated at 28 mm/hr; ANA pending. No radiographs performed to date."
+      },
+      {
+        "heading": "Summary and Request",
+        "content": "Given the chronicity of symptoms and lack of clear diagnosis, I am referring Ms. Jenkins for further evaluation and management. Please assess for possible connective tissue disease or other causes of her symptoms."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Evelyn Park",
+    "fictional_clinic_name": "Willowbrook Family Practice"
+  }
+}

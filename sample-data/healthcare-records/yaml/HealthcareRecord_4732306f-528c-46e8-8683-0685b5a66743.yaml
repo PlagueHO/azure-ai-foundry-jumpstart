@@ -1,0 +1,43 @@
+record_id: 4732306f-528c-46e8-8683-0685b5a66743
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:52:15.392174+00:00
+patient_details:
+  fictional_name: Morgan Turner
+  age: 45
+  gender: Female
+  fictional_patient_id: FP-928374
+document_content:
+  title: Open Reduction and Internal Fixation of Distal Radius Fracture
+  sections:
+  - heading: Preoperative Diagnosis
+    content: Displaced distal radius fracture, left wrist.
+  - heading: Postoperative Diagnosis
+    content: Displaced distal radius fracture, left wrist (same as preoperative).
+  - heading: Procedure
+    content: Open reduction and internal fixation (ORIF) of left distal radius with
+      volar locking plate.
+  - heading: Indications
+    content: Patient presented with pain, swelling, and deformity of the left wrist
+      following a fall. X-rays revealed a displaced distal radius fracture. Non-operative
+      management was deemed insufficient due to displacement and instability.
+  - heading: Anesthesia
+    content: General anesthesia with regional block.
+  - heading: Description of Procedure
+    content: Patient was positioned supine with the left arm on an arm table. The
+      limb was prepped and draped in the usual sterile fashion. A volar approach to
+      the distal radius was made. The fracture was identified and reduced under direct
+      visualization and fluoroscopic guidance. A volar locking plate was applied and
+      secured with screws. Satisfactory alignment and fixation were confirmed with
+      intraoperative imaging. Wound was irrigated and closed in layers. Sterile dressing
+      applied. Patient tolerated the procedure well.
+  - heading: Estimated Blood Loss
+    content: Minimal (<50 mL).
+  - heading: Complications
+    content: None.
+  - heading: Disposition
+    content: Patient transferred to recovery in stable condition with neurovascularly
+      intact left hand. Postoperative instructions given.
+author_details:
+  fictional_doctor_name: Dr. Fiona West
+  fictional_clinic_name: Summit Orthopaedic Center

@@ -1,0 +1,53 @@
+{
+  "record_id": "aa738eee-cc89-47e3-8ab2-ad174213917c",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:55:26.166982+00:00",
+  "patient_details": {
+    "fictional_name": "Julia Preston",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to Internal Medicine for Further Evaluation",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Preston is being referred for evaluation and management of persistent fatigue and unexplained weight loss over the past three months."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports ongoing fatigue, low energy levels, and an unintentional weight loss of approximately 6 kg since February 2025. She also notes intermittent low-grade fevers and occasional night sweats. There is no history of cough, hemoptysis, chest pain, or gastrointestinal symptoms."
+      },
+      {
+        "heading": "Past Medical History",
+        "content": "No known chronic medical conditions. No previous surgeries. No allergies reported."
+      },
+      {
+        "heading": "Family and Social History",
+        "content": "Non-smoker, does not consume alcohol. Works as a graphic designer. No significant family history of malignancy or autoimmune disorders."
+      },
+      {
+        "heading": "Medications",
+        "content": "Not currently taking any prescription or over-the-counter medications."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "Vital signs stable. Physical examination unremarkable except for mild pallor. No palpable lymphadenopathy or organomegaly."
+      },
+      {
+        "heading": "Investigations",
+        "content": "CBC reveals normocytic anemia (Hb 10.4 g/dL). ESR and CRP mildly elevated. Basic metabolic panel within normal limits. Chest X-ray unremarkable."
+      },
+      {
+        "heading": "Referral Request",
+        "content": "Given the chronicity of symptoms and abnormal blood work, further evaluation by Internal Medicine is requested to rule out underlying systemic illness."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Eleanor Choi",
+    "fictional_clinic_name": "Greenwood Family Practice"
+  }
+}

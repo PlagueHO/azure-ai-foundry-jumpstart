@@ -1,0 +1,47 @@
+record_id: c3ffe9e9-9a38-47d2-b94a-573159a561f5
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:49:28.993206+00:00
+patient_details:
+  fictional_name: Jordan Ellis
+  age: 41
+  gender: Female
+  fictional_patient_id: ORTHO-100294
+document_content:
+  title: Open Reduction and Internal Fixation of Left Distal Radius
+  sections:
+  - heading: Preoperative Diagnosis
+    content: Displaced left distal radius fracture.
+  - heading: Postoperative Diagnosis
+    content: Displaced left distal radius fracture (same as preoperative).
+  - heading: Procedure
+    content: Open reduction and internal fixation (ORIF) of left distal radius using
+      volar locking plate.
+  - heading: Indications
+    content: Patient sustained a fall onto an outstretched hand resulting in a displaced
+      distal radius fracture. Nonoperative management was deemed unsuitable due to
+      significant displacement and instability.
+  - heading: Anesthesia
+    content: General anesthesia.
+  - heading: Findings
+    content: Comminuted, dorsally displaced distal radius fracture with minimal intra-articular
+      extension. No neurovascular injury identified.
+  - heading: Description of Procedure
+    content: After informed consent was obtained, the patient was brought to the operating
+      room and placed supine on the table. The left upper extremity was prepped and
+      draped in the usual sterile fashion. A standard volar approach was made to the
+      distal radius. Fracture fragments were identified and reduced under direct visualization
+      and fluoroscopic guidance. A volar locking plate was applied and secured with
+      appropriate screws. Good alignment was confirmed fluoroscopically. Hemostasis
+      was achieved, and the wound was closed in layers. Sterile dressing was applied
+      and a volar splint placed.
+  - heading: Estimated Blood Loss
+    content: 50 mL.
+  - heading: Complications
+    content: None.
+  - heading: Disposition
+    content: Patient was extubated in the operating room and transferred in stable
+      condition to the recovery unit.
+author_details:
+  fictional_doctor_name: Dr. Rowan Patel
+  fictional_clinic_name: Summit Orthopaedic Center

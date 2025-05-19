@@ -1,0 +1,50 @@
+Record ID: ad7480a2-983f-4053-a66a-a2ee19b71c71  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:45:00.755436+00:00  
+
+Patient Details:  
+Name: Morgan R. Dales  
+Age: 58  
+Gender: Female  
+Patient ID: FC-10298475  
+
+Document Content:  
+
+Title: Discharge Summary – Cardiology
+
+Reason for Admission:  
+Ms. Morgan R. Dales was admitted on 2025-05-14 with complaints of acute chest pain, shortness of breath, and palpitations. The initial assessment suggested a possible acute coronary syndrome.
+
+Hospital Course:  
+The patient was evaluated promptly in the Emergency Department. Initial ECG revealed ST segment depressions in the anterolateral leads. Serial troponin levels were elevated, consistent with a non-ST elevation myocardial infarction (NSTEMI). Ms. Dales was admitted to the cardiac care unit for monitoring and management.
+
+During her stay, she was managed with dual antiplatelet therapy, statins, beta-blockers, and low molecular weight heparin. An echocardiogram demonstrated mild left ventricular systolic dysfunction (LVEF 45%). Coronary angiography performed on 2025-05-16 showed a 70% stenosis in the proximal left anterior descending artery. A drug-eluting stent was successfully placed without complications.
+
+Ms. Dales remained hemodynamically stable post-procedure. She participated in early cardiac rehabilitation and was educated on lifestyle modifications and medication adherence. No further episodes of chest pain were reported during her hospitalization.
+
+Discharge Medications:  
+1. Aspirin 81 mg daily  
+2. Clopidogrel 75 mg daily  
+3. Metoprolol succinate 50 mg daily  
+4. Atorvastatin 40 mg nightly  
+5. Lisinopril 10 mg daily  
+6. Nitroglycerin 0.4 mg SL as needed for chest pain
+
+Discharge Instructions:  
+- Continue all prescribed medications as directed  
+- Follow a heart-healthy, low-sodium diet  
+- Restrict strenuous activity for at least 2 weeks; gradually increase as tolerated  
+- Attend outpatient cardiac rehabilitation as scheduled  
+- Monitor for symptoms such as chest pain, shortness of breath, palpitations, or syncope; seek immediate medical attention if these occur  
+- Schedule follow-up with cardiology clinic in 1 week
+
+Follow-up Plan:  
+Ms. Dales is to return for a cardiology outpatient visit on 2025-05-26. Laboratory work and repeat echocardiogram will be performed at that time.
+
+Prognosis:  
+With adherence to medical therapy and lifestyle modifications, prognosis is favorable. Risk factor modification is essential to reduce future cardiovascular events.
+
+Author Details:  
+Dr. Fictional  
+Fictional Clinic

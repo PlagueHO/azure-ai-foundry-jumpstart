@@ -1,0 +1,49 @@
+{
+  "record_id": "c3603459-d447-4019-bc1b-f547565dc03b",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:56:05.364010+00:00",
+  "patient_details": {
+    "fictional_name": "Hannah Gregson",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral Letter for Further Medical Evaluation",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Gregson is being referred for evaluation of persistent fatigue, intermittent joint pain, and unexplained weight loss over the past three months. Previous basic investigations have been inconclusive."
+      },
+      {
+        "heading": "Relevant Medical History",
+        "content": "Ms. Gregson has a history of mild asthma, managed with inhalers as needed. No prior history of autoimmune disease. No known drug allergies."
+      },
+      {
+        "heading": "Current Symptoms",
+        "content": "She reports ongoing fatigue, diffuse joint aches (particularly in her knees and wrists), and a weight loss of approximately 6 kg over three months despite no change in diet or physical activity. She denies fevers, night sweats, or rashes."
+      },
+      {
+        "heading": "Investigations to Date",
+        "content": "CBC, CMP, and thyroid function tests are within normal limits. Inflammatory markers (ESR/CRP) mildly elevated. ANA and RF pending."
+      },
+      {
+        "heading": "Medications",
+        "content": "Salbutamol inhaler as needed, daily multivitamin."
+      },
+      {
+        "heading": "Social History",
+        "content": "Non-smoker, occasional alcohol use, works as an accountant. No recent travel. Lives with partner, no children."
+      },
+      {
+        "heading": "Referral Request",
+        "content": "Requesting assessment by Internal Medicine for further diagnostic workup and management recommendations."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Marie Bennett",
+    "fictional_clinic_name": "Willowbrook Family Practice"
+  }
+}

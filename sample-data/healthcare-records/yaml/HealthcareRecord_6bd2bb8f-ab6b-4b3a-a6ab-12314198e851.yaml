@@ -1,0 +1,46 @@
+record_id: 6bd2bb8f-ab6b-4b3a-a6ab-12314198e851
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:51:41.124794+00:00
+patient_details:
+  fictional_name: Morgan Reeves
+  age: 47
+  gender: Female
+  fictional_patient_id: PAT-29384
+document_content:
+  title: Open Reduction and Internal Fixation of Left Distal Radius Fracture
+  sections:
+  - heading: Preoperative Diagnosis
+    content: Displaced left distal radius fracture.
+  - heading: Postoperative Diagnosis
+    content: Displaced left distal radius fracture.
+  - heading: Procedure Performed
+    content: Open reduction and internal fixation (ORIF) of left distal radius with
+      volar locking plate.
+  - heading: Anesthesia
+    content: General anesthesia with regional block.
+  - heading: Indications
+    content: Patient sustained a left distal radius fracture following a fall. Due
+      to displacement and instability, surgical intervention was indicated to restore
+      alignment and function.
+  - heading: Findings
+    content: Comminuted, displaced fracture of the distal radius with dorsal angulation.
+      No intra-articular extension.
+  - heading: Description of Procedure
+    content: The patient was placed supine on the operating table, and the left upper
+      extremity was prepped and draped in the usual sterile fashion. A volar approach
+      to the distal radius was utilized. Fracture fragments were identified and reduced
+      under direct visualization and fluoroscopic guidance. A volar locking plate
+      was applied and fixed with appropriate screws. Adequate reduction and hardware
+      placement were confirmed with intraoperative fluoroscopy. The wound was irrigated
+      and closed in layers. A sterile dressing and volar splint were applied.
+  - heading: Estimated Blood Loss
+    content: 20 mL
+  - heading: Complications
+    content: None.
+  - heading: Disposition
+    content: Patient tolerated the procedure well and was transferred to the recovery
+      room in stable condition.
+author_details:
+  fictional_doctor_name: Dr. Adrian Blake
+  fictional_clinic_name: Summit Orthopaedics Center

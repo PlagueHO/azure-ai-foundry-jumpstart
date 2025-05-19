@@ -1,0 +1,37 @@
+record_id: 804ae3cd-5912-4b8d-8a6e-1f55733d64a6
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:50:47.894569+00:00
+patient_details:
+  fictional_name: Evelyn Carter
+  age: 67
+  gender: Female
+  fictional_patient_id: FP-449211
+document_content:
+  title: Open Reduction and Internal Fixation of Left Distal Radius
+  sections:
+  - heading: Indication
+    content: 'The patient presented following a fall at home with pain and deformity
+      of the left wrist. Radiographs confirmed a displaced distal radius fracture.
+      After discussion of risks, benefits, and alternatives, the patient consented
+      to surgical intervention.
+
+      '
+  - heading: Procedure
+    content: 'Under general anesthesia, the left upper limb was prepped and draped.
+      A volar approach to the distal radius was utilized. Fracture fragments were
+      visualized, reduced anatomically, and provisionally held with K-wires. A volar
+      locking plate was then applied and fixed with appropriate screws. Fluoroscopy
+      confirmed satisfactory reduction and hardware placement. Wound was irrigated
+      and closed in layers. Sterile dressing applied. No immediate complications.
+
+      '
+  - heading: Postoperative Plan
+    content: 'The patient will be placed in a volar splint and started on early finger
+      mobilization. Analgesia and neurovascular monitoring will be instituted. Outpatient
+      review in 10-14 days for wound check and suture removal.
+
+      '
+author_details:
+  fictional_doctor_name: Dr. Jamie Lin
+  fictional_clinic_name: Riverside Orthopaedic Center

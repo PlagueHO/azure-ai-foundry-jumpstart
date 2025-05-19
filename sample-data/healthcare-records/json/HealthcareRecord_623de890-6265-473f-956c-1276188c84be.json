@@ -1,0 +1,41 @@
+{
+  "record_id": "623de890-6265-473f-956c-1276188c84be",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:55:26.167824+00:00",
+  "patient_details": {
+    "fictional_name": "Clara Jensen",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to Internal Medicine for Further Evaluation",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Jensen presents with persistent fatigue, intermittent low-grade fever, and unexplained weight loss over the past two months. Basic laboratory workup has shown mild anemia and elevated inflammatory markers."
+      },
+      {
+        "heading": "Medical History",
+        "content": "No significant past medical history. No known drug allergies. No previous surgeries. Family history notable for autoimmune conditions."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "On physical examination, the patient appears pale and mildly fatigued. No lymphadenopathy or hepatosplenomegaly detected. Cardiovascular and respiratory examinations are unremarkable."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Recent laboratory tests: Hemoglobin 10.2 g/dL, ESR 45 mm/hr, CRP 18 mg/L. Renal and liver function tests within normal limits. Chest X-ray unremarkable."
+      },
+      {
+        "heading": "Summary and Request",
+        "content": "Given the unexplained constitutional symptoms and laboratory findings, further evaluation by Internal Medicine is requested to investigate possible underlying causes such as autoimmune disorders, chronic infections, or hematologic conditions."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Samuel Beck",
+    "fictional_clinic_name": "Greenfield Family Practice"
+  }
+}

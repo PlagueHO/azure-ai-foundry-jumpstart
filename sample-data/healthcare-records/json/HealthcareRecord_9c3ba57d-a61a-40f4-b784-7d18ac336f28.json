@@ -1,0 +1,57 @@
+{
+  "record_id": "9c3ba57d-a61a-40f4-b784-7d18ac336f28",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:53:34.661248+00:00",
+  "patient_details": {
+    "fictional_name": "Amelia Porter",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to General Medicine for Evaluation of Persistent Fatigue",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Amelia Porter is being referred to General Medicine for assessment and management of persistent fatigue that has been ongoing for approximately four months."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports gradual onset of fatigue, which has progressively worsened. She describes feeling tired even after a full night\u2019s sleep, with occasional headaches and mild muscle aches. No significant weight loss, fever, or night sweats. She denies chest pain, palpitations, or shortness of breath."
+      },
+      {
+        "heading": "Past Medical History",
+        "content": "No known chronic illnesses. No previous surgeries. No history of anemia or thyroid disorders."
+      },
+      {
+        "heading": "Medications",
+        "content": "Occasional acetaminophen for headaches. No regular medications."
+      },
+      {
+        "heading": "Allergies",
+        "content": "No known drug allergies."
+      },
+      {
+        "heading": "Social History",
+        "content": "Non-smoker, does not consume alcohol. Works as a graphic designer. No recent travel. Lives with spouse and one child."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "Vitals stable. Physical examination unremarkable; no lymphadenopathy, pallor, or organomegaly noted."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Basic blood work (CBC, metabolic panel, TSH) performed last week was within normal limits."
+      },
+      {
+        "heading": "Summary and Request",
+        "content": "Given the persistence of symptoms despite normal initial investigations, further assessment is requested to rule out less common causes of fatigue. Your evaluation and recommendations would be appreciated."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Isabel Chen",
+    "fictional_clinic_name": "Greenwood Family Practice"
+  }
+}

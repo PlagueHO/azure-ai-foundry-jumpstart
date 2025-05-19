@@ -1,0 +1,53 @@
+{
+  "record_id": "c6695b70-6e00-4f64-bfc4-ed0e32cbef29",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:54:52.694419+00:00",
+  "patient_details": {
+    "fictional_name": "Fiona Bartlett",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to General Medicine for Evaluation of Persistent Fatigue",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Fiona Bartlett is being referred to General Medicine for further evaluation of persistent fatigue and malaise of unclear etiology, ongoing for approximately 4 months."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "Ms. Bartlett reports increasing fatigue, low energy, and intermittent headaches over the past four months. She denies fever, weight loss, night sweats, or recent infections. Sleep is reported as non-restorative despite adequate duration. No recent travel or sick contacts. No history of depression or anxiety."
+      },
+      {
+        "heading": "Relevant Medical History",
+        "content": "No known chronic illnesses. No previous surgeries. No allergies. No current medications."
+      },
+      {
+        "heading": "Social History",
+        "content": "Non-smoker, drinks alcohol socially (1-2 drinks/week), works as a graphic designer. No illicit drug use."
+      },
+      {
+        "heading": "Family History",
+        "content": "Mother with hypothyroidism, father with hypertension. No family history of autoimmune or hematologic conditions."
+      },
+      {
+        "heading": "Physical Examination",
+        "content": "Vital signs stable. General exam unremarkable. No lymphadenopathy, pallor, or organomegaly. Neurological and cardiovascular exams within normal limits."
+      },
+      {
+        "heading": "Investigations",
+        "content": "CBC, TSH, and metabolic panel within normal limits. Iron studies pending."
+      },
+      {
+        "heading": "Summary and Request",
+        "content": "Given the persistence of symptoms and non-specific findings, further assessment and possible additional investigations by General Medicine are requested. Thank you for your evaluation of this case."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Alice Marston",
+    "fictional_clinic_name": "Willowbrook Family Practice"
+  }
+}

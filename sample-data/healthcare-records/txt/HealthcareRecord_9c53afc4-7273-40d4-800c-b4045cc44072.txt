@@ -1,0 +1,47 @@
+Record ID: 9c53afc4-7273-40d4-800c-b4045cc44072  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:44:41.255066+00:00  
+
+Patient Details:  
+Name: Alexina Porter  
+Age: 64  
+Gender: Female  
+Patient ID: FC-1029384  
+
+Document Content:  
+
+Title: Discharge Summary – Cardiology Service
+
+Admission Date: 2025-05-12  
+Discharge Date: 2025-05-19  
+
+Reason for Admission:  
+Ms. Porter was admitted with acute chest pain, shortness of breath, and diaphoresis. Initial evaluation indicated a suspected acute coronary syndrome.
+
+Hospital Course:  
+On admission, an ECG showed ST-segment elevations in the inferior leads. Cardiac enzymes were elevated. The patient was taken emergently to the cardiac catheterization laboratory, where angiography revealed a 95% occlusion of the right coronary artery. Percutaneous coronary intervention (PCI) with stent placement was performed successfully.
+
+Ms. Porter was monitored in the cardiac care unit for 48 hours post-procedure. She was started on dual antiplatelet therapy (aspirin and clopidogrel), beta-blockers, statin, and ACE inhibitor. Her hospital course was uncomplicated, and she remained hemodynamically stable throughout. Echocardiogram performed on 2025-05-16 showed preserved left ventricular systolic function with an ejection fraction of 55%.
+
+During her stay, she was evaluated by the cardiac rehabilitation team and received counseling on lifestyle modifications including diet, exercise, and smoking cessation (although she is a lifelong non-smoker).
+
+Discharge Medications:  
+- Aspirin 81 mg daily  
+- Clopidogrel 75 mg daily  
+- Metoprolol succinate 50 mg daily  
+- Atorvastatin 40 mg nightly  
+- Lisinopril 10 mg daily  
+
+Follow-Up Recommendations:  
+- Outpatient cardiology follow-up in 2 weeks  
+- Continue all prescribed medications  
+- Begin cardiac rehabilitation program  
+- Monitor for symptoms such as chest pain, shortness of breath, or palpitations and seek immediate medical attention if these occur
+
+Prognosis:  
+Ms. Porter is being discharged in stable condition. Prognosis is favorable given the prompt intervention and preserved cardiac function.
+
+Author Details:  
+Dr. Fictional  
+Fictional Clinic

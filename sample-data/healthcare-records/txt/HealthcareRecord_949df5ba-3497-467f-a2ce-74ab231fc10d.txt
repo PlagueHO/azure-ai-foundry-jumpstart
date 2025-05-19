@@ -1,0 +1,40 @@
+Record ID: 949df5ba-3497-467f-a2ce-74ab231fc10d  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:43:50.314112+00:00  
+
+Patient Details:  
+Name: Samuel Everett  
+Age: 68  
+Gender: Male  
+Patient ID: FC-4029138  
+
+Document Content:  
+
+Title: Discharge Summary - Samuel Everett
+
+1. Admission Reason:  
+Mr. Samuel Everett was admitted on 2025-05-13 with complaints of acute chest pain, shortness of breath, and diaphoresis. An initial ECG and cardiac enzymes confirmed the diagnosis of Non-ST Elevation Myocardial Infarction (NSTEMI).
+
+2. Hospital Course:  
+Upon admission, Mr. Everett was started on dual antiplatelet therapy, statins, beta-blockers, and low molecular weight heparin. He underwent a coronary angiogram on 2025-05-14, which revealed significant stenosis of the proximal left anterior descending artery. Percutaneous coronary intervention (PCI) with drug-eluting stent placement was performed successfully with no immediate complications.
+
+During his hospital stay, Mr. Everett was monitored in the cardiac care unit for 48 hours and remained hemodynamically stable. No arrhythmias or recurrent chest pain were noted. Echocardiography showed a preserved left ventricular ejection fraction of 55%.  
+
+3. Discharge Medications:  
+- Aspirin 81 mg daily  
+- Clopidogrel 75 mg daily  
+- Atorvastatin 40 mg nightly  
+- Metoprolol succinate 50 mg daily  
+- Ramipril 5 mg daily  
+- Nitroglycerin 0.4 mg sublingual as needed for chest pain  
+
+4. Follow-Up and Recommendations:  
+Mr. Everett is advised to follow up with the cardiology outpatient clinic in 2 weeks. He is instructed to adhere strictly to his medication regimen, maintain a heart-healthy diet, participate in cardiac rehabilitation, and monitor for any recurrence of chest pain, shortness of breath, or palpitations. He has been counseled on smoking cessation and the importance of regular physical activity.
+
+5. Condition at Discharge:  
+Mr. Everett is discharged in stable condition, ambulatory, and independent in activities of daily living. No new complaints were reported at discharge.
+
+Author Details:  
+Dr. Fictional  
+Fictional Clinic

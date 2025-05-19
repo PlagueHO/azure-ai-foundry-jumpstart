@@ -1,0 +1,53 @@
+{
+  "record_id": "f527b27d-9269-4f99-83a7-dbfd29e64ea8",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:56:05.366890+00:00",
+  "patient_details": {
+    "fictional_name": "Alyssa Harding",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to Internal Medicine \u2013 Evaluation of Chronic Fatigue",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Harding is being referred for evaluation of persistent fatigue, generalized malaise, and intermittent joint aches over the past 8 months. Despite initial workup and conservative management in primary care, her symptoms have persisted without clear etiology."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "Ms. Harding reports progressively worsening fatigue that interferes with daily activities. She describes non-restorative sleep, occasional headaches, and mild joint pain affecting her wrists and knees. There is no significant weight loss, fever, or night sweats. No recent travel or known infectious exposures."
+      },
+      {
+        "heading": "Past Medical History",
+        "content": "Asthma (well-controlled), seasonal allergies. No history of autoimmune disorders or major surgeries."
+      },
+      {
+        "heading": "Medications",
+        "content": "Albuterol inhaler as needed, loratadine 10 mg daily."
+      },
+      {
+        "heading": "Allergies",
+        "content": "No known drug allergies."
+      },
+      {
+        "heading": "Physical Examination",
+        "content": "Vitals stable. Mild pallor noted. No synovitis or joint swelling. Cardiorespiratory and abdominal exams unremarkable."
+      },
+      {
+        "heading": "Investigations to Date",
+        "content": "CBC: Mild normocytic anemia (Hgb 11.2 g/dL). TSH, renal and liver function, ESR, and CRP within normal limits. Negative ANA. Iron studies pending."
+      },
+      {
+        "heading": "Summary and Request",
+        "content": "Given the chronicity of symptoms and inconclusive initial workup, internal medicine input is requested for further evaluation and management. Please advise regarding additional investigations or specialist referrals as indicated."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Evelyn Marston",
+    "fictional_clinic_name": "Willowbrook Family Practice"
+  }
+}

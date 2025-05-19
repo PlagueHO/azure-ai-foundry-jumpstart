@@ -1,0 +1,35 @@
+record_id: 4a760a14-a911-4fbe-8651-78e24c969cb3
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:50:47.896071+00:00
+patient_details:
+  fictional_name: Evelyn Carter
+  age: 56
+  gender: Female
+  fictional_patient_id: FP-204930
+document_content:
+  title: Open Reduction and Internal Fixation of Left Distal Radius Fracture
+  sections:
+  - heading: Indication
+    content: Patient presented with a displaced distal radius fracture following a
+      fall on an outstretched hand. Conservative management was deemed unsuitable
+      due to significant displacement and articular involvement.
+  - heading: Procedure
+    content: Under general anesthesia, the left upper limb was prepped and draped
+      in the usual sterile fashion. A standard volar approach to the distal radius
+      was performed. The fracture site was exposed, hematoma evacuated, and the fragments
+      reduced anatomically. Fixation was achieved using a volar locking plate and
+      screws. Fluoroscopy confirmed satisfactory alignment and hardware placement.
+  - heading: Findings
+    content: Comminuted distal radius fracture with dorsal displacement. No intra-articular
+      step-off post-reduction. No evidence of associated neurovascular injury.
+  - heading: Closure
+    content: Wound irrigated and closed in layers with absorbable sutures. Sterile
+      dressing applied. Arm placed in a volar splint.
+  - heading: Postoperative Plan
+    content: Elevate limb, monitor neurovascular status, and commence early finger
+      mobilization. Analgesia and prophylactic antibiotics prescribed. Outpatient
+      review in one week for wound check and radiographs.
+author_details:
+  fictional_doctor_name: Dr. Priya Malhotra
+  fictional_clinic_name: Summit Orthopaedic Center

@@ -1,0 +1,49 @@
+record_id: 23ccfa88-5be5-44b8-814c-c7614f98e139
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:51:41.120713+00:00
+patient_details:
+  fictional_name: Evelyn Carter
+  age: 67
+  gender: Female
+  fictional_patient_id: FX-20250519-001
+document_content:
+  title: Left Total Knee Arthroplasty Operation Note
+  sections:
+  - heading: Preoperative Diagnosis
+    content: Severe left knee osteoarthritis with pain and limited mobility.
+  - heading: Postoperative Diagnosis
+    content: Severe left knee osteoarthritis (unchanged).
+  - heading: Procedure Performed
+    content: Left total knee arthroplasty with cemented prosthesis.
+  - heading: Surgeon
+    content: Dr. Fictional
+  - heading: Anesthesia
+    content: Spinal anesthesia with sedation.
+  - heading: Indications
+    content: Patient with chronic left knee pain, decreased range of motion, and failure
+      of conservative management.
+  - heading: Findings
+    content: Advanced degenerative changes of the left knee joint with loss of articular
+      cartilage and osteophyte formation.
+  - heading: Procedure Details
+    content: 'The patient was brought to the operating room and placed in the supine
+      position. After appropriate anesthesia was administered, the left lower extremity
+      was prepped and draped in a sterile fashion. A midline skin incision was made
+      over the left knee, followed by a medial parapatellar arthrotomy. The patella
+      was everted, and extensive osteophytes were debrided. The distal femur and proximal
+      tibia were resected using standard guides. Trial components were placed and
+      satisfactory alignment and stability were confirmed. The definitive cemented
+      components were implanted. Hemostasis was achieved and the wound was closed
+      in layers. Sterile dressing was applied.
+
+      '
+  - heading: Estimated Blood Loss
+    content: 200 mL
+  - heading: Complications
+    content: None
+  - heading: Disposition
+    content: Patient transferred to recovery room in stable condition.
+author_details:
+  fictional_doctor_name: Dr. Fiona Lambert
+  fictional_clinic_name: Summit Orthopaedic Center

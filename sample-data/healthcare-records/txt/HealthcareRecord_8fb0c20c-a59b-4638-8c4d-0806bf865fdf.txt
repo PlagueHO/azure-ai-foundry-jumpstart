@@ -1,0 +1,47 @@
+Record ID: 8fb0c20c-a59b-4638-8c4d-0806bf865fdf  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:46:29.359786+00:00  
+
+Patient Details:  
+Name: Jordan Emery  
+Age: 62  
+Gender: Male  
+Patient ID: FC-254879  
+
+Document Content:  
+
+Title: Discharge Summary – Cardiology  
+
+Admission Date: 2025-05-14  
+Discharge Date: 2025-05-19  
+
+Reason for Admission:  
+Mr. Emery was admitted with complaints of acute chest pain, shortness of breath, and palpitations. Initial evaluation in the emergency department revealed elevated cardiac biomarkers and ECG changes consistent with non-ST elevation myocardial infarction (NSTEMI).
+
+Hospital Course:  
+Upon admission, Mr. Emery was started on dual antiplatelet therapy, statins, and low molecular weight heparin. Echocardiogram showed mild left ventricular dysfunction (EF 48%) without significant valvular abnormality. Cardiac catheterization revealed a 70% stenosis in the proximal left anterior descending artery, for which a drug-eluting stent was successfully placed. The remainder of his hospital course was uncomplicated. He remained hemodynamically stable, and his symptoms resolved with treatment.
+
+Relevant Investigations:  
+- ECG: ST depression in leads V4-V6  
+- Troponin I: Peaked at 4.2 ng/mL  
+- Echocardiogram: Mild LV dysfunction, EF 48%  
+- Coronary angiogram: 70% proximal LAD stenosis, no other significant lesions
+
+Discharge Medications:  
+- Aspirin 81 mg daily  
+- Clopidogrel 75 mg daily  
+- Atorvastatin 40 mg nightly  
+- Metoprolol succinate 50 mg daily  
+- Ramipril 5 mg daily  
+- Nitroglycerin 0.4 mg SL PRN chest pain
+
+Discharge Instructions:  
+Mr. Emery is advised to adhere strictly to his medication regimen and follow a low-sodium, heart-healthy diet. He should avoid strenuous activities for at least two weeks and gradually increase physical activity as tolerated. Smoking cessation and moderation of alcohol intake were discussed. He is scheduled for a follow-up appointment with the cardiology clinic in two weeks.
+
+Prognosis and Follow-Up:  
+With successful intervention and compliance to secondary prevention measures, Mr. Emery’s prognosis is favorable. He should monitor for any recurrence of chest pain, shortness of breath, or palpitations and seek immediate medical attention if these occur.
+
+Author Details:  
+Dr. Fictional  
+Fictional Clinic

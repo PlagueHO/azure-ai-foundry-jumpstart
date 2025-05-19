@@ -1,0 +1,49 @@
+{
+  "record_id": "f1f00e97-05b0-4727-a20e-5b0dfeacd2ff",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:55:26.169949+00:00",
+  "patient_details": {
+    "fictional_name": "Julia Rowen",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to General Medicine for Evaluation of Chronic Fatigue",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Rowen is being referred for further evaluation of chronic fatigue and intermittent joint pain of unclear etiology. Symptoms have persisted for over 6 months with no significant improvement despite conservative management."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports persistent fatigue, low-grade fevers, and migratory arthralgias affecting her wrists and knees. She denies any significant weight loss, rash, or night sweats. Over-the-counter analgesics have provided minimal relief. No recent travel or known tick exposure."
+      },
+      {
+        "heading": "Past Medical History",
+        "content": "No significant past medical history. No known allergies. Up to date on routine vaccinations."
+      },
+      {
+        "heading": "Medications",
+        "content": "Occasional ibuprofen as needed for joint discomfort."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "Vitals stable. Mild tenderness in wrists and knees without visible swelling or erythema. No lymphadenopathy. Cardiac, respiratory, abdominal, and neurological examinations are unremarkable."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Recent laboratory tests: CBC within normal limits, ESR mildly elevated at 28 mm/hr, normal renal and liver function tests. ANA screening pending."
+      },
+      {
+        "heading": "Summary and Request",
+        "content": "Given the chronicity of symptoms and elevated ESR, further evaluation for possible autoimmune or inflammatory conditions is requested. Please advise regarding additional investigations and management."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Alicia Marston",
+    "fictional_clinic_name": "Riverview Family Practice"
+  }
+}

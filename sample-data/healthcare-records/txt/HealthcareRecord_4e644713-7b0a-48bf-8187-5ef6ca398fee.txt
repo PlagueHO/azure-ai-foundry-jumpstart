@@ -1,0 +1,41 @@
+Record ID: 4e644713-7b0a-48bf-8187-5ef6ca398fee  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:45:18.646728+00:00  
+
+Patient Details: John Bartlett, 67, Male, Patient ID: FC-10293
+
+Document Content:
+
+Title: Discharge Summary – Cardiology
+
+Reason for Admission:  
+Mr. John Bartlett was admitted to the Cardiology unit with complaints of acute onset chest pain radiating to his left arm, associated with shortness of breath and diaphoresis. Initial evaluation in the Emergency Department indicated ST-elevation myocardial infarction (STEMI).
+
+Hospital Course:  
+On arrival, the patient was immediately started on oxygen, aspirin, clopidogrel, and intravenous nitrates. He underwent urgent coronary angiography, which revealed a 90% occlusion of the left anterior descending artery. Successful percutaneous coronary intervention (PCI) with stent placement was performed. The patient's post-procedure course was uneventful. He remained hemodynamically stable, with gradual resolution of symptoms.
+
+During his hospital stay, Mr. Bartlett was monitored in the coronary care unit for 48 hours, then transferred to the step-down unit. He participated in early cardiac rehabilitation and received education on medication adherence, lifestyle modifications, and warning signs of cardiac events.
+
+Discharge Medications:  
+1. Aspirin 81 mg daily  
+2. Clopidogrel 75 mg daily  
+3. Atorvastatin 40 mg nightly  
+4. Metoprolol succinate 50 mg daily  
+5. Lisinopril 10 mg daily  
+6. Nitroglycerin 0.4 mg SL as needed for chest pain  
+
+Discharge Instructions:  
+- Follow a low-sodium, heart-healthy diet  
+- Engage in light physical activity as tolerated, gradually increasing as advised  
+- Adhere strictly to prescribed medications  
+- Monitor for chest pain, palpitations, syncope, or shortness of breath  
+- Attend cardiology follow-up in 1 week  
+- Contact the clinic or return to the Emergency Department for any new or worsening symptoms
+
+Prognosis:  
+Mr. Bartlett’s prognosis is favorable following timely intervention and absence of complications during his hospitalization. Continued adherence to secondary prevention measures is essential.
+
+Author Details:  
+Dr. Fictional, Cardiology Consultant  
+Fictional Clinic

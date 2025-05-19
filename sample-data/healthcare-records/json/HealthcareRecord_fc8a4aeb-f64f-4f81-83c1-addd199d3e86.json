@@ -1,0 +1,49 @@
+{
+  "record_id": "fc8a4aeb-f64f-4f81-83c1-addd199d3e86",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:55:26.171640+00:00",
+  "patient_details": {
+    "fictional_name": "Elena Morrison",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to Internal Medicine",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Morrison is being referred for further assessment and management of persistent fatigue, unintentional weight loss, and intermittent low-grade fever over the past two months."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports feeling increasingly fatigued, with episodes of low-grade fever (up to 37.8\u00b0C) and an unintentional weight loss of 4 kg over eight weeks. She denies night sweats, cough, or recent travel. No significant gastrointestinal or urinary symptoms. Over-the-counter analgesics have provided minimal relief."
+      },
+      {
+        "heading": "Relevant Medical History",
+        "content": "History of hypothyroidism, well-controlled on levothyroxine. No known allergies. No prior hospitalizations or surgeries."
+      },
+      {
+        "heading": "Current Medications",
+        "content": "- Levothyroxine 75 mcg daily\n- Multivitamin once daily"
+      },
+      {
+        "heading": "Physical Examination",
+        "content": "Vital signs stable. BMI 22.5. Mild pallor noted. No lymphadenopathy or organomegaly detected. Cardiovascular and respiratory exams unremarkable."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Recent bloodwork: mild normocytic anemia (Hb 10.8 g/dL), normal renal and liver function tests, TSH within therapeutic range. ESR mildly elevated at 38 mm/hr."
+      },
+      {
+        "heading": "Summary and Request",
+        "content": "Given the constellation of symptoms and mild anemia, further evaluation is required to rule out underlying chronic inflammatory or hematologic conditions. Kindly assess and advise on further management."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Maya Linton",
+    "fictional_clinic_name": "Greenwood Family Practice"
+  }
+}

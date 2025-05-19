@@ -1,0 +1,45 @@
+record_id: 318841f4-ba8b-40d1-9aa6-a50dca281885
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:51:41.124268+00:00
+patient_details:
+  fictional_name: Morgan Chandler
+  age: 43
+  gender: Female
+  fictional_patient_id: FP-284910
+document_content:
+  title: Open Reduction and Internal Fixation of Distal Radius Fracture
+  sections:
+  - heading: Preoperative Diagnosis
+    content: Displaced distal radius fracture, left wrist.
+  - heading: Postoperative Diagnosis
+    content: Displaced distal radius fracture, left wrist (unchanged).
+  - heading: Procedure Performed
+    content: Open reduction and internal fixation (ORIF) of left distal radius.
+  - heading: Indications
+    content: The patient sustained a left distal radius fracture following a fall
+      on an outstretched hand. X-rays confirmed a displaced extra-articular fracture.
+      Due to displacement and functional demands, operative intervention was indicated.
+  - heading: Anesthesia
+    content: General anesthesia.
+  - heading: Operative Findings
+    content: Comminuted, dorsally displaced fracture of the distal radius. No neurovascular
+      injury noted.
+  - heading: Procedure Details
+    content: The patient was positioned supine with the left arm on an arm board.
+      After prepping and draping, a standard volar approach was made to the distal
+      radius. Fracture site was exposed, hematoma evacuated, and fracture fragments
+      reduced under direct visualization. A volar locking plate was applied and secured
+      with screws. Fracture reduction and hardware placement were confirmed with intraoperative
+      fluoroscopy. Wound was irrigated and closed in layers. Sterile dressing applied
+      and a volar splint placed.
+  - heading: Estimated Blood Loss
+    content: 30 mL
+  - heading: Complications
+    content: None.
+  - heading: Disposition
+    content: Patient tolerated the procedure well and was transferred to recovery
+      in stable condition.
+author_details:
+  fictional_doctor_name: Dr. Jamie Reese
+  fictional_clinic_name: Summit Orthopaedic Center

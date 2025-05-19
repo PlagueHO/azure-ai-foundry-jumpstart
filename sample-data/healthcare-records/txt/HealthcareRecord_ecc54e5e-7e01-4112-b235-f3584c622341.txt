@@ -1,0 +1,46 @@
+Record ID: ecc54e5e-7e01-4112-b235-f3584c622341  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:46:29.361715+00:00  
+
+Patient Details:  
+Name: Jordan Matthis  
+Age: 62  
+Gender: Male  
+Patient ID: FC-2039847  
+
+Document Content:
+
+Discharge Summary – Cardiology
+
+Admission Date: 2025-05-14  
+Discharge Date: 2025-05-19  
+
+Reason for Admission:  
+Mr. Jordan Matthis was admitted with acute chest pain radiating to the left arm, associated with diaphoresis and mild shortness of breath. He has a history of hypertension and hyperlipidemia.
+
+Hospital Course:  
+On admission, ECG showed ST-segment elevations in the inferior leads. Troponin levels were elevated. The patient was diagnosed with an acute inferior wall ST-elevation myocardial infarction (STEMI). He was taken emergently to the cardiac catheterization lab, where a 90% occlusion of the right coronary artery was identified and treated with successful percutaneous coronary intervention (PCI) and drug-eluting stent placement.
+
+Post-procedure, Mr. Matthis was monitored in the cardiac care unit. He remained hemodynamically stable with no further chest pain. Serial cardiac enzymes trended down appropriately. Echocardiography post-PCI revealed mildly reduced left ventricular ejection fraction (45%) but no significant valvular abnormalities or ventricular thrombus.
+
+Medications at Discharge:  
+- Aspirin 81 mg daily  
+- Clopidogrel 75 mg daily  
+- Atorvastatin 80 mg nightly  
+- Metoprolol succinate 50 mg daily  
+- Lisinopril 10 mg daily  
+- Nitroglycerin 0.4 mg SL as needed for chest pain
+
+Discharge Instructions:  
+Mr. Matthis is to continue all prescribed medications and follow a low-sodium, heart-healthy diet. He is to avoid strenuous activity for two weeks and gradually increase physical activity as tolerated. Smoking cessation and weight management were discussed. He should monitor for recurrence of chest pain, palpitations, shortness of breath, or swelling, and seek immediate medical attention if these occur.
+
+Follow-Up:  
+Outpatient cardiology follow-up is scheduled for 2025-05-26. Laboratory work, including lipid panel and renal function, is to be completed prior to the appointment.
+
+Prognosis:  
+With adherence to medical therapy and lifestyle modifications, Mr. Matthis has a good prognosis. He was educated about recognizing symptoms of recurrent ischemia and the importance of regular follow-up.
+
+Author Details:  
+Dr. Fictional  
+Fictional Clinic

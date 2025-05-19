@@ -1,0 +1,43 @@
+Record ID: 15d0facd-2c8e-4f16-b1f7-1435ed75e79f  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:43:50.314505+00:00  
+
+Patient Details:  
+Name: Jamie Carter  
+Age: 62  
+Gender: Female  
+Patient ID: FC-89423  
+
+Document Content:
+
+Title: Discharge Summary – Cardiology
+
+Admission Date: 2025-05-13  
+Discharge Date: 2025-05-19  
+
+Reason for Admission:  
+Ms. Jamie Carter was admitted for evaluation and management of chest pain and shortness of breath, suspicious for acute coronary syndrome.
+
+Hospital Course:  
+On admission, the patient presented with substernal chest pain radiating to the left arm, associated with mild dyspnea. Initial ECG demonstrated non-specific ST-T wave changes. Troponin I was mildly elevated at 0.07 ng/mL. The patient was started on aspirin, clopidogrel, and enoxaparin. A transthoracic echocardiogram revealed mild hypokinesia of the inferior wall with preserved left ventricular ejection fraction (LVEF 55%). Coronary angiography performed on 2025-05-15 identified a 70% stenosis in the mid-right coronary artery (RCA). A drug-eluting stent was successfully deployed with no immediate complications.  
+
+Throughout her stay, the patient remained hemodynamically stable. She reported complete resolution of chest pain following the procedure. Serial cardiac enzymes trended downward, and repeat ECGs were unremarkable. She participated in early cardiac rehabilitation and was educated on risk factor modification.
+
+Discharge Medications:  
+- Aspirin 81 mg daily  
+- Clopidogrel 75 mg daily  
+- Atorvastatin 40 mg nightly  
+- Metoprolol succinate 50 mg daily  
+- Lisinopril 10 mg daily  
+- Nitroglycerin 0.4 mg sublingual, as needed
+
+Discharge Instructions:  
+Ms. Carter is advised to follow a heart-healthy, low-sodium diet and adhere to all prescribed medications. She should avoid strenuous activities for two weeks and gradually resume exercise as tolerated. Warning signs for which immediate medical attention is necessary were discussed, including recurrent chest pain, palpitations, or syncope. Outpatient follow-up with her cardiologist is scheduled in 2 weeks.
+
+Prognosis:  
+Prognosis is favorable with adherence to medical therapy and lifestyle modifications.
+
+Author Details:  
+Dr. Fictional, MD  
+Fictional Clinic, Cardiology Department

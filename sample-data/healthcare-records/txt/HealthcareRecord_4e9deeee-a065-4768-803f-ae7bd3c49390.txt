@@ -1,0 +1,53 @@
+Record ID: 4e9deeee-a065-4768-803f-ae7bd3c49390  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:46:29.362100+00:00  
+
+Patient Details:  
+Name: Jordan Mitchell  
+Age: 62  
+Gender: Male  
+Patient ID: FAKE-2019901  
+
+Document Content:  
+
+Title: Discharge Summary – Acute Myocardial Infarction  
+
+Admission Date: 2025-05-14  
+Discharge Date: 2025-05-19  
+
+Reason for Admission:  
+Mr. Jordan Mitchell was admitted to the Cardiology Unit with acute onset chest pain, radiating to the left arm, and associated shortness of breath. ECG and laboratory findings were consistent with ST-elevation myocardial infarction (STEMI).
+
+Hospital Course:  
+Upon admission, the patient was emergently managed with dual antiplatelet therapy, intravenous heparin, and nitroglycerin infusion. Emergent cardiac catheterization revealed a 90% occlusion of the left anterior descending artery. Percutaneous coronary intervention (PCI) with drug-eluting stent placement was performed successfully. The patient was monitored in the coronary care unit for 48 hours post-procedure without complications.
+
+During hospitalization, Mr. Mitchell was initiated on guideline-directed medical therapy, including beta-blockers, ACE inhibitors, statins, and dual antiplatelet therapy. He received cardiac rehabilitation counseling and education regarding lifestyle modification and medication adherence.
+
+Investigations:  
+- ECG: ST elevation in leads V2-V4  
+- Troponin I: Elevated (peak 8.7 ng/mL)  
+- Coronary Angiography: Critical LAD stenosis  
+- Echocardiogram: Mildly reduced left ventricular ejection fraction (48%), no significant valvular abnormalities  
+
+Discharge Medications:  
+- Aspirin 81 mg daily  
+- Ticagrelor 90 mg twice daily  
+- Metoprolol succinate 50 mg daily  
+- Lisinopril 10 mg daily  
+- Atorvastatin 80 mg nightly  
+- Nitroglycerin 0.4 mg SL as needed for chest pain  
+
+Discharge Instructions:  
+- Adhere strictly to prescribed medications  
+- Follow cardiac diet and initiate a walking program as tolerated  
+- Avoid tobacco and limit alcohol consumption  
+- Monitor for symptoms of chest pain, shortness of breath, palpitations, or syncope  
+- Follow up with cardiology outpatient clinic in 1 week  
+
+Prognosis:  
+The patient’s prognosis is favorable with continued adherence to therapy and lifestyle changes. He is at moderate risk for future cardiac events and will benefit from ongoing cardiac rehabilitation.
+
+Author Details:  
+Dr. Fictional  
+Fictional Clinic

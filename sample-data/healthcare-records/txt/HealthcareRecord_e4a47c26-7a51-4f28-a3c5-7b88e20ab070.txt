@@ -1,0 +1,53 @@
+Record ID: e4a47c26-7a51-4f28-a3c5-7b88e20ab070  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:45:18.641931+00:00  
+
+Patient Details:  
+Name: Jordan Miller  
+Age: 57  
+Gender: Male  
+Patient ID: FC-203847  
+
+Document Content:
+
+Title: Discharge Summary – Cardiology
+
+Admission Date: 2025-05-15  
+Discharge Date: 2025-05-19
+
+Reason for Admission:  
+Mr. Jordan Miller was admitted for evaluation and management of chest pain and suspected acute coronary syndrome.
+
+Hospital Course:  
+On admission, Mr. Miller presented with a 2-day history of intermittent, substernal chest pain radiating to his left arm, associated with mild shortness of breath. Initial ECG showed nonspecific ST-T changes. Cardiac biomarkers were mildly elevated. He was admitted to the cardiac care unit for monitoring and further workup.
+
+During his stay, Mr. Miller underwent a diagnostic coronary angiogram, which revealed a 70% stenosis in the proximal left anterior descending artery. He was managed medically with antiplatelet agents, statins, beta blockers, and nitrates. No immediate percutaneous intervention was deemed necessary. He remained hemodynamically stable throughout his admission and had no further chest pain.
+
+Investigations:  
+- ECG: Nonspecific ST-T changes, no dynamic ischemia  
+- Cardiac enzymes: Mild troponin elevation, trending down  
+- Echocardiogram: Mild LV hypertrophy, normal systolic function, EF 58%  
+- Coronary angiogram: 70% proximal LAD stenosis, no other significant lesions
+
+Treatment:  
+- Aspirin 81 mg daily  
+- Clopidogrel 75 mg daily  
+- Atorvastatin 40 mg nightly  
+- Metoprolol 50 mg twice daily  
+- Nitroglycerin as needed for chest pain
+
+Discharge Condition:  
+Mr. Miller is hemodynamically stable, chest pain-free, and able to ambulate without difficulty. He has been counseled on medication adherence, lifestyle modifications, and symptoms warranting immediate medical attention.
+
+Follow-up and Recommendations:  
+- Cardiology outpatient follow-up in 2 weeks  
+- Continue prescribed medications  
+- Low sodium, heart-healthy diet  
+- Daily exercise as tolerated  
+- Smoking cessation support (if applicable)  
+- Return to ER for recurrent chest pain, syncope, or shortness of breath
+
+Author Details:  
+Dr. Fictional  
+Fictional Clinic

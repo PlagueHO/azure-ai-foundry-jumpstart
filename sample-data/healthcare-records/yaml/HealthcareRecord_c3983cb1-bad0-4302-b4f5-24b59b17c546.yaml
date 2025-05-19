@@ -1,0 +1,44 @@
+record_id: c3983cb1-bad0-4302-b4f5-24b59b17c546
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:50:47.899147+00:00
+patient_details:
+  fictional_name: Avery Thompson
+  age: 43
+  gender: Female
+  fictional_patient_id: FP-237491
+document_content:
+  title: Open Reduction and Internal Fixation of Left Distal Radius
+  sections:
+  - heading: Preoperative Diagnosis
+    content: Left distal radius fracture following a fall.
+  - heading: Postoperative Diagnosis
+    content: Left distal radius fracture (displaced), as above.
+  - heading: Procedure
+    content: Open reduction and internal fixation (ORIF) of left distal radius with
+      volar locking plate.
+  - heading: Anesthesia
+    content: General anesthesia with regional block.
+  - heading: Findings
+    content: Comminuted, dorsally displaced distal radius fracture. No neurovascular
+      compromise noted.
+  - heading: Details of Procedure
+    content: Patient was placed supine on the operating table with the left arm on
+      a hand table. The left upper limb was prepped and draped in the usual sterile
+      fashion. A volar approach to the distal radius was made via the Henry approach.
+      Fracture fragments were identified and reduced under direct vision and fluoroscopic
+      guidance. A volar locking plate was applied and fixed with locking screws. Satisfactory
+      reduction and hardware position confirmed intraoperatively. Wound irrigated
+      and closed in layers. Sterile dressing applied. No intraoperative complications.
+  - heading: Estimated Blood Loss
+    content: Approximately 30 mL.
+  - heading: Specimens
+    content: None.
+  - heading: Drains
+    content: None placed.
+  - heading: Postoperative Plan
+    content: Elevate limb, neurovascular observations, analgesia as required, follow
+      up in fracture clinic in 1 week for wound check and x-ray.
+author_details:
+  fictional_doctor_name: Dr. Morgan Patel
+  fictional_clinic_name: Summit Orthopaedic Center

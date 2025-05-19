@@ -1,0 +1,49 @@
+{
+  "record_id": "4077dced-ff45-4615-9696-396f74711431",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:54:33.262507+00:00",
+  "patient_details": {
+    "fictional_name": "Helen McAdams",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to General Medicine for Further Evaluation",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Helen McAdams is being referred for evaluation of persistent fatigue, unexplained weight loss, and intermittent low-grade fever of two months' duration."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports increasing fatigue over the past two months, accompanied by an unintentional weight loss of 6 kg. She has also experienced intermittent low-grade fevers (up to 38\u00b0C), occasional night sweats, and mild arthralgia. No cough, chest pain, or gastrointestinal symptoms have been noted."
+      },
+      {
+        "heading": "Relevant Medical History",
+        "content": "No significant past medical history. No known allergies. No previous hospitalizations or surgeries. No family history of autoimmune or malignant conditions."
+      },
+      {
+        "heading": "Medications",
+        "content": "Currently not taking any regular medications."
+      },
+      {
+        "heading": "Physical Examination",
+        "content": "On examination, patient appears mildly pale but is not in acute distress. Vitals: BP 116/72 mmHg, HR 84 bpm, Temp 37.8\u00b0C. No lymphadenopathy or hepatosplenomegaly. Mild pallor noted, otherwise unremarkable."
+      },
+      {
+        "heading": "Investigations to Date",
+        "content": "CBC: Mild normocytic anemia (Hb 10.6 g/dL), WBC and platelets within normal limits. ESR elevated at 54 mm/hr. CRP 18 mg/L. Renal and liver function tests normal. Chest X-ray unremarkable. Basic metabolic panel normal."
+      },
+      {
+        "heading": "Summary and Request",
+        "content": "Given the persistent constitutional symptoms and abnormal laboratory findings, further evaluation is warranted to rule out underlying systemic or hematological pathology. Kindly assess and advise on further diagnostic work-up and management."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Priya Nanduri",
+    "fictional_clinic_name": "Evergreen Family Practice"
+  }
+}

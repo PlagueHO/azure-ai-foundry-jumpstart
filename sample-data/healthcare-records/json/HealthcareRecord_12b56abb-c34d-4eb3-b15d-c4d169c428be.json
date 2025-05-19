@@ -1,0 +1,45 @@
+{
+  "record_id": "12b56abb-c34d-4eb3-b15d-c4d169c428be",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:56:05.368801+00:00",
+  "patient_details": {
+    "fictional_name": "Clara Reynolds",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral for Further Evaluation of Persistent Fatigue and Joint Pain",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Reynolds is being referred for further evaluation and management of persistent fatigue and diffuse joint pain that have not responded to initial therapy."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports experiencing generalized fatigue and aching in multiple joints, particularly her knees, wrists, and fingers, for the past 4 months. Symptoms are worse in the mornings, with stiffness lasting approximately 45 minutes. She denies fevers, weight loss, or recent infections. Over-the-counter analgesics have provided minimal relief."
+      },
+      {
+        "heading": "Relevant Medical History",
+        "content": "No significant past medical history. No known allergies. No history of autoimmune disease in the family."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "On examination, mild tenderness over bilateral wrists and knees, with no visible swelling or erythema. No rashes observed. Vitals stable."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Recent laboratory tests reveal mildly elevated ESR (28 mm/hr) and CRP (12 mg/L). ANA and rheumatoid factor are pending."
+      },
+      {
+        "heading": "Summary and Request",
+        "content": "Given the persistence of symptoms and initial lab findings, I am referring Ms. Reynolds for specialist evaluation to rule out early inflammatory arthritis or other connective tissue disorders. Your assessment and recommendations for further management would be appreciated."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Maya Linton",
+    "fictional_clinic_name": "Greenway Internal Medicine Clinic"
+  }
+}

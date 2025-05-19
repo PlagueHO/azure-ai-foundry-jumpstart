@@ -1,0 +1,43 @@
+Record ID: 3c8fa654-6b7d-42fc-b105-e1963ff1d11d  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:45:18.642805+00:00  
+
+Patient Details:  
+Name: Morgan Harwell  
+Age: 62  
+Gender: Female  
+Patient ID: FCT-998877  
+
+Document Content:  
+
+Title: Discharge Summary – Cardiology Service
+
+Admission Date: 2025-05-13  
+Discharge Date: 2025-05-19  
+
+Reason for Admission:  
+Ms. Harwell was admitted for evaluation and management of acute chest pain and shortness of breath. She has a history of hypertension and hyperlipidemia.
+
+Hospital Course:  
+Upon admission, Ms. Harwell underwent cardiac monitoring and was found to have elevated troponin levels consistent with a non-ST elevation myocardial infarction (NSTEMI). She was started on dual antiplatelet therapy, statins, and beta-blockers. Cardiac catheterization was performed, revealing a 70% stenosis in the left anterior descending artery. Percutaneous coronary intervention (PCI) with stent placement was successfully completed without complications.
+
+Ms. Harwell’s post-procedure course was stable. She participated in cardiac rehabilitation education and was closely monitored for recurrent symptoms. No arrhythmias or heart failure symptoms developed during her stay.
+
+Discharge Medications:  
+- Aspirin 81 mg daily  
+- Clopidogrel 75 mg daily  
+- Atorvastatin 40 mg nightly  
+- Metoprolol succinate 50 mg daily  
+- Lisinopril 10 mg daily  
+- Nitroglycerin 0.4 mg SL as needed for chest pain  
+
+Discharge Instructions:  
+Ms. Harwell is advised to maintain a low-sodium, heart-healthy diet, monitor her blood pressure daily, and attend all follow-up appointments. She should avoid strenuous activity for two weeks and gradually increase exercise as tolerated. Warning signs including chest pain, shortness of breath, or palpitations should prompt immediate medical attention.
+
+Follow-Up:  
+Cardiology clinic appointment scheduled for 2025-05-26.  
+
+Author Details:  
+Dr. Fictional, MD  
+Fictional Clinic, Cardiology Department

@@ -1,0 +1,46 @@
+record_id: 1b576657-fc73-495c-a3ac-5cc163f6af05
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:52:15.392660+00:00
+patient_details:
+  fictional_name: Morgan Ellery
+  age: 34
+  gender: Female
+  fictional_patient_id: OP-39402
+document_content:
+  title: Open Reduction and Internal Fixation of Left Distal Radius
+  sections:
+  - heading: Preoperative Diagnosis
+    content: Displaced left distal radius fracture.
+  - heading: Postoperative Diagnosis
+    content: Displaced left distal radius fracture (same as preoperative).
+  - heading: Procedure Performed
+    content: Open reduction and internal fixation (ORIF) of the left distal radius
+      using a volar locking plate.
+  - heading: Anesthesia
+    content: General anesthesia.
+  - heading: Indications
+    content: The patient sustained a left distal radius fracture following a fall
+      on an outstretched hand. Imaging revealed significant displacement, warranting
+      surgical intervention.
+  - heading: Findings
+    content: Comminuted, dorsally displaced left distal radius fracture with intra-articular
+      extension.
+  - heading: Procedure Details
+    content: After induction of anesthesia and application of a sterile tourniquet,
+      the left upper extremity was prepped and draped. A standard volar approach to
+      the distal radius was performed. Fracture fragments were identified, reduced
+      under direct visualization, and provisionally stabilized with K-wires. A volar
+      locking plate was applied and fixed with appropriate screws. Fluoroscopic imaging
+      confirmed satisfactory reduction and hardware placement. Wound was irrigated
+      and closed in layers. Sterile dressing applied.
+  - heading: Estimated Blood Loss
+    content: 20 mL
+  - heading: Complications
+    content: None.
+  - heading: Disposition
+    content: Patient was transferred to recovery in stable condition with neurovascularly
+      intact left hand.
+author_details:
+  fictional_doctor_name: Dr. Rowan Carter
+  fictional_clinic_name: Summit Orthopaedic Center

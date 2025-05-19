@@ -1,0 +1,49 @@
+{
+  "record_id": "976b4876-fd42-44e0-8468-0f1c5e30d0a2",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:54:33.261477+00:00",
+  "patient_details": {
+    "fictional_name": "Emily Carter",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral Letter for Specialist Evaluation",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Carter is being referred for further evaluation of persistent fatigue and intermittent joint pain of unclear etiology."
+      },
+      {
+        "heading": "Clinical History",
+        "content": "The patient has experienced generalized fatigue for the past 3 months, accompanied by intermittent swelling and pain in the wrists and knees. There is no significant past medical history. No recent travel or known exposures. Over-the-counter analgesics provide only minimal relief."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "On examination, vital signs were stable. Mild tenderness and swelling were noted in both wrists. No erythema or warmth. No other abnormal findings."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Initial blood work revealed mild anemia (Hb 11.2 g/dL) and an elevated ESR (28 mm/hr). Renal and liver function tests were within normal limits. ANA screening pending."
+      },
+      {
+        "heading": "Referral Request",
+        "content": "Please assess for possible autoimmune or rheumatological disorder and advise on further management."
+      },
+      {
+        "heading": "Current Medications",
+        "content": "Ibuprofen 200 mg as needed."
+      },
+      {
+        "heading": "Allergies",
+        "content": "No known drug allergies."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Hannah Lowell",
+    "fictional_clinic_name": "Greenfield Family Medicine Clinic"
+  }
+}

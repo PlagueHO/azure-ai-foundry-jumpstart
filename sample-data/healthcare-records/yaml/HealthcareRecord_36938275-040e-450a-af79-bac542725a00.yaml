@@ -1,0 +1,45 @@
+record_id: 36938275-040e-450a-af79-bac542725a00
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:49:29.000679+00:00
+patient_details:
+  fictional_name: Celia Morgan
+  age: 62
+  gender: Female
+  fictional_patient_id: FP-4472105
+document_content:
+  title: Open Reduction and Internal Fixation of Left Distal Radius
+  sections:
+  - heading: Indication
+    content: 'The patient is a 62-year-old female who sustained a displaced left distal
+      radius fracture following a fall on an outstretched hand. Non-operative management
+      was deemed unsuitable due to significant displacement and articular involvement.
+
+      '
+  - heading: Procedure
+    content: 'Under general anesthesia and with the patient in the supine position,
+      the left upper limb was prepped and draped in a sterile manner. A standard volar
+      approach to the distal radius was performed. The fracture fragments were visualized,
+      reduced under direct vision, and temporarily stabilized with K-wires. A volar
+      locking plate was then applied and fixed with appropriate screws. Fluoroscopy
+      confirmed satisfactory reduction and hardware positioning.
+
+      '
+  - heading: Findings
+    content: 'Comminuted extra-articular distal radius fracture with no intra-articular
+      extension. No neurovascular injury identified.
+
+      '
+  - heading: Estimated Blood Loss
+    content: 50 mL.
+  - heading: Complications
+    content: None encountered intraoperatively.
+  - heading: Postoperative Plan
+    content: 'The left upper limb was placed in a volar splint. The patient will be
+      monitored for neurovascular compromise and instructed to keep the limb elevated.
+      Follow-up scheduled in 2 weeks for wound check and radiographic evaluation.
+
+      '
+author_details:
+  fictional_doctor_name: Dr. Felicity Ray
+  fictional_clinic_name: Summit Orthopaedic Centre

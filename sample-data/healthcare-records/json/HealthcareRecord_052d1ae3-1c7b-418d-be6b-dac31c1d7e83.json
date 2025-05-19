@@ -1,0 +1,49 @@
+{
+  "record_id": "052d1ae3-1c7b-418d-be6b-dac31c1d7e83",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:54:52.693687+00:00",
+  "patient_details": {
+    "fictional_name": "Elena Porter",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral for Evaluation of Persistent Fatigue",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Porter is being referred for specialist evaluation of persistent fatigue and malaise, present for the past 4 months despite initial management."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports ongoing fatigue, unrefreshing sleep, and intermittent myalgias. She denies fever, significant weight loss, or night sweats. There is no history of recent travel or sick contacts."
+      },
+      {
+        "heading": "Past Medical History",
+        "content": "No significant chronic illnesses. No known allergies. Up-to-date with routine immunizations."
+      },
+      {
+        "heading": "Medications",
+        "content": "Occasional acetaminophen for headaches. No regular prescription medications."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "Vital signs stable. Physical examination unremarkable except for mild pallor. No lymphadenopathy or organomegaly."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Recent laboratory tests show mild normocytic anemia (Hb 11.5 g/dL), normal thyroid function, negative infectious workup (EBV, CMV, HIV). Liver and renal function within normal limits."
+      },
+      {
+        "heading": "Summary and Request",
+        "content": "Given the persistence of symptoms and inconclusive initial workup, I am referring Ms. Porter for further evaluation to rule out underlying causes such as chronic fatigue syndrome or other systemic conditions."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Maya Emerson",
+    "fictional_clinic_name": "Greenway Family Medicine"
+  }
+}

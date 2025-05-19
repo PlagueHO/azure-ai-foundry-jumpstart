@@ -1,0 +1,47 @@
+record_id: c2b8745d-4bcf-4d3a-b069-9dcfa7c773af
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:51:05.091288+00:00
+patient_details:
+  fictional_name: Morgan Willoughby
+  age: 54
+  gender: Female
+  fictional_patient_id: FP-203948
+document_content:
+  title: Open Reduction and Internal Fixation of Left Distal Radius
+  sections:
+  - heading: Preoperative Diagnosis
+    content: Displaced left distal radius fracture
+  - heading: Postoperative Diagnosis
+    content: Displaced left distal radius fracture (confirmed intraoperatively)
+  - heading: Procedure Performed
+    content: Open reduction and internal fixation of left distal radius with volar
+      locking plate
+  - heading: Indications
+    content: Patient presented following a fall on an outstretched hand, resulting
+      in a displaced distal radius fracture. Given the degree of displacement and
+      failure of closed reduction, operative management was indicated.
+  - heading: Anesthesia
+    content: General anesthesia
+  - heading: Operative Findings
+    content: Comminuted, dorsally displaced distal radius fracture with minimal articular
+      step-off. No associated neurovascular injury.
+  - heading: Procedure Details
+    content: 'The patient was placed supine with the left upper limb on an arm table.
+      After prepping and draping in the usual sterile fashion, a standard volar approach
+      to the distal radius was made. Fracture fragments were identified and carefully
+      mobilized. Reduction was achieved and provisionally held with K-wires. A volar
+      locking plate was applied and secured with screws. Intraoperative fluoroscopy
+      confirmed anatomic reduction and satisfactory hardware placement. Wound was
+      irrigated and closed in layers. Sterile dressing and volar splint applied.
+
+      '
+  - heading: Estimated Blood Loss
+    content: 50 mL
+  - heading: Complications
+    content: None
+  - heading: Disposition
+    content: Patient was transferred to recovery in stable condition.
+author_details:
+  fictional_doctor_name: Dr. Fiona Durand
+  fictional_clinic_name: Summit Orthopaedic Center

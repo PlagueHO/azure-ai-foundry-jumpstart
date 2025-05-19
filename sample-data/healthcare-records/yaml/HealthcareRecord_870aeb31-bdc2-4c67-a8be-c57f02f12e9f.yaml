@@ -1,0 +1,36 @@
+record_id: 870aeb31-bdc2-4c67-a8be-c57f02f12e9f
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:50:47.893869+00:00
+patient_details:
+  fictional_name: Morgan Riley
+  age: 42
+  gender: Female
+  fictional_patient_id: OP20250519-1224
+document_content:
+  title: Open Reduction and Internal Fixation of Left Distal Radius
+  sections:
+  - heading: Indication
+    content: Patient presented with a displaced left distal radius fracture following
+      a fall on an outstretched hand. Surgical intervention was indicated due to significant
+      displacement and failure of closed reduction.
+  - heading: Preoperative Diagnosis
+    content: Displaced left distal radius fracture.
+  - heading: Postoperative Diagnosis
+    content: Displaced left distal radius fracture (same as preoperative).
+  - heading: Procedure
+    content: Under general anesthesia, the left upper extremity was prepped and draped
+      in sterile fashion. A volar approach was made to the distal radius. Fracture
+      fragments were identified, reduced, and stabilized with a pre-contoured volar
+      locking plate and screws. Fluoroscopic imaging confirmed satisfactory alignment
+      and hardware position.
+  - heading: Estimated Blood Loss
+    content: 25 mL
+  - heading: Complications
+    content: None.
+  - heading: Disposition
+    content: Patient tolerated the procedure well and was transferred to recovery
+      in stable condition. Plan for follow-up in orthopaedic clinic in 2 weeks.
+author_details:
+  fictional_doctor_name: Dr. Evelyn Porter
+  fictional_clinic_name: Summit Orthopaedic Center

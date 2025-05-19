@@ -1,0 +1,49 @@
+record_id: bd1551b6-da99-4150-87ad-60467ae941a1
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:49:28.994386+00:00
+patient_details:
+  fictional_name: Morgan Davies
+  age: 56
+  gender: Female
+  fictional_patient_id: FP-4873921
+document_content:
+  title: Open Reduction and Internal Fixation of Left Distal Radius
+  sections:
+  - heading: Preoperative Diagnosis
+    content: Displaced left distal radius fracture.
+  - heading: Postoperative Diagnosis
+    content: Displaced left distal radius fracture (same as preoperative).
+  - heading: Procedure Performed
+    content: Open reduction and internal fixation (ORIF) of left distal radius.
+  - heading: Indications
+    content: Patient presented following a mechanical fall with pain, swelling, and
+      deformity of the left wrist. X-rays confirmed a comminuted, displaced distal
+      radius fracture. Operative intervention was recommended due to displacement
+      and instability.
+  - heading: Anesthesia
+    content: Regional block (axillary) with sedation.
+  - heading: Findings
+    content: Comminuted fracture of distal radius with dorsal displacement. Soft tissues
+      intact. No neurovascular compromise noted intraoperatively.
+  - heading: Procedure Details
+    content: The patient was positioned supine with the left arm on an arm table.
+      The limb was prepped and draped in the usual sterile fashion. A longitudinal
+      incision was made over the volar aspect of the distal radius. Dissection was
+      carried down to the fracture site. The fracture fragments were identified, reduced
+      under direct vision, and provisional fixation was achieved with K-wires. A volar
+      locking plate was then applied and fixed with appropriate screws. Fluoroscopy
+      confirmed satisfactory reduction and hardware placement. The wound was irrigated,
+      hemostasis achieved, and the incision closed in layers. Sterile dressing and
+      volar splint were applied.
+  - heading: Estimated Blood Loss
+    content: Approximately 30 mL.
+  - heading: Complications
+    content: None.
+  - heading: Disposition
+    content: Patient tolerated the procedure well and was transferred to recovery
+      in stable condition. Postoperative instructions given. Follow-up in orthopaedic
+      clinic in 10-14 days.
+author_details:
+  fictional_doctor_name: Dr. Fictional
+  fictional_clinic_name: Fictional Clinic

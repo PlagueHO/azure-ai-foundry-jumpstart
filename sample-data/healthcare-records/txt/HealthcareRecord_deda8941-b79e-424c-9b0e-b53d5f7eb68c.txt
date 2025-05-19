@@ -1,0 +1,40 @@
+Record ID: deda8941-b79e-424c-9b0e-b53d5f7eb68c  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:45:00.755939+00:00  
+
+Patient Details:  
+Name: Jordan Matthews  
+Age: 62  
+Gender: Male  
+Patient ID: FC-1002938  
+
+Document Content:  
+
+Title: Discharge Summary – Cardiology  
+
+Reason for Admission:  
+Mr. Jordan Matthews was admitted on 2025-05-15 with complaints of chest pain radiating to the left arm, shortness of breath, and diaphoresis. He had a history of hypertension and hyperlipidemia.
+
+Hospital Course:  
+On arrival, ECG revealed ST-segment elevation in the inferior leads. Cardiac enzymes were elevated. The patient was diagnosed with ST-Elevation Myocardial Infarction (STEMI). Emergent percutaneous coronary intervention (PCI) was performed with successful stent placement in the right coronary artery. The patient was monitored in the cardiac care unit for 48 hours post-procedure without complications.
+
+Clinical Progress:  
+Following PCI, Mr. Matthews remained hemodynamically stable. No further episodes of chest pain were reported. Serial ECGs showed resolution of ST-segment changes. Echocardiogram revealed an ejection fraction of 50% with mild hypokinesis of the inferior wall. Blood pressure and lipid profiles were managed with medication adjustment.
+
+Discharge Medications:  
+- Aspirin 81 mg daily  
+- Clopidogrel 75 mg daily  
+- Atorvastatin 40 mg nightly  
+- Metoprolol succinate 50 mg daily  
+- Lisinopril 10 mg daily  
+
+Discharge Instructions:  
+Mr. Matthews was advised to follow a low-sodium, heart-healthy diet, abstain from smoking, and engage in cardiac rehabilitation. He was instructed on medication adherence and to monitor for symptoms such as chest pain, palpitations, or dyspnea. A follow-up appointment was scheduled in the cardiology clinic in two weeks.
+
+Prognosis:  
+Prognosis is favorable provided medication compliance and lifestyle modifications are maintained. Patient and family provided with education regarding cardiac risk factors and warning signs.
+
+Author Details:  
+Dr. Fictional  
+Fictional Clinic

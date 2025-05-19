@@ -1,0 +1,45 @@
+record_id: 290ce781-8528-42b1-aca0-82a23c642cc3
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:51:05.088823+00:00
+patient_details:
+  fictional_name: Morgan Ellis
+  age: 56
+  gender: Female
+  fictional_patient_id: PAT-472839
+document_content:
+  title: Open Reduction and Internal Fixation of Left Distal Radius Fracture
+  sections:
+  - heading: Preoperative Diagnosis
+    content: Displaced left distal radius fracture.
+  - heading: Postoperative Diagnosis
+    content: Displaced left distal radius fracture (confirmed intraoperatively).
+  - heading: Procedure
+    content: Open reduction and internal fixation (ORIF) of the left distal radius
+      using volar locking plate.
+  - heading: Indications
+    content: Patient sustained a fall onto an outstretched hand resulting in a displaced
+      distal radius fracture, requiring surgical fixation due to instability and articular
+      involvement.
+  - heading: Anesthesia
+    content: General anesthesia with regional block.
+  - heading: Findings
+    content: Comminuted distal radius fracture with dorsal displacement. No evidence
+      of median nerve entrapment. Articular surface was satisfactorily reduced.
+  - heading: Procedure Details
+    content: The left upper extremity was prepped and draped in the usual sterile
+      manner. A volar approach to the distal radius was performed. Fracture fragments
+      were identified, reduced anatomically, and stabilized with a volar locking plate
+      and screws. Intraoperative fluoroscopy confirmed satisfactory alignment and
+      hardware placement. The wound was irrigated and closed in layers. Sterile dressing
+      was applied and a volar splint was placed.
+  - heading: Estimated Blood Loss
+    content: 30 mL
+  - heading: Complications
+    content: None encountered.
+  - heading: Disposition
+    content: Patient was transferred to recovery in stable condition with neurovascularly
+      intact left hand.
+author_details:
+  fictional_doctor_name: Dr. Evelyn R. Hart
+  fictional_clinic_name: Summit Orthopaedic Center

@@ -1,0 +1,53 @@
+{
+  "record_id": "8570eb45-ce94-4d2c-9cfe-500e4bbad5ff",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:54:33.267576+00:00",
+  "patient_details": {
+    "fictional_name": "Clara Jensen",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to General Medicine for Evaluation of Persistent Fatigue",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Jensen has been experiencing persistent fatigue and generalized malaise for the past three months. She has not responded to initial lifestyle modifications and basic laboratory investigations."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports ongoing tiredness, difficulty concentrating, and non-restorative sleep. There are no associated fevers, weight loss, or night sweats. She denies recent travel or known infectious exposures."
+      },
+      {
+        "heading": "Medical History",
+        "content": "No significant chronic illnesses. No history of anemia, thyroid disease, or depression. Surgical history is unremarkable."
+      },
+      {
+        "heading": "Medications",
+        "content": "Multivitamin daily. No prescription medications."
+      },
+      {
+        "heading": "Social History",
+        "content": "Non-smoker, occasional alcohol use, works as a graphic designer. No recreational drug use."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "Vital signs stable. Physical examination unremarkable with no lymphadenopathy, organomegaly, or focal neurological deficits."
+      },
+      {
+        "heading": "Investigations to Date",
+        "content": "CBC, basic metabolic panel, TSH, and iron studies within normal limits."
+      },
+      {
+        "heading": "Reason for Specialist Input",
+        "content": "Further evaluation is requested to rule out less common causes of fatigue, including autoimmune and endocrine disorders."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Eleanor Park",
+    "fictional_clinic_name": "Maplewood Family Practice"
+  }
+}

@@ -1,0 +1,47 @@
+Record ID: a1d72f62-672c-4d37-a136-eb78a894777b  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:44:41.257801+00:00  
+
+Patient Details:  
+Name: Alex Carter  
+Age: 62  
+Gender: Male  
+Patient ID: FC-112233  
+
+Document Content:  
+
+Title: Discharge Summary – Cardiology Service
+
+Admission Date: 2025-05-12  
+Discharge Date: 2025-05-19  
+
+Reason for Admission:  
+Mr. Carter was admitted for evaluation and management of acute onset chest pain and shortness of breath.
+
+Hospital Course:  
+On admission, the patient presented with central chest pain radiating to the left arm, associated with diaphoresis. Initial ECG revealed ST-segment elevation in the inferior leads. Cardiac enzymes were elevated. The patient was diagnosed with ST-elevation myocardial infarction (STEMI). He was promptly taken to the cardiac catheterization laboratory, where a 90% occlusion of the right coronary artery was identified and successfully treated with percutaneous coronary intervention (PCI) and drug-eluting stent placement.
+
+During his stay, Mr. Carter was monitored in the coronary care unit. He received dual antiplatelet therapy, beta-blockers, statins, and ACE inhibitors. No significant arrhythmias or heart failure symptoms occurred post-procedure. His echocardiogram showed a left ventricular ejection fraction of 50% with mild hypokinesis of the inferior wall.
+
+Discharge Condition:  
+Mr. Carter is stable, chest pain-free, and ambulating independently. Vital signs are within normal limits. Wound site is clean and dry.
+
+Discharge Medications:  
+- Aspirin 81 mg daily  
+- Clopidogrel 75 mg daily  
+- Metoprolol 50 mg twice daily  
+- Atorvastatin 40 mg nightly  
+- Lisinopril 10 mg daily  
+
+Instructions and Follow-up:  
+- Advised to avoid strenuous activity for 2 weeks.  
+- Keep wound site clean and dry; monitor for signs of infection.  
+- Strict medication adherence is essential.  
+- Low-salt, heart-healthy diet recommended.  
+- Outpatient follow-up with cardiology in 1 week.  
+- Return immediately if chest pain, shortness of breath, or palpitations recur.
+
+Author Details:  
+Dr. Fictional  
+Fictional Clinic

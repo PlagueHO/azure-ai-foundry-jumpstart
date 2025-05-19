@@ -1,0 +1,46 @@
+record_id: 77f0f105-9543-4667-a1a7-32ea20a44a35
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:50:47.893009+00:00
+patient_details:
+  fictional_name: Jordan Carter
+  age: 42
+  gender: Female
+  fictional_patient_id: FC-20250519-42
+document_content:
+  title: Open Reduction and Internal Fixation of Left Distal Radius Fracture
+  sections:
+  - heading: Preoperative Diagnosis
+    content: Displaced left distal radius fracture.
+  - heading: Postoperative Diagnosis
+    content: Displaced left distal radius fracture (unchanged).
+  - heading: Procedure
+    content: Open reduction and internal fixation of left distal radius with volar
+      locking plate.
+  - heading: Anesthesia
+    content: General anesthesia administered without complications.
+  - heading: Indications
+    content: Patient presented after a fall with significant pain, deformity, and
+      loss of function in the left wrist. Radiographs confirmed a displaced distal
+      radius fracture requiring surgical intervention.
+  - heading: Findings
+    content: Intraoperative findings confirmed comminution and displacement of the
+      distal radius. No neurovascular compromise was noted.
+  - heading: Description of Procedure
+    content: The patient was placed supine with the left arm on a hand table. The
+      limb was exsanguinated and a tourniquet inflated. A standard volar approach
+      to the distal radius was utilized. Fracture fragments were visualized and anatomically
+      reduced. A volar locking plate was applied and secured with locking screws.
+      Fluoroscopy confirmed satisfactory alignment and fixation. Wound was irrigated
+      and closed in layers. Sterile dressing applied. Tourniquet was deflated and
+      hemostasis confirmed.
+  - heading: Estimated Blood Loss
+    content: Approximate blood loss was less than 50 mL.
+  - heading: Complications
+    content: No intraoperative complications.
+  - heading: Disposition
+    content: Patient tolerated the procedure well and was transferred to recovery
+      in stable condition.
+author_details:
+  fictional_doctor_name: Dr. Morgan Ellis
+  fictional_clinic_name: Summit Orthopaedic Center

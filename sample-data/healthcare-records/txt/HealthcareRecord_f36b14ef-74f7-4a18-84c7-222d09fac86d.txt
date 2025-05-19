@@ -1,0 +1,33 @@
+Record ID: f36b14ef-74f7-4a18-84c7-222d09fac86d  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:43:50.313169+00:00  
+
+Patient Details:  
+Name: Alexia Harrington  
+Age: 62  
+Gender: Female  
+Patient ID: C123456789  
+
+Document Content:  
+
+Title: Discharge Summary - Cardiology  
+
+1. Admission and Diagnosis  
+Ms. Alexia Harrington was admitted on 2025-05-14 with complaints of chest pain, shortness of breath, and palpitations. Initial evaluation and investigations confirmed a diagnosis of non-ST elevation myocardial infarction (NSTEMI).  
+
+2. Hospital Course  
+During her hospital stay, Ms. Harrington received dual antiplatelet therapy, anticoagulation, and was closely monitored in the cardiac care unit. She underwent coronary angiography, which revealed a 70% stenosis in the proximal left anterior descending artery. A drug-eluting stent was successfully placed. Her post-procedure course was uneventful, and she remained hemodynamically stable throughout her stay.  
+
+3. Management and Medications  
+Ms. Harrington was managed with aspirin, clopidogrel, atorvastatin, metoprolol, and lisinopril. She was counseled on lifestyle modifications including a heart-healthy diet, regular exercise, and smoking cessation (although she denied current tobacco use). Cardiac rehabilitation was recommended.  
+
+4. Follow-Up and Instructions  
+She is to follow up with her cardiologist in one week and return to the emergency department if she experiences chest pain, shortness of breath, or palpitations. She was provided with detailed discharge instructions regarding her medications, signs of complications, and when to seek immediate care.  
+
+5. Prognosis  
+Prognosis is favorable with adherence to prescribed therapy and lifestyle recommendations.  
+
+Author Details:  
+Dr. Fictional  
+Fictional Clinic

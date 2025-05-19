@@ -1,0 +1,41 @@
+{
+  "record_id": "ecc15ca1-f9c0-433e-bdaf-6565c190404d",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:56:05.366168+00:00",
+  "patient_details": {
+    "fictional_name": "Emily Carter",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to General Medicine for Evaluation of Persistent Fatigue",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Carter presents with a 3-month history of persistent fatigue, generalized malaise, and occasional headaches. Symptoms have not improved despite adequate rest and lifestyle modifications."
+      },
+      {
+        "heading": "Relevant History",
+        "content": "No known chronic medical conditions. No recent travel, infections, or significant psychosocial stressors reported. Family history is non-contributory. No current medications except for occasional acetaminophen."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "Vital signs within normal limits. Physical examination unremarkable; no lymphadenopathy, organomegaly, or neurologic deficits noted."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Initial blood tests including CBC, TSH, renal and liver function tests are within normal ranges. Iron studies pending."
+      },
+      {
+        "heading": "Summary and Request",
+        "content": "Given the persistence of symptoms and unremarkable initial workup, I am referring Ms. Carter for further evaluation and management. Please assess for possible underlying medical causes of her fatigue."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Sarah Linwood",
+    "fictional_clinic_name": "Maplewood Family Practice"
+  }
+}

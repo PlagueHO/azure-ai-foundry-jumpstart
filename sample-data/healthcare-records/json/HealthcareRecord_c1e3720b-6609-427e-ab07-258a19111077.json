@@ -1,0 +1,57 @@
+{
+  "record_id": "c1e3720b-6609-427e-ab07-258a19111077",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:53:34.658499+00:00",
+  "patient_details": {
+    "fictional_name": "Elena Brooks",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to Internal Medicine for Further Evaluation",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Elena Brooks presents with persistent fatigue, intermittent low-grade fever, and unintentional weight loss over the past 3 months. Initial workup has been inconclusive, and further evaluation by Internal Medicine is requested."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports feeling increasingly tired for the past 3 months, with difficulty maintaining her usual level of activity. She has noticed a weight loss of approximately 6 kg during this period, despite no intentional dietary changes. She also describes episodes of low-grade fever, mostly in the evenings, without chills or night sweats."
+      },
+      {
+        "heading": "Past Medical History",
+        "content": "No known chronic illnesses. No previous hospitalizations or surgeries. No known drug allergies."
+      },
+      {
+        "heading": "Medications",
+        "content": "Occasional acetaminophen for headaches. No regular medications."
+      },
+      {
+        "heading": "Social History",
+        "content": "Non-smoker, does not consume alcohol, works as a school administrator. No recent travel or sick contacts."
+      },
+      {
+        "heading": "Family History",
+        "content": "No family history of autoimmune disease, malignancy, or chronic infections."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "Vital signs within normal limits. Mild pallor noted. No lymphadenopathy or organomegaly. Cardiovascular, respiratory, and neurological exams unremarkable."
+      },
+      {
+        "heading": "Investigations",
+        "content": "CBC: mild anemia (Hb 10.8 g/dL), WBC and platelets normal. ESR mildly elevated at 32 mm/hr. Basic metabolic panel and liver function tests within normal limits. Chest X-ray unremarkable."
+      },
+      {
+        "heading": "Summary and Request",
+        "content": "Given the nonspecific symptoms and mild laboratory abnormalities, a broader evaluation is requested to rule out infectious, hematologic, or autoimmune etiologies. Kindly assess and advise on further management."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Maya Renwick",
+    "fictional_clinic_name": "Greenfield Family Health Center"
+  }
+}

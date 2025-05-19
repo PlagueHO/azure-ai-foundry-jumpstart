@@ -1,0 +1,44 @@
+record_id: 38474a8b-e3fe-4271-8530-053298ccb07c
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:52:15.391209+00:00
+patient_details:
+  fictional_name: Gina Collins
+  age: 63
+  gender: Female
+  fictional_patient_id: PAT-2938475
+document_content:
+  title: Open Reduction and Internal Fixation of Left Distal Radius Fracture
+  sections:
+  - heading: Preoperative Diagnosis
+    content: Displaced left distal radius fracture.
+  - heading: Postoperative Diagnosis
+    content: Displaced left distal radius fracture (same as pre-op).
+  - heading: Procedure
+    content: Open reduction and internal fixation (ORIF) of left distal radius using
+      volar locking plate.
+  - heading: Anesthesia
+    content: General anesthesia with regional block.
+  - heading: Indications
+    content: Patient presented after a fall with pain, swelling, and deformity of
+      the left wrist. Imaging confirmed a displaced distal radius fracture. Surgical
+      intervention was indicated due to the degree of displacement and instability.
+  - heading: Findings
+    content: Comminuted, dorsally displaced distal radius fracture without neurovascular
+      compromise.
+  - heading: Technique
+    content: After appropriate anesthesia and prepping of the left upper extremity,
+      a volar approach to the distal radius was performed. Fracture fragments were
+      reduced and provisional fixation achieved with K-wires. A volar locking plate
+      was then applied and secured with locking screws. Fluoroscopic imaging confirmed
+      satisfactory alignment and hardware placement. Wound was irrigated and closed
+      in layers. Sterile dressing applied, and a volar splint placed.
+  - heading: Estimated Blood Loss
+    content: 50 mL
+  - heading: Complications
+    content: None.
+  - heading: Disposition
+    content: Patient was stable and transferred to recovery in good condition.
+author_details:
+  fictional_doctor_name: Dr. Lila Anders
+  fictional_clinic_name: Summit Orthopaedic Center

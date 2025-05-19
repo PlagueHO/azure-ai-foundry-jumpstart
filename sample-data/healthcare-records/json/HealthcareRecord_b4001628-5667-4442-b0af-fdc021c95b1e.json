@@ -1,0 +1,49 @@
+{
+  "record_id": "b4001628-5667-4442-b0af-fdc021c95b1e",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:54:33.264955+00:00",
+  "patient_details": {
+    "fictional_name": "Lydia Harper",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to Internal Medicine for Evaluation of Persistent Fatigue and Weight Loss",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "I am referring Ms. Lydia Harper, a 35-year-old female, to Internal Medicine for further evaluation of persistent fatigue and unintentional weight loss over the past three months."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "Ms. Harper reports progressive fatigue, generalized weakness, and a 6 kg unintentional weight loss since February 2025. She denies fever, night sweats, or recent travel. No significant gastrointestinal, respiratory, or neurological symptoms reported."
+      },
+      {
+        "heading": "Medical History",
+        "content": "No known chronic medical conditions. No previous hospitalizations or surgeries. Not currently on any regular medications."
+      },
+      {
+        "heading": "Family and Social History",
+        "content": "Non-smoker. Social alcohol use. Works as a graphic designer. No family history of malignancy, autoimmune disorders, or endocrine diseases."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "On examination, Ms. Harper appears thin but is in no acute distress. Vitals stable. No lymphadenopathy or organomegaly. Cardiovascular, respiratory, and abdominal exams unremarkable."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Basic blood work (CBC, metabolic panel, thyroid function tests) showed mild normocytic anemia (Hb 10.8 g/dL), otherwise within normal limits. Further workup including inflammatory markers and infectious screening is pending."
+      },
+      {
+        "heading": "Summary and Request",
+        "content": "Given the unexplained symptoms and mild anemia, I request your assessment for possible underlying systemic or metabolic causes. Please advise on further investigations and management."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Mira Sandoval",
+    "fictional_clinic_name": "Maplewood Family Practice"
+  }
+}

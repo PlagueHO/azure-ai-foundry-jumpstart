@@ -1,0 +1,49 @@
+{
+  "record_id": "d16d66d8-f39b-43c1-b4d7-00ac597337ec",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:53:34.657163+00:00",
+  "patient_details": {
+    "fictional_name": "Emily Carter",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to Internal Medicine for Further Evaluation",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Carter is being referred for evaluation of persistent fatigue, intermittent joint pains, and unexplained weight loss over the past three months."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports progressive fatigue and generalized weakness. She has noticed joint discomfort, particularly in her wrists and knees, without significant swelling. There is a documented unintentional weight loss of 5 kg over three months. No fevers, night sweats, or rashes reported."
+      },
+      {
+        "heading": "Relevant Past Medical History",
+        "content": "No known chronic illnesses. No previous hospitalizations or surgeries. No allergies."
+      },
+      {
+        "heading": "Medications",
+        "content": "Occasional acetaminophen for joint discomfort. No regular medications."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "Vitals stable. Mild pallor observed. No lymphadenopathy or organomegaly. Mild tenderness over wrists and knees but no erythema or swelling."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Recent CBC shows mild normocytic anemia (Hb: 10.8 g/dL). ESR mildly elevated. Basic metabolic panel and thyroid function tests within normal limits."
+      },
+      {
+        "heading": "Summary and Request",
+        "content": "Given the persistent symptoms and initial laboratory findings, further evaluation is requested to rule out systemic causes such as connective tissue disease or early inflammatory arthritis."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Lila Thompson",
+    "fictional_clinic_name": "Greenfield Family Practice"
+  }
+}

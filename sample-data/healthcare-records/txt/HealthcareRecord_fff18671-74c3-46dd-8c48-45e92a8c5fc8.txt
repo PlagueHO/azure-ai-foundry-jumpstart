@@ -1,0 +1,45 @@
+Record ID: fff18671-74c3-46dd-8c48-45e92a8c5fc8  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:46:29.361336+00:00  
+
+Patient Details:  
+Name: Jordan Callister  
+Age: 58  
+Gender: Male  
+Patient ID: FC-924176  
+
+Document Content:  
+
+Title: Discharge Summary – Cardiology
+
+Admission Date: 2025-05-13  
+Discharge Date: 2025-05-19  
+
+Reason for Admission:  
+Mr. Jordan Callister was admitted for evaluation and management of acute chest pain with associated shortness of breath and diaphoresis.
+
+Hospital Course:  
+Upon presentation to the emergency department, the patient reported retrosternal chest pain radiating to the left arm, lasting for approximately 45 minutes. Initial ECG showed ST-segment elevations in leads II, III, and aVF. Troponin I was elevated at 3.2 ng/mL. The patient was diagnosed with an acute inferior ST-elevation myocardial infarction (STEMI).
+
+He was taken emergently to the cardiac catheterization lab, where coronary angiography revealed a 95% occlusion of the proximal right coronary artery. Successful primary percutaneous coronary intervention (PCI) with drug-eluting stent placement was performed. Post-procedure, the patient was monitored in the coronary care unit and started on dual antiplatelet therapy, statin, beta-blocker, and ACE inhibitor.
+
+The patient remained hemodynamically stable throughout his stay. Repeat echocardiography on day 4 showed mild hypokinesis of the inferior wall, with preserved left ventricular systolic function (LVEF 52%).
+
+Discharge Medications:  
+- Aspirin 81 mg daily  
+- Clopidogrel 75 mg daily  
+- Metoprolol succinate 50 mg daily  
+- Atorvastatin 40 mg nightly  
+- Lisinopril 10 mg daily  
+- Nitroglycerin 0.4 mg SL as needed
+
+Discharge Instructions:  
+Mr. Callister is advised to follow a low-sodium, heart-healthy diet, avoid strenuous activity for 2 weeks, and monitor for any recurrence of chest pain, palpitations, or shortness of breath. He should attend cardiac rehabilitation and follow up in the cardiology clinic in 1 week.
+
+Prognosis:  
+With adherence to medical therapy and lifestyle modifications, prognosis is favorable. The patient is educated on recognizing warning signs of cardiac events and the importance of medication compliance.
+
+Author Details:  
+Dr. Fictional  
+Fictional Clinic

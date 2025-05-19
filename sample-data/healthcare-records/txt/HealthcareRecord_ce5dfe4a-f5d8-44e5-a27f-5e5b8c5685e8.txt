@@ -1,0 +1,49 @@
+Record ID: ce5dfe4a-f5d8-44e5-a27f-5e5b8c5685e8  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:45:18.644955+00:00  
+
+Patient Details:  
+Name: Jordan Matthews  
+Age: 62  
+Gender: Male  
+Patient ID: FCT-109384  
+
+Document Content:
+
+Title: Discharge Summary – Jordan Matthews
+
+1. Admission Date: 2025-05-12  
+2. Discharge Date: 2025-05-19  
+3. Admitting Diagnosis: Acute Non-ST Elevation Myocardial Infarction (NSTEMI)  
+4. Discharge Diagnosis: NSTEMI, Hypertension, Hyperlipidemia
+
+Course of Hospitalization:  
+Mr. Jordan Matthews was admitted on 2025-05-12 with complaints of chest pain radiating to the left arm, shortness of breath, and diaphoresis. Initial ECG revealed ST segment depression in leads V4-V6. Troponin I was elevated. Cardiac enzymes and clinical presentation were consistent with NSTEMI.
+
+He was managed in the coronary care unit with dual antiplatelet therapy (aspirin and clopidogrel), statin, beta blocker, and low molecular weight heparin. Serial ECGs and troponin levels were monitored. An echocardiogram demonstrated mildly reduced left ventricular ejection fraction (LVEF 48%), with no significant valvular abnormalities.
+
+Coronary angiography was performed on 2025-05-14, revealing a 75% stenosis in the proximal left anterior descending artery. Percutaneous coronary intervention (PCI) with drug-eluting stent placement was successfully performed. The patient remained hemodynamically stable post-procedure, with no recurrent chest pain.
+
+During hospitalization, blood pressure and lipid levels were optimized. He received counseling regarding smoking cessation, diet, and cardiac rehabilitation.
+
+Medications on Discharge:  
+- Aspirin 81 mg daily  
+- Clopidogrel 75 mg daily  
+- Atorvastatin 40 mg nightly  
+- Metoprolol succinate 50 mg daily  
+- Lisinopril 10 mg daily
+
+Discharge Instructions:  
+- Follow a low-salt, heart-healthy diet  
+- Engage in light activity as tolerated; avoid strenuous exercise for 2 weeks  
+- Attend outpatient cardiac rehabilitation  
+- Monitor for chest pain, palpitations, or shortness of breath and seek immediate care if these occur  
+- Follow up with cardiology in 2 weeks
+
+Prognosis:  
+Prognosis is good with adherence to medical therapy, risk factor modification, and regular follow-up.
+
+Author Details:  
+Dr. Fictional  
+Fictional Clinic

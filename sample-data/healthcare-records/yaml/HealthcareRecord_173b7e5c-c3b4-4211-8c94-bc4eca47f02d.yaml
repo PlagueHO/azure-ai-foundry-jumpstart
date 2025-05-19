@@ -1,0 +1,44 @@
+record_id: 173b7e5c-c3b4-4211-8c94-bc4eca47f02d
+document_type: Operation Note
+specialty: Orthopaedic Surgery
+created_at: 2025-05-19 08:52:15.393780+00:00
+patient_details:
+  fictional_name: Lila Sanderson
+  age: 54
+  gender: Female
+  fictional_patient_id: FP-829301
+document_content:
+  title: Right Total Knee Arthroplasty Operation Note
+  sections:
+  - heading: Preoperative Diagnosis
+    content: End-stage osteoarthritis of the right knee.
+  - heading: Postoperative Diagnosis
+    content: End-stage osteoarthritis of the right knee.
+  - heading: Procedure
+    content: Right total knee arthroplasty.
+  - heading: Anesthesia
+    content: Spinal anesthesia with sedation.
+  - heading: Indications
+    content: Patient presented with chronic pain, functional impairment, and radiographic
+      evidence of severe osteoarthritis unresponsive to conservative management.
+  - heading: Findings
+    content: Severe cartilage loss and bone-on-bone articulation in the medial and
+      lateral compartments of the right knee. No unexpected findings.
+  - heading: Details of Procedure
+    content: After appropriate timeout and verification, the patient was placed supine
+      on the operating table. The right lower extremity was prepped and draped in
+      a sterile fashion. A midline longitudinal incision and medial parapatellar arthrotomy
+      were performed. Osteophytes were excised, and bony cuts were made according
+      to standard technique. The femoral, tibial, and patellar components were trialed,
+      and satisfactory alignment and stability were confirmed. Final components were
+      cemented in place. Hemostasis was achieved, and the wound was closed in layers.
+      Sterile dressing was applied. The patient tolerated the procedure well.
+  - heading: Estimated Blood Loss
+    content: 200 mL
+  - heading: Complications
+    content: None.
+  - heading: Disposition
+    content: Transferred to recovery room in stable condition.
+author_details:
+  fictional_doctor_name: Dr. Natalie Grant
+  fictional_clinic_name: Summit Orthopaedics Center

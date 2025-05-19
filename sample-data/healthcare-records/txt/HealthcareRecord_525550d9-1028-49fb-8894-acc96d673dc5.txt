@@ -1,0 +1,48 @@
+Record ID: 525550d9-1028-49fb-8894-acc96d673dc5  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:43:50.317542+00:00  
+
+Patient Details:  
+Name: Jordan Ellis  
+Age: 62  
+Gender: Male  
+Patient ID: FC-2025-00587  
+
+Document Content:  
+
+Title: Discharge Summary – Cardiology Service
+
+Admission Date: 2025-05-12  
+Discharge Date: 2025-05-19  
+
+Presenting Complaint:  
+Mr. Jordan Ellis presented to the Emergency Department with acute onset chest pain radiating to the left arm, associated with diaphoresis and shortness of breath.
+
+Hospital Course:  
+Upon arrival, the patient was noted to have elevated troponin levels and ECG changes consistent with an acute anterior wall myocardial infarction. He was stabilized with aspirin, clopidogrel, and intravenous nitroglycerin. The patient underwent urgent coronary angiography, which revealed a 90% occlusion of the proximal left anterior descending artery. Successful percutaneous coronary intervention (PCI) with drug-eluting stent placement was performed.
+
+The post-procedural period was uneventful. The patient remained hemodynamically stable with no recurrence of chest pain. Serial ECGs and cardiac enzymes showed expected trends. Cardiac rehabilitation was initiated, and the patient was educated on lifestyle modifications and medication adherence.
+
+Discharge Medications:  
+- Aspirin 81 mg daily  
+- Clopidogrel 75 mg daily  
+- Atorvastatin 40 mg nightly  
+- Metoprolol succinate 50 mg daily  
+- Lisinopril 10 mg daily  
+- Nitroglycerin 0.4 mg SL as needed for chest pain  
+
+Discharge Instructions:  
+- Follow up with cardiology clinic in 1 week  
+- Adhere strictly to prescribed medications  
+- Low-sodium, heart-healthy diet  
+- Begin walking daily as tolerated  
+- Monitor for chest pain, shortness of breath, or palpitations and seek immediate care if these occur  
+- Smoking cessation encouraged
+
+Prognosis:  
+Prognosis is favorable given successful revascularization and absence of complications during hospitalization. Continued adherence to secondary prevention strategies is essential.
+
+Author Details:  
+Dr. Fictional  
+Fictional Clinic

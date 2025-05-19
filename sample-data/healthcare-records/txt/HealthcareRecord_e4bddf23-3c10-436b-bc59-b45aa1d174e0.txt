@@ -1,0 +1,53 @@
+Record ID: e4bddf23-3c10-436b-bc59-b45aa1d174e0  
+Document Type: Discharge Summary  
+Specialty: Cardiology  
+Created At: 2025-05-19T08:45:00.754604+00:00  
+
+Patient Details:  
+Name: Jordan Ellery  
+Age: 61  
+Gender: Male  
+Patient ID: FCTN-284671  
+
+Document Content:  
+
+Title: Discharge Summary – Cardiology Admission
+
+Admission Date: 2025-05-12  
+Discharge Date: 2025-05-19  
+
+Reason for Admission:  
+Mr. Ellery was admitted with acute chest pain and shortness of breath. Initial workup suggested a non-ST elevation myocardial infarction (NSTEMI).
+
+Hospital Course:  
+The patient was evaluated by the cardiology team and underwent serial cardiac enzyme testing and ECGs, confirming NSTEMI. He was started on dual antiplatelet therapy, statin, beta-blocker, and low molecular weight heparin. Coronary angiography revealed significant stenosis in the right coronary artery, for which he underwent successful percutaneous coronary intervention (PCI) with stenting.
+
+The patient's post-procedural course was uneventful. He remained hemodynamically stable, and no arrhythmias were observed. Cardiac rehabilitation and risk factor modification were initiated during his stay.
+
+Investigations:  
+- ECG: Non-specific ST-segment changes  
+- Troponin I: Elevated at 2.7 ng/mL  
+- Echocardiogram: Mildly reduced left ventricular ejection fraction (45%)  
+- Coronary Angiogram: 80% stenosis of RCA, successfully stented
+
+Medications on Discharge:  
+- Aspirin 81 mg daily  
+- Clopidogrel 75 mg daily  
+- Atorvastatin 40 mg nightly  
+- Metoprolol succinate 50 mg daily  
+- Ramipril 5 mg daily  
+- Nitroglycerin sublingual as needed
+
+Discharge Instructions:  
+- Follow a heart-healthy diet and limit salt intake  
+- Attend cardiac rehabilitation as scheduled  
+- Take all medications as prescribed  
+- Monitor for chest pain, shortness of breath, or palpitations and seek immediate care if these occur  
+- Follow-up appointment with cardiology in 1 week
+
+Prognosis:  
+Mr. Ellery is stable at discharge with good functional status. Prognosis is favorable with adherence to medical therapy and lifestyle modifications.
+
+Author Details:  
+Dr. Fictional  
+Fictional Clinic

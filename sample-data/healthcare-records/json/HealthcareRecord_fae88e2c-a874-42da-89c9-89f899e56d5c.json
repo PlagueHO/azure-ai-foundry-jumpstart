@@ -1,0 +1,57 @@
+{
+  "record_id": "fae88e2c-a874-42da-89c9-89f899e56d5c",
+  "document_type": "Referral Letter",
+  "specialty": "Medicine",
+  "created_at": "2025-05-19T08:55:26.165660+00:00",
+  "patient_details": {
+    "fictional_name": "Alicia Hartwell",
+    "age": 35,
+    "gender": "Female",
+    "fictional_patient_id": "MRN-FAKE-12345"
+  },
+  "document_content": {
+    "title": "Referral to General Medicine for Evaluation of Persistent Fatigue",
+    "sections": [
+      {
+        "heading": "Reason for Referral",
+        "content": "Ms. Hartwell is being referred for evaluation and management of ongoing fatigue lasting over 4 months, unresponsive to initial primary care interventions."
+      },
+      {
+        "heading": "History of Present Illness",
+        "content": "The patient reports persistent fatigue and low energy since January 2025. She describes the fatigue as constant, not relieved by rest, and significantly impacting her daily activities. She denies weight loss, fever, night sweats, or recent infections. There is no history of depression or anxiety, though she reports increased stress at work."
+      },
+      {
+        "heading": "Medical History",
+        "content": "No known chronic illnesses. No previous hospitalizations or surgeries. No history of thyroid or autoimmune disease."
+      },
+      {
+        "heading": "Medications",
+        "content": "Multivitamin daily. No prescription medications."
+      },
+      {
+        "heading": "Family History",
+        "content": "Mother with hypothyroidism. Father healthy."
+      },
+      {
+        "heading": "Social History",
+        "content": "Non-smoker, does not consume alcohol. Works as a graphic designer. Lives with spouse. No recent travel."
+      },
+      {
+        "heading": "Examination Findings",
+        "content": "Vital signs within normal limits. Physical examination unremarkable. No lymphadenopathy or organomegaly. Neurological exam normal."
+      },
+      {
+        "heading": "Investigations",
+        "content": "Initial bloodwork (CBC, TSH, iron studies, liver and renal function) within normal limits."
+      },
+      {
+        "heading": "Summary and Request",
+        "content": "Given the persistent and unexplained nature of her fatigue, I kindly request your assessment to rule out underlying medical causes and recommend further management. Please advise on any additional investigations you deem necessary."
+      }
+    ]
+  },
+  "author_details": {
+    "fictional_doctor_name": "Dr. Miriam Lewis",
+    "fictional_clinic_name": "Lakeshore Family Practice"
+  }
+}
