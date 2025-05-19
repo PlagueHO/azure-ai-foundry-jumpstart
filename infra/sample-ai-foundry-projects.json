@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "contoso-retail-analytics",
+    "FriendlyName": "Contoso Retail Analytics",
+    "Description": "Sample project demonstrating AI-driven product recommendations and demand forecasting for the fictitious Contoso retail chain."
+  },
+  {
+    "Name": "fabrikam-health-insights",
+    "FriendlyName": "Fabrikam Health Insights",
+    "Description": "Sample healthcare project showcasing patient-note summarisation and risk-scoring workloads for the imaginary Fabrikam clinics."
+  },
+  {
+    "Name": "adatum-legal-assistant",
+    "FriendlyName": "Adatum Legal Assistant",
+    "Description": "Sample legal-services project illustrating contract analysis and clause extraction for the fictional Adatum LLP."
+  }
+]
