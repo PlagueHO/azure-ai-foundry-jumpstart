@@ -107,6 +107,8 @@ var aiServicesCustomSubDomainName = toLower(replace(environmentName, '-', ''))
 var aiFoundryHubName = take('${abbrs.aiFoundryHubs}${environmentName}',32)
 var bastionHostName = '${abbrs.networkBastionHosts}${environmentName}'
 var networkDefaultAction = azureNetworkIsolation ? 'Deny' : 'Allow'
+// Should an AI Foundry project be deployed?
+var aiFoundryProjectDeploy = !empty(aiFoundryProjectName) && !empty(aiFoundryProjectFriendlyName) && !empty(aiFoundryProjectDescription)
 
 // List of sample data containers
 var sampleDataContainersArray array = [
@@ -114,6 +116,7 @@ var sampleDataContainersArray array = [
   'retail-products'
   'healthcare-records'
   'financial-transactions'
+  'insurance-claims'
 ]
 
 // ---------- RESOURCE GROUP ----------
@@ -738,7 +741,7 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
 // ---------- AI FOUNDRY PROJECTS ----------
 import { aiFoundryProjectType } from './types/ai/aiFoundryProjectType.bicep'
 
-var effectiveAiFoundryProjects aiFoundryProjectType[] = !empty(aiFoundryProjectName) ? [
+var effectiveAiFoundryProjects aiFoundryProjectType[] = aiFoundryProjectDeploy ? [
   {
     name: replace(aiFoundryProjectName,' ','-')
     friendlyName: aiFoundryProjectFriendlyName
@@ -841,7 +844,7 @@ var sampleDataContainerCount = length(sampleDataContainersArray)
 
 // One module instance per <project, container> when deploySampleData == true
 module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
-  for idx in range(0, (projectCount * sampleDataContainerCount) - 1) : if (deploySampleData) {
+  for idx in range(0, (projectCount * sampleDataContainerCount) - 1) : if (deploySampleData && aiFoundryProjectDeploy) {
     // Make the module deployment name unique
     name: replace(toLower(take('datastore_${effectiveAiFoundryProjects[idx / sampleDataContainerCount].name}_${sampleDataContainersArray[idx % sampleDataContainerCount]}',64)),'-','_')
     scope: rg
