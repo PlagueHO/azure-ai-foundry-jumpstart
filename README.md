@@ -128,6 +128,30 @@ You can deploy the application using one of the following methods:
 
 </details>
 
+<details>
+  <summary><b>If you have not cloned this repo</b></summary>
+
+#### Customize the solution accelerator deployment
+
+You can control many aspects of the AI Foundry environment during deployment by setting the environment values using the `azd env set` command before running the `azd up` command. For example:
+
+```powershell
+azd env set AZURE_NETWORK_ISOLATION false
+azd env set DEPLOY_SAMPLE_OPENAI_MODELS true
+azd env set AZURE_CONTAINER_REGISTRY_DEPLOY false
+azd env set AZURE_AI_SEARCH_DEPLOY false
+azd env set AZURE_AI_FOUNDRY_PROJECT true
+azd env set AZURE_AI_FOUNDRY_HUB_DESCRIPTION "Sandbox hub for PoC work"
+azd env set AZURE_AI_FOUNDRY_HUB_FRIENDLY_NAME "My AI Hub"
+azd env set AZURE_AI_FOUNDRY_PROJECT_NAME "my-ai-project"
+azd env set AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION "This is my first AI project."
+azd env set AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME "My AI Project"
+```
+
+A complete list of environment variables can be found in the [Configuration Options](docs/CONFIGURATION_OPTIONS.md) document.
+
+</details>
+
 ### 2. Azure Portal Deployment
 
 Click on the Deploy to Azure button to deploy the Azure resources for this solution accelerator.

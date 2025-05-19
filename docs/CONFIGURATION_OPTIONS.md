@@ -128,7 +128,7 @@ azd env set AZURE_AI_FOUNDRY_PROJECT_DEPLOY false
 
 ### AZURE_AI_FOUNDRY_PROJECT_NAME
 
-The name of the sample Azure AI Foundry Project. This is used in the resource name.
+The name of the sample Azure AI Foundry Project. This is used in the resource name, so can not contain spaces or special characters.
 Default: `sample-project`.
 
 ```powershell
