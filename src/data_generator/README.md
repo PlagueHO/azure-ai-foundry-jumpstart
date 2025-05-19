@@ -137,9 +137,30 @@ python -m data_generator \
   --out-dir ./data/financial
 ```
 
+### 4.5 Insurance-Claim (`insurance-claim`)
+
+Generate synthetic insurance-claim documents.
+
+| Flag                 | Required | Description                                   | Default |
+|----------------------|----------|-----------------------------------------------|---------|
+| `-p, --policy-type`  | N        | Policy type (auto, home, health)              | `auto`  |
+| `--fraud-percent`    | N        | % chance the claim is fraudulent              | `0`     |
+
+Example:
+
+```bash
+python -m data_generator \
+  --scenario insurance-claim \
+  --count 30 \
+  --policy-type home \
+  --fraud-percent 5 \
+  --output-format yaml \
+  --out-dir ./sample-data/insurance-claims
+```
+
 ---
 
-## 5.  Extending with New Scenarios
+## 5. Extending with New Scenarios
 
 1. Add `<new>.py` under `src/data_generator/tools/`.
 1. Subclass `DataGeneratorTool`, set unique `name` + `toolName`.
@@ -147,3 +168,15 @@ python -m data_generator \
 1. No core changes required – the registry auto-discovers the new tool.
 
 For full architectural details refer to [`docs/DESIGN.md`](../docs/DESIGN.md).
+
+### 5.1 Using GitHub Copilot Prompt Files
+
+You can use the GitHub Copilot prompt file [/.github/prompts/data_generator_create_tool.prompt.md](../../.github/prompts/data_generator_create_tool.prompt.md) to generate a new tool.
+
+To use the prompt file, follow these steps:
+
+1. In Visual Studio Code, open GitHub Copilot chat (CTRL+ALT+I).
+1. Select `Edit Mode` in the chat.
+1. Enter `/data_generator_create_tool: ToolPurpose: Insurance Claims`, changing the Insurance Claims to the purpose of your new tool.
+1. Select the appropriate options when prompted.
+1. Review and refine the generated code as necessary.

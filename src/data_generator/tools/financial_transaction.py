@@ -15,13 +15,15 @@ from ..tool import DataGeneratorTool
 class FinancialTransactionTool(DataGeneratorTool):
     """Generate synthetic bank-account statements with ≥50 transactions."""
 
+    # ------------------------------------------------------------------ #
+    # Identification / registry key                                      #
+    # ------------------------------------------------------------------ #
     name: str = "financial-transaction"
     toolName: str = "FinancialTransaction"
 
-    def supported_output_formats(self) -> List[str]:
-        """Return supported output formats."""
-        return ["yaml", "json", "text"]
-
+    # ------------------------------------------------------------------ #
+    # CLI contract                                                       #
+    # ------------------------------------------------------------------ #
     def __init__(self, *, account_type: str | None = None) -> None:
         """Instantiate with optional *account_type* override."""
         super().__init__()
@@ -81,6 +83,16 @@ class FinancialTransactionTool(DataGeneratorTool):
             "--out-dir ./data/financial"
         ]
 
+    # ------------------------------------------------------------------ #
+    # Output formats                                                     #
+    # ------------------------------------------------------------------ #
+    def supported_output_formats(self) -> List[str]:
+        """Return supported output formats."""
+        return ["yaml", "json", "text"]
+
+    # ------------------------------------------------------------------ #
+    # Prompt construction                                                #
+    # ------------------------------------------------------------------ #
     def _statement_period(self) -> Tuple[str, str]:
         """Compute previous full-month period dates."""
         today = date.today()
@@ -125,6 +137,9 @@ class FinancialTransactionTool(DataGeneratorTool):
             return base + self._json_skeleton(hdr)
         return base + self._text_skeleton()
 
+    # ------------------------------------------------------------------ #
+    # Static prompt fragments                                            #
+    # ------------------------------------------------------------------ #
     def _yaml_skeleton(self, hdr: Dict[str, str]) -> str:
         """YAML schema instructions including echo fields."""
         return (
@@ -180,6 +195,9 @@ class FinancialTransactionTool(DataGeneratorTool):
             f"# ... ≥{self.transactions_max} rows ...\n"
         )
 
+    # ------------------------------------------------------------------ #
+    # Post-processing                                                    #
+    # ------------------------------------------------------------------ #
     def post_process(self, raw: str, output_format: str) -> Any:
         """Deserialize based on output_format; fallback to raw text on failure."""
         fmt = output_format.lower()
@@ -196,6 +214,9 @@ class FinancialTransactionTool(DataGeneratorTool):
         # text or other formats
         return raw
 
+    # ------------------------------------------------------------------ #
+    # Misc.                                                              #
+    # ------------------------------------------------------------------ #
     def get_system_description(self) -> str:
         """Describe this tool’s context."""
         return f"Financial transactions for {self.account_type} accounts"

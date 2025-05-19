@@ -15,14 +15,15 @@ from ..tool import DataGeneratorTool
 class HealthcareRecordTool(DataGeneratorTool):
     """Generate synthetic healthcare records in YAML, JSON or plain-text."""
 
-    # unique registry keys
+    # ------------------------------------------------------------------ #
+    # Identification / registry key                                      #
+    # ------------------------------------------------------------------ #
     name: str = "healthcare-record"
     toolName: str = "HealthcareRecord"
 
-    def supported_output_formats(self) -> List[str]:
-        """Return supported output formats."""
-        return ["yaml", "json", "text"]
-
+    # ------------------------------------------------------------------ #
+    # CLI contract                                                       #
+    # ------------------------------------------------------------------ #
     def __init__(self, *, document_type: str | None = None, specialty: str | None = None) -> None:
         """Instantiate with optional document type and specialty."""
         super().__init__()
@@ -68,6 +69,16 @@ class HealthcareRecordTool(DataGeneratorTool):
             "--output-format yaml"
         ]
 
+    # ------------------------------------------------------------------ #
+    # Output formats                                                     #
+    # ------------------------------------------------------------------ #
+    def supported_output_formats(self) -> List[str]:
+        """Return supported output formats."""
+        return ["yaml", "json", "text"]
+
+    # ------------------------------------------------------------------ #
+    # Prompt construction                                                #
+    # ------------------------------------------------------------------ #
     def _prompt_common(self, *, unique_id: str | None = None) -> str:
         """Common header with record ID and timestamp."""
         record_id = unique_id or str(uuid.uuid4())
@@ -92,6 +103,9 @@ class HealthcareRecordTool(DataGeneratorTool):
             return base + self._json_skeleton()
         return base + self._text_skeleton()
 
+    # ------------------------------------------------------------------ #
+    # Static prompt fragments                                            #
+    # ------------------------------------------------------------------ #
     @staticmethod
     def _yaml_skeleton() -> str:
         """YAML schema instructions."""
@@ -157,6 +171,9 @@ class HealthcareRecordTool(DataGeneratorTool):
             "Author Details: Dr. Fictional, Fictional Clinic\n"
         )
 
+    # ------------------------------------------------------------------ #
+    # Post-processing                                                    #
+    # ------------------------------------------------------------------ #
     def post_process(self, raw: str, output_format: str) -> Any:
         """Deserialize based on output_format; fallback to raw text."""
         fmt = output_format.lower()
@@ -173,6 +190,9 @@ class HealthcareRecordTool(DataGeneratorTool):
         # plain-text or unrecognized format
         return raw
 
+    # ------------------------------------------------------------------ #
+    # Misc.                                                              #
+    # ------------------------------------------------------------------ #
     def get_system_description(self) -> str:
         """Provide a brief description of this tool’s context."""
         return f"Healthcare records ({self.document_type}, {self.specialty})"

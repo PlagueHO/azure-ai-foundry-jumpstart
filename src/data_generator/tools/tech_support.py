@@ -33,13 +33,6 @@ class TechSupportTool(DataGeneratorTool):
     toolName: str = "TechSupport"
 
     # ------------------------------------------------------------------ #
-    # Output formats                                                     #
-    # ------------------------------------------------------------------ #
-    def supported_output_formats(self) -> List[str]:  # noqa: D401
-        """Return the list of output formats this tool can generate."""
-        return ["yaml", "json", "txt"]
-
-    # ------------------------------------------------------------------ #
     # CLI contract                                                       #
     # ------------------------------------------------------------------ #
     def __init__(self, *, system_description: str | None = None) -> None:
@@ -76,6 +69,13 @@ class TechSupportTool(DataGeneratorTool):
             '--system-description "ContosoShop - React SPA front-end with Azure App Service + SQL back-end" '
             "--output-format yaml",
         ]
+
+    # ------------------------------------------------------------------ #
+    # Output formats                                                     #
+    # ------------------------------------------------------------------ #
+    def supported_output_formats(self) -> List[str]:  # noqa: D401
+        """Return the list of output formats this tool can generate."""
+        return ["yaml", "json", "txt"]
 
     # ------------------------------------------------------------------ #
     # Prompt construction                                                #

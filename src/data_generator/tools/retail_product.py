@@ -33,13 +33,6 @@ class RetailProductTool(DataGeneratorTool):
     toolName: str = "RetailProduct"
     
     # ------------------------------------------------------------------ #
-    # Output formats                                                     #
-    # ------------------------------------------------------------------ #
-    def supported_output_formats(self) -> List[str]:
-        """Return the list of output formats this tool can generate."""
-        return ["yaml", "json", "text"]
-
-    # ------------------------------------------------------------------ #
     # CLI contract                                                       #
     # ------------------------------------------------------------------ #
     def __init__(self, *, industry: str | None = None) -> None:
@@ -75,6 +68,13 @@ class RetailProductTool(DataGeneratorTool):
             "--output-format json"
         ]
 
+    # ------------------------------------------------------------------ #
+    # Output formats                                                     #
+    # ------------------------------------------------------------------ #
+    def supported_output_formats(self) -> List[str]:
+        """Return the list of output formats this tool can generate."""
+        return ["yaml", "json", "text"]
+    
     # ------------------------------------------------------------------ #
     # Prompt construction                                                #
     # ------------------------------------------------------------------ #
