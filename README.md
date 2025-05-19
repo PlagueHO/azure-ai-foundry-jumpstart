@@ -54,7 +54,9 @@ You can deploy the application using one of the following methods:
 - [1. Azure Developer CLI](#1-azure-developer-cli)
 - [2. Azure Portal Deployment](#2-azure-portal-deployment)
 
-### 1. Azure Developer CLI
+---
+
+### Azure Developer CLI
 
 > [!IMPORTANT]
 > This section will create Azure resources and deploy the solution from your local environment using the Azure Developer CLI. You do not need to clone this repo to complete these steps.
@@ -85,7 +87,7 @@ You can deploy the application using one of the following methods:
    ```
 
    > [!NOTE]
-   > This will deploy the Azure AI Foundry hub and project with public endpoints. You can access the Azure AI Foundry hub and project from the public internet.
+   > This will deploy the Azure AI Foundry hub and project with public endpoints. You can access the Azure AI Foundry hub and project from the public internet. This is recommended for demonstration and testing purposes or when there is no requirement for network isolation.
 
 1. Run `azd up` to provision and deploy the application
 
@@ -129,7 +131,7 @@ You can deploy the application using one of the following methods:
 </details>
 
 <details>
-  <summary><b>If you have not cloned this repo</b></summary>
+  <summary><b>Customize the solution accelerator deployment</b></summary>
 
 #### Customize the solution accelerator deployment
 
@@ -152,7 +154,9 @@ A complete list of environment variables can be found in the [Configuration Opti
 
 </details>
 
-### 2. Azure Portal Deployment
+---
+
+### Azure Portal Deployment
 
 Click on the Deploy to Azure button to deploy the Azure resources for this solution accelerator.
 
@@ -163,7 +167,10 @@ Click on the Deploy to Azure button to deploy the Azure resources for this solut
 
 ## Next Steps
 
-After the deployment is complete, you can access the Azure AI Foundry hub using the URL provided in the output of the deployment. You can also access the Azure AI Foundry hub using the Azure portal by navigating to the resource group created during the deployment.
+After the deployment is complete, you can access the Azure AI Foundry hub using the URL provided in the output of the deployment or going to [https://ai.azure.com/](https://ai.azure.com/). You can also access the Azure AI Foundry hub using the Azure portal by navigating to the resource group created during the deployment.
+
+> [!IMPORTANT]
+> If you deployed the solution accelerator with network isolation, you will need to use a VPN or Azure Bastion to access the Azure AI Foundry hub and project. The Azure AI Foundry hub and project are not accessible from the public internet.
 
 ## Deleting the Deployment
 
