@@ -166,6 +166,12 @@ The following diagram illustrates the architecture of the solution accelerator w
 
 TBC
 
+## Contributors
+
+Thanks to the following people who have contributed to this project:
+
+- [Tim Shaw](https://www.linkedin.com/in/shaw-tim/) - Sr. Cloud Solution Architect, Data & AI, Microsoft
+
 <!-- Badge reference links -->
 [ci-shield]: https://img.shields.io/github/actions/workflow/status/PlagueHO/azure-ai-foundry-jumpstart/continuous-integration.yml?branch=main&label=CI
 [ci-url]: https://github.com/PlagueHO/azure-ai-foundry-jumpstart/actions/workflows/continuous-integration.yml
