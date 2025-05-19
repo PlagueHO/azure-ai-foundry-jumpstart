@@ -7,8 +7,8 @@ echo "Starting sample data upload script..."
 
 # Get environment variables from azd
 deploy_sample_data=$(azd env get-value DEPLOY_SAMPLE_DATA)
-storage_account_name=$(azd env get-value STORAGE_ACCOUNT_NAME)
-resource_group_name=$(azd env get-value RESOURCE_GROUP)
+storage_account_name=$(azd env get-value AZURE_STORAGE_ACCOUNT_NAME)
+resource_group_name=$(azd env get-value AZURE_RESOURCE_GROUP)
 azure_network_isolation=$(azd env get-value AZURE_NETWORK_ISOLATION)
 
 if [ "$deploy_sample_data" != "true" ]; then
@@ -17,12 +17,12 @@ if [ "$deploy_sample_data" != "true" ]; then
 fi
 
 if [ -z "$storage_account_name" ]; then
-    echo "Error: STORAGE_ACCOUNT_NAME environment variable not found. Ensure 'azd env get-value STORAGE_ACCOUNT_NAME' works." >&2
+    echo "Error: AZURE_STORAGE_ACCOUNT_NAME environment variable not found. Ensure 'azd env get-value AZURE_STORAGE_ACCOUNT_NAME' works." >&2
     exit 1
 fi
 
 if [ -z "$resource_group_name" ]; then
-    echo "Error: RESOURCE_GROUP environment variable not found. Ensure 'azd env get-value RESOURCE_GROUP' works." >&2
+    echo "Error: AZURE_RESOURCE_GROUP environment variable not found. Ensure 'azd env get-value AZURE_RESOURCE_GROUP' works." >&2
     exit 1
 fi
 
