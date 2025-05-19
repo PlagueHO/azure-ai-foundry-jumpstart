@@ -884,8 +884,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (bastionH
   }
 }
 
-output RESOURCE_GROUP string = rg.name
-output RESOURCE_GROUP_ID string = rg.id
+output AZURE_RESOURCE_GROUP string = rg.name
 output AZURE_PRINCIPAL_ID string = principalId
 output AZURE_PRINCIPAL_ID_TYPE string = principalIdType
 
@@ -898,34 +897,47 @@ output APPLICATION_INSIGHTS_RESOURCE_ID string = applicationInsights.outputs.res
 output APPLICATION_INSIGHTS_INSTRUMENTATION_KEY string = applicationInsights.outputs.instrumentationKey
 
 // Output the network isolation resources
-output VIRTUAL_NETWORK_NAME string = azureNetworkIsolation ? virtualNetwork.outputs.name : ''
-output VIRTUAL_NETWORK_RESOURCE_ID string = azureNetworkIsolation ? virtualNetwork.outputs.resourceId : ''
+output AZURE_NETWORK_ISOLATION bool = azureNetworkIsolation
+output AZURE_VIRTUAL_NETWORK_NAME string = azureNetworkIsolation ? virtualNetwork.outputs.name : ''
+output AZURE_VIRTUAL_NETWORK_RESOURCE_ID string = azureNetworkIsolation ? virtualNetwork.outputs.resourceId : ''
 
 // Output the supporting resources
-output STORAGE_ACCOUNT_NAME string = storageAccount.outputs.name
-output STORAGE_ACCOUNT_RESOURCE_ID string = storageAccount.outputs.resourceId
-output STORAGE_ACCOUNT_BLOB_ENDPOINT string = storageAccount.outputs.primaryBlobEndpoint
-output STORAGE_ACCOUNT_PRIVATE_ENDPOINTS array = storageAccount.outputs.privateEndpoints
-output STORAGE_ACCOUNT_SERVICE_ENDPOINTS object = storageAccount.outputs.serviceEndpoints
-output KEY_VAULT_NAME string = keyVault.outputs.name
-output KEY_VAULT_RESOURCE_ID string = keyVault.outputs.resourceId
-output KEY_VAULT_ENDPOINT string = keyVault.outputs.uri
-output CONTAINER_REGISTRY_NAME string = (containerRegistryDeploy && empty(containerRegistryResourceId)) ? containerRegistry.outputs.name : ''
-output CONTAINER_REGISTRY_ID   string = containerRegistryDeploy
+output AZURE_STORAGE_ACCOUNT_NAME string = storageAccount.outputs.name
+output AZURE_STORAGE_ACCOUNT_RESOURCE_ID string = storageAccount.outputs.resourceId
+output AZURE_STORAGE_ACCOUNT_BLOB_ENDPOINT string = storageAccount.outputs.primaryBlobEndpoint
+output AZURE_STORAGE_ACCOUNT_PRIVATE_ENDPOINTS array = storageAccount.outputs.privateEndpoints
+output AZURE_STORAGE_ACCOUNT_SERVICE_ENDPOINTS object = storageAccount.outputs.serviceEndpoints
+output AZURE_KEY_VAULT_NAME string = keyVault.outputs.name
+output AZURE_KEY_VAULT_RESOURCE_ID string = keyVault.outputs.resourceId
+output AZURE_KEY_VAULT_ENDPOINT string = keyVault.outputs.uri
+output AZURE_KEY_VAULT_ENABLE_PURGE_PROTECTION bool = keyVaultEnablePurgeProtection
+output AZURE_CONTAINER_REGISTRY_DEPLOY bool = containerRegistryDeploy
+output AZURE_CONTAINER_REGISTRY_NAME string = (containerRegistryDeploy && empty(containerRegistryResourceId)) ? containerRegistry.outputs.name : ''
+output AZURE_CONTAINER_REGISTRY_RESOURCE_ID   string = containerRegistryDeploy
   ? (empty(containerRegistryResourceId) ? containerRegistry.outputs.resourceId : containerRegistryResourceId)
   : ''
-output AI_SEARCH_NAME string = azureAiSearchDeploy ? aiSearchService.outputs.name : ''
-output AI_SEARCH_ID   string = azureAiSearchDeploy ? aiSearchService.outputs.resourceId : ''
-output AI_SERVICES_NAME string = aiServicesAccount.outputs.name
-output AI_SERVICES_ID string = aiServicesAccount.outputs.resourceId
-output AI_SERVICES_ENDPOINT string = aiServicesAccount.outputs.endpoint
-output AI_SERVICES_RESOURCE_ID string = aiServicesAccount.outputs.resourceId
+
+// Output the AI resources
+output AZURE_DISABLE_API_KEYS bool = disableApiKeys
+output AZURE_AI_SEARCH_NAME string = azureAiSearchDeploy ? aiSearchService.outputs.name : ''
+output AZURE_AI_SEARCH_ID   string = azureAiSearchDeploy ? aiSearchService.outputs.resourceId : ''
+output AZURE_AI_SERVICES_NAME string = aiServicesAccount.outputs.name
+output AZURE_AI_SERVICES_ID string = aiServicesAccount.outputs.resourceId
+output AZURE_AI_SERVICES_ENDPOINT string = aiServicesAccount.outputs.endpoint
+output AZURE_AI_SERVICES_RESOURCE_ID string = aiServicesAccount.outputs.resourceId
 
 // Output the Azure AI Foundry resources
-output AI_FOUNDRY_HUB_NAME string = aiFoundryHub.outputs.name
-output AI_FOUNDRY_HUB_RESOURCE_ID string = aiFoundryHub.outputs.resourceId
-output AI_FOUNDRY_HUB_PRIVATE_ENDPOINTS array = aiFoundryHub.outputs.privateEndpoints
+output AZURE_AI_FOUNDRY_HUB_NAME string = aiFoundryHub.outputs.name
+output AZURE_AI_FOUNDRY_HUB_RESOURCE_ID string = aiFoundryHub.outputs.resourceId
+output AZURE_AI_FOUNDRY_HUB_PRIVATE_ENDPOINTS array = aiFoundryHub.outputs.privateEndpoints
+
+// Output the AI Foundry project
+output AZURE_AI_FOUNDRY_PROJECT_DEPLOY bool = aiFoundryProjectDeploy
+output AZURE_AI_FOUNDRY_PROJECT_NAME string = aiFoundryProjectDeploy ? aiFoundryProjectName : ''
+output AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION string = aiFoundryProjectDeploy ? aiFoundryProjectDescription : ''
+output AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME string = aiFoundryProjectDeploy ? aiFoundryProjectFriendlyName : ''
 
 // Output the Bastion Host resources
-output BASTION_HOST_NAME string = bastionHostDeploy && azureNetworkIsolation ? bastionHost.outputs.name : ''
-output BASTION_HOST_RESOURCE_ID string = bastionHostDeploy && azureNetworkIsolation ? bastionHost.outputs.resourceId : ''
+output AZURE_BASTION_HOST_DEPLOY bool = bastionHostDeploy
+output AZURE_BASTION_HOST_NAME string = bastionHostDeploy && azureNetworkIsolation ? bastionHost.outputs.name : ''
+output AZURE_BASTION_HOST_RESOURCE_ID string = bastionHostDeploy && azureNetworkIsolation ? bastionHost.outputs.resourceId : ''

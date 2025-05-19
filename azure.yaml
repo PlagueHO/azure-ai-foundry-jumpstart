@@ -1,22 +1,9 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
 name: azure-ai-foundry-jumpstart
 
-environment:
-  name: azure-ai-foundry-jumpstart
-  location: eastus2
-
-parameters:
-  azureNetworkIsolation:
-    type: boolean
-    default: true
-    
-deployment:
-  mode: Incremental
-  template: ./infra/main.bicep  # Path to the main.bicep file inside the 'deployment' folder
-  parameters:
-    solutionPrefix: ${parameters.solutionPrefix}
-    otherLocation: ${parameters.otherLocation}
-    baseUrl: ${parameters.baseUrl}
+metadata:
+  template: azure-ai-foundry-jumpstart@1.0
+  name: azure-ai-foundry-jumpstart@1.0
 
 hooks:
   postprovision:
