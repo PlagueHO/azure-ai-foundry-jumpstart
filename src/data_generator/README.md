@@ -158,6 +158,23 @@ python -m data_generator \
   --out-dir ./sample-data/insurance-claims
 ```
 
+### 4.6 Legal-Contract (`legal-contract`)
+
+Generates synthetic legal contracts, including NDAs, service agreements, and negotiation histories.
+
+| Flag                  | Required | Description                                        | Default    |
+|-----------------------|----------|----------------------------------------------------|------------|
+| `--contract-type`     | N        | Type of contract (NDA, Service Agreement, ...)     | `NDA`      |
+| `--num-clauses`      | N        | Number of clauses in the contract                  | `5`        |
+| `--complexity`       | N        | Complexity of legal language (simple, complex)    | `simple`   |
+
+Example:
+
+```bash
+data_generator generate --tool legal-contract --num-records 10 --contract-type NDA --num-clauses 7 --output-file nda_contracts.jsonl
+data_generator generate --tool legal-contract --num-records 5 --contract-type "Service Agreement" --complexity complex --output-file service_agreements.jsonl
+```
+
 ---
 
 ## 5. Extending with New Scenarios
