@@ -1,0 +1,150 @@
+statement_id: de9ee3fa-afa9-45ef-a87d-001b851d0d4a
+account_id: 5986193565
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: 2543.17
+closing_balance: 2352.87
+currency: USD
+transactions:
+- tx_id: 1b6b2a3e-1f8e-46b1-9e76-5c3d9d1b9f7a
+  date: 2025-04-01
+  description: Salary - ACME Corp
+  amount: 2100.0
+  balance_after: 4643.17
+  category: salary
+- tx_id: 3a4d7bd2-74bc-485d-9a0c-190abf2346b0
+  date: 2025-04-01
+  description: 'Walmart Supercenter #812'
+  amount: -65.32
+  balance_after: 4577.85
+  category: groceries
+- tx_id: 22c3e2c0-bb7c-49c2-bd24-e8819e1cfd0e
+  date: 2025-04-02
+  description: Starbucks 04821
+  amount: -6.78
+  balance_after: 4571.07
+  category: other
+- tx_id: f1e7e3c7-9926-4c30-9f9f-80f7b11c3e7b
+  date: 2025-04-02
+  description: Shell Oil 38382
+  amount: -44.2
+  balance_after: 4526.87
+  category: other
+- tx_id: 4b8f74c2-5a45-4d23-b6c3-98f7d3e8b2d2
+  date: 2025-04-02
+  description: 'Trader Joe''s #112'
+  amount: -32.14
+  balance_after: 4494.73
+  category: groceries
+- tx_id: 7f867e8d-56d2-4865-8f11-6c0d6b80b5d1
+  date: 2025-04-03
+  description: Target Store 331
+  amount: -57.89
+  balance_after: 4436.84
+  category: groceries
+- tx_id: 8c1fa7b3-2e47-4a6a-97c4-ef8f2b2c1f6d
+  date: 2025-04-03
+  description: Apple.com/Bill
+  amount: -9.99
+  balance_after: 4426.85
+  category: other
+- tx_id: 9e1b1e45-5c1f-4e3d-a0b4-22a2f2d9c2e6
+  date: 2025-04-03
+  description: Amazon Marketplace
+  amount: -23.6
+  balance_after: 4403.25
+  category: other
+- tx_id: 0b6b5f6b-6a7c-4c9f-a1b7-6e8d8f7c2e3d
+  date: 2025-04-04
+  description: 'Whole Foods Market #101'
+  amount: -42.2
+  balance_after: 4361.05
+  category: groceries
+- tx_id: 22dfad31-cd72-4d46-8e6c-7b1e8e6f3c87
+  date: 2025-04-04
+  description: Uber Trip
+  amount: -13.55
+  balance_after: 4347.5
+  category: other
+- tx_id: 8880b2c3-2b6b-4312-80f0-4c6c3c7b7b3c
+  date: 2025-04-04
+  description: 'CVS Pharmacy #2213'
+  amount: -18.49
+  balance_after: 4329.01
+  category: other
+- tx_id: 2f1e2b60-4f6c-4b5e-947a-2c5a7b2e3d8e
+  date: 2025-04-05
+  description: Spotify USA
+  amount: -9.99
+  balance_after: 4319.02
+  category: other
+- tx_id: 4d0c7b8e-2f61-4d2b-bf94-4c8c9b7e4c21
+  date: 2025-04-05
+  description: 'Safeway #1176'
+  amount: -56.9
+  balance_after: 4262.12
+  category: groceries
+- tx_id: 61aeb7e6-2ff3-4db0-a5e8-2b2c7b6e5e8c
+  date: 2025-04-06
+  description: Venmo Payment Received
+  amount: 43.0
+  balance_after: 4305.12
+  category: other
+- tx_id: 3e9ef1c2-0d1a-4f12-bd2c-8a1b5d6e3c5d
+  date: 2025-04-06
+  description: Starbucks 04821
+  amount: -7.15
+  balance_after: 4297.97
+  category: other
+- tx_id: 7e9d7b8b-42c2-4a84-9997-2b7b3f0e1c2d
+  date: 2025-04-06
+  description: Netflix.com
+  amount: -15.49
+  balance_after: 4282.48
+  category: other
+- tx_id: a0e9f2d3-1e1c-4c9a-8b2c-6e2e9d1a3d4b
+  date: 2025-04-07
+  description: PG&E Payment
+  amount: -112.28
+  balance_after: 4170.2
+  category: utilities
+- tx_id: 4cf1b2e2-2e5b-4f7c-8b2f-8e6b4a2d6c5f
+  date: 2025-04-07
+  description: 'Trader Joe''s #112'
+  amount: -33.9
+  balance_after: 4136.3
+  category: groceries
+- tx_id: 2e2d9f5f-7e5e-4f4d-8e2b-1b8d2e2b3e4d
+  date: 2025-04-08
+  description: Costco Wholesale
+  amount: -114.23
+  balance_after: 4022.07
+  category: groceries
+- tx_id: b38e2e2d-94d3-4a18-9c8a-1d7e2b7c2e3a
+  date: 2025-04-08
+  description: Amazon Prime
+  amount: -14.99
+  balance_after: 4007.08
+  category: other
+- tx_id: 9d3f8e5b-2e2d-4c5f-8e1d-7c2b3e4d5f6a
+  date: 2025-04-08
+  description: Shell Oil 38382
+  amount: -37.11
+  balance_after: 3969.97
+  category: other
+- tx_id: 1a7e2b6e-8f5c-4c1d-9e7b-4e3d9b2e7c1a
+  date: 2025-04-09
+  description: 'CVS Pharmacy #2213'
+  amount: -11.3
+  balance_after: 3958.67
+  category: other
+- tx_id: 7e2f1b2c-1c9a-4b7c-8a2e-3d9b2e7c1a8d
+  date: 2025-04-09
+  description: 'Walmart Supercenter #812'
+  amount: -64.1
+  balance_after: 3894.57
+  category: groceries
+- tx_id: e8b7d2e3-7a9c-4b2e-9b7c-1e2d3c8a7b4d
+  date: 2025-04-10
+  description: Target Store 331

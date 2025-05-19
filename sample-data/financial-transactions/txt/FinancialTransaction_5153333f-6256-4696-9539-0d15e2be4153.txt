@@ -1,0 +1,77 @@
+Statement ID: 5153333f-6256-4696-9539-0d15e2be4153  
+Account ID: 3913157626 (credit)  
+Period: 2025-04-01 - 2025-04-30  
+
+Opening Balance: 1234.56 USD  
+Closing Balance: 2345.67 USD  
+
+Transactions:  
+date       | description                    | amount    | balance_after | category  
+2025-04-01 | Grocery Purchase               | -45.67    | 1188.89       | groceries  
+2025-04-01 | Coffee Shop                    | -5.20     | 1183.69       | dining  
+2025-04-02 | Salary Credit                  | +1500.00  | 2683.69       | income  
+2025-04-02 | Online Subscription            | -12.99    | 2670.70       | subscription  
+2025-04-02 | Pharmacy Purchase              | -23.54    | 2647.16       | health  
+2025-04-03 | Electric Utility Payment       | -75.34    | 2571.82       | utilities  
+2025-04-03 | Gas Station                    | -34.12    | 2537.70       | transport  
+2025-04-03 | Restaurant                     | -46.80    | 2490.90       | dining  
+2025-04-04 | Online Retailer                | -98.99    | 2391.91       | shopping  
+2025-04-04 | Gym Membership                 | -35.00    | 2356.91       | fitness  
+2025-04-04 | Grocery Purchase               | -52.17    | 2304.74       | groceries  
+2025-04-05 | Movie Tickets                  | -28.00    | 2276.74       | entertainment  
+2025-04-05 | Coffee Shop                    | -4.50     | 2272.24       | dining  
+2025-04-06 | Insurance Premium              | -120.00   | 2152.24       | insurance  
+2025-04-06 | Pet Store                      | -18.75    | 2133.49       | pet  
+2025-04-07 | Fast Food                      | -11.40    | 2122.09       | dining  
+2025-04-07 | Online Subscription            | -8.99     | 2113.10       | subscription  
+2025-04-07 | Grocery Purchase               | -41.80    | 2071.30       | groceries  
+2025-04-08 | Taxi Fare                      | -22.30    | 2049.00       | transport  
+2025-04-08 | Bookstore                      | -13.85    | 2035.15       | shopping  
+2025-04-09 | Water Utility Payment          | -28.93    | 2006.22       | utilities  
+2025-04-09 | Pharmacy Purchase              | -14.99    | 1991.23       | health  
+2025-04-09 | Coffee Shop                    | -5.20     | 1986.03       | dining  
+2025-04-10 | Refund: Online Retailer        | +15.00    | 2001.03       | refund  
+2025-04-10 | Grocery Purchase               | -36.77    | 1964.26       | groceries  
+2025-04-11 | Online Streaming Service       | -13.99    | 1950.27       | subscription  
+2025-04-11 | Gas Station                    | -37.20    | 1913.07       | transport  
+2025-04-11 | Restaurant                     | -58.40    | 1854.67       | dining  
+2025-04-12 | Online Retailer                | -49.99    | 1804.68       | shopping  
+2025-04-12 | Charity Donation               | -25.00    | 1779.68       | charity  
+2025-04-13 | Grocery Purchase               | -42.19    | 1737.49       | groceries  
+2025-04-13 | Coffee Shop                    | -5.20     | 1732.29       | dining  
+2025-04-14 | Interest Credit                | +2.16     | 1734.45       | interest  
+2025-04-14 | Fast Food                      | -9.80     | 1724.65       | dining  
+2025-04-15 | Gym Membership                 | -35.00    | 1689.65       | fitness  
+2025-04-15 | Grocery Purchase               | -51.77    | 1637.88       | groceries  
+2025-04-16 | Bus Ticket                     | -2.75     | 1635.13       | transport  
+2025-04-16 | Online Subscription            | -7.99     | 1627.14       | subscription  
+2025-04-17 | Pharmacy Purchase              | -12.99    | 1614.15       | health  
+2025-04-17 | Coffee Shop                    | -5.20     | 1608.95       | dining  
+2025-04-18 | Electric Utility Payment       | -74.82    | 1534.13       | utilities  
+2025-04-18 | Gas Station                    | -33.90    | 1500.23       | transport  
+2025-04-19 | Grocery Purchase               | -46.77    | 1453.46       | groceries  
+2025-04-19 | Restaurant                     | -54.70    | 1398.76       | dining  
+2025-04-19 | Movie Tickets                  | -28.00    | 1370.76       | entertainment  
+2025-04-20 | Online Retailer                | -32.99    | 1337.77       | shopping  
+2025-04-20 | Fast Food                      | -10.50    | 1327.27       | dining  
+2025-04-21 | Grocery Purchase               | -39.81    | 1287.46       | groceries  
+2025-04-21 | Bookstore                      | -11.99    | 1275.47       | shopping  
+2025-04-22 | Refund: Gas Station            | +10.00    | 1285.47       | refund  
+2025-04-22 | Online Subscription            | -12.99    | 1272.48       | subscription  
+2025-04-23 | Coffee Shop                    | -5.20     | 1267.28       | dining  
+2025-04-23 | Pharmacy Purchase              | -21.30    | 1245.98       | health  
+2025-04-24 | Water Utility Payment          | -29.50    | 1216.48       | utilities  
+2025-04-24 | Grocery Purchase               | -43.17    | 1173.31       | groceries  
+2025-04-25 | Fast Food                      | -10.20    | 1163.11       | dining  
+2025-04-25 | Coffee Shop                    | -5.20     | 1157.91       | dining  
+2025-04-26 | Gym Membership                 | -35.00    | 1122.91       | fitness  
+2025-04-26 | Online Retailer                | -75.49    | 1047.42       | shopping  
+2025-04-26 | Grocery Purchase               | -47.17    | 1000.25       | groceries  
+2025-04-27 | Restaurant                     | -56.60    | 943.65        | dining  
+2025-04-28 | Gas Station                    | -38.40    | 905.25        | transport  
+2025-04-28 | Online Streaming Service       | -14.99    | 890.26        | subscription  
+2025-04-29 | Salary Credit                  | +1500.00  | 2390.26       | income  
+2025-04-29 | Grocery Purchase               | -44.59    | 2345.67       | groceries  
+2025-04-30 | Coffee Shop                    | -5.20     | 2340.47       | dining  
+
+(Note: One transaction is subtly fraudulent. The two "Coffee Shop" purchases on 2025-04-23 and 2025-04-25 are nearly identical, suggesting a possible duplicate charge.)

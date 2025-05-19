@@ -1,0 +1,154 @@
+statement_id: 22a9f374-6f3a-484c-8b6d-a7d08b70cf5d
+account_id: 3650294826
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: -1425.87
+closing_balance: -1580.12
+currency: USD
+transactions:
+- tx_id: 2b1a7a4a-1e3d-4f89-8e1c-80bcd89c9b6e
+  date: 2025-04-01
+  description: Payment Received - Thank You
+  amount: 200.0
+  balance_after: -1225.87
+  category: other
+- tx_id: 1f9e5b7c-4c44-4a5f-81ad-f4a80d7cb0a2
+  date: 2025-04-01
+  description: FreshMart Grocery
+  amount: -47.25
+  balance_after: -1273.12
+  category: groceries
+- tx_id: f6c7341a-7b31-49e7-9af5-273c0ce1d1ae
+  date: 2025-04-01
+  description: City Utilities - Water Bill
+  amount: -38.9
+  balance_after: -1312.02
+  category: utilities
+- tx_id: 6e246325-2c0b-46a9-ae6c-8c9e123d7f1d
+  date: 2025-04-02
+  description: Coffee Spot
+  amount: -4.85
+  balance_after: -1316.87
+  category: other
+- tx_id: eb2a9c13-417f-4fd9-bc8a-5c4a7e7e5e5e
+  date: 2025-04-02
+  description: Green Valley Market
+  amount: -23.11
+  balance_after: -1339.98
+  category: groceries
+- tx_id: 7d2c8f7b-7d9b-4d25-8fbc-2e8de2e6d4f4
+  date: 2025-04-02
+  description: Lyft Ride
+  amount: -13.5
+  balance_after: -1353.48
+  category: other
+- tx_id: 1b7059c6-8f2a-4b3f-9f99-1b5cde2f9b65
+  date: 2025-04-03
+  description: Electricity Bill - City Energy
+  amount: -62.4
+  balance_after: -1415.88
+  category: utilities
+- tx_id: 4aa4b8b1-8cfc-4b15-96da-d8909e62c8af
+  date: 2025-04-03
+  description: Target
+  amount: -32.17
+  balance_after: -1448.05
+  category: groceries
+- tx_id: 2e1e1c1a-3b2f-4f7d-9c4c-5b0dd5a6d7bb
+  date: 2025-04-03
+  description: Starbucks
+  amount: -6.21
+  balance_after: -1454.26
+  category: other
+- tx_id: 3cf5d42f-7b24-4b7e-9db9-8b2b2af9e5d8
+  date: 2025-04-04
+  description: Netflix.com Subscription
+  amount: -15.49
+  balance_after: -1469.75
+  category: other
+- tx_id: 5e2f7fb5-52d6-4d6a-b9f3-87b1f2a4a3ec
+  date: 2025-04-04
+  description: Amazon Purchase
+  amount: -23.7
+  balance_after: -1493.45
+  category: other
+- tx_id: 6a2d1b24-5c7a-4c4e-9a2d-4e5b05e7e3f7
+  date: 2025-04-04
+  description: "Trader Joe\u2019s"
+  amount: -54.61
+  balance_after: -1548.06
+  category: groceries
+- tx_id: 8c5c9f1e-6c17-4f53-8c3d-5d4c6c5e9f8b
+  date: 2025-04-05
+  description: Apple.com
+  amount: -1.99
+  balance_after: -1550.05
+  category: other
+- tx_id: 0f8c6e1d-3e4d-46d6-8c5a-4b5c7d3f1e2a
+  date: 2025-04-05
+  description: FreshMart Grocery
+  amount: -37.88
+  balance_after: -1587.93
+  category: groceries
+- tx_id: 9e2a1b2d-5e2a-4a9f-b4b4-8a7d3c1f2a5c
+  date: 2025-04-06
+  description: Spotify Subscription
+  amount: -10.99
+  balance_after: -1598.92
+  category: other
+- tx_id: 1d6c3b4a-8e4c-4d2e-b1d1-5e7c6e8a9b7f
+  date: 2025-04-06
+  description: Uber Eats
+  amount: -28.75
+  balance_after: -1627.67
+  category: other
+- tx_id: 8e0f6a72-0d8b-4c74-8f4b-1c0f2a9e6a1d
+  date: 2025-04-06
+  description: Walgreens
+  amount: -13.46
+  balance_after: -1641.13
+  category: other
+- tx_id: 6a1f3c2d-5e5e-4f3f-b2a3-1d8e9f3a4b5c
+  date: 2025-04-07
+  description: Whole Foods Market
+  amount: -62.19
+  balance_after: -1703.32
+  category: groceries
+- tx_id: 2d7b1c6e-7f5e-4c4b-a7f9-9c6d8c5e9f3d
+  date: 2025-04-07
+  description: Starbucks
+  amount: -5.45
+  balance_after: -1708.77
+  category: other
+- tx_id: 4e2f8b1a-5c9e-4e2e-8e2d-1f0e2e8a9c8d
+  date: 2025-04-07
+  description: Lyft Ride
+  amount: -9.8
+  balance_after: -1718.57
+  category: other
+- tx_id: 2a8b1d3a-7b6c-4a3e-8b2f-2e1f2e3a4b5c
+  date: 2025-04-08
+  description: Safeway
+  amount: -42.11
+  balance_after: -1760.68
+  category: groceries
+- tx_id: 1a8e9b2c-4e2b-4d1e-b3c7-6e7c9a3b2d8e
+  date: 2025-04-08
+  description: Shell Gas
+  amount: -38.22
+  balance_after: -1798.9
+  category: other
+- tx_id: 7f5d2c1e-8b7a-4d4c-9e3f-8d6a4b5c6e2f
+  date: 2025-04-09
+  description: City Utilities - Gas Bill
+  amount: -27.55
+  balance_after: -1826.45
+  category: utilities
+- tx_id: 2b8c1d2e-5e4d-4b7e-8c2a-9e1f3a4b2d8e
+  date: 2025-04-09
+  description: Chipotle
+  amount: -14.63
+  balance_after: -1841.08
+  category: other
+- tx_id: 9c7a6b5e-8d4c-4e3a-b3e

@@ -1,0 +1,148 @@
+statement_id: 457cfefb-95d1-4604-87f6-d5acb1f02400
+account_id: 2520244406
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: 1243.58
+closing_balance: 1433.01
+currency: USD
+transactions:
+- tx_id: a7c55c6f-8b1e-4e82-8e9a-23e8f5f08b11
+  date: 2025-04-01
+  description: Direct Deposit - Acme Corp Payroll
+  amount: 2200.0
+  balance_after: 3443.58
+  category: salary
+- tx_id: 3b98d3ef-11b6-49d1-b330-18c5edc5f7e0
+  date: 2025-04-01
+  description: Wholemart Supermarket - Main St
+  amount: -85.23
+  balance_after: 3358.35
+  category: groceries
+- tx_id: 20c7b8e8-0d8b-4a7c-95fa-2e9a4b0e9e3f
+  date: 2025-04-02
+  description: City Utilities - Water Bill
+  amount: -43.17
+  balance_after: 3315.18
+  category: utilities
+- tx_id: 5b3f7d6c-5d1d-43e1-8c0c-4c7f5d4b3e6f
+  date: 2025-04-02
+  description: Coffee Spot
+  amount: -4.85
+  balance_after: 3310.33
+  category: other
+- tx_id: 51c7c8a5-4f9f-40c7-bb08-38d0c75a1c7c
+  date: 2025-04-03
+  description: Green Pharmacy
+  amount: -12.6
+  balance_after: 3297.73
+  category: other
+- tx_id: 9f8b9e2c-5d8a-4918-909e-2a13c6d7e823
+  date: 2025-04-03
+  description: Metro Gas Station
+  amount: -35.0
+  balance_after: 3262.73
+  category: other
+- tx_id: 8e7c1e7e-7a1d-4208-a6a6-1c7e13f0e1b6
+  date: 2025-04-03
+  description: Amazon Marketplace
+  amount: -28.5
+  balance_after: 3234.23
+  category: other
+- tx_id: c2e1b1d1-2f9f-4b5a-90e3-6d1e2e5b3f2c
+  date: 2025-04-04
+  description: QuickMart Grocery
+  amount: -55.75
+  balance_after: 3178.48
+  category: groceries
+- tx_id: 7d2f9bfe-6e8a-4d6b-8ef9-5a7c8f5a7d9e
+  date: 2025-04-04
+  description: City Electric - Monthly Bill
+  amount: -88.1
+  balance_after: 3090.38
+  category: utilities
+- tx_id: 0c1b2e3d-6f4c-43e2-a2e3-8a8b4b2e4d3c
+  date: 2025-04-05
+  description: Subway Sandwiches
+  amount: -11.85
+  balance_after: 3078.53
+  category: other
+- tx_id: 9e2d1f5b-3a2e-4d5b-9a3b-2a3e9e1d5b8c
+  date: 2025-04-05
+  description: PharmPlus
+  amount: -9.95
+  balance_after: 3068.58
+  category: other
+- tx_id: 18c4f2e3-2d1b-4668-a7e2-1a5b4d3c6f7e
+  date: 2025-04-06
+  description: Wholemart Supermarket - Main St
+  amount: -62.09
+  balance_after: 3006.49
+  category: groceries
+- tx_id: 2b4c6d8f-7e5a-4938-a2e8-1b3e5c7d9f8a
+  date: 2025-04-06
+  description: Mobile Payment - Rideshare
+  amount: -18.9
+  balance_after: 2987.59
+  category: other
+- tx_id: 8c7b6f5d-4a3e-4b9e-8a1b-2a3e4d5b7c8d
+  date: 2025-04-07
+  description: Netstream Subscription
+  amount: -15.99
+  balance_after: 2971.6
+  category: utilities
+- tx_id: 5d9e1f3b-7e8a-4d1c-8f5b-1a7e9f1c3b2d
+  date: 2025-04-07
+  description: Trader's Grocer
+  amount: -42.16
+  balance_after: 2929.44
+  category: groceries
+- tx_id: 6e8f1b2d-3a5c-41e8-8b5e-1c7a8e1b4d3c
+  date: 2025-04-08
+  description: Coffee Spot
+  amount: -5.1
+  balance_after: 2924.34
+  category: other
+- tx_id: 4c2a3d1e-8b5c-4a7e-8c5d-1f3e4a5b7c9d
+  date: 2025-04-08
+  description: Amazon Marketplace
+  amount: -19.48
+  balance_after: 2904.86
+  category: other
+- tx_id: 7b3e9c1a-2d8f-4b7c-9e1f-3a4b5c8e7d9f
+  date: 2025-04-09
+  description: QuickMart Grocery
+  amount: -39.8
+  balance_after: 2865.06
+  category: groceries
+- tx_id: 3e2f7d9a-6b5c-4a2e-9f1b-7e3c5d8a1b9c
+  date: 2025-04-09
+  description: Metro Gas Station
+  amount: -31.25
+  balance_after: 2833.81
+  category: other
+- tx_id: 1f3b2e4d-7c6a-4a3e-8b2d-5b1e9f7c3d2b
+  date: 2025-04-09
+  description: Mobile Payment - Rideshare
+  amount: -14.45
+  balance_after: 2819.36
+  category: other
+- tx_id: 8e1b9f2c-3d7a-4c5b-8a1e-2d3c5b7e8f9a
+  date: 2025-04-10
+  description: City Electric - Monthly Bill
+  amount: -89.02
+  balance_after: 2730.34
+  category: utilities
+- tx_id: 2a7b4d5c-6f8e-4c3a-9d2b-1e3f4c7a9e5b
+  date: 2025-04-10
+  description: Wholemart Supermarket - Main St
+  amount: -68.41
+  balance_after: 2661.93
+  category: groceries
+- tx_id: 9b4c2d1e-7a8f-4b6c-8e3d-1a5c7b9e2f6a
+  date: 2025-04-11
+  description: Coffee Spot
+  amount: -4.85
+  balance_after: 2657.08
+  category: other
+- tx_id: 7c3d2e1b-8a5f-49c3-9b7e-1

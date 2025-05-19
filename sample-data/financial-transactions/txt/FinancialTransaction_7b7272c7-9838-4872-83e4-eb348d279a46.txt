@@ -1,0 +1,68 @@
+Opening Balance: 1234.56 USD  
+Closing Balance: 2345.67 USD  
+
+Transactions:  
+date       | description                    | amount    | balance_after | category  
+2025-04-01 | Grocery Purchase               | -52.45    | 1182.11       | groceries  
+2025-04-01 | Coffee Shop                    | -4.50     | 1177.61       | dining  
+2025-04-02 | Online Subscription            | -12.99    | 1164.62       | entertainment  
+2025-04-02 | Salary Payment                 | +1200.00  | 2364.62       | income  
+2025-04-03 | Gas Station                    | -39.28    | 2325.34       | transportation  
+2025-04-03 | Restaurant Dine-In             | -28.15    | 2297.19       | dining  
+2025-04-04 | Pharmacy Purchase              | -15.69    | 2281.50       | health  
+2025-04-04 | Online Retail Purchase         | -87.40    | 2194.10       | shopping  
+2025-04-05 | ATM Withdrawal                 | -60.00    | 2134.10       | cash withdrawal  
+2025-04-05 | Utility Bill Payment           | -95.12    | 2038.98       | utilities  
+2025-04-06 | Movie Theater                  | -19.00    | 2019.98       | entertainment  
+2025-04-06 | Grocery Purchase               | -63.42    | 1956.56       | groceries  
+2025-04-07 | Coffee Shop                    | -5.25     | 1951.31       | dining  
+2025-04-07 | Gym Membership                 | -49.99    | 1901.32       | fitness  
+2025-04-08 | Online Music Service           | -9.99     | 1891.33       | entertainment  
+2025-04-08 | Bookstore                      | -18.50    | 1872.83       | shopping  
+2025-04-09 | Fast Food                      | -8.99     | 1863.84       | dining  
+2025-04-09 | Ride Share                     | -16.75    | 1847.09       | transportation  
+2025-04-10 | Insurance Payment              | -110.00   | 1737.09       | insurance  
+2025-04-10 | Grocery Purchase               | -54.13    | 1682.96       | groceries  
+2025-04-11 | Online Retail Purchase         | -34.80    | 1648.16       | shopping  
+2025-04-11 | Subscription Renewal           | -7.99     | 1640.17       | entertainment  
+2025-04-12 | Gas Station                    | -42.20    | 1597.97       | transportation  
+2025-04-12 | Bakery                         | -10.25    | 1587.72       | dining  
+2025-04-13 | ATM Withdrawal                 | -40.00    | 1547.72       | cash withdrawal  
+2025-04-13 | Coffee Shop                    | -3.85     | 1543.87       | dining  
+2025-04-14 | Pharmacy Purchase              | -13.60    | 1530.27       | health  
+2025-04-14 | Grocery Purchase               | -47.23    | 1483.04       | groceries  
+2025-04-15 | Online Retail Purchase         | -22.50    | 1460.54       | shopping  
+2025-04-15 | Restaurant Dine-In             | -25.40    | 1435.14       | dining  
+2025-04-16 | Ride Share                     | -14.80    | 1420.34       | transportation  
+2025-04-16 | Streaming Service              | -15.99    | 1404.35       | entertainment  
+2025-04-17 | Fast Food                      | -9.49     | 1394.86       | dining  
+2025-04-17 | Grocery Purchase               | -58.71    | 1336.15       | groceries  
+2025-04-18 | Online Subscription            | -6.99     | 1329.16       | entertainment  
+2025-04-18 | Coffee Shop                    | -4.75     | 1324.41       | dining  
+2025-04-19 | Bookstore                      | -16.20    | 1308.21       | shopping  
+2025-04-19 | Gas Station                    | -36.55    | 1271.66       | transportation  
+2025-04-20 | Utility Bill Payment           | -93.50    | 1178.16       | utilities  
+2025-04-20 | Grocery Purchase               | -41.87    | 1136.29       | groceries  
+2025-04-21 | ATM Withdrawal                 | -80.00    | 1056.29       | cash withdrawal  
+2025-04-21 | Coffee Shop                    | -4.60     | 1051.69       | dining  
+2025-04-22 | Online Retail Purchase         | -29.90    | 1021.79       | shopping  
+2025-04-22 | Pharmacy Purchase              | -14.25    | 1007.54       | health  
+2025-04-23 | Fast Food                      | -11.29    | 996.25        | dining  
+2025-04-23 | Restaurant Dine-In             | -26.80    | 969.45        | dining  
+2025-04-24 | Insurance Payment              | -110.00   | 859.45        | insurance  
+2025-04-24 | Grocery Purchase               | -59.60    | 799.85        | groceries  
+2025-04-25 | Salary Payment                 | +1600.00  | 2399.85       | income  
+2025-04-25 | Online Subscription            | -12.99    | 2386.86       | entertainment  
+2025-04-26 | Coffee Shop                    | -5.05     | 2381.81       | dining  
+2025-04-26 | Gas Station                    | -43.12    | 2338.69       | transportation  
+2025-04-27 | Grocery Purchase               | -44.20    | 2294.49       | groceries  
+2025-04-27 | Bakery                         | -7.80     | 2286.69       | dining  
+2025-04-28 | Online Retail Purchase         | -25.00    | 2261.69       | shopping  
+2025-04-28 | Pharmacy Purchase              | -17.35    | 2244.34       | health  
+2025-04-29 | Fast Food                      | -10.65    | 2233.69       | dining  
+2025-04-29 | Ride Share                     | -18.15    | 2215.54       | transportation  
+2025-04-30 | Streaming Service              | -15.99    | 2199.55       | entertainment  
+2025-04-30 | Grocery Purchase               | -53.88    | 2145.67       | groceries  
+2025-04-30 | Adjustment (interest credit)   | +200.00   | 2345.67       | credit  
+
+(Note: One subtly fraudulent transaction is present—look for the duplicated "Online Subscription" charge on 2025-04-01 and 2025-04-25 with slightly different amounts, a common trick for small subscription fraud.)

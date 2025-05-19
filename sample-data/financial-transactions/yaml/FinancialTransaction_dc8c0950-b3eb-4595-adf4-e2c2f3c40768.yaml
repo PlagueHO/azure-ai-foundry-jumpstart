@@ -1,0 +1,50 @@
+"statement_id: dc8c0950-b3eb-4595-adf4-e2c2f3c40768\naccount_id: 8896919090\naccount_type:\
+  \ credit\nstart_date: 2025-04-01\nend_date: 2025-04-30\nopening_balance: 312.47\n\
+  closing_balance: 1083.67\ncurrency: USD\ntransactions:\n  - tx_id: 9e59d2c6-ec7c-4c6f-bd49-3d9e8e2b8d2a\n\
+  \    date: 2025-04-01\n    description: \"PAYROLL: Acme Corp Direct Deposit\"\n\
+  \    amount: 1800.00\n    balance_after: 2112.47\n    category: salary\n  - tx_id:\
+  \ 5b2eedea-1c21-4e8a-9d5c-4f9c9a3d3c2e\n    date: 2025-04-01\n    description: \"\
+  SAFEWAY STORE #2138\"\n    amount: -56.23\n    balance_after: 2056.24\n    category:\
+  \ groceries\n  - tx_id: 2c5a0d39-4e5a-4fb7-89e5-4e2b031b4c1d\n    date: 2025-04-02\n\
+  \    description: \"ELECTRICITY BILL PAYMENT\"\n    amount: -94.80\n    balance_after:\
+  \ 1961.44\n    category: utilities\n  - tx_id: e6e9e3ad-7ca3-4d73-93a8-6b1b6e6d0e90\n\
+  \    date: 2025-04-02\n    description: \"CITY WATER WORKS\"\n    amount: -38.50\n\
+  \    balance_after: 1922.94\n    category: utilities\n  - tx_id: 7a5c9e02-6d2c-4f85-b5bb-1e1cd0f8d2c5\n\
+  \    date: 2025-04-02\n    description: \"NETFLIX.COM MONTHLY\"\n    amount: -15.49\n\
+  \    balance_after: 1907.45\n    category: other\n  - tx_id: 8f2d9b0b-1c62-4d1c-9a45-5f8d2b7e2c6a\n\
+  \    date: 2025-04-03\n    description: \"STARBUCKS #4803\"\n    amount: -7.45\n\
+  \    balance_after: 1900.00\n    category: other\n  - tx_id: 4c3f8f18-1c7e-4a4f-bd7b-1e2b0c3d8f7e\n\
+  \    date: 2025-04-03\n    description: \"WHOLE FOODS MARKET\"\n    amount: -82.67\n\
+  \    balance_after: 1817.33\n    category: groceries\n  - tx_id: 6d2d4a1c-47e9-4e5b-84d8-5b3e8d2a4e7c\n\
+  \    date: 2025-04-03\n    description: \"UBER TRIP\"\n    amount: -16.22\n    balance_after:\
+  \ 1801.11\n    category: other\n  - tx_id: a8b2f0c7-5c42-4018-9b18-e1c6c7f3b8af\n\
+  \    date: 2025-04-04\n    description: \"CHEVRON GAS\"\n    amount: -42.00\n  \
+  \  balance_after: 1759.11\n    category: other\n  - tx_id: 2e4b6f4a-8e28-4d8e-bc4a-5b6e8d4e1b2c\n\
+  \    date: 2025-04-04\n    description: \"SPOTIFY\"\n    amount: -10.99\n    balance_after:\
+  \ 1748.12\n    category: other\n  - tx_id: 51b3d7e8-1f6a-4b9a-bc3e-8f7a5c4d7e1b\n\
+  \    date: 2025-04-05\n    description: \"TRADER JOE'S #113\"\n    amount: -54.21\n\
+  \    balance_after: 1693.91\n    category: groceries\n  - tx_id: 7d1f3e6b-3a4c-4a8b-9c1e-5d9e8f2b1c7d\n\
+  \    date: 2025-04-05\n    description: \"AMAZON MARKETPLACE\"\n    amount: -26.39\n\
+  \    balance_after: 1667.52\n    category: other\n  - tx_id: f92e12c1-3e7d-4f1e-8c2a-4d8b1c7e2a6d\n\
+  \    date: 2025-04-06\n    description: \"PAYMENT RECEIVED - THANK YOU\"\n    amount:\
+  \ 200.00\n    balance_after: 1867.52\n    category: other\n  - tx_id: 1b5c9e7f-3d4e-4c8a-a9e1-b2c4d6f7e8a1\n\
+  \    date: 2025-04-06\n    description: \"WALGREENS #5221\"\n    amount: -23.88\n\
+  \    balance_after: 1843.64\n    category: other\n  - tx_id: 8e1b7f2a-4c5d-4f8a-9b2e-1c7d8a2e4b6f\n\
+  \    date: 2025-04-07\n    description: \"TARGET #0483\"\n    amount: -61.39\n \
+  \   balance_after: 1782.25\n    category: other\n  - tx_id: 0c7f2b3e-5a6d-4c7a-8b1e-2d3a4f6e8c1b\n\
+  \    date: 2025-04-07\n    description: \"SAFEWAY STORE #2138\"\n    amount: -42.14\n\
+  \    balance_after: 1740.11\n    category: groceries\n  - tx_id: 67c9d7e2-8b1c-4e2a-9f3a-2e1b7c4d8f1a\n\
+  \    date: 2025-04-08\n    description: \"APPLE.COM BILL\"\n    amount: -2.99\n\
+  \    balance_after: 1737.12\n    category: other\n  - tx_id: 1a7b8e2d-4c6d-4e7a-8b9e-2f1c3d7e8b4a\n\
+  \    date: 2025-04-08\n    description: \"AMAZON MARKETPLACE\"\n    amount: -34.59\n\
+  \    balance_after: 1702.53\n    category: other\n  - tx_id: 2b7d8e1a-3f6c-4e1b-9a2e-1d7e8b2a4c6f\n\
+  \    date: 2025-04-08\n    description: \"TRADER JOE'S #113\"\n    amount: -41.77\n\
+  \    balance_after: 1660.76\n    category: groceries\n  - tx_id: 5c7a4e2b-3d1f-4e8b-9c2a-1f6e7b3c8a4d\n\
+  \    date: 2025-04-09\n    description: \"PAYPAL *STEAMGAMES\"\n    amount: -19.99\n\
+  \    balance_after: 1640.77\n    category: other\n  - tx_id: 3d2f6a1b-8e2c-4f1a-9b7e-1a6d3c7e8b1f\n\
+  \    date: 2025-04-09\n    description: \"WHOLE FOODS MARKET\"\n    amount: -78.13\n\
+  \    balance_after: 1562.64\n    category: groceries\n  - tx_id: 9b8c7d6e-4a2b-4e1c-9a8b-2d1f7e3c6a4b\n\
+  \    date: 2025-04-10\n    description: \"CHEVRON GAS\"\n    amount: -36.00\n  \
+  \  balance_after: 1526.64\n    category: other\n  - tx_id: 0e7c2b1d-4f6a-4b8e-9c1a-2d7e3b6c8f1a\n\
+  \    date: 2025-04-10\n    description: \"UBER TRIP\"\n    amount: -14.71\n    balance_after:\
+  \ 1511.93\n    category"

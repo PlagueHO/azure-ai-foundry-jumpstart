@@ -1,0 +1,148 @@
+statement_id: 44ba38e1-06fc-41c3-bb61-eeabffd8046a
+account_id: 2678418487
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: -1287.43
+closing_balance: -1625.21
+currency: USD
+transactions:
+- tx_id: f1b4a6f9-6e3c-49ed-9e28-8c6f4d1e5e31
+  date: 2025-04-01
+  description: PAYMENT - THANK YOU
+  amount: 250.0
+  balance_after: -1037.43
+  category: other
+- tx_id: 1a8c8e39-cb3e-4c17-8ef7-1a5b8b8f1c2a
+  date: 2025-04-01
+  description: 'SAFEWAY #3412'
+  amount: -57.38
+  balance_after: -1094.81
+  category: groceries
+- tx_id: e6f5b0e4-9c3f-42fc-8e1f-cb7d8a9d1339
+  date: 2025-04-02
+  description: STARBUCKS STORE 21845
+  amount: -4.65
+  balance_after: -1099.46
+  category: other
+- tx_id: 8e5c2ea2-82c5-41f3-8f4e-9fca5e3c0e1a
+  date: 2025-04-02
+  description: UBER TRIP HELP.UBER.COM
+  amount: -16.8
+  balance_after: -1116.26
+  category: other
+- tx_id: b2e1456c-9bfb-46b1-9e1c-3f8f49b9b2b6
+  date: 2025-04-02
+  description: WHOLE FOODS 10298
+  amount: -42.17
+  balance_after: -1158.43
+  category: groceries
+- tx_id: 35f3f7d3-2a42-4f51-a213-5d6c6e0ed1e1
+  date: 2025-04-03
+  description: NETFLIX.COM
+  amount: -15.49
+  balance_after: -1173.92
+  category: other
+- tx_id: 7c6e2e2c-05c2-4899-880a-3b719bfa7e7e
+  date: 2025-04-03
+  description: AMAZON MARKETPLACE PMTS
+  amount: -23.79
+  balance_after: -1197.71
+  category: other
+- tx_id: 2dfe92b4-6e7a-4c2e-8581-8b0b3e9b7fa0
+  date: 2025-04-03
+  description: TARGET T- 000159
+  amount: -34.22
+  balance_after: -1231.93
+  category: groceries
+- tx_id: 6924e5e6-2b0e-49e5-8b9b-6cfcf2e3c1b7
+  date: 2025-04-04
+  description: SHELL OIL 574221
+  amount: -47.33
+  balance_after: -1279.26
+  category: other
+- tx_id: 7cc355d4-3e7b-4d3b-aa2f-7e6f4f6b2d8d
+  date: 2025-04-04
+  description: SPOTIFY USA
+  amount: -10.99
+  balance_after: -1290.25
+  category: other
+- tx_id: 6b2ec5e3-0e8f-40e7-9e12-39c0a4e6d8c9
+  date: 2025-04-04
+  description: 'TRADER JOE''S #123'
+  amount: -38.1
+  balance_after: -1328.35
+  category: groceries
+- tx_id: 1e7f6b5d-4e2d-4ea7-95b7-3b2b3c4f2e0c
+  date: 2025-04-05
+  description: VENMO PAYMENT
+  amount: 37.5
+  balance_after: -1290.85
+  category: other
+- tx_id: 97a3e5c1-8e5b-4d5a-9c23-5e4d2a6b7c3d
+  date: 2025-04-05
+  description: 'CVS PHARMACY #10521'
+  amount: -13.29
+  balance_after: -1304.14
+  category: other
+- tx_id: 2c3f4b55-7e5a-471e-b510-4a3b2a1e2c3a
+  date: 2025-04-06
+  description: PG&E PAYMENT
+  amount: -94.17
+  balance_after: -1398.31
+  category: utilities
+- tx_id: 2a1e8b9d-83b2-44c3-b4c2-5f1a9e2b0c6e
+  date: 2025-04-06
+  description: 'WALGREENS #04215'
+  amount: -22.94
+  balance_after: -1421.25
+  category: other
+- tx_id: 5a7b3c9e-2f9c-4e1a-8c9d-7d8f3a4b6c2e
+  date: 2025-04-07
+  description: 'SAFEWAY #3412'
+  amount: -62.57
+  balance_after: -1483.82
+  category: groceries
+- tx_id: 5e3c2f1a-1b7d-49a8-8d2e-c3b7e0c1d5e6
+  date: 2025-04-07
+  description: AMAZON MARKETPLACE PMTS
+  amount: -9.99
+  balance_after: -1493.81
+  category: other
+- tx_id: 8f7a1e2d-5c0d-4f3e-8e1a-0c2e9a8b1d2e
+  date: 2025-04-08
+  description: SALARY ACME CORP
+  amount: 1450.0
+  balance_after: -43.81
+  category: salary
+- tx_id: 1b2c8e7f-6e8a-4c19-8e1c-2e3b4a8b9d0f
+  date: 2025-04-08
+  description: 'TRADER JOE''S #123'
+  amount: -24.19
+  balance_after: -68.0
+  category: groceries
+- tx_id: 9e8c5d4a-3f5b-47c1-b4e8-6a7c9e1d2b0f
+  date: 2025-04-09
+  description: UBER TRIP HELP.UBER.COM
+  amount: -9.85
+  balance_after: -77.85
+  category: other
+- tx_id: 4c7a5e3b-1d2f-45e7-8c1a-8f2b3c4d5e6f
+  date: 2025-04-09
+  description: WHOLE FOODS 10298
+  amount: -36.7
+  balance_after: -114.55
+  category: groceries
+- tx_id: 6b3e2a4d-2f8e-40e7-9e1f-1c2b3d4e5f6a
+  date: 2025-04-09
+  description: SHELL OIL 574221
+  amount: -44.09
+  balance_after: -158.64
+  category: other
+- tx_id: 2f7c5a1e-4b3d-4c5a-8e1b-9d2f3a4b5c6e
+  date: 2025-04-10
+  description: 'SAFEWAY #3412'
+  amount: -59.22
+  balance_after: -217.86
+  category: groceries
+- tx_id: 2e5c1a7b-7

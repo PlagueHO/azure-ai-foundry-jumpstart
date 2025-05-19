@@ -1,0 +1,147 @@
+statement_id: 5e1291c6-81a6-4c0c-ac0c-8e2e335fdcfb
+account_id: 7125637626
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: 312.45
+closing_balance: -452.6
+currency: USD
+transactions:
+- tx_id: 1a9e3f90-0c8c-4d2f-bf88-0e2d6f2a4011
+  date: 2025-04-01
+  description: GROCERY OUTLET
+  amount: -42.38
+  balance_after: 270.07
+  category: groceries
+- tx_id: 7f5c2b1e-4f8d-4a98-93d6-2e0cf5f2f8a2
+  date: 2025-04-01
+  description: STARBUCKS STORE 2849
+  amount: -6.55
+  balance_after: 263.52
+  category: other
+- tx_id: d2d2e1c6-9d1a-4b2d-a9b3-1f3d6d3a1c8f
+  date: 2025-04-01
+  description: PAYPAL *NETFLIX.COM
+  amount: -15.99
+  balance_after: 247.53
+  category: utilities
+- tx_id: 9b7c2cfa-5e2e-40a6-bf3e-8f71b6e4aa80
+  date: 2025-04-01
+  description: WHOLE FOODS 1092
+  amount: -31.47
+  balance_after: 216.06
+  category: groceries
+- tx_id: 4d24934c-a7cb-4eeb-87ed-8c0e0c5e4f0c
+  date: 2025-04-02
+  description: UBER TRIP 04/01
+  amount: -17.29
+  balance_after: 198.77
+  category: other
+- tx_id: 3e5b1f8a-7d4f-45a5-a6c4-7e4b1e4c7e1a
+  date: 2025-04-02
+  description: SAFEWAY
+  amount: -52.03
+  balance_after: 146.74
+  category: groceries
+- tx_id: 9e3b4f7c-8e7f-4b5e-ae0a-4f3e8d6a4e9a
+  date: 2025-04-02
+  description: AMAZON MARKETPLACE PMTS
+  amount: -24.89
+  balance_after: 121.85
+  category: other
+- tx_id: 8c9e7b6a-3f3e-4e2b-93e8-4f2e1e9b3c5a
+  date: 2025-04-03
+  description: SHELL OIL 574921
+  amount: -38.6
+  balance_after: 83.25
+  category: other
+- tx_id: 6b7e9c0a-7d3e-4b2b-95e2-3e8a1e9c2b3a
+  date: 2025-04-03
+  description: SAFEWAY
+  amount: -9.18
+  balance_after: 74.07
+  category: groceries
+- tx_id: 2d3e8b1f-9c4a-4e6d-93e4-1d9f4e1b8c7a
+  date: 2025-04-03
+  description: SPOTIFY USA
+  amount: -10.99
+  balance_after: 63.08
+  category: utilities
+- tx_id: 7a8d2c1e-4c7a-4b9d-8f0e-9b6f3e4c1a7b
+  date: 2025-04-03
+  description: GROCERY OUTLET
+  amount: -26.32
+  balance_after: 36.76
+  category: groceries
+- tx_id: 5f1a8e9b-7c2e-4d9a-8b1e-6d3f9e7c4b2a
+  date: 2025-04-04
+  description: WALGREENS STORE 08723
+  amount: -13.56
+  balance_after: 23.2
+  category: other
+- tx_id: 0d2e3f7a-1b8c-4e9d-9e0a-6b3d8e1c4a7b
+  date: 2025-04-04
+  description: PGE BILLPAY
+  amount: -57.41
+  balance_after: -34.21
+  category: utilities
+- tx_id: 3c8e9d1b-7e2a-4b8d-9c1e-2a9d7c8e1b3a
+  date: 2025-04-04
+  description: TARGET 0009
+  amount: -18.99
+  balance_after: -53.2
+  category: other
+- tx_id: 2a7b3e8c-4d2a-4f8e-9b7c-5e1a6c3f8b2d
+  date: 2025-04-05
+  description: PEETS COFFEE 1402
+  amount: -5.45
+  balance_after: -58.65
+  category: other
+- tx_id: 2f6e1d4c-5b3a-4e2b-9c7e-0a6d3f1b7c4e
+  date: 2025-04-05
+  description: WHOLE FOODS 1092
+  amount: -20.77
+  balance_after: -79.42
+  category: groceries
+- tx_id: 6e7d8a2c-9b3e-4d9b-8c1e-1b2c8e4f3a7d
+  date: 2025-04-05
+  description: PAYROLL DEPOSIT
+  amount: 1200.0
+  balance_after: 1120.58
+  category: salary
+- tx_id: 7c2e1a9b-4d6a-4b8e-9c1f-8e7d3a2c6b4e
+  date: 2025-04-06
+  description: SAFEWAY
+  amount: -33.87
+  balance_after: 1086.71
+  category: groceries
+- tx_id: 8f6b2c1d-9e4a-4c7d-8b9e-0d1f3e8a7c2e
+  date: 2025-04-06
+  description: WALGREENS STORE 08723
+  amount: -12.64
+  balance_after: 1074.07
+  category: other
+- tx_id: 1e7d3c8b-6e2a-4c1b-9d7c-8e4a1b3f7c2e
+  date: 2025-04-06
+  description: UBER EATS 04/06
+  amount: -19.98
+  balance_after: 1054.09
+  category: other
+- tx_id: 6a7e1d3c-2b4a-4e8c-9b1f-0e7c4b2d1a3e
+  date: 2025-04-07
+  description: PGE BILLPAY
+  amount: -61.27
+  balance_after: 992.82
+  category: utilities
+- tx_id: 5b9e2d3a-7f4c-4a8d-9b1e-2c7d1e8a3b6c
+  date: 2025-04-07
+  description: WHOLE FOODS 1092
+  amount: -37.14
+  balance_after: 955.68
+  category: groceries
+- tx_id: 3e9a1c7d-8f2b-4e1a-9d6c-5b3e7a2d6c8f
+  date: 2025-04-07
+  description: GROCERY OUTLET
+  amount: -18.8
+  balance_after: 936.88
+  category: groceries

@@ -1,0 +1,70 @@
+Opening Balance: 1234.56 USD  
+Closing Balance: 2345.67 USD  
+
+Transactions:  
+date       | description                      | amount    | balance_after | category  
+2025-04-01 | Grocery Store - Fresh Market     | -45.67    | 1188.89       | groceries  
+2025-04-01 | Coffee Shop - Brewed Awakenings  | -4.50     | 1184.39       | dining  
+2025-04-02 | Monthly Subscription - Streamly  | -12.99    | 1171.40       | entertainment  
+2025-04-02 | Gas Station - QuickFuel          | -30.00    | 1141.40       | transportation  
+2025-04-03 | Direct Deposit - Payroll         | +1750.00  | 2891.40       | income  
+2025-04-03 | Restaurant - Bella Pasta         | -38.20    | 2853.20       | dining  
+2025-04-03 | SuperMart - Household            | -27.82    | 2825.38       | groceries  
+2025-04-04 | Pharmacy - CareWell              | -16.70    | 2808.68       | healthcare  
+2025-04-04 | Ride Share - GoMove              | -13.45    | 2795.23       | transportation  
+2025-04-04 | Utility Payment - City Electric  | -85.33    | 2709.90       | utilities  
+2025-04-05 | Bookstore - ChapterOne           | -22.15    | 2687.75       | shopping  
+2025-04-05 | Online Retail - ShopNest         | -57.80    | 2629.95       | shopping  
+2025-04-06 | Coffee Shop - Brewed Awakenings  | -4.50     | 2625.45       | dining  
+2025-04-06 | Grocery Store - Fresh Market     | -53.61    | 2571.84       | groceries  
+2025-04-07 | Gym Membership - FitLife         | -39.99    | 2531.85       | fitness  
+2025-04-07 | Restaurant - The Green Bowl      | -19.42    | 2512.43       | dining  
+2025-04-08 | Online Subscription - NewsWave   | -9.99     | 2502.44       | entertainment  
+2025-04-08 | Gas Station - QuickFuel          | -28.60    | 2473.84       | transportation  
+2025-04-09 | Grocery Store - Fresh Market     | -47.21    | 2426.63       | groceries  
+2025-04-09 | Clothing Store - Urban Vogue     | -66.80    | 2359.83       | shopping  
+2025-04-10 | Coffee Shop - Brewed Awakenings  | -4.50     | 2355.33       | dining  
+2025-04-10 | Pharmacy - CareWell              | -12.30    | 2343.03       | healthcare  
+2025-04-11 | Online Retail - ShopNest         | -21.50    | 2321.53       | shopping  
+2025-04-11 | Restaurant - Bella Pasta         | -42.18    | 2279.35       | dining  
+2025-04-12 | Gas Station - QuickFuel          | -31.12    | 2248.23       | transportation  
+2025-04-12 | Grocery Store - Fresh Market     | -51.44    | 2196.79       | groceries  
+2025-04-13 | Ride Share - GoMove              | -12.75    | 2184.04       | transportation  
+2025-04-13 | Bookstore - ChapterOne           | -18.99    | 2165.05       | shopping  
+2025-04-14 | Restaurant - The Green Bowl      | -24.67    | 2140.38       | dining  
+2025-04-14 | Online Subscription - NewsWave   | -9.99     | 2130.39       | entertainment  
+2025-04-15 | Utility Payment - AquaPure       | -63.25    | 2067.14       | utilities  
+2025-04-15 | Grocery Store - Fresh Market     | -49.80    | 2017.34       | groceries  
+2025-04-16 | Coffee Shop - Brewed Awakenings  | -4.50     | 2012.84       | dining  
+2025-04-16 | SuperMart - Household            | -32.74    | 1980.10       | groceries  
+2025-04-17 | Restaurant - Bella Pasta         | -37.65    | 1942.45       | dining  
+2025-04-17 | Online Retail - ShopNest         | -44.10    | 1898.35       | shopping  
+2025-04-18 | Ride Share - GoMove              | -14.90    | 1883.45       | transportation  
+2025-04-18 | Gas Station - QuickFuel          | -29.75    | 1853.70       | transportation  
+2025-04-19 | Bookstore - ChapterOne           | -20.50    | 1833.20       | shopping  
+2025-04-19 | Grocery Store - Fresh Market     | -52.30    | 1780.90       | groceries  
+2025-04-20 | Coffee Shop - Brewed Awakenings  | -4.50     | 1776.40       | dining  
+2025-04-20 | Pharmacy - CareWell              | -17.85    | 1758.55       | healthcare  
+2025-04-21 | Online Subscription - Streamly   | -12.99    | 1745.56       | entertainment  
+2025-04-21 | Restaurant - The Green Bowl      | -18.60    | 1726.96       | dining  
+2025-04-22 | Clothing Store - Urban Vogue     | -74.45    | 1652.51       | shopping  
+2025-04-22 | SuperMart - Household            | -28.33    | 1624.18       | groceries  
+2025-04-23 | Online Retail - ShopNest         | -37.90    | 1586.28       | shopping  
+2025-04-23 | Gas Station - QuickFuel          | -30.10    | 1556.18       | transportation  
+2025-04-24 | Grocery Store - Fresh Market     | -48.73    | 1507.45       | groceries  
+2025-04-24 | Coffee Shop - Brewed Awakenings  | -4.50     | 1502.95       | dining  
+2025-04-25 | Restaurant - Bella Pasta         | -39.80    | 1463.15       | dining  
+2025-04-25 | Utility Payment - City Electric  | -87.45    | 1375.70       | utilities  
+2025-04-26 | Online Subscription - NewsWave   | -9.99     | 1365.71       | entertainment  
+2025-04-26 | Bookstore - ChapterOne           | -19.75    | 1345.96       | shopping  
+2025-04-27 | Grocery Store - Fresh Market     | -50.92    | 1295.04       | groceries  
+2025-04-27 | Coffee Shop - Brewed Awakenings  | -4.50     | 1290.54       | dining  
+2025-04-28 | Direct Deposit - Payroll         | +1155.13  | 2445.67       | income  
+2025-04-28 | Ride Share - GoMove              | -15.00    | 2430.67       | transportation  
+2025-04-29 | Gas Station - QuickFuel          | -27.20    | 2403.47       | transportation  
+2025-04-29 | Restaurant - The Green Bowl      | -23.80    | 2379.67       | dining  
+2025-04-30 | Online Retail - ShopNest         | -33.00    | 2346.67       | shopping  
+2025-04-30 | Grocery Store - Fresh Market     | -0.99     | 2345.68       | groceries  
+2025-04-30 | Adjustment                       | -0.01     | 2345.67       | adjustment  
+
+(Note: Transaction on 2025-04-30 for Fresh Market ($0.99) and subsequent Adjustment ($0.01) together subtly reflect a minor mismatch, representing a small fraudulent pattern.)

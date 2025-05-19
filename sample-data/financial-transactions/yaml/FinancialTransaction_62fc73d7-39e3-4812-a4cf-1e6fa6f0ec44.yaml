@@ -1,0 +1,154 @@
+statement_id: 62fc73d7-39e3-4812-a4cf-1e6fa6f0ec44
+account_id: 3076185137
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: 1234.56
+closing_balance: 1050.38
+currency: USD
+transactions:
+- tx_id: 2b1d1e91-aad6-4a6f-8f38-3f0e4d1cf4e5
+  date: 2025-04-01
+  description: Salary Deposit - ACME Corp
+  amount: 2500.0
+  balance_after: 3734.56
+  category: salary
+- tx_id: 4c6c1f3e-7b01-4d14-bd2e-8e5c58e355e7
+  date: 2025-04-01
+  description: Whole Foods Market
+  amount: -74.23
+  balance_after: 3660.33
+  category: groceries
+- tx_id: 430e9e40-8d6e-4ea6-8f47-4d7c58c9d3d7
+  date: 2025-04-02
+  description: Starbucks
+  amount: -6.58
+  balance_after: 3653.75
+  category: other
+- tx_id: f1e04b57-045f-4e31-89ef-82d4e760a0c5
+  date: 2025-04-02
+  description: Amazon Marketplace
+  amount: -48.99
+  balance_after: 3604.76
+  category: other
+- tx_id: d71d8a9d-7c98-4b9d-93ad-3c8e3f3b3c7d
+  date: 2025-04-02
+  description: Target
+  amount: -33.45
+  balance_after: 3571.31
+  category: groceries
+- tx_id: a1b0e5a2-8a7d-47a1-9b6e-e10f2c1c1b0a
+  date: 2025-04-03
+  description: City Water Utility
+  amount: -39.87
+  balance_after: 3531.44
+  category: utilities
+- tx_id: 2ffb192a-92f1-4bd1-a4c7-6c81d0c2e80e
+  date: 2025-04-03
+  description: Uber
+  amount: -16.75
+  balance_after: 3514.69
+  category: other
+- tx_id: 9e755c3b-51ae-4ec8-8b68-7c6dcf2c9f22
+  date: 2025-04-03
+  description: Trader Joe's
+  amount: -64.12
+  balance_after: 3450.57
+  category: groceries
+- tx_id: 5e4e4eae-0e56-4be7-bf2a-6e1f3e9f4b4d
+  date: 2025-04-04
+  description: Spotify Subscription
+  amount: -10.99
+  balance_after: 3439.58
+  category: other
+- tx_id: 1a41c5b4-0c22-4a56-bf8e-1b34b7b0f6a2
+  date: 2025-04-04
+  description: CVS Pharmacy
+  amount: -25.17
+  balance_after: 3414.41
+  category: other
+- tx_id: 5360d00f-8b0c-4d8e-9a5e-3b2ea5b2b1a3
+  date: 2025-04-05
+  description: PayPal - Etsy
+  amount: -43.0
+  balance_after: 3371.41
+  category: other
+- tx_id: 3f93a3ec-b6f6-477c-a4f8-5e6f4d1e7b8e
+  date: 2025-04-05
+  description: Kroger
+  amount: -58.67
+  balance_after: 3312.74
+  category: groceries
+- tx_id: 9b8d7c8e-5d94-4e2e-bc52-9351e7f4c3d1
+  date: 2025-04-05
+  description: Electric Co.
+  amount: -110.43
+  balance_after: 3202.31
+  category: utilities
+- tx_id: 92e2a8c4-7c5c-4f8e-b70f-3f6d4b8b2a12
+  date: 2025-04-06
+  description: Netflix
+  amount: -15.49
+  balance_after: 3186.82
+  category: other
+- tx_id: 7b4eebc1-8a0c-4f8f-b8d4-8c7e3e7b6b9a
+  date: 2025-04-06
+  description: Costco Wholesale
+  amount: -121.78
+  balance_after: 3065.04
+  category: groceries
+- tx_id: fd3e2d8c-5a7b-4c9b-bc3c-8b7a6e5d4c1b
+  date: 2025-04-06
+  description: Venmo Transfer
+  amount: -25.0
+  balance_after: 3040.04
+  category: other
+- tx_id: 1e7f8c9d-2d8e-4f0c-bc4a-9d8e6f7b4c2a
+  date: 2025-04-07
+  description: Shell Gas
+  amount: -42.63
+  balance_after: 2997.41
+  category: other
+- tx_id: 3a2b0e9d-9c8e-4a7f-bc1e-4e7c2b1d9f5a
+  date: 2025-04-07
+  description: Trader Joe's
+  amount: -29.8
+  balance_after: 2967.61
+  category: groceries
+- tx_id: 7d8c3e5a-6b7a-4e1e-bc2d-7f1e8a4b6e2c
+  date: 2025-04-08
+  description: Home Depot
+  amount: -77.4
+  balance_after: 2890.21
+  category: other
+- tx_id: d2d7e96e-3e0c-4cd2-bb65-4b7e2c5d7e2c
+  date: 2025-04-08
+  description: Aldi
+  amount: -32.14
+  balance_after: 2858.07
+  category: groceries
+- tx_id: f3b2a1d8-4e9a-4c8a-bc4d-3e2d1b4c5e6a
+  date: 2025-04-09
+  description: Apple.com
+  amount: -9.99
+  balance_after: 2848.08
+  category: other
+- tx_id: b3c7e5d2-4a8b-4c2d-bc4e-6e7b1d3a4c9e
+  date: 2025-04-09
+  description: Walmart
+  amount: -53.62
+  balance_after: 2794.46
+  category: groceries
+- tx_id: 6b9d3e8c-2c4a-4f7b-8d7c-1a2b3e4c5d6f
+  date: 2025-04-09
+  description: Dunkin'
+  amount: -4.3
+  balance_after: 2790.16
+  category: other
+- tx_id: 8a6f4b3d-2d8e-4d8a-bc7e-1c2b3d4e6f7a
+  date: 2025-04-10
+  description: Walgreens
+  amount: -18.22
+  balance_after: 2771.94
+  category: other
+- tx_id: 2c3b4d5e-6f7a-4e1b-8d7c

@@ -1,0 +1,148 @@
+statement_id: ac0fb2ea-82cb-4d32-8eda-1f39a24903ac
+account_id: 9470703327
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: 1234.56
+closing_balance: 1110.02
+currency: USD
+transactions:
+- tx_id: 5e6f1f0c-6e98-4ee8-8b2b-5dfe0e3c1d44
+  date: 2025-04-01
+  description: 'Whole Foods Market #0729'
+  amount: -42.37
+  balance_after: 1192.19
+  category: groceries
+- tx_id: 0e7e3e58-d5d4-4a7a-9c1c-3b21cd8f2b70
+  date: 2025-04-01
+  description: Salary - ACME Corp
+  amount: 1500.0
+  balance_after: 2692.19
+  category: salary
+- tx_id: 72b3e5e1-4b3a-4bdf-9dd8-9c8fcf7e6d8e
+  date: 2025-04-02
+  description: 'Starbucks #1423'
+  amount: -5.82
+  balance_after: 2686.37
+  category: other
+- tx_id: 4aaf2d54-cc9f-45b8-a8e0-3402f6a5b226
+  date: 2025-04-02
+  description: Amazon Marketplace
+  amount: -27.45
+  balance_after: 2658.92
+  category: other
+- tx_id: 9b3c4e1a-07d3-4a23-bb90-b5a57b7e2e1a
+  date: 2025-04-02
+  description: CVS Pharmacy 0584
+  amount: -16.27
+  balance_after: 2642.65
+  category: groceries
+- tx_id: 5b1f4b1d-8b7c-4b48-8a7d-f92e6e4fb394
+  date: 2025-04-03
+  description: Apple.com/Bill
+  amount: -12.99
+  balance_after: 2629.66
+  category: other
+- tx_id: a5a6e36b-5a8b-42ae-8b7a-0c7e2d5e0e0a
+  date: 2025-04-03
+  description: Shell Oil 9412
+  amount: -38.21
+  balance_after: 2591.45
+  category: other
+- tx_id: 7b9c1d31-0c0b-4f84-9d25-705f6f6be0fa
+  date: 2025-04-03
+  description: 'Trader Joe''s #117'
+  amount: -62.85
+  balance_after: 2528.6
+  category: groceries
+- tx_id: 2d0a6e7b-0be2-4b6b-b0a1-2f8c6c9a2ea4
+  date: 2025-04-04
+  description: Netflix.com
+  amount: -16.99
+  balance_after: 2511.61
+  category: other
+- tx_id: 57f9e1b0-2e4a-4c7e-8b2d-6e8b2e1f0c4d
+  date: 2025-04-04
+  description: 'Costco Wholesale #120'
+  amount: -87.43
+  balance_after: 2424.18
+  category: groceries
+- tx_id: 0f0b0c2e-5a6b-4b8b-8c1e-3c4d5e6f7a8b
+  date: 2025-04-05
+  description: Uber Trip
+  amount: -14.76
+  balance_after: 2409.42
+  category: other
+- tx_id: 8e4b1c2a-4d3e-4b6b-8a1b-0e5f2b7d2a4b
+  date: 2025-04-05
+  description: 'Target Store #1894'
+  amount: -34.1
+  balance_after: 2375.32
+  category: groceries
+- tx_id: b3a1e5f6-7c8b-4b1a-8d2f-1a2c3d4e5f6a
+  date: 2025-04-05
+  description: Spotify Subscription
+  amount: -9.99
+  balance_after: 2365.33
+  category: other
+- tx_id: 1e9f3a7b-0f1a-4c5e-8e4b-2c3d5f6a7b8c
+  date: 2025-04-06
+  description: PG&E Utilities
+  amount: -108.52
+  balance_after: 2256.81
+  category: utilities
+- tx_id: 2f6a7b8c-3d4e-5f6a-8b7c-1e9f3a7b0f1a
+  date: 2025-04-06
+  description: 'Safeway #3247'
+  amount: -52.14
+  balance_after: 2204.67
+  category: groceries
+- tx_id: 3c4d5e6f-7a8b-4b1a-8d2f-b3a1e5f67c8b
+  date: 2025-04-07
+  description: Venmo Payment - Sam R.
+  amount: -20.0
+  balance_after: 2184.67
+  category: other
+- tx_id: 4d5e6f7a-8b1a-4c5e-8e4b-1a2c3d4e5f6a
+  date: 2025-04-07
+  description: Amazon Marketplace
+  amount: -29.95
+  balance_after: 2154.72
+  category: other
+- tx_id: 5e6f7a8b-1a4c-5e8e-4b2c-3d5f6a7b8c9d
+  date: 2025-04-08
+  description: 'Trader Joe''s #117'
+  amount: -68.4
+  balance_after: 2086.32
+  category: groceries
+- tx_id: 6f7a8b1a-4c5e-8e4b-1a2c-3d4e5f6a7b8c
+  date: 2025-04-08
+  description: Walmart Supercenter
+  amount: -34.87
+  balance_after: 2051.45
+  category: groceries
+- tx_id: 7a8b1a4c-5e8e-4b2c-3d5f-6a7b8c9d0e1f
+  date: 2025-04-09
+  description: Comcast Internet
+  amount: -74.99
+  balance_after: 1976.46
+  category: utilities
+- tx_id: 8b1a4c5e-8e4b-1a2c-3d4e-5f6a7b8c9d0e
+  date: 2025-04-09
+  description: CVS Pharmacy 0584
+  amount: -23.18
+  balance_after: 1953.28
+  category: groceries
+- tx_id: 9c1d2e3f-4b5a-6c7d-8e9f-0a1b2c3d4e5f
+  date: 2025-04-10
+  description: Lyft Ride
+  amount: -13.22
+  balance_after: 1940.06
+  category: other
+- tx_id: a2b3c4d5-e6f7-8a9b-0c1d-2e3f4b5a6c7d
+  date: 2025-04-10
+  description: 'Trader Joe''s #117'
+  amount: -58.79
+  balance_after: 1881.27
+  category: groceries
+- tx_id: b4c5d6e7-f8a9-0b1c-2d3e-4f5a

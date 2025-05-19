@@ -1,0 +1,69 @@
+Opening Balance: 1234.56 USD  
+Closing Balance: 2345.67 USD  
+
+Transactions:  
+date       | description                          | amount    | balance_after | category  
+2025-04-01 | Grocery Store - Market King          | -45.67    | 1188.89       | groceries  
+2025-04-01 | Coffee Shop - Brewed Awakenings      | -6.50     | 1182.39       | dining  
+2025-04-02 | Gas Station - QuickFuel             | -38.00    | 1144.39       | transportation  
+2025-04-02 | Online Subscription - Streamio       | -12.99    | 1131.40       | entertainment  
+2025-04-03 | Salary Payment                       | +900.00   | 2031.40       | income  
+2025-04-03 | Pharmacy - MedPlus                   | -21.45    | 2009.95       | healthcare  
+2025-04-04 | Bookstore - PageTurners             | -32.80    | 1977.15       | shopping  
+2025-04-04 | Restaurant - Pizza Place             | -29.99    | 1947.16       | dining  
+2025-04-05 | Ride Share - GoDriver                | -14.50    | 1932.66       | transportation  
+2025-04-05 | Clothing Store - Trendz              | -63.20    | 1869.46       | shopping  
+2025-04-05 | Grocery Store - Market King          | -52.13    | 1817.33       | groceries  
+2025-04-06 | Electronics - TechieTown             | -125.49   | 1691.84       | shopping  
+2025-04-06 | ATM Withdrawal                       | -80.00    | 1611.84       | cash  
+2025-04-07 | Transfer from Checking               | +200.00   | 1811.84       | transfer  
+2025-04-07 | Coffee Shop - Brewed Awakenings      | -5.25     | 1806.59       | dining  
+2025-04-08 | Online Payment - MusicBox            | -9.99     | 1796.60       | entertainment  
+2025-04-08 | Utility Bill - PowerCo               | -85.10    | 1711.50       | utilities  
+2025-04-09 | Grocery Store - Market King          | -48.60    | 1662.90       | groceries  
+2025-04-09 | Insurance Premium - HomeSafe         | -63.75    | 1599.15       | insurance  
+2025-04-10 | Restaurant - Sushi Avenue            | -47.60    | 1551.55       | dining  
+2025-04-10 | Taxi - CityCab                       | -17.80    | 1533.75       | transportation  
+2025-04-11 | Online Retail - MegaMart             | -44.99    | 1488.76       | shopping  
+2025-04-11 | Pharmacy - MedPlus                   | -18.10    | 1470.66       | healthcare  
+2025-04-12 | Pet Store - Paw Palace               | -36.20    | 1434.46       | shopping  
+2025-04-12 | Grocery Store - Market King          | -50.01    | 1384.45       | groceries  
+2025-04-13 | Streaming Subscription - FlixHouse   | -13.99    | 1370.46       | entertainment  
+2025-04-13 | Transfer from Checking               | +100.00   | 1470.46       | transfer  
+2025-04-14 | Restaurant - Pizza Place             | -29.99    | 1440.47       | dining  
+2025-04-14 | Pharmacy - MedPlus                   | -8.99     | 1431.48       | healthcare  
+2025-04-14 | Bookstore - PageTurners              | -27.50    | 1403.98       | shopping  
+2025-04-15 | Gas Station - QuickFuel              | -41.20    | 1362.78       | transportation  
+2025-04-15 | Grocery Store - Market King          | -49.83    | 1312.95       | groceries  
+2025-04-16 | Mobile Payment - AppWallet           | -10.00    | 1302.95       | other  
+2025-04-16 | Restaurant - Sushi Avenue            | -39.10    | 1263.85       | dining  
+2025-04-17 | ATM Withdrawal                       | -60.00    | 1203.85       | cash  
+2025-04-17 | Insurance Premium - HomeSafe         | -63.75    | 1140.10       | insurance  
+2025-04-18 | Online Subscription - Streamio       | -12.99    | 1127.11       | entertainment  
+2025-04-18 | Grocery Store - Market King          | -45.67    | 1081.44       | groceries  
+2025-04-19 | Salary Payment                       | +900.00   | 1981.44       | income  
+2025-04-19 | Coffee Shop - Brewed Awakenings      | -7.25     | 1974.19       | dining  
+2025-04-19 | Gas Station - QuickFuel              | -37.10    | 1937.09       | transportation  
+2025-04-20 | Bookstore - PageTurners              | -24.80    | 1912.29       | shopping  
+2025-04-20 | Grocery Store - Market King          | -51.45    | 1860.84       | groceries  
+2025-04-21 | Online Payment - MusicBox            | -9.99     | 1850.85       | entertainment  
+2025-04-21 | Utility Bill - PowerCo               | -84.55    | 1766.30       | utilities  
+2025-04-22 | Pharmacy - MedPlus                   | -15.60    | 1750.70       | healthcare  
+2025-04-22 | Clothing Store - Trendz              | -72.40    | 1678.30       | shopping  
+2025-04-23 | Coffee Shop - Brewed Awakenings      | -5.25     | 1673.05       | dining  
+2025-04-23 | Grocery Store - Market King          | -48.60    | 1624.45       | groceries  
+2025-04-24 | Restaurant - Pizza Place             | -30.55    | 1593.90       | dining  
+2025-04-24 | Ride Share - GoDriver                | -13.20    | 1580.70       | transportation  
+2025-04-25 | Online Retail - MegaMart             | -44.99    | 1535.71       | shopping  
+2025-04-25 | ATM Withdrawal                       | -100.00   | 1435.71       | cash  
+2025-04-26 | Grocery Store - Market King          | -47.10    | 1388.61       | groceries  
+2025-04-26 | Streaming Subscription - FlixHouse   | -13.99    | 1374.62       | entertainment  
+2025-04-27 | Salary Payment                       | +1000.00  | 2374.62       | income  
+2025-04-27 | Coffee Shop - Brewed Awakenings      | -5.25     | 2369.37       | dining  
+2025-04-28 | Gas Station - QuickFuel              | -41.20    | 2328.17       | transportation  
+2025-04-28 | Grocery Store - Market King          | -49.83    | 2278.34       | groceries  
+2025-04-29 | Mobile Payment - AppWallet           | -10.00    | 2268.34       | other  
+2025-04-29 | Pharmacy - MedPlus                   | -14.30    | 2254.04       | healthcare  
+2025-04-30 | Transfer from Checking               | +91.63    | 2345.67       | transfer  
+
+# Note: One subtly fraudulent transaction is present — on 2025-04-05 and 2025-04-18, "Grocery Store - Market King" charges of -45.67 each are both listed, simulating a possible duplicate small charge.

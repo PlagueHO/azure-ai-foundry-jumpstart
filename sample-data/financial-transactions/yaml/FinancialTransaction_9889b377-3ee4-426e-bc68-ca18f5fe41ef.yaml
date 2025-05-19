@@ -1,0 +1,152 @@
+statement_id: 9889b377-3ee4-426e-bc68-ca18f5fe41ef
+account_id: 4805753113
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: 1524.39
+closing_balance: 1654.66
+currency: USD
+transactions:
+- tx_id: 7d4b8b25-3aa1-42b2-84d7-1e55f4f9b6f2
+  date: 2025-04-01
+  description: Payment Received - Thank You
+  amount: 500.0
+  balance_after: 2024.39
+  category: salary
+- tx_id: 0b99e1a2-d7c6-4c51-bae5-5e23e2f6b6be
+  date: 2025-04-01
+  description: Grocery Store - FreshMart
+  amount: -54.23
+  balance_after: 1970.16
+  category: groceries
+- tx_id: 2b1f7c6e-544d-48f8-b6c0-3d788a9ff5c7
+  date: 2025-04-02
+  description: Utility Bill - City Water
+  amount: -38.45
+  balance_after: 1931.71
+  category: utilities
+- tx_id: 8d0e5c63-6f9b-4a50-9b67-2f3df4e5bc4d
+  date: 2025-04-02
+  description: Coffee Shop - JavaBean
+  amount: -4.75
+  balance_after: 1926.96
+  category: other
+- tx_id: 3b7e2e90-fefb-4c4a-89b6-f87b7e2f2e91
+  date: 2025-04-02
+  description: Streaming Service - Streamly
+  amount: -11.99
+  balance_after: 1914.97
+  category: utilities
+- tx_id: 6d5f9eeb-21c6-46d8-bf0b-3f2c8e59e73b
+  date: 2025-04-03
+  description: Grocery Store - FreshMart
+  amount: -29.67
+  balance_after: 1885.3
+  category: groceries
+- tx_id: 0720e954-b7e4-43b1-8a28-2b5e09d5a3a5
+  date: 2025-04-03
+  description: Fast Food - Burger Haven
+  amount: -9.56
+  balance_after: 1875.74
+  category: other
+- tx_id: 9e2c0ef7-5b5f-4ae8-9c5b-8fbf8f7e44f2
+  date: 2025-04-03
+  description: Pharmacy - Medico
+  amount: -13.9
+  balance_after: 1861.84
+  category: other
+- tx_id: 4a8c8e7d-2fdd-4e59-9e4f-5c6f8ae9a3f1
+  date: 2025-04-04
+  description: Ride Share - ZoomTaxis
+  amount: -15.8
+  balance_after: 1846.04
+  category: other
+- tx_id: 900e7e6e-450c-4b11-9be1-6b28b7e3c5f8
+  date: 2025-04-04
+  description: Grocery Store - FreshMart
+  amount: -37.1
+  balance_after: 1808.94
+  category: groceries
+- tx_id: 5fbb5fbb-793b-4d2a-94ad-8c0e1e5b9782
+  date: 2025-04-05
+  description: Online Retail - ShopEase
+  amount: -24.99
+  balance_after: 1783.95
+  category: other
+- tx_id: 1a5f2c6a-5f8e-4c13-9d7e-1a5f6e2b9b1c
+  date: 2025-04-05
+  description: Subscription - Daily News
+  amount: -6.5
+  balance_after: 1777.45
+  category: utilities
+- tx_id: 59e6bbd1-7073-4e2b-8a2d-1c8e8e7d3ca2
+  date: 2025-04-05
+  description: Gas Station - FuelQuick
+  amount: -45.0
+  balance_after: 1732.45
+  category: other
+- tx_id: 1c9e5f37-7b8f-41a8-8e7f-3c7f2d6e4b1a
+  date: 2025-04-06
+  description: Grocery Store - GreenLeaf
+  amount: -23.88
+  balance_after: 1708.57
+  category: groceries
+- tx_id: d5a99a95-9bb7-4b2e-bb8f-fbb5c2e499ae
+  date: 2025-04-06
+  description: Movie Theater - CinemaX
+  amount: -18.0
+  balance_after: 1690.57
+  category: other
+- tx_id: 2e3c8f7e-8a6a-4e2e-8f7a-6b9e8e5d7c1b
+  date: 2025-04-07
+  description: Restaurant - Bella Pasta
+  amount: -32.45
+  balance_after: 1658.12
+  category: other
+- tx_id: 1c8e5e9f-0d1a-4f3c-9c8e-1e5e4b3a2d1c
+  date: 2025-04-07
+  description: Grocery Store - FreshMart
+  amount: -46.25
+  balance_after: 1611.87
+  category: groceries
+- tx_id: 4d2a7e3b-3e3a-4d7b-8c3f-9e8a7e5c6b2a
+  date: 2025-04-07
+  description: Pharmacy - Medico
+  amount: -8.72
+  balance_after: 1603.15
+  category: other
+- tx_id: 29e3c9a8-6b3a-4b1a-b2e7-1f2b2e3c7d8e
+  date: 2025-04-08
+  description: Utility Bill - PowerGrid
+  amount: -67.8
+  balance_after: 1535.35
+  category: utilities
+- tx_id: 7b2f5c17-9a5c-4b2a-8e5e-3c8e4f7b2a6c
+  date: 2025-04-08
+  description: Fast Food - Taco Town
+  amount: -8.99
+  balance_after: 1526.36
+  category: other
+- tx_id: 0c1d2e9f-5e7b-4c2d-8e3a-1f2b3e8c5d7b
+  date: 2025-04-09
+  description: Grocery Store - FreshMart
+  amount: -35.94
+  balance_after: 1490.42
+  category: groceries
+- tx_id: 6e3a8c2f-9b2f-4e3a-8d1a-2c3e9f8b7a5c
+  date: 2025-04-09
+  description: Ride Share - ZoomTaxis
+  amount: -17.6
+  balance_after: 1472.82
+  category: other
+- tx_id: f3e2d1c4-8a3b-4c8e-9e7b-3a2c1e6d8b7a
+  date: 2025-04-09
+  description: Pharmacy - Medico
+  amount: -6.99
+  balance_after: 1465.83
+  category: other
+- tx_id: 4e2b8c3f-7a2e-4b1a-8d1f-2c3a9e8b5d7b
+  date: 2025-04-10
+  description: Grocery Store - GreenLeaf
+  amount: -19.11
+  balance_after: null

@@ -1,0 +1,84 @@
+Opening Balance: 1234.56 USD  
+Closing Balance: 2345.67 USD  
+
+Transactions:  
+date       | description                        | amount    | balance_after | category  
+2025-04-01 | Grocery Purchase                   | -54.21    | 1180.35       | groceries  
+2025-04-01 | Coffee Shop                        | -4.50     | 1175.85       | dining  
+2025-04-02 | Online Subscription                | -12.99    | 1162.86       | entertainment  
+2025-04-02 | ATM Withdrawal                     | -80.00    | 1082.86       | cash withdrawal  
+2025-04-02 | ACH Deposit - Payroll              | +950.00   | 2032.86       | income  
+2025-04-03 | Gas Station                        | -32.40    | 2000.46       | transportation  
+2025-04-03 | Pharmacy                           | -15.80    | 1984.66       | healthcare  
+2025-04-03 | Streaming Service                  | -17.99    | 1966.67       | entertainment  
+2025-04-04 | Restaurant                         | -48.15    | 1918.52       | dining  
+2025-04-04 | Supermarket                        | -67.30    | 1851.22       | groceries  
+2025-04-05 | Gym Membership                     | -39.99    | 1811.23       | fitness  
+2025-04-05 | Coffee Shop                        | -3.75     | 1807.48       | dining  
+2025-04-05 | Rideshare                          | -13.20    | 1794.28       | transportation  
+2025-04-06 | Mobile Payment Received            | +50.00    | 1844.28       | transfer  
+2025-04-06 | Bookstore                          | -22.55    | 1821.73       | shopping  
+2025-04-07 | Grocery Purchase                   | -59.10    | 1762.63       | groceries  
+2025-04-07 | Pharmacy                           | -8.45     | 1754.18       | healthcare  
+2025-04-07 | Fast Food                          | -9.99     | 1744.19       | dining  
+2025-04-08 | Movie Theater                      | -16.50    | 1727.69       | entertainment  
+2025-04-08 | Hardware Store                     | -27.38    | 1700.31       | shopping  
+2025-04-08 | Utilities Payment                  | -120.00   | 1580.31       | utilities  
+2025-04-09 | Interest Credit                    | +2.50     | 1582.81       | interest  
+2025-04-09 | Pet Store                          | -33.65    | 1549.16       | shopping  
+2025-04-09 | Online Retailer                    | -45.90    | 1503.26       | shopping  
+2025-04-10 | Restaurant                         | -27.80    | 1475.46       | dining  
+2025-04-10 | Gas Station                        | -31.00    | 1444.46       | transportation  
+2025-04-10 | Bakery                             | -6.25     | 1438.21       | groceries  
+2025-04-11 | ACH Deposit - Freelance            | +250.00   | 1688.21       | income  
+2025-04-11 | Grocery Purchase                   | -53.78    | 1634.43       | groceries  
+2025-04-12 | Coffee Shop                        | -4.50     | 1629.93       | dining  
+2025-04-12 | Online Subscription                | -14.99    | 1614.94       | entertainment  
+2025-04-12 | Ride Share                         | -19.60    | 1595.34       | transportation  
+2025-04-13 | Pharmacy                           | -21.70    | 1573.64       | healthcare  
+2025-04-13 | Restaurant                         | -35.25    | 1538.39       | dining  
+2025-04-13 | Grocery Purchase                   | -60.44    | 1477.95       | groceries  
+2025-04-14 | Hardware Store                     | -49.99    | 1427.96       | shopping  
+2025-04-14 | Online Retailer                    | -89.95    | 1338.01       | shopping  
+2025-04-15 | Coffee Shop                        | -4.50     | 1333.51       | dining  
+2025-04-15 | Supermarket                        | -75.32    | 1258.19       | groceries  
+2025-04-15 | ACH Deposit - Payroll              | +950.00   | 2208.19       | income  
+2025-04-16 | Fast Food                          | -8.99     | 2199.20       | dining  
+2025-04-16 | Pharmacy                           | -10.60    | 2188.60       | healthcare  
+2025-04-16 | Rideshare                          | -13.20    | 2175.40       | transportation  
+2025-04-17 | Online Subscription                | -11.99    | 2163.41       | entertainment  
+2025-04-17 | Bookstore                          | -25.00    | 2138.41       | shopping  
+2025-04-18 | Gas Station                        | -35.87    | 2102.54       | transportation  
+2025-04-18 | Restaurant                         | -42.10    | 2060.44       | dining  
+2025-04-18 | Coffee Shop                        | -4.50     | 2055.94       | dining  
+2025-04-19 | Grocery Purchase                   | -61.25    | 1994.69       | groceries  
+2025-04-19 | Movie Theater                      | -17.50    | 1977.19       | entertainment  
+2025-04-20 | ATM Withdrawal                     | -60.00    | 1917.19       | cash withdrawal  
+2025-04-20 | Streaming Service                  | -17.99    | 1899.20       | entertainment  
+2025-04-21 | Utilities Payment                  | -110.00   | 1789.20       | utilities  
+2025-04-21 | Online Retailer                    | -54.90    | 1734.30       | shopping  
+2025-04-22 | Coffee Shop                        | -4.50     | 1729.80       | dining  
+2025-04-22 | Grocery Purchase                   | -48.18    | 1681.62       | groceries  
+2025-04-23 | Pet Store                          | -27.99    | 1653.63       | shopping  
+2025-04-23 | Restaurant                         | -36.85    | 1616.78       | dining  
+2025-04-23 | Online Subscription                | -12.99    | 1603.79       | entertainment  
+2025-04-24 | ACH Deposit - Refund               | +39.99    | 1643.78       | refund  
+2025-04-24 | Hardware Store                     | -22.75    | 1621.03       | shopping  
+2025-04-25 | Gas Station                        | -28.00    | 1593.03       | transportation  
+2025-04-25 | Grocery Purchase                   | -52.77    | 1540.26       | groceries  
+2025-04-26 | Coffee Shop                        | -4.50     | 1535.76       | dining  
+2025-04-26 | Restaurant                         | -48.30    | 1487.46       | dining  
+2025-04-26 | Online Retailer                    | -77.79    | 1409.67       | shopping  
+2025-04-27 | Pharmacy                           | -16.90    | 1392.77       | healthcare  
+2025-04-27 | Grocery Purchase                   | -59.99    | 1332.78       | groceries  
+2025-04-27 | Coffee Shop                        | -4.50     | 1328.28       | dining  
+2025-04-28 | ACH Deposit - Payroll              | +950.00   | 2278.28       | income  
+2025-04-28 | Streaming Service                  | -17.99    | 2260.29       | entertainment  
+2025-04-29 | Gas Station                        | -30.50    | 2229.79       | transportation  
+2025-04-29 | Online Subscription                | -14.99    | 2214.80       | entertainment  
+2025-04-29 | Grocery Purchase                   | -60.13    | 2154.67       | groceries  
+2025-04-30 | Restaurant                         | -48.50    | 2106.17       | dining  
+2025-04-30 | Bookstore                          | -25.00    | 2081.17       | shopping  
+2025-04-30 | Mobile Payment Received            | +264.50   | 2345.67       | transfer  
+
+(Note

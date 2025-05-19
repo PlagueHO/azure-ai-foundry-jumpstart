@@ -1,0 +1,154 @@
+statement_id: 89a62e2f-ef81-458d-9450-8ec6260b1329
+account_id: 8635523790
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: 1423.57
+closing_balance: 1067.43
+currency: USD
+transactions:
+- tx_id: 0e3f23d3-0b26-4a5e-8d5a-863b5e07bfb7
+  date: 2025-04-01
+  description: Payment Received - Thank You
+  amount: 400.0
+  balance_after: 1823.57
+  category: salary
+- tx_id: a2f7319a-0b76-4aaf-bcfc-6f88ef6c6e3d
+  date: 2025-04-01
+  description: Fresh Market
+  amount: -56.12
+  balance_after: 1767.45
+  category: groceries
+- tx_id: 7ed38b6a-4c1d-4a3c-b2d1-efc06e0b1f8c
+  date: 2025-04-02
+  description: Starbucks 04231
+  amount: -6.93
+  balance_after: 1760.52
+  category: other
+- tx_id: 3d8f749d-62cd-4cfd-a2e9-2b5dab7bc4e8
+  date: 2025-04-02
+  description: City Electric Utility
+  amount: -87.46
+  balance_after: 1673.06
+  category: utilities
+- tx_id: 9e4f1e1b-d8e6-4b10-95eb-73e6e99c6d37
+  date: 2025-04-02
+  description: Amazon Marketplace
+  amount: -24.99
+  balance_after: 1648.07
+  category: other
+- tx_id: 6a8e8c36-1f1a-4f3a-ae45-4a35a1a5f3f8
+  date: 2025-04-03
+  description: Kroger
+  amount: -74.28
+  balance_after: 1573.79
+  category: groceries
+- tx_id: 6e02c2e2-6c45-4f09-9e93-3e3c2a0bb7e1
+  date: 2025-04-03
+  description: Uber Trip
+  amount: -17.34
+  balance_after: 1556.45
+  category: other
+- tx_id: 51a2f0e6-4652-4c01-b8f4-24c5d9d2f8ca
+  date: 2025-04-03
+  description: Walgreens Store 2229
+  amount: -23.48
+  balance_after: 1532.97
+  category: other
+- tx_id: 63bc6a8e-74da-4c2b-bd4c-7a3e4c5d5a6e
+  date: 2025-04-04
+  description: Trader Joe's
+  amount: -48.1
+  balance_after: 1484.87
+  category: groceries
+- tx_id: 4f84e7c2-5c6a-4ad9-8f1e-7e2b9e8a7e9a
+  date: 2025-04-04
+  description: Netflix.com
+  amount: -17.99
+  balance_after: 1466.88
+  category: other
+- tx_id: e2c7b9c5-b9a7-4a37-9e7e-8a6b39d2e5f0
+  date: 2025-04-05
+  description: HEB Grocery
+  amount: -62.74
+  balance_after: 1404.14
+  category: groceries
+- tx_id: 0b7a7c84-7a1a-4b5c-bb1c-7e6d7e8c7a1d
+  date: 2025-04-05
+  description: Apple.com/Bill
+  amount: -3.99
+  balance_after: 1400.15
+  category: other
+- tx_id: 33d8e8f5-1c11-4a84-812e-3f0a5d5d7e6e
+  date: 2025-04-06
+  description: Sprouts Farmers Market
+  amount: -38.67
+  balance_after: 1361.48
+  category: groceries
+- tx_id: efddc3d7-d482-4277-bbb1-964e3eafed2b
+  date: 2025-04-06
+  description: Paypal *SpotifyUSA
+  amount: -10.99
+  balance_after: 1350.49
+  category: other
+- tx_id: 8c416c0c-4e0e-43b7-9b2d-9d6e6e7f7e7f
+  date: 2025-04-07
+  description: Kroger
+  amount: -43.21
+  balance_after: 1307.28
+  category: groceries
+- tx_id: 96b7b8f6-7f4d-4b93-84d8-9e6e7e8e7d7c
+  date: 2025-04-07
+  description: Starbucks 04231
+  amount: -5.45
+  balance_after: 1301.83
+  category: other
+- tx_id: 2ee3b4fd-3e1d-4f7f-83d6-1e8e8f8e8e8e
+  date: 2025-04-08
+  description: HEB Grocery
+  amount: -71.5
+  balance_after: 1230.33
+  category: groceries
+- tx_id: 1e3a95c2-7c8d-4a6a-b8a4-0f8f7e8f7e8f
+  date: 2025-04-08
+  description: Uber Eats
+  amount: -23.76
+  balance_after: 1206.57
+  category: other
+- tx_id: 7f0b2e0c-fcb2-4a9c-a937-4e9f8f8e8e8a
+  date: 2025-04-09
+  description: Walmart Supercenter
+  amount: -94.82
+  balance_after: 1111.75
+  category: groceries
+- tx_id: 2c5e3a1b-6d9a-4f9d-9e1a-3e6e7e8e7d7c
+  date: 2025-04-09
+  description: AT&T Internet
+  amount: -65.0
+  balance_after: 1046.75
+  category: utilities
+- tx_id: 7b2b6d4e-4c2c-4e9e-9e3a-4c9e8e8f7e8b
+  date: 2025-04-09
+  description: Amazon Marketplace
+  amount: -19.95
+  balance_after: 1026.8
+  category: other
+- tx_id: 9b5d8f7a-8d7f-4b3a-9e8e-7d7c6e5e4e4d
+  date: 2025-04-10
+  description: HEB Grocery
+  amount: -51.29
+  balance_after: 975.51
+  category: groceries
+- tx_id: 7e1b9a5c-9c8d-4b8a-b7e7-9e6e7e8e7d7c
+  date: 2025-04-10
+  description: Walgreens Store 2229
+  amount: -16.15
+  balance_after: 959.36
+  category: other
+- tx_id: e1e5c5f5-3c3c-4e5e-a5d5-3c3d3d3e3e3f
+  date: 2025-04-11
+  description: Trader Joe's
+  amount: -64.37
+  balance_after: 894.99
+  category: groceries
+- tx_id: 4be3c1c9-7b8f-42a0-8

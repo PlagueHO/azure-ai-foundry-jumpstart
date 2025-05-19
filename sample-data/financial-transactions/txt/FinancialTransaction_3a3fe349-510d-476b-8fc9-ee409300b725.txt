@@ -1,0 +1,74 @@
+Statement ID: 3a3fe349-510d-476b-8fc9-ee409300b725  
+Account ID: 8142124782 (credit)  
+Period: 2025-04-01 - 2025-04-30  
+
+Opening Balance: 1234.56 USD  
+Closing Balance: 2345.67 USD  
+
+Transactions:  
+date       | description                           | amount    | balance_after | category  
+2025-04-01 | Grocery Purchase - FreshMart          | -45.67    | 1188.89       | groceries  
+2025-04-01 | Coffee Shop - Daily Brew              | -6.50     | 1182.39       | dining  
+2025-04-02 | Transit - City Metro                  | -2.75     | 1179.64       | transport  
+2025-04-02 | Streaming Subscription - FlickWatch   | -11.99    | 1167.65       | entertainment  
+2025-04-02 | Online Retail - ShopNow               | -62.13    | 1105.52       | retail  
+2025-04-03 | Gas Station - QuickFuel               | -38.40    | 1067.12       | fuel  
+2025-04-03 | Bookstore - ReadMore                  | -18.20    | 1048.92       | retail  
+2025-04-04 | Restaurant - Bella Pasta              | -34.60    | 1014.32       | dining  
+2025-04-04 | Pharmacy - HealthFirst                | -16.85    | 997.47        | pharmacy  
+2025-04-05 | Mobile Payment - Venmo                | -25.00    | 972.47        | transfer  
+2025-04-05 | Utility Payment - City Electric       | -83.00    | 889.47        | utilities  
+2025-04-06 | Grocery Purchase - FreshMart          | -57.23    | 832.24        | groceries  
+2025-04-06 | Coffee Shop - Daily Brew              | -4.50     | 827.74        | dining  
+2025-04-07 | Deposit - Payroll                     | +1500.00  | 2327.74       | income  
+2025-04-07 | Music Subscription - TuneWave         | -9.99     | 2317.75       | entertainment  
+2025-04-08 | Ride Share - GoCar                    | -12.80    | 2304.95       | transport  
+2025-04-08 | Clothing Store - Trendy Apparel       | -88.60    | 2216.35       | retail  
+2025-04-09 | Grocery Purchase - SuperGrocer        | -52.17    | 2164.18       | groceries  
+2025-04-09 | Fast Food - Burger Haven              | -8.75     | 2155.43       | dining  
+2025-04-10 | Online Retail - ShopNow               | -21.35    | 2134.08       | retail  
+2025-04-10 | Taxi - City Cabs                      | -16.90    | 2117.18       | transport  
+2025-04-11 | Restaurant - Sushi World              | -41.50    | 2075.68       | dining  
+2025-04-11 | Pharmacy - HealthFirst                | -12.99    | 2062.69       | pharmacy  
+2025-04-12 | Coffee Shop - Daily Brew              | -5.25     | 2057.44       | dining  
+2025-04-12 | Electronics Store - TechPlus          | -120.00   | 1937.44       | retail  
+2025-04-13 | Gas Station - QuickFuel               | -42.10    | 1895.34       | fuel  
+2025-04-13 | Grocery Purchase - FreshMart          | -63.50    | 1831.84       | groceries  
+2025-04-14 | Deposit - Refund                      | +35.00    | 1866.84       | refund  
+2025-04-14 | Online Retail - ShopNow               | -14.99    | 1851.85       | retail  
+2025-04-15 | Utility Payment - City Water          | -46.35    | 1805.50       | utilities  
+2025-04-15 | Restaurant - Bella Pasta              | -30.20    | 1775.30       | dining  
+2025-04-16 | Movie Theater - Cineplex              | -17.00    | 1758.30       | entertainment  
+2025-04-16 | Grocery Purchase - SuperGrocer        | -54.10    | 1704.20       | groceries  
+2025-04-17 | Coffee Shop - Daily Brew              | -6.75     | 1697.45       | dining  
+2025-04-17 | Bookstore - ReadMore                  | -13.50    | 1683.95       | retail  
+2025-04-18 | Ride Share - GoCar                    | -9.25     | 1674.70       | transport  
+2025-04-18 | Online Retail - ShopNow               | -27.80    | 1646.90       | retail  
+2025-04-19 | Grocery Purchase - FreshMart          | -59.80    | 1587.10       | groceries  
+2025-04-19 | Restaurant - Burger Haven             | -11.25    | 1575.85       | dining  
+2025-04-20 | Streaming Subscription - FlickWatch   | -11.99    | 1563.86       | entertainment  
+2025-04-20 | Mobile Payment - Venmo                | -50.00    | 1513.86       | transfer  
+2025-04-21 | Gas Station - QuickFuel               | -36.85    | 1477.01       | fuel  
+2025-04-21 | Clothing Store - Trendy Apparel       | -62.40    | 1414.61       | retail  
+2025-04-22 | Deposit - Payroll                     | +1500.00  | 2914.61       | income  
+2025-04-22 | Online Retail - ShopNow               | -32.99    | 2881.62       | retail  
+2025-04-23 | Grocery Purchase - SuperGrocer        | -47.30    | 2834.32       | groceries  
+2025-04-23 | Coffee Shop - Daily Brew              | -5.50     | 2828.82       | dining  
+2025-04-24 | Restaurant - Sushi World              | -37.00    | 2791.82       | dining  
+2025-04-24 | Bookstore - ReadMore                  | -14.20    | 2777.62       | retail  
+2025-04-25 | Utility Payment - City Gas            | -72.45    | 2705.17       | utilities  
+2025-04-25 | Gas Station - QuickFuel               | -40.95    | 2664.22       | fuel  
+2025-04-26 | Grocery Purchase - FreshMart          | -60.40    | 2603.82       | groceries  
+2025-04-26 | Coffee Shop - Daily Brew              | -4.95     | 2598.87       | dining  
+2025-04-27 | Online Retail - ShopNow               | -19.99    | 2578.88       | retail  
+2025-04-27 | Ride Share - GoCar                    | -8.50     | 2570.38       | transport  
+2025-04-28 | Restaurant - Bella Pasta              | -33.15    | 2537.23       | dining  
+2025-04-28 | Streaming Subscription - TuneWave     | -9.99     | 2527.24       | entertainment  
+2025-04-29 | Grocery Purchase - SuperGrocer        | -55.20    | 2472.04       | groceries  
+2025-04-29 | Pharmacy - HealthFirst                | -18.45    | 2453.59       | pharmacy  
+2025-04-30 | Coffee Shop - Daily Brew              | -6.00     | 2447.59       | dining  
+2025-04-30 | Online Retail - ShopNow               | -49.92    | 2397.67       | retail  
+2025-04-30 | Adjustment - Statement Correction     | -52.00    | 2345.67       | adjustment  
+
+# Note: A subtly fraudulent transaction is present on 2025-04-30:  
+The "Online Retail - ShopNow" charge of -49.92 is a duplicate, slightly different from the 2025-04-27 charge (-19.99), possibly an accidental or fraudulent double charge with a minor amount mismatch.

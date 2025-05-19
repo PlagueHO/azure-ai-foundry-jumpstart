@@ -1,0 +1,148 @@
+statement_id: 91505451-f5d0-4a07-b162-75f0cd7f7930
+account_id: 8847211888
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: 312.57
+closing_balance: 29.8
+currency: USD
+transactions:
+- tx_id: 3e1e1fa2-34f5-4c5e-9fcb-2dbf3e2a6e10
+  date: 2025-04-01
+  description: Grocery Store - FreshMart
+  amount: -53.28
+  balance_after: 259.29
+  category: groceries
+- tx_id: 5a7a2c92-1b81-4e92-98fd-7e8b8b6a2c7e
+  date: 2025-04-01
+  description: Coffee House - Java Junction
+  amount: -4.95
+  balance_after: 254.34
+  category: other
+- tx_id: 41d2be63-2a5d-4b5b-b9df-2e80a8e9e4a7
+  date: 2025-04-02
+  description: Gas Station - QuickFuel
+  amount: -36.12
+  balance_after: 218.22
+  category: other
+- tx_id: 2e6d5d76-13b1-4d20-89e1-6d19b49e0e5a
+  date: 2025-04-02
+  description: Utilities - City Electric
+  amount: -57.63
+  balance_after: 160.59
+  category: utilities
+- tx_id: e8457e2d-9c3e-4fb5-8e2c-9e1eaf2d7b59
+  date: 2025-04-03
+  description: Streaming Service - FlixPlus
+  amount: -15.99
+  balance_after: 144.6
+  category: other
+- tx_id: 7d9c55a2-2c1a-4aa7-9c5f-91f1e1a8b4a5
+  date: 2025-04-03
+  description: Grocery Store - FreshMart
+  amount: -27.45
+  balance_after: 117.15
+  category: groceries
+- tx_id: 1c5c3b7a-8e1f-4a90-9c7d-8d6e2e1a7b3e
+  date: 2025-04-03
+  description: Pharmacy - HealthFirst
+  amount: -19.87
+  balance_after: 97.28
+  category: other
+- tx_id: 6e9e516f-8e59-4d5a-8d3c-6c8b1e3f7b4a
+  date: 2025-04-04
+  description: Restaurant - Burger Haven
+  amount: -22.75
+  balance_after: 74.53
+  category: other
+- tx_id: 9f2b7a16-2b6e-4f8c-8b1c-6f8e1a7d9c5f
+  date: 2025-04-04
+  description: Bakery - Sweet Treats
+  amount: -7.2
+  balance_after: 67.33
+  category: other
+- tx_id: 5e3a1c2d-3b8f-4e5d-9e2a-7e6d1b9c2a8f
+  date: 2025-04-05
+  description: ATM Withdrawal
+  amount: -40.0
+  balance_after: 27.33
+  category: other
+- tx_id: 4c7a8b9e-2e1a-4d2f-9e5c-7d8e1a6b5c2d
+  date: 2025-04-05
+  description: Supermarket - ValueMart
+  amount: -24.11
+  balance_after: 3.22
+  category: groceries
+- tx_id: 3b1e2a4d-6c8f-4e7a-8b2c-1a6d8e7b9c2f
+  date: 2025-04-05
+  description: Payment Received
+  amount: 300.0
+  balance_after: 303.22
+  category: salary
+- tx_id: 8e6d4a3b-7e2f-4c1a-8b5c-6d9e2a1f7c8d
+  date: 2025-04-06
+  description: Online Retail - Shopster
+  amount: -62.59
+  balance_after: 240.63
+  category: other
+- tx_id: f5a7c2d1-b2e8-4c8a-9e7d-6b2c3a1f8d7e
+  date: 2025-04-06
+  description: Grocery Store - FreshMart
+  amount: -37.18
+  balance_after: 203.45
+  category: groceries
+- tx_id: 7a2c3b1f-6e9d-4f8a-8c5e-2d1a9e7b6c8f
+  date: 2025-04-07
+  description: Utilities - Water Services
+  amount: -18.1
+  balance_after: 185.35
+  category: utilities
+- tx_id: 4d2a1e7b-9c5f-4b8a-8e2c-6d1a7e3b5c9f
+  date: 2025-04-07
+  description: Coffee House - Java Junction
+  amount: -5.45
+  balance_after: 179.9
+  category: other
+- tx_id: 2e5c7b4a-3a1d-4f8e-9b2c-7d1a6e8c5f3a
+  date: 2025-04-08
+  description: Pharmacy - HealthFirst
+  amount: -12.75
+  balance_after: 167.15
+  category: other
+- tx_id: 9b3e7a2d-4c1a-4f8e-8b5d-6a2e1f7d9c8b
+  date: 2025-04-08
+  description: Supermarket - ValueMart
+  amount: -34.6
+  balance_after: 132.55
+  category: groceries
+- tx_id: 1d5a2b3c-7e8f-4a6d-9c5b-2e1a8d6c7b9f
+  date: 2025-04-09
+  description: Online Retail - Shopster
+  amount: -28.99
+  balance_after: 103.56
+  category: other
+- tx_id: d5e4c3b2-8a1f-4d9e-9b2a-6c5d1a7e3b8f
+  date: 2025-04-09
+  description: Fast Food - QuickBite
+  amount: -8.25
+  balance_after: 95.31
+  category: other
+- tx_id: 6c1a2e5d-9b7f-4c3a-8e6d-2a1f7b8c5d4e
+  date: 2025-04-09
+  description: Grocery Store - FreshMart
+  amount: -21.09
+  balance_after: 74.22
+  category: groceries
+- tx_id: a7b6c5d4-e3f2-4a1b-8e7d-2c1a9e6b5c4d
+  date: 2025-04-10
+  description: Gas Station - QuickFuel
+  amount: -42.4
+  balance_after: 31.82
+  category: other
+- tx_id: 3e5a2b7c-1d9f-4a6e-8b5c-2e1a7d6c3b8f
+  date: 2025-04-10
+  description: Streaming Service - FlixPlus
+  amount: -15.99
+  balance_after: 15.83
+  category: other
+- tx_id: 8b7c6d5e-4f3a-4c1a-9e

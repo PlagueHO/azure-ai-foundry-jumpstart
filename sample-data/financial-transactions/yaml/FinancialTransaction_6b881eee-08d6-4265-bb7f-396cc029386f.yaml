@@ -1,0 +1,146 @@
+statement_id: 6b881eee-08d6-4265-bb7f-396cc029386f
+account_id: 5750014261
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: 1820.54
+closing_balance: 1976.24
+currency: USD
+transactions:
+- tx_id: c7b6b8b9-0c61-4e7a-80be-008dd8a88b9a
+  date: 2025-04-01
+  description: PAYMENT RECEIVED - THANK YOU
+  amount: 500.0
+  balance_after: 2320.54
+  category: salary
+- tx_id: 563f8c88-9e13-4ae7-8b1b-5d70ba9d0f84
+  date: 2025-04-01
+  description: 'WHOLE FOODS MARKET #289'
+  amount: -72.35
+  balance_after: 2248.19
+  category: groceries
+- tx_id: 1d48429b-02d6-4e2e-a4d6-7e12c3c4c36d
+  date: 2025-04-02
+  description: UBER TRIP 04/02
+  amount: -16.22
+  balance_after: 2231.97
+  category: other
+- tx_id: 8b0e527a-9ec0-45d2-9c47-01a4ac7bcbdb
+  date: 2025-04-02
+  description: 'STARBUCKS #3542'
+  amount: -8.65
+  balance_after: 2223.32
+  category: other
+- tx_id: 5c7eb3ea-4c2d-4c33-9cf7-1d1f2e129d6b
+  date: 2025-04-02
+  description: SPOTIFY USA
+  amount: -10.99
+  balance_after: 2212.33
+  category: other
+- tx_id: 2f1f2e1a-77bb-4a0f-bc4f-3adf0c1c85a1
+  date: 2025-04-03
+  description: 'CVS PHARMACY #9983'
+  amount: -34.19
+  balance_after: 2178.14
+  category: other
+- tx_id: 8a6c54d6-2b6c-4e24-9e4a-7d3a1e7c8b59
+  date: 2025-04-03
+  description: AMAZON MKTPLACE PMTS
+  amount: -59.85
+  balance_after: 2118.29
+  category: other
+- tx_id: 2a3c6ed0-2f09-45d8-b8c2-9f9b8e3f3b94
+  date: 2025-04-03
+  description: 'SAFEWAY STORE #1912'
+  amount: -48.23
+  balance_after: 2070.06
+  category: groceries
+- tx_id: 1a9a2c89-5e5c-4b6a-bc0b-d2be4a4c3c5d
+  date: 2025-04-04
+  description: NETFLIX.COM
+  amount: -15.49
+  balance_after: 2054.57
+  category: other
+- tx_id: 06e8d1e3-b5c9-47c4-8eb2-0d9b8b4e6f19
+  date: 2025-04-04
+  description: SHELL OIL 57493498307
+  amount: -42.0
+  balance_after: 2012.57
+  category: other
+- tx_id: 4c3f4a2d-2d5a-4b92-a6cb-8d2bf8e7e1bc
+  date: 2025-04-05
+  description: ELECTRICITY BILL - CITY UTILITIES
+  amount: -87.32
+  balance_after: 1925.25
+  category: utilities
+- tx_id: 1e4a2d5b-9d8a-4a8e-94bb-2e1c3d4e6f7a
+  date: 2025-04-05
+  description: TARGET 0001
+  amount: -39.73
+  balance_after: 1885.52
+  category: other
+- tx_id: 7e8a2d5b-8d9a-4b8e-85ab-2e1a3d4c6f8b
+  date: 2025-04-05
+  description: 'TRADER JOE''S #100'
+  amount: -64.11
+  balance_after: 1821.41
+  category: groceries
+- tx_id: 9a5f2c7a-4e8d-45b6-8c9e-1d2c3b4a5e7f
+  date: 2025-04-06
+  description: APPLE.COM/BILL
+  amount: -3.99
+  balance_after: 1817.42
+  category: other
+- tx_id: 5b9c8a0e-7e2d-4b8e-9c1b-2e3d4f5a6c7b
+  date: 2025-04-06
+  description: 'WALGREENS #04562'
+  amount: -19.76
+  balance_after: 1797.66
+  category: other
+- tx_id: 2d8e4a5b-1c9a-4d7b-b8e2-0e1f2c3d4b5a
+  date: 2025-04-07
+  description: 'REI #110'
+  amount: -89.5
+  balance_after: 1708.16
+  category: other
+- tx_id: 3e7a2d5b-8a9c-4e8e-85ab-1e2a3d4c6f7b
+  date: 2025-04-07
+  description: PAYPAL *LYFT 04/07
+  amount: -21.68
+  balance_after: 1686.48
+  category: other
+- tx_id: 6e5b4a2d-7c8a-4e9b-9c1b-2e3d4c5a6b7d
+  date: 2025-04-08
+  description: 'SAFEWAY STORE #1912'
+  amount: -39.41
+  balance_after: 1647.07
+  category: groceries
+- tx_id: 0a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d
+  date: 2025-04-08
+  description: 'HOME DEPOT #3817'
+  amount: -103.14
+  balance_after: 1543.93
+  category: other
+- tx_id: 1b2c3d4e-5f6a-7b8c-9d0e-1f2a3b4c5d6e
+  date: 2025-04-08
+  description: 'WALMART SUPERCENTER #1234'
+  amount: -46.88
+  balance_after: 1497.05
+  category: other
+- tx_id: 2c3d4e5f-6a7b-8c9d-0e1f-2a3b4c5d6e7f
+  date: 2025-04-09
+  description: VENMO CASHOUT 04/09
+  amount: 60.0
+  balance_after: 1557.05
+  category: other
+- tx_id: 3d4e5f6a-7b8c-9d0e-1f2a-3b4c5d6e7f8a
+  date: 2025-04-09
+  description: 'CVS PHARMACY #9983'
+  amount: -29.45
+  balance_after: 1527.6
+  category: other
+- tx_id: 4e5f6a7b-8c9d-0e1f-2a3b-4c5d6e7f8a9b
+  date: 2025-04-10
+  description: 'WHOLE FOODS MARKET #289'
+  amount: -54.22
+  balance_after: 1473

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import logging
 import random
 import uuid
 from datetime import date, timedelta

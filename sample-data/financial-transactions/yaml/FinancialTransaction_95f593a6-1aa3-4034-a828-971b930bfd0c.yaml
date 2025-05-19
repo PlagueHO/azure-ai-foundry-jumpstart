@@ -1,0 +1,48 @@
+"statement_id: 95f593a6-1aa3-4034-a828-971b930bfd0c\naccount_id: 6341029456\naccount_type:\
+  \ credit\nstart_date: 2025-04-01\nend_date: 2025-04-30\nopening_balance: 1532.75\n\
+  closing_balance: 1230.49\ncurrency: USD\ntransactions:\n  - tx_id: 9e2b8ec8-9b3a-4ddc-950a-1b1d2f2c10ad\n\
+  \    date: 2025-04-01\n    description: \"PAYROLL DEPOSIT - ACME CORP\"\n    amount:\
+  \ 1850.00\n    balance_after: 3382.75\n    category: salary\n  - tx_id: 4db7f1f6-1c44-45c7-9e7f-53b7bafd4e1d\n\
+  \    date: 2025-04-01\n    description: \"SAFEWAY #1842\"\n    amount: -76.43\n\
+  \    balance_after: 3306.32\n    category: groceries\n  - tx_id: 1a125d52-22c3-4b32-9e7a-bd2e44b5a80e\n\
+  \    date: 2025-04-02\n    description: \"CITY UTILITIES PAYMENT\"\n    amount:\
+  \ -112.90\n    balance_after: 3193.42\n    category: utilities\n  - tx_id: 6c6f6b12-c6c6-40c0-8d53-1e0e6e5f2b76\n\
+  \    date: 2025-04-02\n    description: \"STARBUCKS STORE 1722\"\n    amount: -5.72\n\
+  \    balance_after: 3187.70\n    category: other\n  - tx_id: 2dc0b1e3-7b7d-4b3b-9f1e-3c4b7fdd4fa2\n\
+  \    date: 2025-04-02\n    description: \"AMAZON MKTPLACE PMTS\"\n    amount: -38.99\n\
+  \    balance_after: 3148.71\n    category: other\n  - tx_id: 2de66b7c-9a0a-4f06-b8f6-05e7e0d44e6c\n\
+  \    date: 2025-04-03\n    description: \"WHOLE FOODS 10432\"\n    amount: -52.30\n\
+  \    balance_after: 3096.41\n    category: groceries\n  - tx_id: 8e5a9f96-7f2e-4f0e-9e2a-2875e8a8e8c4\n\
+  \    date: 2025-04-03\n    description: \"NETFLIX.COM\"\n    amount: -15.49\n  \
+  \  balance_after: 3080.92\n    category: other\n  - tx_id: 1a9e7e6f-9b34-4ec7-8b9c-1ef1a7e0d1e2\n\
+  \    date: 2025-04-03\n    description: \"UBER TRIP\"\n    amount: -12.84\n    balance_after:\
+  \ 3068.08\n    category: other\n  - tx_id: 5b3d8e2d-3c3d-4b3b-9a2d-6e1b2b3c4d5e\n\
+  \    date: 2025-04-04\n    description: \"CVS PHARMACY #1212\"\n    amount: -23.15\n\
+  \    balance_after: 3044.93\n    category: other\n  - tx_id: d1e5d9f8-7b2a-4e3e-8c6a-1d5a7e7f0d2b\n\
+  \    date: 2025-04-04\n    description: \"TRADER JOE'S #567\"\n    amount: -41.20\n\
+  \    balance_after: 3003.73\n    category: groceries\n  - tx_id: 9cd6a9b0-7e6c-4d3b-9c2e-3c5b7a8d4e2c\n\
+  \    date: 2025-04-05\n    description: \"SPOTIFY USA\"\n    amount: -10.99\n  \
+  \  balance_after: 2992.74\n    category: other\n  - tx_id: 4cf1a7e2-8b7d-4a2c-9e7b-8e7e2a7b1c2a\n\
+  \    date: 2025-04-05\n    description: \"ATM WITHDRAWAL FEE\"\n    amount: -2.50\n\
+  \    balance_after: 2990.24\n    category: other\n  - tx_id: 2b8c6e5a-8d7f-4b1c-9c7a-1e6a8b9c7d6f\n\
+  \    date: 2025-04-06\n    description: \"ELECTRIC BILL PAYMENT\"\n    amount: -90.13\n\
+  \    balance_after: 2900.11\n    category: utilities\n  - tx_id: 8a1f2c3e-9b8a-4a3c-8e7c-9e8e7d8e9c7d\n\
+  \    date: 2025-04-06\n    description: \"WALGREENS #1459\"\n    amount: -14.22\n\
+  \    balance_after: 2885.89\n    category: other\n  - tx_id: 5e3d1c2f-8b7a-4b2d-9c3e-6d1a8e7e4d2b\n\
+  \    date: 2025-04-07\n    description: \"SAFEWAY #1842\"\n    amount: -67.55\n\
+  \    balance_after: 2818.34\n    category: groceries\n  - tx_id: 2b9e8c7d-5a6b-4c2d-8e7f-3b6a9e8e7c2a\n\
+  \    date: 2025-04-07\n    description: \"APPLE.COM BILL\"\n    amount: -1.99\n\
+  \    balance_after: 2816.35\n    category: other\n  - tx_id: 4e2c7d6a-1b3a-4c2b-8e7e-7e8a7c6d5e4f\n\
+  \    date: 2025-04-08\n    description: \"PGE GAS & ELECTRIC\"\n    amount: -62.80\n\
+  \    balance_after: 2753.55\n    category: utilities\n  - tx_id: 3c1d2f4e-7b9a-4d2e-8c3b-6c2a1e3b4d5e\n\
+  \    date: 2025-04-08\n    description: \"AMAZON MKTPLACE PMTS\"\n    amount: -21.47\n\
+  \    balance_after: 2732.08\n    category: other\n  - tx_id: 2a7e9b8c-3c4d-4e2a-9c3e-8a7c6d5e4b3a\n\
+  \    date: 2025-04-09\n    description: \"TRADER JOE'S #567\"\n    amount: -32.16\n\
+  \    balance_after: 2699.92\n    category: groceries\n  - tx_id: 7d3a1b2e-8c4d-4a2b-9e3b-2d1a7e6f8c3b\n\
+  \    date: 2025-04-09\n    description: \"UBER TRIP\"\n    amount: -8.64\n    balance_after:\
+  \ 2691.28\n    category: other\n  - tx_id: 1e3c4d5a-8b2c-4a2d-9e7b-2c3b8a7e5d1a\n\
+  \    date: 2025-04-10\n    description: \"SAFEWAY #1842\"\n    amount: -54.81\n\
+  \    balance_after: 2636.47\n    category: groceries\n  - tx_id: 2d1e4c3b-7a8d-4e2a-9b3c-8e7d6a5c4b3a\n\
+  \    date: 2025-04-10\n    description: \"AMAZON MKTPLACE PMTS\"\n    amount: -19.59\n\
+  \    balance_after: 2616.88\n    category: other\n  - tx_id: 6e1d3a5b-9c8b-4d2e-8a7c-2c4b7e9d8f7a\n\
+  \    date: 2025-04-11\n    description: \"CHEVRON 0214457\"\n    amount"

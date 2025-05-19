@@ -1,0 +1,153 @@
+statement_id: b0350ec9-50cc-4f18-b749-3a86d3a439d3
+account_id: 1551955722
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: 1203.42
+closing_balance: 1681.7
+currency: USD
+transactions:
+- tx_id: 1a9e5bce-c5a9-4f7c-8e67-1e4701c8e7d5
+  date: 2025-04-01
+  description: PAYMENT RECEIVED - THANK YOU
+  amount: 400.0
+  balance_after: 1603.42
+  category: salary
+- tx_id: 1d2b2e0e-2b14-4c13-9b4e-5bda1f9a6f7f
+  date: 2025-04-01
+  description: 'SAFEWAY #4512'
+  amount: -56.32
+  balance_after: 1547.1
+  category: groceries
+- tx_id: 019f7f56-9f13-4cf8-b453-7a3d4b1b3c1a
+  date: 2025-04-02
+  description: UBER TRIP
+  amount: -17.45
+  balance_after: 1529.65
+  category: other
+- tx_id: 8e3d0dc1-ec71-4756-bb96-82df3e8e2f67
+  date: 2025-04-02
+  description: STARBUCKS 02415
+  amount: -4.85
+  balance_after: 1524.8
+  category: other
+- tx_id: 5b9f431d-2baf-40be-bf41-6e2aaf5e31e4
+  date: 2025-04-02
+  description: NETFLIX.COM
+  amount: -16.99
+  balance_after: 1507.81
+  category: utilities
+- tx_id: 1c4b8d88-5c6a-42e2-8eb9-30d6e0e6aecc
+  date: 2025-04-03
+  description: 'TRADER JOE''S #122'
+  amount: -82.61
+  balance_after: 1425.2
+  category: groceries
+- tx_id: 724b5c60-5cfd-4306-8f89-4c705e9e6686
+  date: 2025-04-03
+  description: SPOTIFY
+  amount: -9.99
+  balance_after: 1415.21
+  category: utilities
+- tx_id: d3b8b0a7-435d-47c2-8b8a-d67fc59b4acb
+  date: 2025-04-03
+  description: AMAZON MKTPLACE PMTS
+  amount: -22.97
+  balance_after: 1392.24
+  category: other
+- tx_id: 1a8cbe8c-9c6e-476f-a3c1-32a040a5f9d5
+  date: 2025-04-04
+  description: ELECTRICITY BILL PAYMENT
+  amount: -98.24
+  balance_after: 1293.99
+  category: utilities
+- tx_id: f81a4063-5c69-4a36-8a7a-3e3320cf0db1
+  date: 2025-04-04
+  description: SHELL OIL 574813
+  amount: -44.1
+  balance_after: 1249.89
+  category: other
+- tx_id: 7e7e5c0e-0c0a-44f4-b0e8-6a1a2c5b8c7a
+  date: 2025-04-04
+  description: 'CVS PHARMACY #10923'
+  amount: -19.23
+  balance_after: 1230.66
+  category: other
+- tx_id: 413c1c8d-4c4e-4b48-ae4f-2a9c9f8a9d41
+  date: 2025-04-05
+  description: 'SAFEWAY #4512'
+  amount: -68.45
+  balance_after: 1162.21
+  category: groceries
+- tx_id: 5f1c99c1-9e7e-4d9c-8c1f-6a0e7e2a9b23
+  date: 2025-04-05
+  description: APPLE.COM BILL
+  amount: -6.99
+  balance_after: 1155.22
+  category: utilities
+- tx_id: 43e9b1e7-55f7-4a0e-bf43-49e9ed1c5c8c
+  date: 2025-04-06
+  description: 'WHOLE FOODS #10238'
+  amount: -93.58
+  balance_after: 1061.64
+  category: groceries
+- tx_id: 111bdf82-20b6-4f0e-b272-4b3b52e4e974
+  date: 2025-04-06
+  description: UBER TRIP
+  amount: -12.3
+  balance_after: 1049.34
+  category: other
+- tx_id: 4b82cd36-2b6d-4a5a-9e9c-7d9b6b8e2a7d
+  date: 2025-04-07
+  description: AMAZON MKTPLACE PMTS
+  amount: -48.77
+  balance_after: 1000.57
+  category: other
+- tx_id: aaf8a6c4-6c6d-4b9a-bf0e-9a6e7e2a7b7c
+  date: 2025-04-07
+  description: 'WALGREENS #4321'
+  amount: -11.92
+  balance_after: 988.65
+  category: other
+- tx_id: 3f0c4e41-2d46-4c57-8f19-33b3b7c9d7f3
+  date: 2025-04-08
+  description: 'SAFEWAY #4512'
+  amount: -72.04
+  balance_after: 916.61
+  category: groceries
+- tx_id: 4e3a9a85-6d22-4c47-93e3-88f0b1c6e1c4
+  date: 2025-04-08
+  description: UBER TRIP
+  amount: -18.6
+  balance_after: 897.01
+  category: other
+- tx_id: 861f3e5c-1b4b-4e49-9d76-632bdb8a2e3c
+  date: 2025-04-09
+  description: 'TRADER JOE''S #122'
+  amount: -55.39
+  balance_after: 841.62
+  category: groceries
+- tx_id: 2b3c4e3d-4a52-4c43-8e5b-7e4b2d6e3c1b
+  date: 2025-04-09
+  description: ELECTRICITY BILL PAYMENT
+  amount: -99.42
+  balance_after: 742.2
+  category: utilities
+- tx_id: 8e0b7a1c-7b62-4486-b3c1-1e0d5e2e7c5a
+  date: 2025-04-09
+  description: PAYMENT RECEIVED
+  amount: 350.0
+  balance_after: 1092.2
+  category: salary
+- tx_id: 5e1a7c1d-2c4e-45a8-8e4b-7e3d4b2c7e8a
+  date: 2025-04-10
+  description: 'SAFEWAY #4512'
+  amount: -62.89
+  balance_after: 1029.31
+  category: groceries
+- tx_id: c7b8a0e6-3d48-4b52-b8f3-4d2a7c5b1e2c
+  date: 2025-04-10
+  description: UBER EATS
+  amount: -28.5
+  balance_after: 1000.81
+  category: other

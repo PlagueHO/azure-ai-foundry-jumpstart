@@ -1,0 +1,51 @@
+"statement_id: 33cd4dee-af51-41bf-89dd-d23af7cd3ebe\naccount_id: 3193943237\naccount_type:\
+  \ credit\nstart_date: 2025-04-01\nend_date: 2025-04-30\nopening_balance: 1823.47\n\
+  closing_balance: 1280.61\ncurrency: USD\ntransactions:\n  - tx_id: 1e4c6e62-74b6-4b1f-bd84-1e3cfd5e0b8e\n\
+  \    date: 2025-04-01\n    description: \"Kroger #1472\"\n    amount: -54.23\n \
+  \   balance_after: 1769.24\n    category: groceries\n  - tx_id: 7fd8e9c3-cb64-4c5e-9f5e-6612c9e4d6a7\n\
+  \    date: 2025-04-01\n    description: \"Salary - Acme Corp\"\n    amount: 1500.00\n\
+  \    balance_after: 3269.24\n    category: salary\n  - tx_id: d6e7c3a2-5e93-4bf0-8f35-5c1c9c404b4a\n\
+  \    date: 2025-04-02\n    description: \"Amazon Marketplace\"\n    amount: -37.99\n\
+  \    balance_after: 3231.25\n    category: other\n  - tx_id: 8e5b2d6c-57f8-4b67-9c53-6e41fda9e21a\n\
+  \    date: 2025-04-02\n    description: \"Starbucks\"\n    amount: -6.50\n    balance_after:\
+  \ 3224.75\n    category: other\n  - tx_id: 3a4f9b9c-6a7d-4cd7-9c5a-66928a2e7ec2\n\
+  \    date: 2025-04-02\n    description: \"Shell Oil #3942\"\n    amount: -42.00\n\
+  \    balance_after: 3182.75\n    category: other\n  - tx_id: 6b8e6ed5-8b20-4e49-b5e6-8b5c1d0c8a93\n\
+  \    date: 2025-04-03\n    description: \"Publix Super Markets\"\n    amount: -68.12\n\
+  \    balance_after: 3114.63\n    category: groceries\n  - tx_id: e7b5f1ca-1b8e-4d0c-9c8a-6e2e9f7fdb6c\n\
+  \    date: 2025-04-03\n    description: \"Comcast Utility Bill\"\n    amount: -128.36\n\
+  \    balance_after: 2986.27\n    category: utilities\n  - tx_id: 30a7ee2a-4b84-4e5e-90c7-c3b1e0b95b09\n\
+  \    date: 2025-04-03\n    description: \"Spotify Subscription\"\n    amount: -10.99\n\
+  \    balance_after: 2975.28\n    category: other\n  - tx_id: 2d8eb1e9-4d9c-4b9e-bb95-43f2e9f9eea7\n\
+  \    date: 2025-04-04\n    description: \"Target Store #2255\"\n    amount: -84.75\n\
+  \    balance_after: 2890.53\n    category: other\n  - tx_id: 62b9d2a5-1e7c-4b4c-b6e6-7a8d6b08be29\n\
+  \    date: 2025-04-04\n    description: \"Uber Eats\"\n    amount: -23.97\n    balance_after:\
+  \ 2866.56\n    category: other\n  - tx_id: 93e4eec2-6a2c-4f3a-8fe0-5ba4e4d7a6e7\n\
+  \    date: 2025-04-05\n    description: \"Trader Joe's\"\n    amount: -45.11\n \
+  \   balance_after: 2821.45\n    category: groceries\n  - tx_id: 9e5a2e4c-4b49-4f0e-8a72-097bee43c8fc\n\
+  \    date: 2025-04-05\n    description: \"Netflix\"\n    amount: -15.49\n    balance_after:\
+  \ 2805.96\n    category: other\n  - tx_id: 4b5e1e7e-7e6a-4c59-8e3d-1d1b4a3e4f3e\n\
+  \    date: 2025-04-05\n    description: \"CVS Pharmacy\"\n    amount: -28.72\n \
+  \   balance_after: 2777.24\n    category: other\n  - tx_id: 889d2b8a-5c2b-4e6e-8d5a-3fce7e5d5b1c\n\
+  \    date: 2025-04-06\n    description: \"Walmart\"\n    amount: -110.06\n    balance_after:\
+  \ 2667.18\n    category: groceries\n  - tx_id: c1d9e2f4-1e6a-47c9-89c6-5e0b6b2e6c1d\n\
+  \    date: 2025-04-06\n    description: \"Apple Pay - Panera Bread\"\n    amount:\
+  \ -17.43\n    balance_after: 2649.75\n    category: other\n  - tx_id: 5b6e7f8a-1b8e-4d8a-bf7e-6b3e1d8b5e0a\n\
+  \    date: 2025-04-07\n    description: \"Venmo Payment\"\n    amount: 45.00\n \
+  \   balance_after: 2694.75\n    category: other\n  - tx_id: 4c9b8e2f-6e4d-4e7a-8e2e-7e2b5e1c0b7d\n\
+  \    date: 2025-04-07\n    description: \"Chick-fil-A\"\n    amount: -12.38\n  \
+  \  balance_after: 2682.37\n    category: other\n  - tx_id: 839ea2e3-9b1c-47e3-8f1c-8b6e3d2e7f6a\n\
+  \    date: 2025-04-07\n    description: \"Walgreens\"\n    amount: -31.40\n    balance_after:\
+  \ 2650.97\n    category: other\n  - tx_id: 5e8c9e7b-4a9b-4f6e-8d0e-7b2e4c0b5f1d\n\
+  \    date: 2025-04-08\n    description: \"Publix Super Markets\"\n    amount: -59.27\n\
+  \    balance_after: 2591.70\n    category: groceries\n  - tx_id: 2e5b9e8f-2f2a-46e2-8e4a-1f0e7e8b9e2f\n\
+  \    date: 2025-04-08\n    description: \"Grubhub\"\n    amount: -19.89\n    balance_after:\
+  \ 2571.81\n    category: other\n  - tx_id: 4d7f2e6c-8d2a-4b6a-9e3b-2e6a0d8f2c9a\n\
+  \    date: 2025-04-09\n    description: \"Kroger #1472\"\n    amount: -53.92\n \
+  \   balance_after: 2517.89\n    category: groceries\n  - tx_id: 7e4a9d2c-1e7b-4c9e-8e4a-5e7b4d0f8a2c\n\
+  \    date: 2025-04-09\n    description: \"Shell Oil #3942\"\n    amount: -39.00\n\
+  \    balance_after: 2478.89\n    category: other\n  - tx_id: 9c2e4b8d-1d7b-4c8e-8e9a-2e4b8f0e7d6a\n\
+  \    date: 2025-04-09\n    description: \"Amazon Marketplace\"\n    amount: -21.76\n\
+  \    balance_after: 2457.13\n    category: other\n  - tx_id: 2f1e7c3a-5e9d-4c7b-8e3a-2e8b6d1a7e5c\n\
+  \    date: 2025-04-10\n    description: \"Apple Pay - Chipotle\"\n    amount: -11.67\n\
+  \    balance_after"

@@ -1,0 +1,148 @@
+statement_id: 3cfb9eb5-58f1-4b75-bdc4-9a5019001546
+account_id: 1070119816
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: 1250.0
+closing_balance: 1292.16
+currency: USD
+transactions:
+- tx_id: f3c0b868-8bc9-4b50-a3a3-0b7e7f9f5bfe
+  date: 2025-04-01
+  description: Salary Deposit - Acme Corp
+  amount: 1800.0
+  balance_after: 3050.0
+  category: salary
+- tx_id: 29b4c5c6-6b77-4e46-880b-39e8d3f9e7c9
+  date: 2025-04-01
+  description: 'Trader Joe''s #112'
+  amount: -82.34
+  balance_after: 2967.66
+  category: groceries
+- tx_id: d2b1b2e2-61f5-4ef4-80fa-0215a06bfbbd
+  date: 2025-04-01
+  description: Metro Utilities - Electricity
+  amount: -56.19
+  balance_after: 2911.47
+  category: utilities
+- tx_id: 8f1d2a64-9f87-4e9b-9c1c-029b6e5a3e21
+  date: 2025-04-02
+  description: 'Starbucks #4587'
+  amount: -5.85
+  balance_after: 2905.62
+  category: other
+- tx_id: e7e2b3c9-9d7b-4b90-938f-5c7e9f3a7d2c
+  date: 2025-04-02
+  description: Amazon Marketplace
+  amount: -34.9
+  balance_after: 2870.72
+  category: other
+- tx_id: 2a7bbf9e-4d49-4d8b-a9c2-e3e5c9c6d2b0
+  date: 2025-04-02
+  description: 'CVS Pharmacy #10332'
+  amount: -17.44
+  balance_after: 2853.28
+  category: other
+- tx_id: 6e3b5b09-20f2-43d7-8e9e-1e4c8e3f7d4a
+  date: 2025-04-03
+  description: Whole Foods Market
+  amount: -54.77
+  balance_after: 2798.51
+  category: groceries
+- tx_id: b2f5c7a6-9ed1-4d16-b7ab-3e8f6c5d7e9f
+  date: 2025-04-03
+  description: 'Shell Oil #2205'
+  amount: -41.02
+  balance_after: 2757.49
+  category: other
+- tx_id: 5a7c8e0d-3b76-4d38-881a-1ec2c9e7f8b0
+  date: 2025-04-03
+  description: Spotify
+  amount: -10.99
+  balance_after: 2746.5
+  category: other
+- tx_id: a7e4b2c1-9c31-4d8c-9d2a-bb0e7b1e9d8c
+  date: 2025-04-04
+  description: Costco Wholesale
+  amount: -122.13
+  balance_after: 2624.37
+  category: groceries
+- tx_id: 1ab2d9f0-8c85-4f3e-9d5d-5e5c9b1c7e8f
+  date: 2025-04-04
+  description: Uber Trip
+  amount: -23.88
+  balance_after: 2600.49
+  category: other
+- tx_id: 0c7b8f1d-5e1a-4e0d-89f0-7e7f8b5c2a9f
+  date: 2025-04-04
+  description: 'Trader Joe''s #112'
+  amount: -24.11
+  balance_after: 2576.38
+  category: groceries
+- tx_id: 8a2b7c9e-4d7a-4b9e-8c2d-8b7e9f1d2a6c
+  date: 2025-04-05
+  description: Netflix
+  amount: -15.49
+  balance_after: 2560.89
+  category: other
+- tx_id: 5e4a7c8f-6c10-4a7b-8c2d-2b8d7e1f9c0a
+  date: 2025-04-05
+  description: 'Safeway #303'
+  amount: -61.27
+  balance_after: 2499.62
+  category: groceries
+- tx_id: 8b6a7d9e-3f1c-4d7a-9b2e-1f8d7e2a9c0f
+  date: 2025-04-05
+  description: Metro Utilities - Water
+  amount: -28.14
+  balance_after: 2471.48
+  category: utilities
+- tx_id: c1d2e3f4-5b6a-7c8d-9e0f-1a2b3c4d5e6f
+  date: 2025-04-06
+  description: Apple.com/Bill
+  amount: -4.99
+  balance_after: 2466.49
+  category: other
+- tx_id: 8d2c6b9e-7a4c-4b2d-9e1f-3c8d7a2e6f1b
+  date: 2025-04-06
+  description: 'Walgreens #05733'
+  amount: -12.93
+  balance_after: 2453.56
+  category: other
+- tx_id: 2b9e7d8c-4a1c-4b9e-8d2c-7a1e9c3d2b8f
+  date: 2025-04-06
+  description: Instacart
+  amount: -36.8
+  balance_after: 2416.76
+  category: groceries
+- tx_id: 7e6d5c4b-3a2f-4e1d-9b8c-1f7e2a9c8d4b
+  date: 2025-04-07
+  description: PG&E - Gas
+  amount: -31.19
+  balance_after: 2385.57
+  category: utilities
+- tx_id: 4c2e7b9d-1a2f-4c9e-7d2b-3c8d9e1a5b7c
+  date: 2025-04-07
+  description: 'Kroger #145'
+  amount: -47.3
+  balance_after: 2338.27
+  category: groceries
+- tx_id: 7f2a1c3e-9d4b-4e8f-8a2c-5b7e1f2c9d0a
+  date: 2025-04-07
+  description: Hulu
+  amount: -12.99
+  balance_after: 2325.28
+  category: other
+- tx_id: 5c7e8a1d-3b4f-4d7e-8b2c-1a9e7c6f2d3b
+  date: 2025-04-08
+  description: 'Trader Joe''s #112'
+  amount: -29.48
+  balance_after: 2295.8
+  category: groceries
+- tx_id: 2a8c7e9d-3b1d-4c8e-7a2c-9f1b6e5d4c3a
+  date: 2025-04-08
+  description: Venmo Transfer - Received
+  amount: 50.0
+  balance_after: 2345.8
+  category: other
+- tx_id: 8c6f2a1d-4e3b-4d8e-9c2a-7e1d9b4c5a2

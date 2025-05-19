@@ -1,0 +1,152 @@
+statement_id: e1138168-21d4-4f8c-ad10-7095fb9bb400
+account_id: 3907447692
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: -2450.0
+closing_balance: -2821.27
+currency: USD
+transactions:
+- tx_id: 3e4d2f7a-b5ee-4c6e-8c6a-1b0e8b034e20
+  date: 2025-04-01
+  description: Salary Deposit - April
+  amount: 2500.0
+  balance_after: 50.0
+  category: salary
+- tx_id: 3f9e2e98-3d8c-4c84-bc6f-0c8e7fae4eeb
+  date: 2025-04-01
+  description: 'Trader Joe''s #442'
+  amount: -82.67
+  balance_after: -32.67
+  category: groceries
+- tx_id: 9b5e0a7a-6f5a-4f3f-b6e7-0e2e8c7d4e12
+  date: 2025-04-02
+  description: Amazon Marketplace
+  amount: -34.21
+  balance_after: -66.88
+  category: other
+- tx_id: 6d1b3ecd-c7c0-4d9a-a231-7c44c9e7a4c2
+  date: 2025-04-02
+  description: Starbucks
+  amount: -5.48
+  balance_after: -72.36
+  category: other
+- tx_id: 2d4b5e1b-0e6c-4d29-bf1b-0d98fb23b5d8
+  date: 2025-04-03
+  description: Whole Foods
+  amount: -54.9
+  balance_after: -127.26
+  category: groceries
+- tx_id: 7c9d2a8e-5e2b-4c91-bf4a-8e2c6dbf06f6
+  date: 2025-04-03
+  description: Uber Trip
+  amount: -17.3
+  balance_after: -144.56
+  category: other
+- tx_id: 530c8b6e-df86-4161-a5a5-0f8e1b4f9b2d
+  date: 2025-04-04
+  description: Netflix Subscription
+  amount: -15.99
+  balance_after: -160.55
+  category: other
+- tx_id: 2c6b1f8e-7b3c-46eb-bf0e-2f0e7e3c8b97
+  date: 2025-04-04
+  description: City Water Utility
+  amount: -46.15
+  balance_after: -206.7
+  category: utilities
+- tx_id: c4c8e0e5-7cbe-463e-9b6f-3f9c67e7a8a6
+  date: 2025-04-05
+  description: Shell Gas Station
+  amount: -43.12
+  balance_after: -249.82
+  category: other
+- tx_id: 8f7b5e4d-6f3a-4c8a-8c2e-1a9c7d8e4f23
+  date: 2025-04-05
+  description: 'Trader Joe''s #442'
+  amount: -27.44
+  balance_after: -277.26
+  category: groceries
+- tx_id: 6b3a1d2e-1e3e-4c8b-bc6c-8e2a7d5c9e3f
+  date: 2025-04-06
+  description: Spotify
+  amount: -9.99
+  balance_after: -287.25
+  category: other
+- tx_id: 4c7d2f1e-9e6c-4b8f-8e5c-1a0e8b4f6d7b
+  date: 2025-04-06
+  description: Amazon Marketplace
+  amount: -11.23
+  balance_after: -298.48
+  category: other
+- tx_id: 1b6d4a7e-7c8e-45a6-8c2f-2e7c9b4d0f6a
+  date: 2025-04-07
+  description: 'Safeway #512'
+  amount: -62.88
+  balance_after: -361.36
+  category: groceries
+- tx_id: 3f8d7a9c-6e0a-4a8b-8b7c-1c9e0d8f2a1b
+  date: 2025-04-07
+  description: PG&E
+  amount: -92.03
+  balance_after: -453.39
+  category: utilities
+- tx_id: 5e2d1b0c-4e7c-4f8e-8b6a-2a7e8d3c5b9f
+  date: 2025-04-08
+  description: CVS Pharmacy
+  amount: -22.11
+  balance_after: -475.5
+  category: other
+- tx_id: 7d1f2e3b-6c4a-4b7c-a7c2-1b0f9d8e6c4b
+  date: 2025-04-08
+  description: 'Trader Joe''s #442'
+  amount: -38.22
+  balance_after: -513.72
+  category: groceries
+- tx_id: 0b3d8f1e-5c7a-4e8d-9c2f-2a7e6d9b1c2e
+  date: 2025-04-09
+  description: Target Store 1019
+  amount: -46.79
+  balance_after: -560.51
+  category: other
+- tx_id: 4b6a7c8e-9d2e-4e8b-8c5a-1e2c7b9d4a3f
+  date: 2025-04-09
+  description: PG&E
+  amount: -92.03
+  balance_after: -652.54
+  category: utilities
+- tx_id: 7e5d3a2c-1b9e-4c8d-b7e2-0d8e7c1b4f3a
+  date: 2025-04-10
+  description: Starbucks
+  amount: -6.12
+  balance_after: -658.66
+  category: other
+- tx_id: 8a7b6c4d-1c2e-4e8a-8d7c-1e9b6c4d2a7e
+  date: 2025-04-10
+  description: Whole Foods
+  amount: -31.25
+  balance_after: -689.91
+  category: groceries
+- tx_id: 1e7f9d2b-3c5a-4d8e-9c7a-2e1b6c4d7a3e
+  date: 2025-04-11
+  description: Amazon Marketplace
+  amount: -14.67
+  balance_after: -704.58
+  category: other
+- tx_id: 5b2d3e1c-8c7e-4e9a-b6c2-2f1e8d9b7c0a
+  date: 2025-04-11
+  description: 'Safeway #512'
+  amount: -29.14
+  balance_after: -733.72
+  category: groceries
+- tx_id: 2e8f7c1d-4b6a-4e8b-8c5d-1e2c7a9d3f4b
+  date: 2025-04-12
+  description: Shell Gas Station
+  amount: -39.5
+  balance_after: -773.22
+  category: other
+- tx_id: 8b9e1d7c-2a6b-4c8e-9d5a-3c7e1b9f2a4c
+  date: 2025-04-12
+  description: 'Trader Joe''s #442'
+  amount: -46.04
+  balance_after: -819.26

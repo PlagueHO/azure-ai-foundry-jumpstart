@@ -1,0 +1,148 @@
+statement_id: 2be1bfe5-6b40-40a8-a15d-582073eb5da6
+account_id: 3069224217
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: 312.45
+closing_balance: 646.17
+currency: USD
+transactions:
+- tx_id: 4eac3d1c-883d-4978-8f1b-6a7b9eaf7bda
+  date: 2025-04-01
+  description: Salary Payment - Acme Corp
+  amount: 1800.0
+  balance_after: 2112.45
+  category: salary
+- tx_id: 6e5dce13-8767-4e3e-9e2a-2e5d6ec0f7a1
+  date: 2025-04-01
+  description: Whole Foods Market
+  amount: -85.67
+  balance_after: 2026.78
+  category: groceries
+- tx_id: 7f3e8f3b-4c1c-4c2d-bd1e-4f7e4a6c1a4e
+  date: 2025-04-01
+  description: Coffee Shop - Brewed Awakenings
+  amount: -4.5
+  balance_after: 2022.28
+  category: other
+- tx_id: 9e2f1c47-bc19-47f5-9b5b-8b7a9a4f2e6d
+  date: 2025-04-02
+  description: City Utilities Payment
+  amount: -125.2
+  balance_after: 1897.08
+  category: utilities
+- tx_id: f5b8f6b5-1d7f-4c51-bc8b-6f7d8d3c7a9b
+  date: 2025-04-02
+  description: 'Target #1429'
+  amount: -42.31
+  balance_after: 1854.77
+  category: groceries
+- tx_id: 1bf4a0b0-7b54-4a6e-8cb0-7b6f0a6d5c2c
+  date: 2025-04-02
+  description: Netflix Subscription
+  amount: -15.49
+  balance_after: 1839.28
+  category: other
+- tx_id: 6a9e4d29-3e8e-4e5b-98fc-3e6a7b8d2c7a
+  date: 2025-04-03
+  description: Trader Joe's
+  amount: -67.14
+  balance_after: 1772.14
+  category: groceries
+- tx_id: 2e0f9a1a-32c1-41d6-bb85-0d7f9f1a2e3d
+  date: 2025-04-03
+  description: Amazon Marketplace
+  amount: -28.49
+  balance_after: 1743.65
+  category: other
+- tx_id: 4c0a6b77-8a7f-43e3-9b5b-88c7d6b5c3a4
+  date: 2025-04-03
+  description: Electricity Bill
+  amount: -96.82
+  balance_after: 1646.83
+  category: utilities
+- tx_id: 5f1d7e1a-2c4b-47f4-9b3c-4e7d9c2b7e8d
+  date: 2025-04-04
+  description: Uber Eats
+  amount: -23.5
+  balance_after: 1623.33
+  category: other
+- tx_id: 8a5e1d94-2e7c-4b2e-8c2d-4f8e9a7b6e2a
+  date: 2025-04-04
+  description: Pharmacy - Healthwise
+  amount: -17.9
+  balance_after: 1605.43
+  category: other
+- tx_id: 9d3f6b5c-7e1a-4b3f-8e5d-2a1b7f6e3c8a
+  date: 2025-04-04
+  description: Shell Gas Station
+  amount: -40.0
+  balance_after: 1565.43
+  category: other
+- tx_id: 3e8d4f1a-5b2c-47e2-8c2d-4e1f7b6a8c3d
+  date: 2025-04-05
+  description: Costco Wholesale
+  amount: -122.87
+  balance_after: 1442.56
+  category: groceries
+- tx_id: 0a7c3e5b-2d1f-4a6e-9f7c-5e6b1d7a4c2d
+  date: 2025-04-05
+  description: Mobile Carrier Payment
+  amount: -55.0
+  balance_after: 1387.56
+  category: utilities
+- tx_id: 6c7b2e1d-3f9a-4d5c-8e2a-7b6c9e4a1d3b
+  date: 2025-04-05
+  description: CVS Pharmacy
+  amount: -14.72
+  balance_after: 1372.84
+  category: other
+- tx_id: f8d4e7a1-2c1e-45d7-9b3a-4f2e8b6a1c9d
+  date: 2025-04-06
+  description: Trader Joe's
+  amount: -36.59
+  balance_after: 1336.25
+  category: groceries
+- tx_id: 2f7e3c8b-1a4d-4b6e-8f2a-5e8c9b7d6f3a
+  date: 2025-04-06
+  description: Spotify Subscription
+  amount: -10.99
+  balance_after: 1325.26
+  category: other
+- tx_id: 7c1e5f6a-3d2b-4c1e-8e7a-2d3f1b8c9e4a
+  date: 2025-04-07
+  description: Whole Foods Market
+  amount: -54.11
+  balance_after: 1271.15
+  category: groceries
+- tx_id: 51f5c3a4-67e2-4d8a-9e1c-1b4f7d6e8c2d
+  date: 2025-04-07
+  description: Starbucks
+  amount: -8.75
+  balance_after: 1262.4
+  category: other
+- tx_id: 3e4f1d2a-8c2b-4e7a-9b3d-5f8c7a2e1d6b
+  date: 2025-04-07
+  description: Electricity Bill
+  amount: -96.82
+  balance_after: 1165.58
+  category: utilities
+- tx_id: 7a6e4f3b-2c1e-4d5b-8a7e-6c4f9b2d1a7c
+  date: 2025-04-08
+  description: Amazon Marketplace
+  amount: -18.89
+  balance_after: 1146.69
+  category: other
+- tx_id: 5c4e8d1a-3b2c-4e7f-9d1a-7b3e6a4f8c2d
+  date: 2025-04-08
+  description: Uber Ride
+  amount: -15.85
+  balance_after: 1130.84
+  category: other
+- tx_id: 9e3b4f2a-6d1c-4e7b-9f3a-1d2e8c7b6a4f
+  date: 2025-04-08
+  description: Trader Joe's
+  amount: -58.62
+  balance_after: 1072.22
+  category: groceries
+- tx_id: 3b8e2c1d-5a7f-4e2b-9c1a-3d7f1e6b8a2

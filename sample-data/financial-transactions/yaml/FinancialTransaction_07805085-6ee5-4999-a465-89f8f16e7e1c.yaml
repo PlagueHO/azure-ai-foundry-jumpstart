@@ -1,0 +1,145 @@
+statement_id: 07805085-6ee5-4999-a465-89f8f16e7e1c
+account_id: 8480845318
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: 524.15
+closing_balance: 633.26
+currency: USD
+transactions:
+- tx_id: 24a5c0e1-2726-4e8e-8bdf-9c2b6a3c2a0a
+  date: 2025-04-01
+  description: PAYROLL DEPOSIT - ACME CORP
+  amount: 1200.0
+  balance_after: 1724.15
+  category: salary
+- tx_id: 7c3f1d6a-342c-4c62-b4e4-5b26c17e9f53
+  date: 2025-04-01
+  description: GROCERY STORE - SUNFRESH MARKET
+  amount: -86.4
+  balance_after: 1637.75
+  category: groceries
+- tx_id: 8e3b1fb1-4e37-4cba-9b4e-6d6c6d1e2b44
+  date: 2025-04-02
+  description: UTILITIES - CITY WATER BILL
+  amount: -41.78
+  balance_after: 1595.97
+  category: utilities
+- tx_id: 1532b2e1-2143-4c35-9b1d-f84f0e7c9e7f
+  date: 2025-04-02
+  description: COFFEE SHOP - BREWED AWAKENING
+  amount: -6.35
+  balance_after: 1589.62
+  category: other
+- tx_id: 9e2812d2-2e6a-4cc2-bd17-7e5e1143cf57
+  date: 2025-04-02
+  description: PHARMACY - HEALTHPLUS
+  amount: -22.67
+  balance_after: 1566.95
+  category: other
+- tx_id: 51727e9c-253b-44a2-9e5c-93f9b2fc05dd
+  date: 2025-04-03
+  description: GROCERY STORE - SUNFRESH MARKET
+  amount: -32.12
+  balance_after: 1534.83
+  category: groceries
+- tx_id: f6e7d8d2-5e0a-4c5c-8fb3-8efb7c2d2e7c
+  date: 2025-04-03
+  description: GAS STATION - SPEEDY FUEL
+  amount: -47.2
+  balance_after: 1487.63
+  category: other
+- tx_id: 1a1e3f39-9e7d-4fcd-8468-984b3a5a9f52
+  date: 2025-04-03
+  description: STREAMING SERVICE - NETSHOW MONTHLY
+  amount: -13.99
+  balance_after: 1473.64
+  category: other
+- tx_id: 3f5c2b64-6e6b-4f86-8ef7-6d6f6f2b7f2a
+  date: 2025-04-04
+  description: DINING - PIZZA HAVEN
+  amount: -26.54
+  balance_after: 1447.1
+  category: other
+- tx_id: 2d1f7c8e-9b3a-4b74-8c69-2dfc6b9e1b6a
+  date: 2025-04-04
+  description: GROCERY STORE - SUNFRESH MARKET
+  amount: -15.88
+  balance_after: 1431.22
+  category: groceries
+- tx_id: 7b1f2e4c-1785-4a9b-8a5a-9a8c5c1e3a2b
+  date: 2025-04-05
+  description: UTILITIES - CITY ELECTRIC
+  amount: -65.33
+  balance_after: 1365.89
+  category: utilities
+- tx_id: 8a5b1c5f-9e7c-44e1-92a2-c2d69a7e3f5d
+  date: 2025-04-05
+  description: RIDE SHARE - URBANRIDE
+  amount: -18.75
+  balance_after: 1347.14
+  category: other
+- tx_id: f2d7b1a8-5b0b-4e7d-b871-9a7f5e2b4e7c
+  date: 2025-04-06
+  description: DINING - GREEN BOWL CAFE
+  amount: -19.8
+  balance_after: 1327.34
+  category: other
+- tx_id: 6f8d7c2b-4c2a-49b6-8e2e-9e7a8c2b7d1e
+  date: 2025-04-06
+  description: GROCERY STORE - SUNFRESH MARKET
+  amount: -44.17
+  balance_after: 1283.17
+  category: groceries
+- tx_id: 91e2f4a3-8d8c-4e7d-9a3f-2e7c5b6d1e7a
+  date: 2025-04-07
+  description: SUBSCRIPTION - DAILY NEWS ONLINE
+  amount: -8.99
+  balance_after: 1274.18
+  category: other
+- tx_id: 2b1a7e8d-6f1e-4c5c-9b1a-7c9e2a5b8d7f
+  date: 2025-04-07
+  description: GAS STATION - SPEEDY FUEL
+  amount: -39.18
+  balance_after: 1235.0
+  category: other
+- tx_id: 8e2c1f3d-1b7c-42a1-8d7c-2c1e9f8b6e4a
+  date: 2025-04-08
+  description: ONLINE RETAIL - AMAZIN
+  amount: -23.49
+  balance_after: 1211.51
+  category: other
+- tx_id: a6b8f2e1-5d2c-4b4e-9f3a-1d2e8f5b7a4c
+  date: 2025-04-08
+  description: DINING - TACO PALACE
+  amount: -17.3
+  balance_after: 1194.21
+  category: other
+- tx_id: 6e7b2a1e-3f9c-4b1d-8e7c-2f4b9c7e1d2a
+  date: 2025-04-09
+  description: GROCERY STORE - SUNFRESH MARKET
+  amount: -52.18
+  balance_after: 1142.03
+  category: groceries
+- tx_id: 1f3b8a5e-2c1b-4b2e-9a6f-3c7e8b1d6f2a
+  date: 2025-04-09
+  description: UTILITIES - CITY GAS
+  amount: -37.2
+  balance_after: 1104.83
+  category: utilities
+- tx_id: 5c8e2a7f-3d2c-4e7b-8e3f-2d1a7c8e5b4a
+  date: 2025-04-10
+  description: RIDE SHARE - URBANRIDE
+  amount: -12.5
+  balance_after: 1092.33
+  category: other
+- tx_id: 2a9e5c1d-7b3a-4c2b-9e1f-3d8a7b6c2e5f
+  date: 2025-04-10
+  description: COFFEE SHOP - BREWED AWAKENING
+  amount: -5.67
+  balance_after: 1086.66
+  category: other
+- tx_id: 4e2b9f7d-2a7c-4c5b-8e1f-2d6a8c5b7e1d
+  date: 2025-04-10
+  description: GROCERY STORE - SUNFRESH MARKET
+  amount: -33.0

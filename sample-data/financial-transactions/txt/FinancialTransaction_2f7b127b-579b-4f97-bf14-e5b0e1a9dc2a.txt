@@ -1,0 +1,75 @@
+Statement ID: 2f7b127b-579b-4f97-bf14-e5b0e1a9dc2a  
+Account ID: 9764897391 (credit)  
+Period: 2025-04-01 - 2025-04-30  
+
+Opening Balance: 1234.56 USD  
+Closing Balance: 2345.67 USD  
+
+Transactions:  
+date       | description                         | amount    | balance_after | category  
+2025-04-01 | Grocery Purchase                    | -45.67    | 1188.89       | groceries  
+2025-04-01 | Online Streaming Subscription       | -12.99    | 1175.90       | entertainment  
+2025-04-02 | Coffee Shop                         | -4.50     | 1171.40       | dining  
+2025-04-02 | Payroll Deposit                     | +850.00   | 2021.40       | income  
+2025-04-02 | ATM Withdrawal                      | -60.00    | 1961.40       | cash withdrawal  
+2025-04-03 | Pharmacy Purchase                   | -18.23    | 1943.17       | pharmacy  
+2025-04-03 | Ride Share                          | -17.30    | 1925.87       | transportation  
+2025-04-04 | Restaurant                          | -36.80    | 1889.07       | dining  
+2025-04-04 | Bookstore                           | -27.99    | 1861.08       | shopping  
+2025-04-05 | Utility Bill Payment                | -112.45   | 1748.63       | utilities  
+2025-04-05 | Online Marketplace                  | -58.20    | 1690.43       | shopping  
+2025-04-06 | Gas Station                         | -43.50    | 1646.93       | transportation  
+2025-04-06 | Grocery Purchase                    | -62.15    | 1584.78       | groceries  
+2025-04-07 | Refund: Grocery Purchase            | +12.15    | 1596.93       | groceries  
+2025-04-07 | Clothing Store                      | -38.99    | 1557.94       | shopping  
+2025-04-08 | Coffee Shop                         | -6.25     | 1551.69       | dining  
+2025-04-08 | Payroll Deposit                     | +850.00   | 2401.69       | income  
+2025-04-09 | Restaurant                          | -21.10    | 2380.59       | dining  
+2025-04-09 | Online Streaming Subscription       | -12.99    | 2367.60       | entertainment  
+2025-04-10 | Movie Theater                       | -14.50    | 2353.10       | entertainment  
+2025-04-10 | Tax Refund                          | +120.00   | 2473.10       | income  
+2025-04-11 | Pharmacy Purchase                   | -8.99     | 2464.11       | pharmacy  
+2025-04-11 | Supermarket                         | -53.45    | 2410.66       | groceries  
+2025-04-12 | Online Marketplace                  | -24.99    | 2385.67       | shopping  
+2025-04-12 | Ride Share                          | -19.75    | 2365.92       | transportation  
+2025-04-13 | Restaurant                          | -32.20    | 2333.72       | dining  
+2025-04-13 | Pet Store                           | -17.40    | 2316.32       | pets  
+2025-04-14 | Coffee Shop                         | -5.25     | 2311.07       | dining  
+2025-04-14 | Clothing Store                      | -59.80    | 2251.27       | shopping  
+2025-04-15 | Grocery Purchase                    | -63.87    | 2187.40       | groceries  
+2025-04-15 | Payroll Deposit                     | +850.00   | 3037.40       | income  
+2025-04-16 | Utility Bill Payment                | -110.20   | 2927.20       | utilities  
+2025-04-16 | Gas Station                         | -38.90    | 2888.30       | transportation  
+2025-04-17 | Online Subscription                 | -9.99     | 2878.31       | entertainment  
+2025-04-17 | Bookstore                           | -25.10    | 2853.21       | shopping  
+2025-04-18 | Coffee Shop                         | -4.50     | 2848.71       | dining  
+2025-04-18 | Restaurant                          | -28.60    | 2820.11       | dining  
+2025-04-19 | Grocery Purchase                    | -47.95    | 2772.16       | groceries  
+2025-04-19 | Pharmacy Purchase                   | -13.35    | 2758.81       | pharmacy  
+2025-04-20 | Ride Share                          | -18.00    | 2740.81       | transportation  
+2025-04-20 | Online Marketplace                  | -31.99    | 2708.82       | shopping  
+2025-04-21 | Movie Theater                       | -16.00    | 2692.82       | entertainment  
+2025-04-21 | Refund: Online Marketplace          | +7.50     | 2700.32       | shopping  
+2025-04-22 | Supermarket                         | -54.80    | 2645.52       | groceries  
+2025-04-22 | Payroll Deposit                     | +850.00   | 3495.52       | income  
+2025-04-23 | Restaurant                          | -29.10    | 3466.42       | dining  
+2025-04-23 | Clothing Store                      | -34.99    | 3431.43       | shopping  
+2025-04-24 | Gas Station                         | -41.25    | 3390.18       | transportation  
+2025-04-24 | Coffee Shop                         | -5.00     | 3385.18       | dining  
+2025-04-25 | Utility Bill Payment                | -114.20   | 3270.98       | utilities  
+2025-04-25 | Online Streaming Subscription       | -12.99    | 3257.99       | entertainment  
+2025-04-26 | Bookstore                           | -21.75    | 3236.24       | shopping  
+2025-04-26 | Pet Store                           | -19.60    | 3216.64       | pets  
+2025-04-27 | Restaurant                          | -22.80    | 3193.84       | dining  
+2025-04-27 | Supermarket                         | -58.90    | 3134.94       | groceries  
+2025-04-28 | Online Marketplace                  | -49.99    | 3084.95       | shopping  
+2025-04-28 | Ride Share                          | -18.35    | 3066.60       | transportation  
+2025-04-29 | Coffee Shop                         | -5.25     | 3061.35       | dining  
+2025-04-29 | Pharmacy Purchase                   | -16.50    | 3044.85       | pharmacy  
+2025-04-30 | Payroll Deposit                     | +850.00   | 3894.85       | income  
+2025-04-30 | Grocery Purchase                    | -79.18    | 3815.67       | groceries  
+2025-04-30 | Gas Station                         | -37.50    | 3778.17       | transportation  
+2025-04-30 | Restaurant                          | -22.50    | 3755.67       | dining  
+2025-04-30 | Duplicate Coffee Shop Charge        | -5.00     | 3750.67       | dining (fraudulent)  
+
+Note: One subtly fraudulent transaction is present as a small duplicate charge on 2025-04-30 ("Duplicate Coffee Shop Charge").

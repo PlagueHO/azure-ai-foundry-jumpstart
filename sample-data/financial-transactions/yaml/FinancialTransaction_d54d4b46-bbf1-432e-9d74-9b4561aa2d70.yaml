@@ -1,0 +1,149 @@
+statement_id: d54d4b46-bbf1-432e-9d74-9b4561aa2d70
+account_id: 7882002780
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: 1324.87
+closing_balance: 1337.44
+currency: USD
+transactions:
+- tx_id: f7a9a2fd-4b9b-45b2-8f19-6e2df2a1a6e4
+  date: 2025-04-01
+  description: 'Kroger Grocery #210'
+  amount: -54.83
+  balance_after: 1270.04
+  category: groceries
+- tx_id: b8a8b9b6-6c19-4f1c-8eac-6f47e625bdad
+  date: 2025-04-01
+  description: Starbucks 04291
+  amount: -6.25
+  balance_after: 1263.79
+  category: other
+- tx_id: ac4e2b64-2df1-4e91-98c0-1c77c5f2e6c5
+  date: 2025-04-01
+  description: Payroll Deposit
+  amount: 1250.0
+  balance_after: 2513.79
+  category: salary
+- tx_id: 1164e3d7-9b3e-4b3f-b8c8-2a8c1b99b8e3
+  date: 2025-04-02
+  description: Target Store 3324
+  amount: -38.76
+  balance_after: 2475.03
+  category: groceries
+- tx_id: f6f01096-8b57-4a8b-9447-6e9c8e5f8b9c
+  date: 2025-04-02
+  description: Shell Oil 11247
+  amount: -42.9
+  balance_after: 2432.13
+  category: other
+- tx_id: 1bfae3c4-4a1c-4b2e-b6f8-e8a9404e3eb3
+  date: 2025-04-02
+  description: Netflix.com
+  amount: -16.99
+  balance_after: 2415.14
+  category: utilities
+- tx_id: 9edc9bca-5d2e-4cb1-8f52-6a7c3b9d2bcd
+  date: 2025-04-02
+  description: 'Trader Joe''s #091'
+  amount: -33.24
+  balance_after: 2381.9
+  category: groceries
+- tx_id: 1c918ecf-7c24-4e3d-9b10-b9a5ed7b3c7e
+  date: 2025-04-03
+  description: Amazon Marketplace
+  amount: -24.98
+  balance_after: 2356.92
+  category: other
+- tx_id: 9b8b7e2f-0db5-4f1c-8e4a-6d3c8b4b8f4e
+  date: 2025-04-03
+  description: 'Walgreens #3281'
+  amount: -18.6
+  balance_after: 2338.32
+  category: other
+- tx_id: 3e0a9c27-298a-4e2a-bb46-0e1b5b2f4a7f
+  date: 2025-04-03
+  description: Chipotle 0032
+  amount: -13.75
+  balance_after: 2324.57
+  category: other
+- tx_id: 9cdf0e1d-6c84-4e30-9c9e-5d3d4e8b3d4c
+  date: 2025-04-04
+  description: Uber Trip
+  amount: -21.43
+  balance_after: 2303.14
+  category: other
+- tx_id: 7a1c8a1b-1a4c-4d8b-b3d7-0d6a7e2c6e2f
+  date: 2025-04-04
+  description: Apple.com Billing
+  amount: -2.99
+  balance_after: 2300.15
+  category: utilities
+- tx_id: 0f8e7a4b-3e8a-4d89-9f6a-2e2c0b2e3e4d
+  date: 2025-04-04
+  description: Publix Super Market
+  amount: -47.1
+  balance_after: 2253.05
+  category: groceries
+- tx_id: 2b7d1e8f-5e4f-4d2c-a1b9-0e1c3d7a9b1e
+  date: 2025-04-05
+  description: Venmo Payment
+  amount: 35.0
+  balance_after: 2288.05
+  category: other
+- tx_id: d5e6b8e1-7f1e-4e2b-8f6e-4f7e8c9e1b7d
+  date: 2025-04-05
+  description: Walmart Supercenter
+  amount: -59.92
+  balance_after: 2228.13
+  category: groceries
+- tx_id: 4c1e7b2d-0a4b-49d3-9d15-0c8d2e1f8b9c
+  date: 2025-04-05
+  description: Spotify
+  amount: -10.99
+  balance_after: 2217.14
+  category: utilities
+- tx_id: 7f8b8e1d-5c2a-4f1d-9e3a-7b8c9e1a5b2d
+  date: 2025-04-06
+  description: CVS Pharmacy 10042
+  amount: -22.17
+  balance_after: 2194.97
+  category: other
+- tx_id: 4e8b8c1d-6a2e-48b3-b7d1-8d6a5b1c2e3f
+  date: 2025-04-06
+  description: 'Trader Joe''s #091'
+  amount: -21.08
+  balance_after: 2173.89
+  category: groceries
+- tx_id: 0a1e4b9d-3c2f-4b8d-b6f3-5d8b1e7f9a1c
+  date: 2025-04-06
+  description: 'The Home Depot #5821'
+  amount: -43.11
+  balance_after: 2130.78
+  category: other
+- tx_id: 0c1b5e8f-2e1d-4a2f-8c7a-3d4e5f6a7b8c
+  date: 2025-04-07
+  description: Duke Energy
+  amount: -78.15
+  balance_after: 2052.63
+  category: utilities
+- tx_id: 1e4c7b3a-8a2d-4d3e-9c3e-1e2f3b4a5c6e
+  date: 2025-04-07
+  description: PayPal Transfer
+  amount: 50.0
+  balance_after: 2102.63
+  category: other
+- tx_id: 1f7a2b8d-3d4e-4f2b-8e3c-7c1a2d3b4e5f
+  date: 2025-04-07
+  description: ALDI 00213
+  amount: -36.47
+  balance_after: 2066.16
+  category: groceries
+- tx_id: d3a8e1c7-5b2d-4e8f-8c6a-2f4d7e9a0b1c
+  date: 2025-04-08
+  description: Amazon Marketplace
+  amount: -12.99
+  balance_after: 2053.17
+  category: other
+- tx_id: 8e1b4a9d-2c3f-4e8b-8d1c-2f3e7b8d9a1c
+  date: 2025-04-08

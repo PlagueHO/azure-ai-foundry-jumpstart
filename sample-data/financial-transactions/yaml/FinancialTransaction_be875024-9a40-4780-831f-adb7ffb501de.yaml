@@ -1,0 +1,154 @@
+statement_id: be875024-9a40-4780-831f-adb7ffb501de
+account_id: 4024192700
+account_type: credit
+start_date: 2025-04-01
+end_date: 2025-04-30
+opening_balance: 1342.5
+closing_balance: 1787.91
+currency: USD
+transactions:
+- tx_id: 9b2e5c44-2a43-41c3-8f5d-79e9e98d3c82
+  date: 2025-04-01
+  description: Wholemart Market
+  amount: -64.23
+  balance_after: 1278.27
+  category: groceries
+- tx_id: c5f5c2d0-4422-4ee2-9e46-d0b7e5b3a702
+  date: 2025-04-01
+  description: City Electric Bill
+  amount: -112.41
+  balance_after: 1165.86
+  category: utilities
+- tx_id: 8daec8d0-7b53-4c5c-b0e5-07e5e41c3f2d
+  date: 2025-04-01
+  description: Coffee Brew Co.
+  amount: -6.25
+  balance_after: 1159.61
+  category: other
+- tx_id: 7bdc4c44-1e1f-4e67-8e6e-dc1aebc9c2b0
+  date: 2025-04-02
+  description: ATM Cash Withdrawal
+  amount: -40.0
+  balance_after: 1119.61
+  category: other
+- tx_id: 8bf6b4f2-4a5c-4d23-bb6b-6e8f6d6e1bcd
+  date: 2025-04-02
+  description: Metro Super Foods
+  amount: -78.9
+  balance_after: 1040.71
+  category: groceries
+- tx_id: 093fda68-1e70-4d99-9de2-7d69f7dcbd77
+  date: 2025-04-03
+  description: April Salary
+  amount: 2100.0
+  balance_after: 3140.71
+  category: salary
+- tx_id: 2e9e1e90-6b2e-4d3b-8a1a-0a7b789f8c1c
+  date: 2025-04-03
+  description: Parkway Pharmacy
+  amount: -32.67
+  balance_after: 3108.04
+  category: other
+- tx_id: 8ecf7b53-3b2b-4ad2-a37d-1d6b0c5647bb
+  date: 2025-04-03
+  description: The Fresh Basket
+  amount: -19.45
+  balance_after: 3088.59
+  category: groceries
+- tx_id: 8260a6cc-9a7e-4a7e-bc1f-4d99483e6bcd
+  date: 2025-04-04
+  description: Transit Monthly Pass
+  amount: -94.0
+  balance_after: 2994.59
+  category: other
+- tx_id: 2e0a5c5e-0d93-4e03-8a6f-0e4a8cfa4b9e
+  date: 2025-04-04
+  description: Green Grocery
+  amount: -31.18
+  balance_after: 2963.41
+  category: groceries
+- tx_id: 27f6e8d6-7e4c-4393-82fa-ea19d6e4e772
+  date: 2025-04-04
+  description: Downtown Utility Gas
+  amount: -54.89
+  balance_after: 2908.52
+  category: utilities
+- tx_id: 6b9f1ec1-0632-4a7f-b889-cc2d5b0d9a11
+  date: 2025-04-05
+  description: Wholemart Market
+  amount: -82.13
+  balance_after: 2826.39
+  category: groceries
+- tx_id: 0e865c3d-1ad2-4f9e-97ae-2a4d4e733b24
+  date: 2025-04-05
+  description: QuickLube Auto
+  amount: -58.0
+  balance_after: 2768.39
+  category: other
+- tx_id: 382dd2a8-3bbd-4a0c-9b1d-3e8e7c2a7e2e
+  date: 2025-04-06
+  description: Coffee Brew Co.
+  amount: -6.25
+  balance_after: 2762.14
+  category: other
+- tx_id: 4a7c2b8a-0e5d-4e6c-b0ce-0d6e99b3e6e6
+  date: 2025-04-06
+  description: Petro Gas Station
+  amount: -44.13
+  balance_after: 2717.01
+  category: other
+- tx_id: 3b1c7d44-6a5e-4c7d-b7b2-9c5f7c9e3b0a
+  date: 2025-04-06
+  description: Fresh Fruit Stand
+  amount: -12.67
+  balance_after: 2704.34
+  category: groceries
+- tx_id: 5fc4e0f6-9c98-4e7d-9f7b-1f7c1c3b9a0d
+  date: 2025-04-07
+  description: Supermart Express
+  amount: -23.09
+  balance_after: 2681.25
+  category: groceries
+- tx_id: 6b0e8c9f-6e77-4e18-9f3b-7e7f2e2a5a0e
+  date: 2025-04-07
+  description: City Water Utility
+  amount: -33.8
+  balance_after: 2647.45
+  category: utilities
+- tx_id: 78b9e4d7-4a3d-45b6-8d88-5dfb2d6c7ca1
+  date: 2025-04-07
+  description: Pharmacy RX
+  amount: -15.9
+  balance_after: 2631.55
+  category: other
+- tx_id: 16dbb6b6-7e5a-4d0a-80d7-6d8b0e1e0e1e
+  date: 2025-04-08
+  description: Metro Super Foods
+  amount: -57.61
+  balance_after: 2573.94
+  category: groceries
+- tx_id: 2ee3e5f9-3f34-4c85-8e4a-8b8e6e6e5e5e
+  date: 2025-04-08
+  description: Coffee Brew Co.
+  amount: -6.25
+  balance_after: 2567.69
+  category: other
+- tx_id: 3c4a7e4d-7e4d-4e4c-8c5e-7e4a6c7a8b9d
+  date: 2025-04-08
+  description: QuickMart
+  amount: -38.19
+  balance_after: 2529.5
+  category: groceries
+- tx_id: 9b7e5c4d-4e4d-4e5c-9e4c-8e4c7e4a7e4d
+  date: 2025-04-09
+  description: Online Subscriptions
+  amount: -15.99
+  balance_after: 2513.51
+  category: other
+- tx_id: 5e7d9c1f-8e4d-4e7d-9f7b-1f7c1c3b9b1f
+  date: 2025-04-09
+  description: Metro Super Foods
+  amount: -24.87
+  balance_after: 2488.64
+  category: groceries
+- tx_id: 8e7f1c6a-6a7c-4e7f-9f7b-9b1c
