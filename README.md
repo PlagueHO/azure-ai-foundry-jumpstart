@@ -54,15 +54,11 @@ You can deploy the application using one of the following methods:
 - [Azure Developer CLI](azure-developer-cli)
 - [Azure Portal Deployment](azure-portal-deployment)
 
----
-
 ### Azure Developer CLI
 
-> [!IMPORTANT]
-> This section will create Azure resources and deploy the solution from your local environment using the Azure Developer CLI. You do not need to clone this repo to complete these steps.
+This section will create Azure resources and deploy the solution from your local environment using the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/overview). You do not need to clone this repository to complete these steps, but if you have already, just use the instructions under [If you have already cloned this repo](#if-you-have-already-cloned-this-repo). If you'd like to customize the deployment, see the [Customize the solution accelerator settings](#customize-the-solution-accelerator-settings) section.
 
-<details>
-  <summary><b>If you have not cloned this repo</b></summary>
+#### If you have not cloned this repo
 
 1. Download the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/overview)
 1. If you have not cloned this repo, you can use the `azd init -t PlagueHO/azure-ai-foundry-jumpstart` command to clone the repo and initialize it.
@@ -91,10 +87,7 @@ You can deploy the application using one of the following methods:
    ```powershell
    azd up
 
-</details>
-
-<details>
-  <summary><b>If you have already cloned this repo</b></summary>
+#### If you have already cloned this repo
 
 1. Download the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/overview)
 1. If you have already cloned this repo, change directory to the repo root directory.
@@ -124,10 +117,7 @@ You can deploy the application using one of the following methods:
    azd up
    ```
 
-</details>
-
-<details>
-  <summary><b>Customize the solution accelerator settings</b></summary>
+#### Customize the solution accelerator settings
 
 You can control many aspects of the AI Foundry environment during deployment by setting the environment values using the `azd env set` command before running the `azd up` command. For example:
 
@@ -147,10 +137,6 @@ azd env set AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME "My AI Project"
 ```
 
 A complete list of environment variables can be found in the [Configuration Options](docs/CONFIGURATION_OPTIONS.md) document.
-
-</details>
-
----
 
 ### Azure Portal Deployment
 
