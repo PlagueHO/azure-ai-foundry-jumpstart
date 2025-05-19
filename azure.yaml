@@ -10,14 +10,14 @@ hooks:
     windows:
       run: |
         Write-Host "Uploading sample data to Azure Blob Storage..."
-        ./scripts/upload_sample_data.ps1
+        ./scripts/Upload-SampleData.ps1
       shell: pwsh
       continueOnError: false
       interactive: true
     posix:
       run: |
         echo "Uploading sample data to Azure Blob Storage..."
-        ./scripts/upload_sample_data.sh
+        ./scripts/Upload-SampleData.sh
       shell: sh
       continueOnError: false
       interactive: true
