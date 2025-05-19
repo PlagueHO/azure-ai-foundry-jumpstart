@@ -156,7 +156,7 @@ A complete list of environment variables can be found in the [Configuration Opti
 
 Click on the Deploy to Azure button to deploy the Azure resources for this solution accelerator.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FPlagueHO%2Fazure-ai-foundry-jumpstart%2Fmain%2Finfra%2Fmain.bicep)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FPlagueHO%2Fazure-ai-foundry-jumpstart%2Fmain%2Finfra%2Fmain.json)
 
 > [!NOTE]
 > This button will only create Azure resources. It will not deploy any sample data.
