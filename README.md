@@ -79,8 +79,8 @@ This section will create Azure resources and deploy the solution from your local
    azd env set AZURE_NETWORK_ISOLATION false
    ```
 
-   > [!NOTE]
-   > This will deploy the Azure AI Foundry hub and project with public endpoints. You can access the Azure AI Foundry hub and project from the public internet. This is recommended for demonstration and testing purposes or when there is no requirement for network isolation.
+> [!NOTE]
+> This will deploy the Azure AI Foundry hub and project with public endpoints. You can access the Azure AI Foundry hub and project from the public internet. This is recommended for demonstration and testing purposes or when there is no requirement for network isolation.
 
 1. Run `azd up` to provision and deploy the application
 
@@ -108,8 +108,8 @@ This section will create Azure resources and deploy the solution from your local
    azd env set AZURE_NETWORK_ISOLATION false
    ```
 
-   > [!NOTE]
-   > This will deploy the Azure AI Foundry hub and project with public endpoints. You can access the Azure AI Foundry hub and project from the public internet.
+> [!NOTE]
+> This will deploy the Azure AI Foundry hub and project with public endpoints. You can access the Azure AI Foundry hub and project from the public internet. This is recommended for demonstration and testing purposes or when there is no requirement for network isolation.
 
 1. Run `azd up` to provision and deploy the application
 
