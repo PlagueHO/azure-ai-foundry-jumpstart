@@ -160,6 +160,42 @@ Default: `A sample project for Azure AI Foundry`.
 azd env set AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION "This is my first AI project."
 ```
 
+### AZURE_AI_FOUNDRY_PROJECTS_FROM_JSON
+
+Use projects defined in infra/sample-ai-foundry-projects.json file instead of the single project parameters.
+When set to `true`, the `AZURE_AI_FOUNDRY_PROJECT_NAME`, `AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME`, and `AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION` parameters are ignored.
+Default: `false`.
+
+```powershell
+azd env set AZURE_AI_FOUNDRY_PROJECTS_FROM_JSON true
+```
+
+The `infra/sample-ai-foundry-projects.json` file contains an array of project definitions. Each project definition includes the following properties:
+
+| Property     | Description                                               |
+| ------------ | --------------------------------------------------------- |
+| Name         | The name of the AI Foundry project (used in resource name)|
+| FriendlyName | Display name shown in the Azure portal                    |
+| Description  | Optional description shown in the Azure portal            |
+
+Example JSON structure:
+```json
+[
+  {
+    "Name": "contoso-retail-analytics",
+    "FriendlyName": "Contoso Retail Analytics",
+    "Description": "Sample project demonstrating AI-driven product recommendations."
+  },
+  {
+    "Name": "fabrikam-health-insights",
+    "FriendlyName": "Fabrikam Health Insights",
+    "Description": "Sample healthcare project showcasing patient-note summarisation."
+  }
+]
+```
+
+You can modify this file to define your own set of projects to be created during deployment.
+
 ## Azure AI Search Service
 
 ### AZURE_AI_SEARCH_SKU
