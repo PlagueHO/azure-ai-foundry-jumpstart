@@ -160,6 +160,16 @@ Default: `A sample project for Azure AI Foundry`.
 azd env set AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION "This is my first AI project."
 ```
 
+### AZURE_AI_FOUNDRY_PROJECTS_FROM_JSON
+
+Use projects defined in infra/sample-ai-foundry-projects.json file instead of the single project parameters.
+When set to `true`, the `AZURE_AI_FOUNDRY_PROJECT_NAME`, `AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME`, and `AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION` parameters are ignored.
+Default: `false`.
+
+```powershell
+azd env set AZURE_AI_FOUNDRY_PROJECTS_FROM_JSON true
+```
+
 ## Azure AI Search Service
 
 ### AZURE_AI_SEARCH_SKU

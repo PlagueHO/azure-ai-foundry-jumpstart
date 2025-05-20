@@ -88,6 +88,9 @@ param aiFoundryProjectFriendlyName string
 @sys.description('The description of the Azure AI Foundry project to create.') 
 param aiFoundryProjectDescription string
 
+@sys.description('Use projects defined in sample-ai-foundry-projects.json file instead of the single project parameters. When true, the aiFoundryProject* parameters are ignored.')
+param aiFoundryProjectsFromJson bool = false
+
 @sys.description('Deploy Azure AI Search and all dependent configuration. Set to false to skip its deployment.')
 param azureAiSearchDeploy bool = true
 
@@ -746,20 +749,35 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
 // ---------- AI FOUNDRY PROJECTS ----------
 import { aiFoundryProjectType } from './types/ai/aiFoundryProjectType.bicep'
 
-var effectiveAiFoundryProjects aiFoundryProjectType[] = aiFoundryProjectDeploy ? [
-  {
-    name: replace(aiFoundryProjectName,' ','-')
-    friendlyName: aiFoundryProjectFriendlyName
-    description: aiFoundryProjectDescription
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'AzureML Data Scientist'
-        principalType: principalIdType
-        principalId: principalId
-      }
-    ]
-  }
-] : []
+var effectiveAiFoundryProjects aiFoundryProjectType[] = aiFoundryProjectDeploy 
+  ? (aiFoundryProjectsFromJson 
+    ? [for project in loadJsonContent('./sample-ai-foundry-projects.json'): {
+        name: replace(project.Name,' ','-')
+        friendlyName: project.FriendlyName
+        description: project.Description
+        roleAssignments: [
+          {
+            roleDefinitionIdOrName: 'AzureML Data Scientist'
+            principalType: principalIdType
+            principalId: principalId
+          }
+        ]
+      }]
+    : [
+        {
+          name: replace(aiFoundryProjectName,' ','-')
+          friendlyName: aiFoundryProjectFriendlyName
+          description: aiFoundryProjectDescription
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'AzureML Data Scientist'
+              principalType: principalIdType
+              principalId: principalId
+            }
+          ]
+        }
+      ])
+  : []
 
 module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = [for project in effectiveAiFoundryProjects: {
   name: take('aifp-${project.name}',64)
@@ -927,6 +945,7 @@ output AZURE_AI_FOUNDRY_HUB_PRIVATE_ENDPOINTS array = aiFoundryHub.outputs.priva
 
 // Output the AI Foundry project
 output AZURE_AI_FOUNDRY_PROJECT_DEPLOY bool = aiFoundryProjectDeploy
+output AZURE_AI_FOUNDRY_PROJECTS_FROM_JSON bool = aiFoundryProjectsFromJson
 output AZURE_AI_FOUNDRY_PROJECT_NAME string = aiFoundryProjectDeploy ? aiFoundryProjectName : ''
 output AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION string = aiFoundryProjectDeploy ? aiFoundryProjectDescription : ''
 output AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME string = aiFoundryProjectDeploy ? aiFoundryProjectFriendlyName : ''
