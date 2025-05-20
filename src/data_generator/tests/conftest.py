@@ -5,14 +5,12 @@ Provides mocked Semantic Kernel instances and other utilities needed by tests.
 """
 
 import os
+from collections.abc import Generator
 from pathlib import Path
-from typing import Any, Dict, Generator, List
 from unittest.mock import MagicMock, patch
 
 import pytest
-import semantic_kernel as sk
 from semantic_kernel.kernel import Kernel
-from semantic_kernel.prompt_template import PromptTemplateConfig
 
 
 @pytest.fixture
@@ -42,7 +40,7 @@ def mock_kernel() -> Generator[MagicMock, None, None]:
 
 
 @pytest.fixture
-def mock_env_vars() -> Generator[Dict[str, str], None, None]:
+def mock_env_vars() -> Generator[dict[str, str], None, None]:
     """
     Set up mock environment variables for testing.
 

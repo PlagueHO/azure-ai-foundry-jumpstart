@@ -4,15 +4,12 @@ Tests for the data_generator.engine module.
 Tests the DataGenerator class and its core functionality.
 """
 
-import asyncio
 import json
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-from unittest.mock import AsyncMock, MagicMock, call, patch
+from typing import Any
+from unittest.mock import AsyncMock, call, patch
 
 import pytest
 import yaml
-from semantic_kernel.prompt_template import PromptTemplateConfig
 
 from data_generator.engine import DataGenerator
 from data_generator.tool import DataGeneratorTool
@@ -25,12 +22,12 @@ class SimpleTestTool(DataGeneratorTool):
     toolName = "TestTool"
 
     def build_prompt(
-        self, output_format: str, *, unique_id: Optional[str] = None
+        self, output_format: str, *, unique_id: str | None = None
     ) -> str:
         """Return a test prompt for the specified output format."""
         return f"Generate a {output_format} sample with ID {unique_id or 'default'}"
 
-    def cli_arguments(self) -> List[Dict[str, Any]]:
+    def cli_arguments(self) -> list[dict[str, Any]]:
         """Return test CLI arguments specification."""
         return [{"dest": "test_arg", "help": "Test argument"}]
 
@@ -38,7 +35,7 @@ class SimpleTestTool(DataGeneratorTool):
         """Validate the CLI arguments."""
         pass
 
-    def examples(self) -> List[str]:
+    def examples(self) -> list[str]:
         """Return usage examples."""
         return ["Example usage: test-tool --test-arg value"]
 
@@ -335,7 +332,7 @@ def test_persist_json(temp_output_dir) -> None:
     assert expected_file.exists()
 
     # Verify the content
-    with open(expected_file, "r") as f:
+    with open(expected_file) as f:
         content = json.load(f)
         assert content == data
 
@@ -370,7 +367,7 @@ def test_persist_yaml(temp_output_dir) -> None:
     assert expected_file.exists()
 
     # Verify the content
-    with open(expected_file, "r") as f:
+    with open(expected_file) as f:
         content = yaml.safe_load(f)
         assert content == data
 
@@ -405,6 +402,6 @@ def test_persist_txt(temp_output_dir) -> None:
     assert expected_file.exists()
 
     # Verify the content
-    with open(expected_file, "r") as f:
+    with open(expected_file) as f:
         content = f.read()
         assert content == data

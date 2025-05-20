@@ -14,7 +14,7 @@ import logging
 import random
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Tuple
+from typing import Any, dict, list, tuple
 
 import yaml
 
@@ -42,7 +42,7 @@ class TechSupportTool(DataGeneratorTool):
             system_description or "A generic SaaS platform running in Azure."
         )
 
-    def cli_arguments(self) -> List[Dict[str, Any]]:
+    def cli_arguments(self) -> list[dict[str, Any]]:
         """Argparse specification consumed by the top-level CLI wrapper."""
         return [
             {
@@ -64,7 +64,7 @@ class TechSupportTool(DataGeneratorTool):
         # store for later use
         self.system_description = ns.system_description
 
-    def examples(self) -> List[str]:
+    def examples(self) -> list[str]:
         """Representative usage snippets for `--help` output."""
         return [
             "python -m generate_data "
@@ -78,18 +78,18 @@ class TechSupportTool(DataGeneratorTool):
     # ------------------------------------------------------------------ #
     # Output formats                                                     #
     # ------------------------------------------------------------------ #
-    def supported_output_formats(self) -> List[str]:  # noqa: D401
+    def supported_output_formats(self) -> list[str]:  # noqa: D401
         """Return the list of output formats this tool can generate."""
         return ["yaml", "json", "txt"]
 
     # ------------------------------------------------------------------ #
     # Prompt construction                                                #
     # ------------------------------------------------------------------ #
-    _STATUS:   List[str] = ["open", "investigating", "resolved", "closed"]
-    _SEVERITY: List[str] = ["critical", "high", "medium", "low"]
-    _PRIORITY: List[str] = ["P1", "P2", "P3", "P4"]
+    _STATUS:   list[str] = ["open", "investigating", "resolved", "closed"]
+    _SEVERITY: list[str] = ["critical", "high", "medium", "low"]
+    _PRIORITY: list[str] = ["P1", "P2", "P3", "P4"]
 
-    def _random_attributes(self) -> Tuple[str, str, str]:
+    def _random_attributes(self) -> tuple[str, str, str]:
         """Randomly choose status, severity and priority values."""
         return (
             random.choice(self._STATUS),

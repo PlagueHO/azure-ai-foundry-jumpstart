@@ -14,7 +14,7 @@ import logging
 import random
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Dict, List
+from typing import Any
 
 import yaml
 
@@ -40,7 +40,7 @@ class RetailProductTool(DataGeneratorTool):
         super().__init__()
         self.industry = industry or "general"
 
-    def cli_arguments(self) -> List[Dict[str, Any]]:
+    def cli_arguments(self) -> list[dict[str, Any]]:
         """Argparse specification consumed by the top-level CLI wrapper."""
         return [
             {
@@ -60,7 +60,7 @@ class RetailProductTool(DataGeneratorTool):
         """Persist validated CLI arguments onto the instance."""
         self.industry = ns.industry or "general"
 
-    def examples(self) -> List[str]:
+    def examples(self) -> list[str]:
         """Representative usage snippets for `--help` output."""
         return [
             "python -m generate_data "
@@ -73,14 +73,14 @@ class RetailProductTool(DataGeneratorTool):
     # ------------------------------------------------------------------ #
     # Output formats                                                     #
     # ------------------------------------------------------------------ #
-    def supported_output_formats(self) -> List[str]:
+    def supported_output_formats(self) -> list[str]:
         """Return the list of output formats this tool can generate."""
         return ["yaml", "json", "text"]
 
     # ------------------------------------------------------------------ #
     # Prompt construction                                                #
     # ------------------------------------------------------------------ #
-    _CURRENCIES: List[str] = ["USD", "EUR", "GBP", "AUD", "CAD"]
+    _CURRENCIES: list[str] = ["USD", "EUR", "GBP", "AUD", "CAD"]
 
     @staticmethod
     def _random_price() -> float:

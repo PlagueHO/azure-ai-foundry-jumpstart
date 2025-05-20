@@ -14,7 +14,7 @@ import logging
 import random
 import uuid
 from datetime import date, timedelta
-from typing import Any, Dict, List
+from typing import Any
 
 import yaml
 
@@ -46,7 +46,7 @@ class InsuranceClaimTool(DataGeneratorTool):
         self.policy_type = policy_type or "auto"
         self.fraud_percent = fraud_percent or 0
 
-    def cli_arguments(self) -> List[Dict[str, Any]]:
+    def cli_arguments(self) -> list[dict[str, Any]]:
         """Argparse specification consumed by the top-level CLI wrapper."""
         return [
             {
@@ -75,7 +75,7 @@ class InsuranceClaimTool(DataGeneratorTool):
         self.policy_type = getattr(ns, "policy_type", "auto")
         self.fraud_percent = max(0, min(100, getattr(ns, "fraud_percent", 0)))
 
-    def examples(self) -> List[str]:
+    def examples(self) -> list[str]:
         """Representative usage snippets for `--help` output."""
         return [
             "python -m generate_data "
@@ -89,15 +89,15 @@ class InsuranceClaimTool(DataGeneratorTool):
     # ------------------------------------------------------------------ #
     # Output formats                                                     #
     # ------------------------------------------------------------------ #
-    def supported_output_formats(self) -> List[str]:  # noqa: D401
+    def supported_output_formats(self) -> list[str]:  # noqa: D401
         """Return the list of output formats this tool can generate."""
         return ["yaml", "json", "txt"]
 
     # ------------------------------------------------------------------ #
     # Prompt construction                                                #
     # ------------------------------------------------------------------ #
-    _STATUS: List[str] = ["open", "investigating", "approved", "rejected"]
-    _INCIDENTS: Dict[str, List[str]] = {
+    _STATUS: list[str] = ["open", "investigating", "approved", "rejected"]
+    _INCIDENTS: dict[str, list[str]] = {
         "auto": ["collision", "theft", "windshield damage"],
         "home": ["fire", "flood", "break-in"],
         "health": ["surgery", "emergency room visit", "routine check-up"],

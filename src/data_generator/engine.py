@@ -4,16 +4,18 @@ import asyncio
 import json
 import logging
 import os
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable, Dict, List, Any, Final
+from typing import Any, Final
 
-import yaml
 import colorama
-from dotenv import load_dotenv
-from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 import semantic_kernel as sk
+import yaml
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+from dotenv import load_dotenv
 from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
 from semantic_kernel.prompt_template import PromptTemplateConfig
+
 from data_generator.tool import DataGeneratorTool
 
 __all__: list[str] = ["DataGenerator"]
@@ -48,7 +50,7 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
 
     def __init__(                       # noqa: PLR0913
         self,
-        tool: "DataGeneratorTool",
+        tool: DataGeneratorTool,
         *,
         log_level: str | int = "INFO",
         azure_openai_endpoint: str | None = None,
@@ -70,11 +72,10 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
         )
 
         if not self.azure_openai_endpoint or not self.azure_openai_deployment:
-            raise EnvironmentError(
+            raise OSError(
                 "Azure OpenAI connection details missing. "
                 "Set --azure-openai-endpoint & --azure-openai-deployment CLI flags\n"
                 "or AZURE_OPENAI_ENDPOINT / AZURE_OPENAI_DEPLOYMENT env variables."
-            )"
             )
 
         # ------------------------------------------------------------------ #
@@ -145,7 +146,7 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
         function_name: str,
         plugin_name: str,
         prompt_description: str,
-        input_variables: List[Dict[str, Any]],
+        input_variables: list[dict[str, Any]],
         max_tokens: int,
         temperature: float = 0.7,
         top_p: float = 0.95,

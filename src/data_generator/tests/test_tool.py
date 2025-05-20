@@ -5,13 +5,10 @@ Tests the DataGeneratorTool abstract class and its functionality.
 """
 
 import argparse
-import json
 import uuid
-from typing import Any, Dict, List, Optional
-from unittest.mock import MagicMock, patch
+from typing import Any
 
 import pytest
-import yaml
 
 from data_generator.tool import DataGeneratorTool
 
@@ -23,12 +20,12 @@ class MockTool(DataGeneratorTool):
     toolName = "MockTool"
 
     def build_prompt(
-        self, output_format: str, *, unique_id: Optional[str] = None
+        self, output_format: str, *, unique_id: str | None = None
     ) -> str:
         """Return a test prompt for the specified output format."""
         return f"Generate a {output_format} sample with ID {unique_id or 'default'}"
 
-    def cli_arguments(self) -> List[Dict[str, Any]]:
+    def cli_arguments(self) -> list[dict[str, Any]]:
         """Return test CLI arguments specification."""
         return [{"dest": "test_arg", "help": "Test argument"}]
 
@@ -36,7 +33,7 @@ class MockTool(DataGeneratorTool):
         """Validate the CLI arguments."""
         pass
 
-    def examples(self) -> List[str]:
+    def examples(self) -> list[str]:
         """Return usage examples."""
         return ["Example usage: mock-tool --test-arg value"]
 
@@ -52,17 +49,17 @@ class DuplicateMockTool(DataGeneratorTool):
     toolName = "DuplicateMockTool"
 
     def build_prompt(
-        self, output_format: str, *, unique_id: Optional[str] = None
+        self, output_format: str, *, unique_id: str | None = None
     ) -> str:
         return ""
 
-    def cli_arguments(self) -> List[Dict[str, Any]]:
+    def cli_arguments(self) -> list[dict[str, Any]]:
         return []
 
     def validate_args(self, ns: argparse.Namespace) -> None:
         pass
 
-    def examples(self) -> List[str]:
+    def examples(self) -> list[str]:
         return []
 
     def get_system_description(self) -> str:

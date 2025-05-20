@@ -11,7 +11,8 @@ import argparse
 import json
 import logging
 from datetime import datetime, timezone
-from typing import Any, Dict, List
+from typing import Any
+
 import yaml  # needed for YAML post-processing
 
 from ..tool import DataGeneratorTool
@@ -31,13 +32,13 @@ class LegalContractTool(DataGeneratorTool):
     # ------------------------------------------------------------------ #
     # Contract-specific settings                                         #
     # ------------------------------------------------------------------ #
-    _CONTRACT_TYPES: List[str] = [
+    _CONTRACT_TYPES: list[str] = [
         "NDA",
         "Service Agreement",
         "Lease Agreement",
         "Employment Contract",
     ]
-    _COMPLEXITY: List[str] = ["simple", "moderate", "complex"]
+    _COMPLEXITY: list[str] = ["simple", "moderate", "complex"]
 
     # ------------------------------------------------------------------ #
     # CLI contract                                                       #
@@ -49,7 +50,7 @@ class LegalContractTool(DataGeneratorTool):
         self.num_clauses: int = 5
         self.complexity: str = "moderate"
 
-    def cli_arguments(self) -> List[Dict[str, Any]]:
+    def cli_arguments(self) -> list[dict[str, Any]]:
         """Argparse specification consumed by the top-level CLI wrapper."""
         return [
             {
@@ -88,7 +89,7 @@ class LegalContractTool(DataGeneratorTool):
         self.num_clauses = ns.num_clauses
         self.complexity = ns.complexity
 
-    def examples(self) -> List[str]:
+    def examples(self) -> list[str]:
         """Representative usage snippets for `--help` output."""
         return [
             "python -m generate_data "
@@ -104,7 +105,7 @@ class LegalContractTool(DataGeneratorTool):
     # ------------------------------------------------------------------ #
     # Output formats                                                     #
     # ------------------------------------------------------------------ #
-    def supported_output_formats(self) -> List[str]:  # noqa: D401
+    def supported_output_formats(self) -> list[str]:  # noqa: D401
         """Return the list of output formats this tool can generate."""
         return ["yaml", "json", "txt"]
 

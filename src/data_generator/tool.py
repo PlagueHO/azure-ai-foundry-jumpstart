@@ -4,9 +4,9 @@ import argparse
 import json
 import logging
 import uuid
-
 from abc import ABC, abstractmethod
-from typing import Any, ClassVar, Dict, List, Type, Callable
+from collections.abc import Callable
+from typing import Any, ClassVar
 
 import yaml
 
@@ -24,7 +24,7 @@ class DataGeneratorTool(ABC):
     # ------------------------------------------------------------------ #
     # Registry for dynamic discovery                                     #
     # ------------------------------------------------------------------ #
-    _REGISTRY: ClassVar[Dict[str, Type["DataGeneratorTool"]]] = {}
+    _REGISTRY: ClassVar[dict[str, type[DataGeneratorTool]]] = {}
 
     def __init_subclass__(cls, **kwargs):  # noqa: D401 (pylint)
         """Register every concrete subclass in the internal tool registry.
@@ -54,7 +54,7 @@ class DataGeneratorTool(ABC):
         """Return the full prompt string for the given output format."""
 
     @abstractmethod
-    def cli_arguments(self) -> List[Dict[str, Any]]:
+    def cli_arguments(self) -> list[dict[str, Any]]:
         """
         Specification for CLI arguments consumed by this tool.
         Return a list of *argparse.add_argument* keyword-dicts.
@@ -67,7 +67,7 @@ class DataGeneratorTool(ABC):
         """
 
     @abstractmethod
-    def examples(self) -> List[str]:
+    def examples(self) -> list[str]:
         """Return usage snippets for `--help` epilog."""
 
     @abstractmethod
@@ -84,12 +84,12 @@ class DataGeneratorTool(ABC):
     # ------------------------------------------------------------------ #
     # Format helpers                                                     #
     # ------------------------------------------------------------------ #
-    _FORMAT_PARSERS: ClassVar[Dict[str, Callable[[str], Any]]] = {
+    _FORMAT_PARSERS: ClassVar[dict[str, Callable[[str], Any]]] = {
         "json": json.loads,
         "yaml": yaml.safe_load,
     }
 
-    def supported_output_formats(self) -> List[str]:
+    def supported_output_formats(self) -> list[str]:
         """Return the list of output formats recognised by ``post_process``."""
         return [*self._FORMAT_PARSERS.keys(), "txt"]
 
@@ -130,7 +130,7 @@ class DataGeneratorTool(ABC):
     # Helper: factory                                                    #
     # ------------------------------------------------------------------ #
     @classmethod
-    def from_name(cls, name: str) -> "DataGeneratorTool":
+    def from_name(cls, name: str) -> DataGeneratorTool:
         """Factory helper that returns a new instance of the requested tool.
 
         Parameters
