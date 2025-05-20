@@ -38,7 +38,9 @@ class TechSupportTool(DataGeneratorTool):
     def __init__(self, *, system_description: str | None = None) -> None:
         """Instantiate the tool, optionally overriding *system_description*."""
         super().__init__()
-        self.system_description = system_description or "A generic SaaS platform running in Azure."
+        self.system_description = (
+            system_description or "A generic SaaS platform running in Azure."
+        )
 
     def cli_arguments(self) -> List[Dict[str, Any]]:
         """Argparse specification consumed by the top-level CLI wrapper."""
@@ -48,7 +50,9 @@ class TechSupportTool(DataGeneratorTool):
                 "kwargs": {
                     "required": True,
                     "metavar": "TEXT",
-                    "help": "Short description of the system the support case relates to.",
+                    "help": (
+                        "Short description of the system the support case relates to."
+                    ),
                 },
             }
         ]
@@ -66,7 +70,8 @@ class TechSupportTool(DataGeneratorTool):
             "python -m generate_data "
             "--scenario tech-support "
             "--count 50 "
-            '--system-description "ContosoShop - React SPA front-end with Azure App Service + SQL back-end" '
+            '--system-description "ContosoShop - React SPA front-end with '
+            'Azure App Service + SQL back-end" '
             "--output-format yaml",
         ]
 
@@ -107,7 +112,9 @@ class TechSupportTool(DataGeneratorTool):
             "Use ISO-8601 timestamps and do NOT invent real PII.\n\n"
         )
 
-    def build_prompt(self, output_format: str, *, unique_id: str | None = None) -> str:  # noqa: D401
+    def build_prompt(
+        self, output_format: str, *, unique_id: str | None = None
+    ) -> str:  # noqa: D401
         """
         Construct the full system-prompt string for the requested *output_format*.
         All variable data (status, ids, etc.) are pre-baked so the kernel only
@@ -175,7 +182,8 @@ class TechSupportTool(DataGeneratorTool):
             '  "status": "open|investigating|resolved|closed",\n'
             '  "customer_name": "realistic name",\n'
             '  "contact_email": "realistic but fake email",\n'
-            '  "conversation_history": [ { "role": "...", "message": "...", "timestamp": "..." } ],\n'
+            '  "conversation_history": [ '
+            '{ "role": "...", "message": "...", "timestamp": "..." } ],\n'
             '  "resolved_at": "ISO 8601 (optional)",\n'
             '  "resolution": "text (optional)",\n'
             '  "area": "frontend|backend|database|network|other (optional)",\n'

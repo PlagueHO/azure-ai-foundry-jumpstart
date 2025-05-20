@@ -31,7 +31,7 @@ class RetailProductTool(DataGeneratorTool):
     # ------------------------------------------------------------------ #
     name: str = "retail-product"
     toolName: str = "RetailProduct"
-    
+
     # ------------------------------------------------------------------ #
     # CLI contract                                                       #
     # ------------------------------------------------------------------ #
@@ -49,7 +49,9 @@ class RetailProductTool(DataGeneratorTool):
                     "required": False,
                     "metavar": "TEXT",
                     "default": "general",
-                    "help": "Industry/theme for the products (e.g. electronics, fashion).",
+                    "help": (
+                        "Industry/theme for the products (e.g. electronics, fashion)."
+                    ),
                 },
             }
         ]
@@ -74,7 +76,7 @@ class RetailProductTool(DataGeneratorTool):
     def supported_output_formats(self) -> List[str]:
         """Return the list of output formats this tool can generate."""
         return ["yaml", "json", "text"]
-    
+
     # ------------------------------------------------------------------ #
     # Prompt construction                                                #
     # ------------------------------------------------------------------ #
@@ -187,18 +189,26 @@ class RetailProductTool(DataGeneratorTool):
             try:
                 parsed_data = json.loads(raw)
             except json.JSONDecodeError:
-                _logger.warning("Failed to parse raw output as JSON. Returning raw string.")
+                _logger.warning(
+                    "Failed to parse raw output as JSON. Returning raw string."
+                )
                 return raw
         elif fmt == "yaml":
             try:
                 parsed_data = yaml.safe_load(raw)
             except yaml.YAMLError:
-                _logger.warning("Failed to parse raw output as YAML. Returning raw string.")
+                _logger.warning(
+                    "Failed to parse raw output as YAML. Returning raw string."
+                )
                 return raw
-        elif fmt == "txt" or fmt == "text":  # Handle both 'txt' (from CLI) and 'text' (from tool's supported_output_formats)
+        # Handle both 'txt' (from CLI) and 'text' (from tool's supported_output_formats)
+        elif fmt == "txt" or fmt == "text":
             return raw
         else:
-            _logger.warning("Unknown output format '%s' for post-processing. Returning raw string.", output_format)
+            _logger.warning(
+                "Unknown output format '%s' for post-processing. Returning raw string.",
+                output_format
+            )
             return raw
 
         # Enrich JSON/YAML outputs if they resulted in a dictionary
@@ -208,7 +218,7 @@ class RetailProductTool(DataGeneratorTool):
             parsed_data.setdefault("stock_quantity", self._random_stock())
             if "rating" not in parsed_data and random.choice([True, False]):
                 parsed_data["rating"] = round(random.uniform(1.0, 5.0), 1)
-        
+
         return parsed_data
 
     # ------------------------------------------------------------------ #

@@ -34,7 +34,9 @@ class DataGeneratorTool(ABC):
         """
         super().__init_subclass__(**kwargs)
         if not getattr(cls, "name", None):
-            raise AttributeError("DataGeneratorTool subclasses must define a unique `name` attribute.")
+            raise AttributeError(
+                "DataGeneratorTool subclasses must define a unique `name` attribute."
+            )
         if cls.name in cls._REGISTRY:
             raise ValueError(f"Duplicate tool registration for name '{cls.name}'.")
         cls._REGISTRY[cls.name] = cls
@@ -44,7 +46,8 @@ class DataGeneratorTool(ABC):
     # Mandatory interface                                                #
     # ------------------------------------------------------------------ #
     name: str  # unique identifier (e.g. "tech-support")
-    toolName: str  # Semantic Kernel tool name (e.g. "TechSupport"). Match: '^[0-9A-Za-z_]+$'
+    # Semantic Kernel tool name (e.g. "TechSupport"). Match: '^[0-9A-Za-z_]+$'
+    toolName: str
 
     @abstractmethod
     def build_prompt(self, output_format: str, *, unique_id: str | None = None) -> str:
@@ -118,7 +121,9 @@ class DataGeneratorTool(ABC):
         try:
             return parser(raw)
         except Exception:                # noqa: BLE001 (broad but intentional)
-            _logger.debug("Failed to parse %s; returning raw string.", fmt, exc_info=True)
+            _logger.debug(
+                "Failed to parse %s; returning raw string.", fmt, exc_info=True
+            )
             return raw
 
     # ------------------------------------------------------------------ #
@@ -146,5 +151,7 @@ class DataGeneratorTool(ABC):
         try:
             tool_cls = cls._REGISTRY[name]
         except KeyError as exc:
-            raise KeyError(f"No DataGeneratorTool registered with name '{name}'.") from exc
+            raise KeyError(
+                f"No DataGeneratorTool registered with name '{name}'."
+            ) from exc
         return tool_cls()  # type: ignore[call-arg]

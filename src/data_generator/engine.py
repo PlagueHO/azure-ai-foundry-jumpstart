@@ -72,8 +72,9 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
         if not self.azure_openai_endpoint or not self.azure_openai_deployment:
             raise EnvironmentError(
                 "Azure OpenAI connection details missing. "
-                "Set --azure-openai-endpoint & --azure-openai-deployment CLI flags "
-                "or AZURE_OPENAI_ENDPOINT / AZURE_OPENAI_DEPLOYMENT environment variables."
+                "Set --azure-openai-endpoint & --azure-openai-deployment CLI flags\n"
+                "or AZURE_OPENAI_ENDPOINT / AZURE_OPENAI_DEPLOYMENT env variables."
+            )"
             )
 
         # ------------------------------------------------------------------ #
@@ -120,7 +121,9 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
                 service_id="azure_open_ai",
             )
         else:
-            self.logger.debug("Authenticating to Azure OpenAI with DefaultAzureCredential.")
+            self.logger.debug(
+                "Authenticating to Azure OpenAI with DefaultAzureCredential."
+            )
             token_provider = get_bearer_token_provider(
                 DefaultAzureCredential(),
                 "https://cognitiveservices.azure.com/.default",
@@ -193,7 +196,9 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
             plugin_name=plugin_name,
             prompt_template_config=prompt_config,
         )
-        self.logger.debug("Prompt function '%s.%s' created.", plugin_name, function_name)
+        self.logger.debug(
+            "Prompt function '%s.%s' created.", plugin_name, function_name
+        )
 
         async def _async_runner(**kwargs: Any) -> str:
             """Async helper that forwards the call to ``kernel.invoke``."""
@@ -280,7 +285,7 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
                 task_coro = asyncio.wait_for(coro, timeout=timeout_seconds)
             else:
                 task_coro = coro
-            
+
             tasks.append(asyncio.create_task(task_coro))
 
         failures = 0
@@ -288,13 +293,19 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
             try:
                 await t
             except asyncio.TimeoutError:
-                self.logger.error("Generation task timed out after %s seconds.", timeout_seconds)
+                self.logger.error(
+                    "Generation task timed out after %s seconds.", timeout_seconds
+                )
                 failures += 1
             except Exception:  # pylint: disable=broad-exception-caught
                 self.logger.exception("Generation task failed")
                 failures += 1
 
-        self.logger.info("Generation finished. Success: %s, Failed: %s", count - failures, failures)
+        self.logger.info(
+            "Generation finished. Success: %s, Failed: %s",
+            count - failures,
+            failures
+        )
 
     async def _generate_one_async(
         self,

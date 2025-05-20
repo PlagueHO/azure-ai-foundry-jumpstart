@@ -3,7 +3,8 @@ Command-line interface for the data-generator package.
 
 Usage (once the project is installed in the active Python environment):
 
-    generate-data --scenario tech-support --count 50 --out-dir ./sample-data/tech-support/yaml \
+    generate-data --scenario tech-support --count 50 \
+                  --out-dir ./sample-data/tech-support/yaml \
                   --system-description "ContosoShop SaaS" --output-format yaml
 
 The script performs a *two-phase* argparse parse:

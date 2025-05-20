@@ -59,7 +59,9 @@ class FinancialTransactionTool(DataGeneratorTool):
                     "metavar": "P",
                     "type": int,
                     "default": 0,
-                    "help": "Percentage chance to include one subtle fraudulent transaction.",
+                    "help": (
+                        "Percentage chance to include one subtle fraudulent transaction"
+                    ),
                 },
             },
         ]
@@ -122,13 +124,15 @@ class FinancialTransactionTool(DataGeneratorTool):
             f"Statement ID: {hdr['statement_id']}\n"
             f"Account ID: {hdr['account_id']} ({hdr['account_type']})\n"
             f"Period: {hdr['start_date']} - {hdr['end_date']}\n\n"
-            f"Generate at least {self.transactions_max} transactions: dates, descriptions, amounts, "
+            f"Generate at least {self.transactions_max} transactions: dates, "
+            f"descriptions, amounts, "
             "running balances; use ISO-8601 dates and two-decimal USD amounts.\n\n"
         )
         if self.fraud_percent > 0:
             base += (
                 f"There is a {self.fraud_percent}% chance that one transaction "
-                "should be subtly fraudulent (e.g. small duplicate charge or slight amount mismatch).\n\n"
+                + "should be subtly fraudulent (e.g. small duplicate charge "
+                + "or slight amount mismatch).\n\n"
             )
         if output_format == "yaml":
             return base + self._yaml_skeleton(hdr)
@@ -176,7 +180,8 @@ class FinancialTransactionTool(DataGeneratorTool):
             '  "currency": "USD",\n'
             '  "transactions": [\n'
             "    { \"tx_id\": \"uuid\", \"date\": \"ISO\", \"description\": \"text\", "
-            "\"amount\": -12.34, \"balance_after\": 1222.22, \"category\": \"groceries\" }\n"
+            "\"amount\": -12.34, \"balance_after\": 1222.22, "
+            "\"category\": \"groceries\" }\n"
             f"    // ... ≥{self.transactions_max} entries ...\n"
             "  ]\n"
             "}\n"

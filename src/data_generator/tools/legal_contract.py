@@ -113,7 +113,9 @@ class LegalContractTool(DataGeneratorTool):
     # ------------------------------------------------------------------ #
     def _prompt_common(self, *, unique_id: str | None = None) -> str:
         """Return the invariant part shared by all output formats."""
-        contract_id = unique_id or f"LC-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
+        contract_id = (
+            unique_id or f"LC-{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}"
+        )
         effective = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         return (
             f"Contract ID (immutable): {contract_id}\n"

@@ -24,7 +24,9 @@ class HealthcareRecordTool(DataGeneratorTool):
     # ------------------------------------------------------------------ #
     # CLI contract                                                       #
     # ------------------------------------------------------------------ #
-    def __init__(self, *, document_type: str | None = None, specialty: str | None = None) -> None:
+    def __init__(
+        self, *, document_type: str | None = None, specialty: str | None = None
+    ) -> None:
         """Instantiate with optional document type and specialty."""
         super().__init__()
         self.document_type = document_type or "Clinic Note"
@@ -39,7 +41,9 @@ class HealthcareRecordTool(DataGeneratorTool):
                     "required": False,
                     "metavar": "TEXT",
                     "default": "Clinic Note",
-                    "help": "Type of medical document (e.g. Clinic Note, Discharge Summary).",
+                    "help": (
+                        "Type of medical document (e.g. Clinic Note, Discharge Summary)"
+                    ),
                 },
             },
             {
@@ -48,7 +52,9 @@ class HealthcareRecordTool(DataGeneratorTool):
                     "required": False,
                     "metavar": "TEXT",
                     "default": "General Medicine",
-                    "help": "Medical specialty for the record (e.g. Cardiology, Oncology).",
+                    "help": (
+                        "Medical specialty for the record (e.g. Cardiology, Oncology)."
+                    ),
                 },
             },
         ]

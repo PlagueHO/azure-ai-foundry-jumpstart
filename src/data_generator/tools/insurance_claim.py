@@ -107,7 +107,9 @@ class InsuranceClaimTool(DataGeneratorTool):
         """Select a random incident based on policy type."""
         return random.choice(self._INCIDENTS.get(self.policy_type, ["other"]))
 
-    def build_prompt(self, output_format: str, *, unique_id: str | None = None) -> str:  # noqa: D401
+    def build_prompt(
+        self, output_format: str, *, unique_id: str | None = None
+    ) -> str:  # noqa: D401
         """
         Construct the full system-prompt string for the requested *output_format*.
         """

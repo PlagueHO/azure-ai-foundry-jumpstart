@@ -18,28 +18,28 @@ from data_generator.tool import DataGeneratorTool
 
 class MockTool(DataGeneratorTool):
     """Mock implementation of DataGeneratorTool for testing."""
-    
+
     name = "mock-tool"
     toolName = "MockTool"
-    
+
     def build_prompt(self, output_format: str, *, unique_id: str | None = None) -> str:
         """Return a test prompt for the specified output format."""
         return f"Generate a {output_format} sample with ID {unique_id or 'default'}"
-    
+
     def cli_arguments(self) -> List[Dict[str, Any]]:
         """Return test CLI arguments specification."""
         return [
             {"dest": "test_arg", "help": "Test argument"}
         ]
-    
+
     def validate_args(self, ns: argparse.Namespace) -> None:
         """Validate the CLI arguments."""
         pass
-    
+
     def examples(self) -> List[str]:
         """Return usage examples."""
         return ["Example usage: mock-tool --test-arg value"]
-    
+
     def get_system_description(self) -> str:
         """Return system description."""
         return "Mock tool system description"
@@ -49,19 +49,19 @@ class DuplicateMockTool(DataGeneratorTool):
     """Mock tool with duplicate name for testing registration validation."""
     name = "mock-tool"  # Same as MockTool
     toolName = "DuplicateMockTool"
-    
+
     def build_prompt(self, output_format: str, *, unique_id: str | None = None) -> str:
         return ""
-    
+
     def cli_arguments(self) -> List[Dict[str, Any]]:
         return []
-    
+
     def validate_args(self, ns: argparse.Namespace) -> None:
         pass
-    
+
     def examples(self) -> List[str]:
         return []
-    
+
     def get_system_description(self) -> str:
         return ""
 
@@ -75,7 +75,9 @@ def test_tool_registry():
 
 def test_tool_duplicate_registration():
     """Test that duplicate tool names are rejected."""
-    with pytest.raises(ValueError, match="Duplicate tool registration for name 'mock-tool'"):
+    with pytest.raises(
+        ValueError, match="Duplicate tool registration for name 'mock-tool'"
+    ):
         # This should raise ValueError due to duplicate name
         type("TempDuplicateTool", (DataGeneratorTool,), {
             "name": "mock-tool",
@@ -90,7 +92,10 @@ def test_tool_duplicate_registration():
 
 def test_tool_missing_name():
     """Test that tools without a name attribute are rejected."""
-    with pytest.raises(AttributeError, match="DataGeneratorTool subclasses must define a unique `name` attribute"):
+    with pytest.raises(
+        AttributeError,
+        match="DataGeneratorTool subclasses must define a unique `name` attribute"
+    ):
         # This should raise AttributeError due to missing name
         type("NoNameTool", (DataGeneratorTool,), {
             "toolName": "NoName",
@@ -108,8 +113,10 @@ def test_from_name():
     assert isinstance(tool, MockTool)
     assert tool.name == "mock-tool"
     assert tool.toolName == "MockTool"
-    
-    with pytest.raises(KeyError, match="No DataGeneratorTool registered with name 'non-existent'"):
+    with pytest.raises(
+        KeyError,
+        match="No DataGeneratorTool registered with name 'non-existent'"
+    ):
         DataGeneratorTool.from_name("non-existent")
 
 
@@ -137,7 +144,7 @@ def test_post_process_json():
     """Test the post_process method with JSON format."""
     tool = MockTool()
     json_str = '{"name": "Test", "value": 123}'
-    
+
     # Test with output_format="json"
     result = tool.post_process(json_str, output_format="json")
     assert isinstance(result, dict)
@@ -149,7 +156,7 @@ def test_post_process_yaml():
     """Test the post_process method with YAML format."""
     tool = MockTool()
     yaml_str = "name: Test\nvalue: 123"
-    
+
     # Test with output_format="yaml"
     result = tool.post_process(yaml_str, output_format="yaml")
     assert isinstance(result, dict)
@@ -161,7 +168,7 @@ def test_post_process_text():
     """Test the post_process method with text format."""
     tool = MockTool()
     text = "This is plain text"
-    
+
     # Test with output_format="txt"
     result = tool.post_process(text, output_format="txt")
     assert isinstance(result, str)
@@ -172,7 +179,7 @@ def test_post_process_invalid_json():
     """Test post_process with invalid JSON returns the raw string."""
     tool = MockTool()
     invalid_json = '{"name": "Test", value: 123}'  # Missing quotes around value
-    
+
     # Should return the raw string when parsing fails
     result = tool.post_process(invalid_json, output_format="json")
     assert isinstance(result, str)
@@ -183,7 +190,7 @@ def test_post_process_invalid_yaml():
     """Test post_process with invalid YAML returns the raw string."""
     tool = MockTool()
     invalid_yaml = "name: Test\n  value: 123"  # Invalid indentation
-    
+
     # Should return the raw string when parsing fails
     result = tool.post_process(invalid_yaml, output_format="yaml")
     assert isinstance(result, str)
@@ -194,7 +201,7 @@ def test_post_process_unsupported_format():
     """Test post_process with an unsupported format returns the raw string."""
     tool = MockTool()
     text = "Some text"
-    
+
     # Should return the raw string for unsupported formats
     result = tool.post_process(text, output_format="unsupported")
     assert isinstance(result, str)
