@@ -1,4 +1,4 @@
-metadata name = 'Tnterface type Azure AI Foundry Project'
+metadata name = 'Interface type Azure AI Foundry Project'
 metadata description = '''
 This module provides a type definition for an Azure AI Foundry Project.
 '''
