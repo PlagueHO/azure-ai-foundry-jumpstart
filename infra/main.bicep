@@ -749,34 +749,38 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
 // ---------- AI FOUNDRY PROJECTS ----------
 import { aiFoundryProjectType } from './types/ai/aiFoundryProjectType.bicep'
 
-var effectiveAiFoundryProjects aiFoundryProjectType[] = aiFoundryProjectDeploy 
-  ? (aiFoundryProjectsFromJson 
-    ? [for project in loadJsonContent('./sample-ai-foundry-projects.json'): {
-        name: replace(project.Name,' ','-')
-        friendlyName: project.FriendlyName
-        description: project.Description
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'AzureML Data Scientist'
-            principalType: principalIdType
-            principalId: principalId
-          }
-        ]
-      }]
-    : [
-        {
-          name: replace(aiFoundryProjectName,' ','-')
-          friendlyName: aiFoundryProjectFriendlyName
-          description: aiFoundryProjectDescription
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'AzureML Data Scientist'
-              principalType: principalIdType
-              principalId: principalId
-            }
-          ]
-        }
-      ])
+var projectsFromJson = loadJsonContent('./sample-ai-foundry-projects.json')
+
+var aiFoundryProjectsFromJsonArray = [for project in projectsFromJson: {
+  name: replace(project.Name,' ','-')
+  friendlyName: project.FriendlyName
+  description: project.Description
+  roleAssignments: [
+    {
+      roleDefinitionIdOrName: 'AzureML Data Scientist'
+      principalType: principalIdType
+      principalId: principalId
+    }
+  ]
+}]
+
+var aiFoundryProjectsSingleArray = [
+  {
+    name: replace(aiFoundryProjectName,' ','-')
+    friendlyName: aiFoundryProjectFriendlyName
+    description: aiFoundryProjectDescription
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'AzureML Data Scientist'
+        principalType: principalIdType
+        principalId: principalId
+      }
+    ]
+  }
+]
+
+var effectiveAiFoundryProjects = aiFoundryProjectDeploy 
+  ? (aiFoundryProjectsFromJson ? aiFoundryProjectsFromJsonArray : aiFoundryProjectsSingleArray)
   : []
 
 module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = [for project in effectiveAiFoundryProjects: {
