@@ -37,7 +37,6 @@ line-length = 88
 target-version = ["py310"]
 
 [tool.ruff]
-exclude = ["tests/**"]
 line-length = 88
 target-version = "py310"
 select = ["E", "F", "I", "UP", "B"]
@@ -45,8 +44,7 @@ select = ["E", "F", "I", "UP", "B"]
 [tool.mypy]
 python_version = "3.10"
 strict = true
-files = ["data_generator"]
-exclude = ["tests"]
+files = ["data_generator", "tests"]
 
 [tool.pytest.ini_options]
 addopts = "-ra --cov=data_generator --cov-report=term-missing"

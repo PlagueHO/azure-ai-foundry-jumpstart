@@ -52,7 +52,7 @@ def mock_env_vars() -> Generator[Dict[str, str], None, None]:
     mock_vars = {
         "AZURE_OPENAI_ENDPOINT": "https://mock-endpoint.openai.azure.com",
         "AZURE_OPENAI_DEPLOYMENT": "mock-deployment",
-        "AZURE_OPENAI_API_KEY": "mock-api-key"
+        "AZURE_OPENAI_API_KEY": "mock-api-key",
     }
 
     # Save original environment
