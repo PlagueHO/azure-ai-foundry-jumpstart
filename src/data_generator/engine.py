@@ -14,6 +14,9 @@ import yaml
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 from dotenv import load_dotenv
 from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
+from semantic_kernel.connectors.ai.prompt_execution_settings import (
+    PromptExecutionSettings,
+)
 from semantic_kernel.prompt_template import (
     InputVariable,
     PromptTemplateConfig,
@@ -192,14 +195,14 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
         
         # Create execution settings
         exec_settings = {
-            "azure_open_ai": {
-                "service_id": "azure_open_ai",
-                "extension_data": {
+            "azure_open_ai": PromptExecutionSettings(
+                service_id="azure_open_ai",
+                extension_data={
                     "max_tokens": max_tokens,
                     "temperature": temperature,
                     "top_p": top_p,
-                },
-            }
+                }
+            )
         }
         
         prompt_config = PromptTemplateConfig(
@@ -224,7 +227,7 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
             """Async helper that forwards the call to ``kernel.invoke``."""
             # Adjust to ensure we're passing a valid KernelFunction
             result = await self.kernel.invoke(
-                kernel_function,
+                kernel_function,  # type: ignore
                 **kwargs
             )
             return str(result)
