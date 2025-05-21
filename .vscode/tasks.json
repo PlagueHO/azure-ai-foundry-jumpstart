@@ -39,6 +39,16 @@
                 "isDefault": false
             },
             "problemMatcher": ["$python"]
+        },
+        {
+            "label": "ruff check",
+            "type": "shell",
+            "command": "python -m ruff check .",
+            "group": "test",
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": []
         }
     ]
 }

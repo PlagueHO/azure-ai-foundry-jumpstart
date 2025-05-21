@@ -305,7 +305,7 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
         _generate_one_async : Handles the life-cycle of a single record.
         """
         semaphore = asyncio.Semaphore(concurrency)
-        tasks = []
+        tasks: list[asyncio.Task[None]] = []
         for i in range(1, count + 1):
             # Coroutine to be executed by the task
             coro = self._generate_one_async(
