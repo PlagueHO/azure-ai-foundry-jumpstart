@@ -1,0 +1,44 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Python Linting",
+            "type": "shell",
+            "command": "pylint",
+            "args": [
+                "src/data_generator"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$python"]
+        },
+        {
+            "label": "Run Unit Tests",
+            "type": "shell",
+            "command": "pytest",
+            "args": [
+                "src/data_generator/tests"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": ["$python"]
+        },
+        {
+            "label": "Run Mypy Type Checks",
+            "type": "shell",
+            "command": "mypy",
+            "args": [
+                "src/data_generator"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": ["$python"]
+        }
+    ]
+}
