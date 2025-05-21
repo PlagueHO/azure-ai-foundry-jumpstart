@@ -6,7 +6,7 @@ on:
       paths:
         description: 'List of paths to run tests in'
         type: string
-        default: '["src/data_generator"]'
+        default: '["tests/data_generator"]'
   pull_request:
     branches:
       - main
@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        path: ${{ fromJSON(inputs.paths || '["src/data_generator"]') }}
+        path: ${{ fromJSON(inputs.paths || '["tests/data_generator"]') }}
       fail-fast: false
     
     name: Test ${{ matrix.path }}

@@ -17,4 +17,4 @@ jobs:
   python-tests:
     uses: ./.github/workflows/python-tests.yml
     with:
-      paths: '["src/data_generator"]'
+      paths: '["tests/data_generator"]'

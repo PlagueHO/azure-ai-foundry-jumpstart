@@ -38,7 +38,7 @@
     "forwardPorts": [
         // Forward ports if needed for local development
     ],
-    "postCreateCommand": "find /workspaces/azure-ai-foundry-jumpstart/src -type f -name 'requirements.txt' -exec pip3 install -r {} \\; && find /workspaces/azure-ai-foundry-jumpstart/src -type f -name 'package.json' -execdir npm install \\;",
+    "postCreateCommand": "pip3 install -r /workspaces/azure-ai-foundry-jumpstart/requirements-dev.txt;",
     "remoteUser": "vscode",
     "hostRequirements": {
         "memory": "8gb"

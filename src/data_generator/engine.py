@@ -1,3 +1,10 @@
+"""
+This module provides the `DataGenerator` class, which orchestrates the end-to-end
+data generation process using Azure OpenAI and Semantic Kernel. It includes
+functionality for prompt creation, asynchronous data generation, and output
+persistence in various formats.
+"""
+
 from __future__ import annotations
 
 import asyncio
