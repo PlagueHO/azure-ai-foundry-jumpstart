@@ -42,7 +42,7 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
     log_level:
         Logging verbosity passed straight to :pymod:`logging`.
     azure_openai_endpoint / azure_openai_deployment / azure_openai_api_key :
-        Connection details for Azure OpenAI – can be provided as explicit
+        Connection details for Azure OpenAI - can be provided as explicit
         arguments or via the corresponding environment variables.
     """
 
@@ -192,7 +192,7 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
             )
             for var in input_variables
         ]
-        
+
         # Create execution settings with proper type
         exec_settings: MutableMapping[str, PromptExecutionSettings] = {
             "azure_open_ai": PromptExecutionSettings(
@@ -204,7 +204,7 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
                 }
             )
         }
-        
+
         prompt_config = PromptTemplateConfig(
             name=function_name,
             description=prompt_description,
