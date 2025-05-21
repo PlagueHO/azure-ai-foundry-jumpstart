@@ -4,17 +4,18 @@ import asyncio
 import json
 import logging
 import os
-from collections.abc import Callable
+from collections.abc import Callable, MutableSequence
 from pathlib import Path
 from typing import Any, Final
 
-import colorama
+import colorama  # type: ignore
 import semantic_kernel as sk
 import yaml
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 from dotenv import load_dotenv
 from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
-from semantic_kernel.prompt_template import PromptTemplateConfig
+from semantic_kernel.prompt_template import InputVariable, PromptExecutionSettings, PromptTemplateConfig
+from semantic_kernel.functions import KernelFunction
 
 from data_generator.tool import DataGeneratorTool
 
@@ -177,18 +178,34 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
         Callable[..., str]
             A blocking callable delegating to the underlying async SK runtime.
         """
+        # Convert input_variables to InputVariable objects
+        input_vars: MutableSequence[InputVariable] = [
+            InputVariable(
+                name=var["name"],
+                description=var.get("description", ""),
+                default=var.get("default", None),
+            )
+            for var in input_variables
+        ]
+        
+        # Create execution settings
+        exec_settings: dict[str, PromptExecutionSettings] = {
+            "azure_open_ai": PromptExecutionSettings(
+                service_id="azure_open_ai",
+                extension_data={
+                    "max_tokens": max_tokens,
+                    "temperature": temperature,
+                    "top_p": top_p,
+                },
+            )
+        }
+        
         prompt_config = PromptTemplateConfig(
             name=function_name,
             description=prompt_description,
             template=template,
-            input_variables=input_variables,
-            execution_settings={
-                "azure_open_ai": {  # Assuming "azure_open_ai" is the service_id
-                    "max_tokens": max_tokens,
-                    "temperature": temperature,
-                    "top_p": top_p,
-                }
-            },
+            input_variables=input_vars,
+            execution_settings=exec_settings,
         )
 
         # Register prompt and capture the resulting KernelFunction instance
@@ -203,7 +220,11 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
 
         async def _async_runner(**kwargs: Any) -> str:
             """Async helper that forwards the call to ``kernel.invoke``."""
-            result = await self.kernel.invoke(kernel_function, **kwargs)
+            # Adjust to ensure we're passing a valid KernelFunction
+            result = await self.kernel.invoke(
+                kernel_function,  # type: ignore
+                **kwargs
+            )
             return str(result)
 
         def _sync_runner(**kwargs: Any) -> str:

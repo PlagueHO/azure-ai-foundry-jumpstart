@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 
-@pytest.fixture()  # type: ignore
+@pytest.fixture()
 def temp_output_dir(tmp_path: Path) -> Path:
     """Return a temporary directory Path for test outputs."""
     return tmp_path / "output"
