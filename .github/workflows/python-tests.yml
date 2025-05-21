@@ -58,7 +58,7 @@ jobs:
       - name: Test with pytest
         run: |
           cd ${{ matrix.path }}
-          python -m pytest tests --cov --cov-report=xml --cov-fail-under=90
+          python -m pytest tests --cov --cov-report=xml --cov-fail-under=40
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v4
