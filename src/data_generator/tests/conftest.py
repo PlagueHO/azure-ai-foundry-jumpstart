@@ -1,3 +1,4 @@
+# mypy: disable-error-code="import-not-found, misc"
 """
 Minimal pytest fixtures for data_generator tests.
 """

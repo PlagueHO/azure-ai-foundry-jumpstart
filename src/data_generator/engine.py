@@ -4,7 +4,7 @@ import asyncio
 import json
 import logging
 import os
-from collections.abc import Callable, MutableSequence
+from collections.abc import Callable, MutableMapping, MutableSequence
 from pathlib import Path
 from typing import Any, Final
 
@@ -193,8 +193,8 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
             for var in input_variables
         ]
         
-        # Create execution settings
-        exec_settings = {
+        # Create execution settings with proper type
+        exec_settings: MutableMapping[str, PromptExecutionSettings] = {
             "azure_open_ai": PromptExecutionSettings(
                 service_id="azure_open_ai",
                 extension_data={
