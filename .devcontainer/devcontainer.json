@@ -20,6 +20,10 @@
         "ghcr.io/devcontainers/features/powershell:1": {
             "version": "latest",
             "installAzModule": true
+        },
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "lts",
+            "installYarn": true
         }
     },
     "customizations": {
@@ -31,7 +35,10 @@
                 "ms-azuretools.vscode-docker",
                 "TeamsDevApp.vscode-ai-foundry",
                 "ms-python.vscode-pylance",
-                "ms-python.pylint"
+                "ms-python.pylint",
+                "ms-python.python",
+                "ms-toolsai.jupyter",
+                "dbaeumer.vscode-eslint"
             ]
         }
     },
