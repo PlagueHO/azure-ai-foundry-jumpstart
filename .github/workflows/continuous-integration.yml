@@ -13,8 +13,9 @@ permissions:
 jobs:
   lint-and-publish-bicep:
     uses: ./.github/workflows/lint-and-publish-bicep.yml
-    
+
   python-tests:
     uses: ./.github/workflows/python-tests.yml
     with:
-      paths: '["tests/data_generator"]'
+      # List all app names (folders) in /src and /tests that should be tested
+      app_names: '["data_generator"]'

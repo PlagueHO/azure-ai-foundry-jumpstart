@@ -3,10 +3,10 @@ name: python-tests
 on:
   workflow_call:
     inputs:
-      paths:
-        description: 'List of paths to run tests in'
+      app_names:
+        description: 'List of python app names (folders in /src and /tests) to test'
         type: string
-        default: '["tests/data_generator"]'
+        default: '["data_generator"]'
   pull_request:
     branches:
       - main
@@ -19,11 +19,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        path: ${{ fromJSON(inputs.paths || '["tests/data_generator"]') }}
+        app: ${{ fromJSON(inputs.app_names || '["data_generator"]') }}
       fail-fast: false
-    
-    name: Test ${{ matrix.path }}
-    
+
+    name: Test ${{ matrix.app }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -31,37 +31,37 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.13'
           cache: 'pip'
 
       - name: Set path variables
         id: path-vars
         run: |
-          echo "path_basename=$(basename ${{ matrix.path }})" >> $GITHUB_OUTPUT
+          echo "app_name=${{ matrix.app }}" >> $GITHUB_OUTPUT
 
       - name: Install dependencies
         run: |
-          cd ${{ matrix.path }}
+          cd src/${{ matrix.app }}
           python -m pip install --upgrade pip
           python -m pip install -e .[dev]
 
       - name: Lint with ruff
         run: |
-          cd ${{ matrix.path }}
+          cd src/${{ matrix.app }}
           python -m ruff check .
 
       - name: Type check with mypy
         run: |
-          cd ${{ matrix.path }}
+          cd src/${{ matrix.app }}
           python -m mypy .
 
       - name: Test with pytest
         run: |
-          cd ${{ matrix.path }}
-          python -m pytest tests --cov --cov-report=xml --cov-fail-under=40
+          cd src/${{ matrix.app }}
+          python -m pytest ../../tests/${{ matrix.app }} --cov --cov-report=xml --cov-fail-under=40
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v4
         with:
-          file: ./${{ matrix.path }}/coverage.xml
-          name: ${{ steps.path-vars.outputs.path_basename }}-coverage
+          file: ./src/${{ matrix.app }}/coverage.xml
+          name: ${{ steps.path-vars.outputs.app_name }}-coverage
