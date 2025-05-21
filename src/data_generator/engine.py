@@ -14,7 +14,6 @@ import yaml
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 from dotenv import load_dotenv
 from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
-from semantic_kernel.functions import KernelFunction
 from semantic_kernel.prompt_template import (
     InputVariable,
     PromptExecutionSettings,
