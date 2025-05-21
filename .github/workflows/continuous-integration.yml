@@ -8,7 +8,13 @@ on:
 permissions:
   checks: write
   pull-requests: write
+  contents: read
 
 jobs:
   lint-and-publish-bicep:
     uses: ./.github/workflows/lint-and-publish-bicep.yml
+    
+  python-tests:
+    uses: ./.github/workflows/python-tests.yml
+    with:
+      paths: '["src/data_generator"]'

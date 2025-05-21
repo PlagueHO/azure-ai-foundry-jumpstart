@@ -4,16 +4,24 @@ import asyncio
 import json
 import logging
 import os
+from collections.abc import Callable, MutableMapping, MutableSequence
 from pathlib import Path
-from typing import Callable, Dict, List, Any, Final
+from typing import Any, Final
 
-import yaml
 import colorama
-from dotenv import load_dotenv
-from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 import semantic_kernel as sk
+import yaml
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+from dotenv import load_dotenv
 from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
-from semantic_kernel.prompt_template import PromptTemplateConfig
+from semantic_kernel.connectors.ai.prompt_execution_settings import (
+    PromptExecutionSettings,
+)
+from semantic_kernel.prompt_template import (
+    InputVariable,
+    PromptTemplateConfig,
+)
+
 from data_generator.tool import DataGeneratorTool
 
 __all__: list[str] = ["DataGenerator"]
@@ -48,7 +56,7 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
 
     def __init__(                       # noqa: PLR0913
         self,
-        tool: "DataGeneratorTool",
+        tool: DataGeneratorTool,
         *,
         log_level: str | int = "INFO",
         azure_openai_endpoint: str | None = None,
@@ -70,10 +78,10 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
         )
 
         if not self.azure_openai_endpoint or not self.azure_openai_deployment:
-            raise EnvironmentError(
+            raise OSError(
                 "Azure OpenAI connection details missing. "
-                "Set --azure-openai-endpoint & --azure-openai-deployment CLI flags "
-                "or AZURE_OPENAI_ENDPOINT / AZURE_OPENAI_DEPLOYMENT environment variables."
+                "Set --azure-openai-endpoint & --azure-openai-deployment CLI flags\n"
+                "or AZURE_OPENAI_ENDPOINT / AZURE_OPENAI_DEPLOYMENT env variables."
             )
 
         # ------------------------------------------------------------------ #
@@ -120,7 +128,9 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
                 service_id="azure_open_ai",
             )
         else:
-            self.logger.debug("Authenticating to Azure OpenAI with DefaultAzureCredential.")
+            self.logger.debug(
+                "Authenticating to Azure OpenAI with DefaultAzureCredential."
+            )
             token_provider = get_bearer_token_provider(
                 DefaultAzureCredential(),
                 "https://cognitiveservices.azure.com/.default",
@@ -142,7 +152,7 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
         function_name: str,
         plugin_name: str,
         prompt_description: str,
-        input_variables: List[Dict[str, Any]],
+        input_variables: list[dict[str, Any]],
         max_tokens: int,
         temperature: float = 0.7,
         top_p: float = 0.95,
@@ -173,18 +183,34 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
         Callable[..., str]
             A blocking callable delegating to the underlying async SK runtime.
         """
-        prompt_config = PromptTemplateConfig(
-            name=function_name,
-            description=prompt_description,
-            template=template,
-            input_variables=input_variables,
-            execution_settings={
-                "azure_open_ai": {  # Assuming "azure_open_ai" is the service_id
+        # Convert input_variables to InputVariable objects
+        input_vars: MutableSequence[InputVariable] = [
+            InputVariable(
+                name=var["name"],
+                description=var.get("description", ""),
+                default=var.get("default", None),
+            )
+            for var in input_variables
+        ]
+        
+        # Create execution settings with proper type
+        exec_settings: MutableMapping[str, PromptExecutionSettings] = {
+            "azure_open_ai": PromptExecutionSettings(
+                service_id="azure_open_ai",
+                extension_data={
                     "max_tokens": max_tokens,
                     "temperature": temperature,
                     "top_p": top_p,
                 }
-            },
+            )
+        }
+        
+        prompt_config = PromptTemplateConfig(
+            name=function_name,
+            description=prompt_description,
+            template=template,
+            input_variables=input_vars,
+            execution_settings=exec_settings,
         )
 
         # Register prompt and capture the resulting KernelFunction instance
@@ -193,11 +219,17 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
             plugin_name=plugin_name,
             prompt_template_config=prompt_config,
         )
-        self.logger.debug("Prompt function '%s.%s' created.", plugin_name, function_name)
+        self.logger.debug(
+            "Prompt function '%s.%s' created.", plugin_name, function_name
+        )
 
         async def _async_runner(**kwargs: Any) -> str:
             """Async helper that forwards the call to ``kernel.invoke``."""
-            result = await self.kernel.invoke(kernel_function, **kwargs)
+            # Adjust to ensure we're passing a valid KernelFunction
+            result = await self.kernel.invoke(
+                kernel_function,  # type: ignore
+                **kwargs
+            )
             return str(result)
 
         def _sync_runner(**kwargs: Any) -> str:
@@ -280,7 +312,7 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
                 task_coro = asyncio.wait_for(coro, timeout=timeout_seconds)
             else:
                 task_coro = coro
-            
+
             tasks.append(asyncio.create_task(task_coro))
 
         failures = 0
@@ -288,13 +320,19 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
             try:
                 await t
             except asyncio.TimeoutError:
-                self.logger.error("Generation task timed out after %s seconds.", timeout_seconds)
+                self.logger.error(
+                    "Generation task timed out after %s seconds.", timeout_seconds
+                )
                 failures += 1
             except Exception:  # pylint: disable=broad-exception-caught
                 self.logger.exception("Generation task failed")
                 failures += 1
 
-        self.logger.info("Generation finished. Success: %s, Failed: %s", count - failures, failures)
+        self.logger.info(
+            "Generation finished. Success: %s, Failed: %s",
+            count - failures,
+            failures
+        )
 
     async def _generate_one_async(
         self,

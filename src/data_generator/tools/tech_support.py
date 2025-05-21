@@ -14,7 +14,7 @@ import logging
 import random
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import yaml
 
@@ -38,9 +38,11 @@ class TechSupportTool(DataGeneratorTool):
     def __init__(self, *, system_description: str | None = None) -> None:
         """Instantiate the tool, optionally overriding *system_description*."""
         super().__init__()
-        self.system_description = system_description or "A generic SaaS platform running in Azure."
+        self.system_description = (
+            system_description or "A generic SaaS platform running in Azure."
+        )
 
-    def cli_arguments(self) -> List[Dict[str, Any]]:
+    def cli_arguments(self) -> list[dict[str, Any]]:
         """Argparse specification consumed by the top-level CLI wrapper."""
         return [
             {
@@ -48,7 +50,9 @@ class TechSupportTool(DataGeneratorTool):
                 "kwargs": {
                     "required": True,
                     "metavar": "TEXT",
-                    "help": "Short description of the system the support case relates to.",
+                    "help": (
+                        "Short description of the system the support case relates to."
+                    ),
                 },
             }
         ]
@@ -60,31 +64,32 @@ class TechSupportTool(DataGeneratorTool):
         # store for later use
         self.system_description = ns.system_description
 
-    def examples(self) -> List[str]:
+    def examples(self) -> list[str]:
         """Representative usage snippets for `--help` output."""
         return [
             "python -m generate_data "
             "--scenario tech-support "
             "--count 50 "
-            '--system-description "ContosoShop - React SPA front-end with Azure App Service + SQL back-end" '
+            '--system-description "ContosoShop - React SPA front-end with '
+            'Azure App Service + SQL back-end" '
             "--output-format yaml",
         ]
 
     # ------------------------------------------------------------------ #
     # Output formats                                                     #
     # ------------------------------------------------------------------ #
-    def supported_output_formats(self) -> List[str]:  # noqa: D401
+    def supported_output_formats(self) -> list[str]:  # noqa: D401
         """Return the list of output formats this tool can generate."""
         return ["yaml", "json", "txt"]
 
     # ------------------------------------------------------------------ #
     # Prompt construction                                                #
     # ------------------------------------------------------------------ #
-    _STATUS:   List[str] = ["open", "investigating", "resolved", "closed"]
-    _SEVERITY: List[str] = ["critical", "high", "medium", "low"]
-    _PRIORITY: List[str] = ["P1", "P2", "P3", "P4"]
+    _STATUS:   list[str] = ["open", "investigating", "resolved", "closed"]
+    _SEVERITY: list[str] = ["critical", "high", "medium", "low"]
+    _PRIORITY: list[str] = ["P1", "P2", "P3", "P4"]
 
-    def _random_attributes(self) -> Tuple[str, str, str]:
+    def _random_attributes(self) -> tuple[str, str, str]:
         """Randomly choose status, severity and priority values."""
         return (
             random.choice(self._STATUS),
@@ -107,7 +112,9 @@ class TechSupportTool(DataGeneratorTool):
             "Use ISO-8601 timestamps and do NOT invent real PII.\n\n"
         )
 
-    def build_prompt(self, output_format: str, *, unique_id: str | None = None) -> str:  # noqa: D401
+    def build_prompt(
+        self, output_format: str, *, unique_id: str | None = None
+    ) -> str:  # noqa: D401
         """
         Construct the full system-prompt string for the requested *output_format*.
         All variable data (status, ids, etc.) are pre-baked so the kernel only
@@ -175,7 +182,8 @@ class TechSupportTool(DataGeneratorTool):
             '  "status": "open|investigating|resolved|closed",\n'
             '  "customer_name": "realistic name",\n'
             '  "contact_email": "realistic but fake email",\n'
-            '  "conversation_history": [ { "role": "...", "message": "...", "timestamp": "..." } ],\n'
+            '  "conversation_history": [ '
+            '{ "role": "...", "message": "...", "timestamp": "..." } ],\n'
             '  "resolved_at": "ISO 8601 (optional)",\n'
             '  "resolution": "text (optional)",\n'
             '  "area": "frontend|backend|database|network|other (optional)",\n'

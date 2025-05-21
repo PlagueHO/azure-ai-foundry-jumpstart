@@ -24,6 +24,8 @@ dev = [
   "ruff>=0.4.5",
   "black>=24.4.2",
   "mypy>=1.10",
+  "types-PyYAML>=6.0.0",  # For mypy type checking
+  "types-colorama>=0.4.15.12",  # For mypy type checking
   "pytest>=8.1",
   "pytest-asyncio>=0.23.7",
   "pytest-cov>=5.0",
@@ -37,16 +39,16 @@ line-length = 88
 target-version = ["py310"]
 
 [tool.ruff]
-exclude = ["tests/**"]
 line-length = 88
 target-version = "py310"
+
+[tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
 
 [tool.mypy]
 python_version = "3.10"
 strict = true
-files = ["data_generator"]
-exclude = ["tests"]
+files = ["data_generator", "tests"]
 
 [tool.pytest.ini_options]
 addopts = "-ra --cov=data_generator --cov-report=term-missing"

@@ -4,9 +4,9 @@ import argparse
 import json
 import logging
 import uuid
-
 from abc import ABC, abstractmethod
-from typing import Any, ClassVar, Dict, List, Type, Callable
+from collections.abc import Callable
+from typing import Any, ClassVar
 
 import yaml
 
@@ -24,9 +24,9 @@ class DataGeneratorTool(ABC):
     # ------------------------------------------------------------------ #
     # Registry for dynamic discovery                                     #
     # ------------------------------------------------------------------ #
-    _REGISTRY: ClassVar[Dict[str, Type["DataGeneratorTool"]]] = {}
+    _REGISTRY: ClassVar[dict[str, type[DataGeneratorTool]]] = {}
 
-    def __init_subclass__(cls, **kwargs):  # noqa: D401 (pylint)
+    def __init_subclass__(cls, **kwargs: Any) -> None:  # noqa: D401 (pylint)
         """Register every concrete subclass in the internal tool registry.
 
         This enables dynamic lookup/instantiation via `DataGeneratorTool.from_name`
@@ -34,7 +34,9 @@ class DataGeneratorTool(ABC):
         """
         super().__init_subclass__(**kwargs)
         if not getattr(cls, "name", None):
-            raise AttributeError("DataGeneratorTool subclasses must define a unique `name` attribute.")
+            raise AttributeError(
+                "DataGeneratorTool subclasses must define a unique `name` attribute."
+            )
         if cls.name in cls._REGISTRY:
             raise ValueError(f"Duplicate tool registration for name '{cls.name}'.")
         cls._REGISTRY[cls.name] = cls
@@ -44,14 +46,15 @@ class DataGeneratorTool(ABC):
     # Mandatory interface                                                #
     # ------------------------------------------------------------------ #
     name: str  # unique identifier (e.g. "tech-support")
-    toolName: str  # Semantic Kernel tool name (e.g. "TechSupport"). Match: '^[0-9A-Za-z_]+$'
+    # Semantic Kernel tool name (e.g. "TechSupport"). Match: '^[0-9A-Za-z_]+$'
+    toolName: str
 
     @abstractmethod
     def build_prompt(self, output_format: str, *, unique_id: str | None = None) -> str:
         """Return the full prompt string for the given output format."""
 
     @abstractmethod
-    def cli_arguments(self) -> List[Dict[str, Any]]:
+    def cli_arguments(self) -> list[dict[str, Any]]:
         """
         Specification for CLI arguments consumed by this tool.
         Return a list of *argparse.add_argument* keyword-dicts.
@@ -64,7 +67,7 @@ class DataGeneratorTool(ABC):
         """
 
     @abstractmethod
-    def examples(self) -> List[str]:
+    def examples(self) -> list[str]:
         """Return usage snippets for `--help` epilog."""
 
     @abstractmethod
@@ -81,12 +84,12 @@ class DataGeneratorTool(ABC):
     # ------------------------------------------------------------------ #
     # Format helpers                                                     #
     # ------------------------------------------------------------------ #
-    _FORMAT_PARSERS: ClassVar[Dict[str, Callable[[str], Any]]] = {
+    _FORMAT_PARSERS: ClassVar[dict[str, Callable[[str], Any]]] = {
         "json": json.loads,
         "yaml": yaml.safe_load,
     }
 
-    def supported_output_formats(self) -> List[str]:
+    def supported_output_formats(self) -> list[str]:
         """Return the list of output formats recognised by ``post_process``."""
         return [*self._FORMAT_PARSERS.keys(), "txt"]
 
@@ -118,14 +121,16 @@ class DataGeneratorTool(ABC):
         try:
             return parser(raw)
         except Exception:                # noqa: BLE001 (broad but intentional)
-            _logger.debug("Failed to parse %s; returning raw string.", fmt, exc_info=True)
+            _logger.debug(
+                "Failed to parse %s; returning raw string.", fmt, exc_info=True
+            )
             return raw
 
     # ------------------------------------------------------------------ #
     # Helper: factory                                                    #
     # ------------------------------------------------------------------ #
     @classmethod
-    def from_name(cls, name: str) -> "DataGeneratorTool":
+    def from_name(cls, name: str) -> DataGeneratorTool:
         """Factory helper that returns a new instance of the requested tool.
 
         Parameters
@@ -146,5 +151,7 @@ class DataGeneratorTool(ABC):
         try:
             tool_cls = cls._REGISTRY[name]
         except KeyError as exc:
-            raise KeyError(f"No DataGeneratorTool registered with name '{name}'.") from exc
-        return tool_cls()  # type: ignore[call-arg]
+            raise KeyError(
+                f"No DataGeneratorTool registered with name '{name}'."
+            ) from exc
+        return tool_cls()

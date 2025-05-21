@@ -2,15 +2,14 @@ from __future__ import annotations
 
 import argparse
 import json
-import logging
-import random
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Dict, List
+from typing import Any
 
 import yaml
 
 from ..tool import DataGeneratorTool
+
 
 class HealthcareRecordTool(DataGeneratorTool):
     """Generate synthetic healthcare records in YAML, JSON or plain-text."""
@@ -24,13 +23,15 @@ class HealthcareRecordTool(DataGeneratorTool):
     # ------------------------------------------------------------------ #
     # CLI contract                                                       #
     # ------------------------------------------------------------------ #
-    def __init__(self, *, document_type: str | None = None, specialty: str | None = None) -> None:
+    def __init__(
+        self, *, document_type: str | None = None, specialty: str | None = None
+    ) -> None:
         """Instantiate with optional document type and specialty."""
         super().__init__()
         self.document_type = document_type or "Clinic Note"
         self.specialty = specialty or "General Medicine"
 
-    def cli_arguments(self) -> List[Dict[str, Any]]:
+    def cli_arguments(self) -> list[dict[str, Any]]:
         """Define scenario-specific CLI flags."""
         return [
             {
@@ -39,7 +40,9 @@ class HealthcareRecordTool(DataGeneratorTool):
                     "required": False,
                     "metavar": "TEXT",
                     "default": "Clinic Note",
-                    "help": "Type of medical document (e.g. Clinic Note, Discharge Summary).",
+                    "help": (
+                        "Type of medical document (e.g. Clinic Note, Discharge Summary)"
+                    ),
                 },
             },
             {
@@ -48,7 +51,9 @@ class HealthcareRecordTool(DataGeneratorTool):
                     "required": False,
                     "metavar": "TEXT",
                     "default": "General Medicine",
-                    "help": "Medical specialty for the record (e.g. Cardiology, Oncology).",
+                    "help": (
+                        "Medical specialty for the record (e.g. Cardiology, Oncology)."
+                    ),
                 },
             },
         ]
@@ -58,7 +63,7 @@ class HealthcareRecordTool(DataGeneratorTool):
         self.document_type = ns.document_type or self.document_type
         self.specialty = ns.specialty or self.specialty
 
-    def examples(self) -> List[str]:
+    def examples(self) -> list[str]:
         """Usage examples for help text."""
         return [
             "python -m generate_data "
@@ -72,7 +77,7 @@ class HealthcareRecordTool(DataGeneratorTool):
     # ------------------------------------------------------------------ #
     # Output formats                                                     #
     # ------------------------------------------------------------------ #
-    def supported_output_formats(self) -> List[str]:
+    def supported_output_formats(self) -> list[str]:
         """Return supported output formats."""
         return ["yaml", "json", "text"]
 

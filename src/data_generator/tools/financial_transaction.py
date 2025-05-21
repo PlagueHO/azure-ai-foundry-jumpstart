@@ -5,11 +5,12 @@ import json
 import random
 import uuid
 from datetime import date, timedelta
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import yaml
 
 from ..tool import DataGeneratorTool
+
 
 class FinancialTransactionTool(DataGeneratorTool):
     """Generate synthetic bank-account statements with ≥50 transactions."""
@@ -30,7 +31,7 @@ class FinancialTransactionTool(DataGeneratorTool):
         self.transactions_max = 50
         self.fraud_percent = 0
 
-    def cli_arguments(self) -> List[Dict[str, Any]]:
+    def cli_arguments(self) -> list[dict[str, Any]]:
         """Define scenario-specific CLI flags."""
         return [
             {
@@ -59,7 +60,9 @@ class FinancialTransactionTool(DataGeneratorTool):
                     "metavar": "P",
                     "type": int,
                     "default": 0,
-                    "help": "Percentage chance to include one subtle fraudulent transaction.",
+                    "help": (
+                        "Percentage chance to include one subtle fraudulent transaction"
+                    ),
                 },
             },
         ]
@@ -70,7 +73,7 @@ class FinancialTransactionTool(DataGeneratorTool):
         self.transactions_max = ns.transactions_max
         self.fraud_percent = max(0, min(100, ns.fraud_percent))
 
-    def examples(self) -> List[str]:
+    def examples(self) -> list[str]:
         """Usage examples for help text."""
         return [
             "python -m data_generator "
@@ -85,14 +88,14 @@ class FinancialTransactionTool(DataGeneratorTool):
     # ------------------------------------------------------------------ #
     # Output formats                                                     #
     # ------------------------------------------------------------------ #
-    def supported_output_formats(self) -> List[str]:
+    def supported_output_formats(self) -> list[str]:
         """Return supported output formats."""
         return ["yaml", "json", "text"]
 
     # ------------------------------------------------------------------ #
     # Prompt construction                                                #
     # ------------------------------------------------------------------ #
-    def _statement_period(self) -> Tuple[str, str]:
+    def _statement_period(self) -> tuple[str, str]:
         """Compute previous full-month period dates."""
         today = date.today()
         first_current = today.replace(day=1)
@@ -100,7 +103,7 @@ class FinancialTransactionTool(DataGeneratorTool):
         first_prev = last_prev.replace(day=1)
         return first_prev.isoformat(), last_prev.isoformat()
 
-    def _prompt_common(self, *, unique_id: str | None = None) -> Dict[str, str]:
+    def _prompt_common(self, *, unique_id: str | None = None) -> dict[str, str]:
         """Return identifiers and period for the statement."""
         stmt_id = unique_id or str(uuid.uuid4())
         acct_id = str(random.randint(10**9, 10**10 - 1))
@@ -122,13 +125,15 @@ class FinancialTransactionTool(DataGeneratorTool):
             f"Statement ID: {hdr['statement_id']}\n"
             f"Account ID: {hdr['account_id']} ({hdr['account_type']})\n"
             f"Period: {hdr['start_date']} - {hdr['end_date']}\n\n"
-            f"Generate at least {self.transactions_max} transactions: dates, descriptions, amounts, "
+            f"Generate at least {self.transactions_max} transactions: dates, "
+            f"descriptions, amounts, "
             "running balances; use ISO-8601 dates and two-decimal USD amounts.\n\n"
         )
         if self.fraud_percent > 0:
             base += (
                 f"There is a {self.fraud_percent}% chance that one transaction "
-                "should be subtly fraudulent (e.g. small duplicate charge or slight amount mismatch).\n\n"
+                + "should be subtly fraudulent (e.g. small duplicate charge "
+                + "or slight amount mismatch).\n\n"
             )
         if output_format == "yaml":
             return base + self._yaml_skeleton(hdr)
@@ -139,7 +144,7 @@ class FinancialTransactionTool(DataGeneratorTool):
     # ------------------------------------------------------------------ #
     # Static prompt fragments                                            #
     # ------------------------------------------------------------------ #
-    def _yaml_skeleton(self, hdr: Dict[str, str]) -> str:
+    def _yaml_skeleton(self, hdr: dict[str, str]) -> str:
         """YAML schema instructions including echo fields."""
         return (
             "Return valid YAML only (no fences).\n\n"
@@ -161,7 +166,7 @@ class FinancialTransactionTool(DataGeneratorTool):
             f"# repeat for ≥{self.transactions_max} transactions\n"
         )
 
-    def _json_skeleton(self, hdr: Dict[str, str]) -> str:
+    def _json_skeleton(self, hdr: dict[str, str]) -> str:
         """JSON schema instructions including echo fields."""
         return (
             "Return valid JSON only (no fences).\n\n"
@@ -176,7 +181,8 @@ class FinancialTransactionTool(DataGeneratorTool):
             '  "currency": "USD",\n'
             '  "transactions": [\n'
             "    { \"tx_id\": \"uuid\", \"date\": \"ISO\", \"description\": \"text\", "
-            "\"amount\": -12.34, \"balance_after\": 1222.22, \"category\": \"groceries\" }\n"
+            "\"amount\": -12.34, \"balance_after\": 1222.22, "
+            "\"category\": \"groceries\" }\n"
             f"    // ... ≥{self.transactions_max} entries ...\n"
             "  ]\n"
             "}\n"

@@ -3,7 +3,8 @@ Command-line interface for the data-generator package.
 
 Usage (once the project is installed in the active Python environment):
 
-    generate-data --scenario tech-support --count 50 --out-dir ./sample-data/tech-support/yaml \
+    generate-data --scenario tech-support --count 50 \
+                  --out-dir ./sample-data/tech-support/yaml \
                   --system-description "ContosoShop SaaS" --output-format yaml
 
 The script performs a *two-phase* argparse parse:
@@ -18,7 +19,7 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 from .engine import DataGenerator
 from .tool import DataGeneratorTool
@@ -47,7 +48,7 @@ def _add_common_args(p: argparse.ArgumentParser) -> None:
     p.add_argument("--azure-openai-api-key")
 
 
-def main(argv: List[str] | None = None) -> None:  # noqa: C901 (argparse flow)
+def main(argv: list[str] | None = None) -> None:  # noqa: C901 (argparse flow)
     """Entry point for the `generate-data` CLI.
 
     This function performs a *two-phase* parsing:
@@ -82,7 +83,7 @@ def main(argv: List[str] | None = None) -> None:  # noqa: C901 (argparse flow)
     # Inject scenario-specific args.
     for arg in tool.cli_arguments():
         flags = arg.get("flags", [])
-        kwargs: Dict[str, Any] = arg.get("kwargs", {})
+        kwargs: dict[str, Any] = arg.get("kwargs", {})
         parser.add_argument(*flags, **kwargs)
 
     args = parser.parse_args(argv)
