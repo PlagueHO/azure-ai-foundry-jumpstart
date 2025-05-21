@@ -2,10 +2,6 @@
 Simple stub tests for the data_generator.tool module.
 """
 
-import pytest
-
-from data_generator.tool import DataGeneratorTool
-
 
 def test_tool_registry_stub() -> None:
     """Stub test for tool registry functionality."""

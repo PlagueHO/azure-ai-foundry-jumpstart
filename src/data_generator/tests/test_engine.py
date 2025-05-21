@@ -2,8 +2,6 @@
 Simple stub tests for the data_generator.engine module.
 """
 
-import pytest
-
 
 def test_environment_vars_stub() -> None:
     """Stub test for environment variable handling."""
