@@ -26,7 +26,7 @@ class DataGeneratorTool(ABC):
     # ------------------------------------------------------------------ #
     _REGISTRY: ClassVar[dict[str, type[DataGeneratorTool]]] = {}
 
-    def __init_subclass__(cls, **kwargs):  # noqa: D401 (pylint)
+    def __init_subclass__(cls, **kwargs: Any) -> None:  # noqa: D401 (pylint)
         """Register every concrete subclass in the internal tool registry.
 
         This enables dynamic lookup/instantiation via `DataGeneratorTool.from_name`
@@ -154,4 +154,4 @@ class DataGeneratorTool(ABC):
             raise KeyError(
                 f"No DataGeneratorTool registered with name '{name}'."
             ) from exc
-        return tool_cls()  # type: ignore[call-arg]
+        return tool_cls()

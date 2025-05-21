@@ -19,7 +19,7 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
-from typing import Any, dict, list
+from typing import Any
 
 from .engine import DataGenerator
 from .tool import DataGeneratorTool
