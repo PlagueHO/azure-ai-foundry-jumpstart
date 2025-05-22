@@ -3,20 +3,13 @@ Unit tests for the data_generator.tools.tech_support module.
 """
 
 import argparse
-import json
-import sys
 import uuid
 from datetime import datetime, timezone
-from pathlib import Path
 from unittest.mock import patch, MagicMock
 
 import pytest
-import yaml
 
-# Add the src directory to the Python path
-sys.path.append("/home/runner/work/azure-ai-foundry-jumpstart/azure-ai-foundry-jumpstart/src")
-
-# Now import the module we want to test
+# Import the module we want to test
 from data_generator.tools.tech_support import TechSupportTool
 
 
