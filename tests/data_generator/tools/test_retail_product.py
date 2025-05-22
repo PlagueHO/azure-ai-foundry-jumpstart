@@ -7,15 +7,10 @@ the module, ensuring it's included in coverage metrics.
 
 import argparse
 import json
-import sys
-import os
 import uuid
 from unittest.mock import Mock, patch
 
 import yaml
-
-# Make sure we can directly import the data_generator module
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../src")))
 
 # Setup the mock for DataGeneratorTool first
 class MockDataGeneratorTool:
@@ -46,10 +41,11 @@ class MockDataGeneratorTool:
 # Create a mock module to hold our mock class
 mock_module = Mock()
 mock_module.DataGeneratorTool = MockDataGeneratorTool
-sys.modules['data_generator.tool'] = mock_module
+import sys
+sys.modules['tool'] = mock_module
 
 # Now import the actual module to test
-from data_generator.tools.retail_product import RetailProductTool
+from tools.retail_product import RetailProductTool
 
 
 class TestRetailProductTool:
