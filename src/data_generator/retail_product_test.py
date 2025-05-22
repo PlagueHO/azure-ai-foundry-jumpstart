@@ -9,9 +9,11 @@ import json
 import random
 import uuid
 from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional, Union
 from unittest.mock import Mock, patch
 
 import yaml
+
 
 # Since we want to test our standalone implementation directly,
 # we'll define our test classes right here
@@ -27,11 +29,11 @@ class RetailProductTool:
     # Class data
     _CURRENCIES = ["USD", "EUR", "GBP", "AUD", "CAD"]
 
-    def __init__(self, *, industry=None):
+    def __init__(self, *, industry: Optional[str] = None) -> None:
         """Create a new tool instance with an optional industry override."""
         self.industry = industry or "general"
 
-    def cli_arguments(self):
+    def cli_arguments(self) -> List[Dict[str, Any]]:
         """Argparse specification consumed by the top-level CLI wrapper."""
         return [
             {
@@ -44,32 +46,32 @@ class RetailProductTool:
             }
         ]
 
-    def validate_args(self, ns):
+    def validate_args(self, ns: argparse.Namespace) -> None:
         """Persist validated CLI arguments onto the instance."""
         self.industry = ns.industry or "general"
 
-    def examples(self):
+    def examples(self) -> List[str]:
         """Representative usage snippets for `--help` output."""
         return [
             "python -m generate_data --scenario retail-product --count 100 "
             "--industry electronics --output-format json"
         ]
 
-    def supported_output_formats(self):
+    def supported_output_formats(self) -> List[str]:
         """Return the list of output formats this tool can generate."""
         return ["yaml", "json", "text"]
 
     @staticmethod
-    def _random_price():
+    def _random_price() -> float:
         """Return a random realistic product price."""
         return round(random.uniform(5.0, 500.0), 2)
 
     @staticmethod
-    def _random_stock():
+    def _random_stock() -> int:
         """Return a random realistic stock quantity."""
         return random.randint(0, 500)
 
-    def _prompt_common(self, *, unique_id=None):
+    def _prompt_common(self, *, unique_id: Optional[str] = None) -> str:
         """Shared prompt header including an optional caller-supplied id."""
         product_id = unique_id or str(uuid.uuid4())
         created_at = datetime.now(timezone.utc).isoformat()
@@ -79,7 +81,7 @@ class RetailProductTool:
             f"Industry Theme: {self.industry}\n\n"
         )
 
-    def build_prompt(self, output_format, *, unique_id=None):
+    def build_prompt(self, output_format: str, *, unique_id: Optional[str] = None) -> str:
         """Return the full prompt for the requested output_format."""
         base = (
             "You are a seasoned e-commerce copy-writer producing REALISTIC BUT "
@@ -96,7 +98,7 @@ class RetailProductTool:
         # TEXT
         return base + self._text_skeleton()
 
-    def _yaml_skeleton(self):
+    def _yaml_skeleton(self) -> str:
         """YAML response schema instructing the LLM on the exact shape."""
         return (
             "Return valid YAML ONLY.\n\n"
@@ -114,7 +116,7 @@ class RetailProductTool:
             "rating: float 0-5 with one decimal (optional)\n"
         )
 
-    def _json_skeleton(self):
+    def _json_skeleton(self) -> str:
         """JSON response schema instructing the LLM on the exact shape."""
         return (
             "Return valid JSON ONLY.\n\n"
@@ -133,7 +135,7 @@ class RetailProductTool:
             "}\n"
         )
 
-    def _text_skeleton(self):
+    def _text_skeleton(self) -> str:
         """Plain-text layout for tools that prefer unstructured output."""
         return (
             "Return plain text WITHOUT YAML/JSON markers.\n\n"
@@ -150,10 +152,10 @@ class RetailProductTool:
             "Rating: 4.6\n"
         )
 
-    def post_process(self, raw, output_format):
+    def post_process(self, raw: str, output_format: str) -> Union[str, Dict[str, Any]]:
         """Deserialize based on output_format and enrich if applicable."""
         fmt = output_format.lower()
-        parsed_data = raw
+        parsed_data: Union[str, Dict[str, Any]] = raw
 
         if fmt == "json":
             try:
@@ -179,7 +181,7 @@ class RetailProductTool:
 
         return parsed_data
 
-    def get_system_description(self):
+    def get_system_description(self) -> str:
         """Return a sentence describing the target retail catalogue."""
         return f"Retail catalogue for {self.industry} products"
 
@@ -253,7 +255,7 @@ class TestRetailProductTool:
     # ------------------------------------------------------------------ #
     @patch('uuid.uuid4')
     @patch('datetime.datetime')
-    def test_prompt_common(self, mock_datetime, mock_uuid) -> None:
+    def test_prompt_common(self, mock_datetime: Any, mock_uuid: Any) -> None:
         """Test _prompt_common includes expected elements."""
         # Setup mocks
         mock_uuid.return_value = Mock(hex='test-uuid')
@@ -272,7 +274,7 @@ class TestRetailProductTool:
 
     @patch('uuid.uuid4')
     @patch('datetime.datetime')
-    def test_prompt_common_generates_uuid(self, mock_datetime, mock_uuid) -> None:
+    def test_prompt_common_generates_uuid(self, mock_datetime: Any, mock_uuid: Any) -> None:
         """Test _prompt_common generates UUID when not provided."""
         # Setup mocks
         mock_uuid.return_value = Mock(__str__=lambda _: 'test-uuid')
@@ -293,7 +295,7 @@ class TestRetailProductTool:
         """Test build_prompt for YAML output format."""
         # Setup mocks for _prompt_common
         tool = RetailProductTool(industry="electronics")
-        tool._prompt_common = lambda unique_id: (
+        tool._prompt_common = lambda unique_id: (  # type: ignore
             "Mock header\n\n" if unique_id is None
             else f"Mock header with {unique_id}\n\n"
         )
@@ -308,7 +310,7 @@ class TestRetailProductTool:
         """Test build_prompt for JSON output format."""
         # Setup mocks for _prompt_common
         tool = RetailProductTool(industry="books")
-        tool._prompt_common = lambda unique_id: (
+        tool._prompt_common = lambda unique_id: (  # type: ignore
             "Mock header\n\n" if unique_id is None 
             else f"Mock header with {unique_id}\n\n"
         )
@@ -323,7 +325,7 @@ class TestRetailProductTool:
         """Test build_prompt for plain text output format."""
         # Setup mocks for _prompt_common
         tool = RetailProductTool()
-        tool._prompt_common = lambda unique_id: (
+        tool._prompt_common = lambda unique_id: (  # type: ignore
             "Mock header\n\n" if unique_id is None 
             else f"Mock header with {unique_id}\n\n"
         )
@@ -338,7 +340,7 @@ class TestRetailProductTool:
     # Helper Method Tests                                                #
     # ------------------------------------------------------------------ #
     @patch('random.uniform')
-    def test_random_price(self, mock_uniform) -> None:
+    def test_random_price(self, mock_uniform: Any) -> None:
         """Test _random_price returns float in expected range."""
         mock_uniform.return_value = 123.45
         
@@ -348,7 +350,7 @@ class TestRetailProductTool:
         mock_uniform.assert_called_once_with(5.0, 500.0)
 
     @patch('random.randint')
-    def test_random_stock(self, mock_randint) -> None:
+    def test_random_stock(self, mock_randint: Any) -> None:
         """Test _random_stock returns int in expected range."""
         mock_randint.return_value = 42
         
@@ -364,14 +366,15 @@ class TestRetailProductTool:
         """Test post_process handles valid JSON correctly."""
         tool = RetailProductTool()
         # Mock the helper methods
-        tool._random_price = lambda: 99.99
-        tool._random_stock = lambda: 42
+        tool._random_price = lambda: 99.99  # type: ignore
+        tool._random_stock = lambda: 42  # type: ignore
         
         valid_json = '{"product_id": "123", "name": "Test Product"}'
         
         result = tool.post_process(valid_json, "json")
         
         assert isinstance(result, dict)
+        assert isinstance(result, Dict)  # For type checking
         assert result["product_id"] == "123"
         assert result["name"] == "Test Product"
         assert result["price"] == 99.99  # Value from our mock
@@ -382,14 +385,15 @@ class TestRetailProductTool:
         """Test post_process handles valid YAML correctly."""
         tool = RetailProductTool()
         # Mock the helper methods
-        tool._random_price = lambda: 99.99
-        tool._random_stock = lambda: 42
+        tool._random_price = lambda: 99.99  # type: ignore
+        tool._random_stock = lambda: 42  # type: ignore
         
         valid_yaml = "product_id: 123\nname: Test Product"
         
         result = tool.post_process(valid_yaml, "yaml")
         
         assert isinstance(result, dict)
+        assert isinstance(result, Dict)  # For type checking
         assert result["product_id"] == 123
         assert result["name"] == "Test Product"
         assert result["price"] == 99.99  # Value from our mock
@@ -452,12 +456,13 @@ class TestRetailProductTool:
         """Test data enrichment adds missing fields."""
         tool = RetailProductTool()
         # Mock the helper methods
-        tool._random_price = lambda: 99.99
-        tool._random_stock = lambda: 42
+        tool._random_price = lambda: 99.99  # type: ignore
+        tool._random_stock = lambda: 42  # type: ignore
         minimal_json = '{"product_id": "123", "name": "Test"}'
         
         result = tool.post_process(minimal_json, "json")
         
+        assert isinstance(result, Dict)  # For type checking
         assert result["price"] == 99.99  # Value from our mock
         assert result["currency"] in tool._CURRENCIES
         assert result["stock_quantity"] == 42  # Value from our mock
@@ -466,8 +471,8 @@ class TestRetailProductTool:
         """Test data enrichment preserves existing fields."""
         tool = RetailProductTool()
         # Mock the helper methods
-        tool._random_price = lambda: 999.99  # Different from what's in the JSON
-        tool._random_stock = lambda: 420  # Different from what will be in the JSON
+        tool._random_price = lambda: 999.99  # type: ignore # Different from what's in the JSON
+        tool._random_stock = lambda: 420  # type: ignore # Different from what will be in the JSON
         
         json_with_fields = (
             '{"product_id": "123", "name": "Test", '
@@ -476,6 +481,7 @@ class TestRetailProductTool:
         
         result = tool.post_process(json_with_fields, "json")
         
+        assert isinstance(result, Dict)  # For type checking
         assert result["price"] == 99.99  # Should keep the original value
         assert result["currency"] == "EUR"  # Should keep the original value
         assert result["stock_quantity"] == 420  # Should add the missing field
