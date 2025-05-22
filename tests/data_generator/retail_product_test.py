@@ -308,8 +308,10 @@ class TestRetailProductTool:
         """Test build_prompt for JSON output format."""
         # Setup mocks for _prompt_common
         tool = RetailProductTool(industry="books")
-        tool._prompt_common = lambda unique_id: ("Mock header\n\n" if unique_id is None 
-                                                else f"Mock header with {unique_id}\n\n")
+        tool._prompt_common = lambda unique_id: (
+            "Mock header\n\n" if unique_id is None 
+            else f"Mock header with {unique_id}\n\n"
+        )
         
         result = tool.build_prompt("json", unique_id="test-uuid-json")
         
@@ -321,8 +323,10 @@ class TestRetailProductTool:
         """Test build_prompt for plain text output format."""
         # Setup mocks for _prompt_common
         tool = RetailProductTool()
-        tool._prompt_common = lambda unique_id: ("Mock header\n\n" if unique_id is None 
-                                                else f"Mock header with {unique_id}\n\n")
+        tool._prompt_common = lambda unique_id: (
+            "Mock header\n\n" if unique_id is None 
+            else f"Mock header with {unique_id}\n\n"
+        )
         
         result = tool.build_prompt("text", unique_id="test-uuid-text")
         
