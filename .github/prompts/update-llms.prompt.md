@@ -14,10 +14,21 @@ Your task is to update the [llms.txt](/llms.txt) file located in the root of the
 Example structure for `llms.txt`:
 
 ```
-# LLM Guidance for Solution Understanding
+# Solution: [Concise Title Describing the Solution's Purpose]
 
-To understand the purpose, architecture, and specifications of this solution, refer to the following locations:
+**Version:** [Optional: e.g., 1.0, Date]
+**Last Updated:** [Optional: YYYY-MM-DD]
+**Owner:** [Optional: Team/Individual responsible for this solution]
+**GitHub Repository:** https://github.com/PlagueHO/azure-ai-foundry-jumpstart
 
-- specs/    (machine-readable specifications)
-- docs/     (developer and user documentation)
-```
+## 1. Purpose & Scope
+
+[Provide a clear, concise description of the purpose of this repository and scope of its solution. State the intended audience and any assumptions.]
+
+## 2. Folder Structure
+
+[Describe the structure of the repository, including the purpose of each folder and file. Use visual folder structure. Include subfolders where applicable.]
+
+## 3. Important Files
+
+[Explicitly list all important files, their purpose, and how they relate to the solution. Use bullet points or tables for clarity.]

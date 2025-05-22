@@ -1,11 +1,114 @@
-# LLM Guidance for Solution Understanding
 
-To understand the purpose, architecture, and specifications of this solution, refer to the following locations:
+# Solution: Azure AI Foundry Jumpstart
 
-- docs/     (developer and user documentation, including architecture, configuration, devops, and diagrams)
-- spec/     (machine-readable specifications)
-- infra/    (infrastructure as code, Bicep modules, and configuration)
-- sample-data/ (example datasets for testing and demonstration)
-- scripts/  (automation scripts for deployment and data management)
-- README.md (solution overview and getting started)
-- azure.yaml (solution configuration)
+**Version:** 1.0
+**Last Updated:** 2025-05-22
+**Owner:** Azure AI Foundry Jumpstart Team
+**GitHub Repository:** https://github.com/PlagueHO/azure-ai-foundry-jumpstart
+
+## 1. Purpose & Scope
+
+This repository provides a solution accelerator for deploying an Azure AI Foundry environment and its dependent resources. It is designed for Azure developers, architects, and DevOps engineers seeking to deploy secure, scalable, and well-architected AI infrastructure using Azure Verified Modules (AVM), Bicep, and best practices. The solution includes infrastructure as code, sample data, automation scripts, and comprehensive documentation.
+
+## 2. Folder Structure
+
+```
+azure-ai-foundry-jumpstart/
+│
+├── docs/                # Developer and user documentation
+│   ├── ARCHITECTURE.md  # Solution architecture overview
+│   ├── CONFIGURATION_OPTIONS.md
+│   ├── DEVOPS.md        # DevOps and CI/CD guidance
+│   ├── FOLDERS.md       # Folder structure and descriptions
+│   ├── OVERVIEW.md      # High-level solution overview
+│   ├── README.md        # Documentation index
+│   ├── TECHNOLOGY.md    # Technology stack details
+│   ├── diagrams/        # Solution diagrams (.drawio)
+│   └── images/          # Diagram images (.svg)
+│
+├── spec/                # Machine-readable specifications
+│   ├── tool-create-ai-search-index-with-llamaindex.md
+│   └── tool-create-ai-search-index.md
+│
+├── infra/               # Infrastructure as Code (Bicep, AVM)
+│   ├── abbreviations.json
+│   ├── bicepconfig.json
+│   ├── main.bicep
+│   ├── main.bicepparam
+│   ├── main.json
+│   ├── sample-ai-foundry-projects.json
+│   ├── sample-data-containers.json
+│   ├── sample-openai-models.json
+│   ├── core/
+│   │   ├── ai/
+│   │   │   └── ai-foundry-project-datastore.bicep
+│   │   └── security/
+│   │       ├── role_aisearch.bicep
+│   │       └── role_aiservice.bicep
+│   └── types/
+│       └── ai/
+│           └── aiFoundryProjectType.bicep
+│
+├── sample-data/         # Example datasets for testing/demo
+│   ├── financial-transactions/
+│   │   └── json/
+│   ├── healthcare-records/
+│   ├── retail-products/
+│   └── tech-support/
+│
+├── scripts/             # Automation scripts
+│   ├── Compress-SampleData.ps1
+│   ├── Upload-SampleData.ps1
+│   ├── Upload-SampleData.sh
+│   └── quickdeploy/
+│       └── deploy.ps1
+│
+├── src/                 # Source code for tools and samples
+│   ├── create_search_index/
+│   │   ├── cli.py
+│   │   ├── engine.py
+│   │   ├── README.md
+│   │   └── ...
+│   ├── data_generator/
+│   │   ├── cli.py
+│   │   ├── engine.py
+│   │   ├── tool.py
+│   │   ├── README.md
+│   │   └── ...
+│   └── samples/
+│       └── tech-support-agent/
+│
+├── tests/               # Test code
+│   └── data_generator/
+│       ├── test_engine.py
+│       ├── test_tool.py
+│       └── ...
+│
+├── README.md            # Solution overview and getting started
+├── azure.yaml           # Solution configuration
+├── LICENSE              # License information
+├── requirements.txt     # Python dependencies
+├── requirements-dev.txt # Dev/test dependencies
+└── GitVersion.yml       # Git versioning config
+```
+
+## 3. Important Files
+
+- `README.md`: Main solution overview, prerequisites, and getting started guide.
+- `azure.yaml`: Central configuration for Azure resources and deployment.
+- `docs/`: Contains all developer and user documentation, including:
+  - `ARCHITECTURE.md`: Solution architecture and design principles.
+  - `DEVOPS.md`: DevOps, CI/CD, and automation guidance.
+  - `diagrams/` and `images/`: Visual diagrams of the solution.
+- `spec/`: Machine-readable specifications for tools and APIs.
+- `infra/`: All infrastructure as code (Bicep, AVM modules, config files).
+  - `main.bicep`: Entry point for environment deployment.
+  - `core/ai/ai-foundry-project-datastore.bicep`: AI project data store module.
+  - `core/security/role_aisearch.bicep`, `role_aiservice.bicep`: Security roles.
+  - `types/ai/aiFoundryProjectType.bicep`: Custom Bicep types.
+- `sample-data/`: Example datasets for validation and demonstration.
+- `scripts/`: Automation scripts for deployment and data management.
+- `src/`: Source code for CLI tools, data generators, and samples.
+- `tests/`: Test code for validation and CI.
+
+# For LLMs: Use this file to locate all relevant documentation, specifications, and code structure for understanding and reasoning about the Azure AI Foundry Jumpstart solution. Do not include implementation details here.
