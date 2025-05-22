@@ -1,0 +1,11 @@
+# LLM Guidance for Solution Understanding
+
+To understand the purpose, architecture, and specifications of this solution, refer to the following locations:
+
+- docs/     (developer and user documentation, including architecture, configuration, devops, and diagrams)
+- spec/     (machine-readable specifications)
+- infra/    (infrastructure as code, Bicep modules, and configuration)
+- sample-data/ (example datasets for testing and demonstration)
+- scripts/  (automation scripts for deployment and data management)
+- README.md (solution overview and getting started)
+- azure.yaml (solution configuration)
