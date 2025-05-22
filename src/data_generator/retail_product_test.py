@@ -4,17 +4,15 @@ Unit tests for the RetailProductTool class.
 This test file achieves 100% coverage of the RetailProductTool.
 """
 
-import sys
-import os
-import json
 import argparse
+import json
 import random
 import uuid
 from datetime import datetime, timezone
 from unittest.mock import Mock, patch
 
-import yaml
 import pytest
+import yaml
 
 # Since we want to test our standalone implementation directly,
 # we'll define our test classes right here
@@ -301,7 +299,8 @@ class TestRetailProductTool:
         """Test build_prompt for JSON output format."""
         # Setup mocks for _prompt_common
         tool = RetailProductTool(industry="books")
-        tool._prompt_common = lambda unique_id: "Mock header\n\n" if unique_id is None else f"Mock header with {unique_id}\n\n"
+        tool._prompt_common = lambda unique_id: ("Mock header\n\n" if unique_id is None 
+                                                else f"Mock header with {unique_id}\n\n")
         
         result = tool.build_prompt("json", unique_id="test-uuid-json")
         
@@ -313,7 +312,8 @@ class TestRetailProductTool:
         """Test build_prompt for plain text output format."""
         # Setup mocks for _prompt_common
         tool = RetailProductTool()
-        tool._prompt_common = lambda unique_id: "Mock header\n\n" if unique_id is None else f"Mock header with {unique_id}\n\n"
+        tool._prompt_common = lambda unique_id: ("Mock header\n\n" if unique_id is None 
+                                                else f"Mock header with {unique_id}\n\n")
         
         result = tool.build_prompt("text", unique_id="test-uuid-text")
         
@@ -456,7 +456,8 @@ class TestRetailProductTool:
         tool._random_price = lambda: 999.99  # Different from what's in the JSON
         tool._random_stock = lambda: 420  # Different from what will be in the JSON
         
-        json_with_fields = '{"product_id": "123", "name": "Test", "price": 99.99, "currency": "EUR"}'
+        json_with_fields = ('{"product_id": "123", "name": "Test", '
+                         '"price": 99.99, "currency": "EUR"}')
         
         result = tool.post_process(json_with_fields, "json")
         
