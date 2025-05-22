@@ -293,7 +293,7 @@ class TestRetailProductTool:
         """Test build_prompt for YAML output format."""
         # Setup mocks for _prompt_common
         tool = RetailProductTool(industry="electronics")
-        tool._prompt_common = lambda unique_id: (
+        tool._prompt_common = lambda unique_id: (  # type: ignore
             "Mock header\n\n" if unique_id is None 
             else f"Mock header with {unique_id}\n\n"
         )
@@ -308,7 +308,7 @@ class TestRetailProductTool:
         """Test build_prompt for JSON output format."""
         # Setup mocks for _prompt_common
         tool = RetailProductTool(industry="books")
-        tool._prompt_common = lambda unique_id: (
+        tool._prompt_common = lambda unique_id: (  # type: ignore
             "Mock header\n\n" if unique_id is None 
             else f"Mock header with {unique_id}\n\n"
         )
@@ -323,7 +323,7 @@ class TestRetailProductTool:
         """Test build_prompt for plain text output format."""
         # Setup mocks for _prompt_common
         tool = RetailProductTool()
-        tool._prompt_common = lambda unique_id: (
+        tool._prompt_common = lambda unique_id: (  # type: ignore
             "Mock header\n\n" if unique_id is None 
             else f"Mock header with {unique_id}\n\n"
         )
@@ -364,8 +364,8 @@ class TestRetailProductTool:
         """Test post_process handles valid JSON correctly."""
         tool = RetailProductTool()
         # Mock the helper methods
-        tool._random_price = lambda: 99.99
-        tool._random_stock = lambda: 42
+        tool._random_price = lambda: 99.99  # type: ignore
+        tool._random_stock = lambda: 42  # type: ignore
         
         valid_json = '{"product_id": "123", "name": "Test Product"}'
         
@@ -382,8 +382,8 @@ class TestRetailProductTool:
         """Test post_process handles valid YAML correctly."""
         tool = RetailProductTool()
         # Mock the helper methods
-        tool._random_price = lambda: 99.99
-        tool._random_stock = lambda: 42
+        tool._random_price = lambda: 99.99  # type: ignore
+        tool._random_stock = lambda: 42  # type: ignore
         
         valid_yaml = "product_id: 123\nname: Test Product"
         
@@ -452,8 +452,8 @@ class TestRetailProductTool:
         """Test data enrichment adds missing fields."""
         tool = RetailProductTool()
         # Mock the helper methods
-        tool._random_price = lambda: 99.99
-        tool._random_stock = lambda: 42
+        tool._random_price = lambda: 99.99  # type: ignore
+        tool._random_stock = lambda: 42  # type: ignore
         minimal_json = '{"product_id": "123", "name": "Test"}'
         
         result = tool.post_process(minimal_json, "json")
@@ -466,8 +466,8 @@ class TestRetailProductTool:
         """Test data enrichment preserves existing fields."""
         tool = RetailProductTool()
         # Mock the helper methods
-        tool._random_price = lambda: 999.99  # Different from what's in the JSON
-        tool._random_stock = lambda: 420  # Different from what will be in the JSON
+        tool._random_price = lambda: 999.99  # type: ignore # Different from what's in the JSON
+        tool._random_stock = lambda: 420  # type: ignore # Different from what will be in the JSON
         
         json_with_fields = (
             '{"product_id": "123", "name": "Test", '
