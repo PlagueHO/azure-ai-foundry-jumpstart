@@ -11,7 +11,6 @@ import uuid
 from datetime import datetime, timezone
 from unittest.mock import Mock, patch
 
-import pytest
 import yaml
 
 # Since we want to test our standalone implementation directly,
@@ -51,7 +50,10 @@ class RetailProductTool:
 
     def examples(self):
         """Representative usage snippets for `--help` output."""
-        return ["python -m generate_data --scenario retail-product --count 100 --industry electronics --output-format json"]
+        return [
+            "python -m generate_data --scenario retail-product --count 100 "
+            "--industry electronics --output-format json"
+        ]
 
     def supported_output_formats(self):
         """Return the list of output formats this tool can generate."""
@@ -255,7 +257,9 @@ class TestRetailProductTool:
         """Test _prompt_common includes expected elements."""
         # Setup mocks
         mock_uuid.return_value = Mock(hex='test-uuid')
-        mock_datetime.now.return_value = Mock(isoformat=lambda: '2024-01-01T00:00:00+00:00')
+        mock_datetime.now.return_value = Mock(
+            isoformat=lambda: '2024-01-01T00:00:00+00:00'
+        )
         
         tool = RetailProductTool(industry="sports")
         test_id = "test-123"
@@ -272,7 +276,9 @@ class TestRetailProductTool:
         """Test _prompt_common generates UUID when not provided."""
         # Setup mocks
         mock_uuid.return_value = Mock(__str__=lambda _: 'test-uuid')
-        mock_datetime.now.return_value = Mock(isoformat=lambda: '2024-01-01T00:00:00+00:00')
+        mock_datetime.now.return_value = Mock(
+            isoformat=lambda: '2024-01-01T00:00:00+00:00'
+        )
         
         tool = RetailProductTool()
         
@@ -287,7 +293,10 @@ class TestRetailProductTool:
         """Test build_prompt for YAML output format."""
         # Setup mocks for _prompt_common
         tool = RetailProductTool(industry="electronics")
-        tool._prompt_common = lambda unique_id: "Mock header\n\n" if unique_id is None else f"Mock header with {unique_id}\n\n"
+        tool._prompt_common = lambda unique_id: (
+            "Mock header\n\n" if unique_id is None
+            else f"Mock header with {unique_id}\n\n"
+        )
         
         result = tool.build_prompt("yaml", unique_id="test-uuid-yaml")
         
@@ -299,8 +308,10 @@ class TestRetailProductTool:
         """Test build_prompt for JSON output format."""
         # Setup mocks for _prompt_common
         tool = RetailProductTool(industry="books")
-        tool._prompt_common = lambda unique_id: ("Mock header\n\n" if unique_id is None 
-                                                else f"Mock header with {unique_id}\n\n")
+        tool._prompt_common = lambda unique_id: (
+            "Mock header\n\n" if unique_id is None 
+            else f"Mock header with {unique_id}\n\n"
+        )
         
         result = tool.build_prompt("json", unique_id="test-uuid-json")
         
@@ -312,8 +323,10 @@ class TestRetailProductTool:
         """Test build_prompt for plain text output format."""
         # Setup mocks for _prompt_common
         tool = RetailProductTool()
-        tool._prompt_common = lambda unique_id: ("Mock header\n\n" if unique_id is None 
-                                                else f"Mock header with {unique_id}\n\n")
+        tool._prompt_common = lambda unique_id: (
+            "Mock header\n\n" if unique_id is None 
+            else f"Mock header with {unique_id}\n\n"
+        )
         
         result = tool.build_prompt("text", unique_id="test-uuid-text")
         
@@ -456,8 +469,10 @@ class TestRetailProductTool:
         tool._random_price = lambda: 999.99  # Different from what's in the JSON
         tool._random_stock = lambda: 420  # Different from what will be in the JSON
         
-        json_with_fields = ('{"product_id": "123", "name": "Test", '
-                         '"price": 99.99, "currency": "EUR"}')
+        json_with_fields = (
+            '{"product_id": "123", "name": "Test", '
+            '"price": 99.99, "currency": "EUR"}'
+        )
         
         result = tool.post_process(json_with_fields, "json")
         
