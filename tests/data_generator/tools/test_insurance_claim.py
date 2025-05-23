@@ -11,7 +11,7 @@ from unittest.mock import patch, MagicMock
 import pytest
 import yaml
 
-from data_generator.tools.insurance_claim import InsuranceClaimTool
+from src.data_generator.tools.insurance_claim import InsuranceClaimTool
 
 
 class TestInsuranceClaimToolInit(unittest.TestCase):
@@ -240,10 +240,7 @@ class TestInsuranceClaimToolPostProcessing(unittest.TestCase):
         invalid_json = "{'claim_id': '123'}"  # Single quotes invalid in JSON
         
         with patch("json.loads", side_effect=json.JSONDecodeError("Invalid JSON", doc="", pos=0)) as mock_loads:
-            with patch("logging.getLogger") as mock_get_logger:
-                mock_logger = MagicMock()
-                mock_get_logger.return_value = mock_logger
-                
+            with patch("src.data_generator.tools.insurance_claim._logger") as mock_logger:
                 result = tool.post_process(invalid_json, "json")
                 
                 mock_loads.assert_called_once()
@@ -256,10 +253,7 @@ class TestInsuranceClaimToolPostProcessing(unittest.TestCase):
         invalid_yaml = "claim_id: '123'\n  policy_type: 'auto'"  # Indentation error
         
         with patch("yaml.safe_load", side_effect=yaml.YAMLError("Invalid YAML")) as mock_safe_load:
-            with patch("logging.getLogger") as mock_get_logger:
-                mock_logger = MagicMock()
-                mock_get_logger.return_value = mock_logger
-                
+            with patch("src.data_generator.tools.insurance_claim._logger") as mock_logger:
                 result = tool.post_process(invalid_yaml, "yaml")
                 
                 mock_safe_load.assert_called_once()
