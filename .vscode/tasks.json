@@ -19,7 +19,7 @@
             "type": "shell",
             "command": "pytest",
             "args": [
-                "src/data_generator/tests"
+                "tests/data_generator/"
             ],
             "group": {
                 "kind": "test",
@@ -41,7 +41,7 @@
             "problemMatcher": ["$python"]
         },
         {
-            "label": "ruff check",
+            "label": "Run Ruff Check",
             "type": "shell",
             "command": "python -m ruff check .",
             "group": "test",
