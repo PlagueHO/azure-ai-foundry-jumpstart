@@ -10,7 +10,7 @@ This tool provides a simple way to add an index to an Azure AI Search account. I
 ## 1. Quick Start (One-liner)
 
 ```bash
-python -m create_search_index \
+python -m create_ai_search_index \
   --storage-account contosodata \
   --storage-container sales-docs \
   --search-service contoso-search \
@@ -85,7 +85,7 @@ pip install -e ".[dev]"
 Example:
 
 ```bash
-python -m create_search_index \
+python -m create_ai_search_index \
   --storage-account contosodata \
   --storage-container knowledge-base \
   --search-service contoso-search \
@@ -114,7 +114,7 @@ All resources follow Azure Verified Modules (AVM) guidance and can be deployed s
 
 | Command                                  | Behaviour                                              |
 |------------------------------------------|--------------------------------------------------------|
-| `python -m create_search_index ...`      | Create / update pipeline and start indexing            |
+| `python -m create_ai_search_index ...`   | Create / update pipeline and start indexing            |
 | `--delete-existing true`                 | Tear down and fully regenerate pipeline + index        |
 | `--dry-run`                              | Print REST payloads without hitting the API            |
 | `--watch`                                | Stream indexer execution status until completion       |
@@ -123,8 +123,8 @@ All resources follow Azure Verified Modules (AVM) guidance and can be deployed s
 
 ## 7. Extending
 
-1. Implement a new `DocumentLoader` in `src/create_search_index/loaders/` for bespoke file formats.
-1. Add custom skills by subclassing `Skill` in `src/create_search_index/skills/`.
+1. Implement a new `DocumentLoader` in `src/create_ai_search_index/loaders/` for bespoke file formats.
+1. Add custom skills by subclassing `Skill` in `src/create_ai_search_index/skills/`.
 1. Update `PipelineBuilder` to register additional resources.
 1. Documentation should be automatically surfaced in this README when you add new CLI arguments to `cli.py`.
 

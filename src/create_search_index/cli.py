@@ -1,9 +1,9 @@
 """
-Command-line interface for the create_search_index package.
+Command-line interface for the create_ai_search_index package.
 
 Usage (once the project is installed in the active Python environment):
 
-    create_search_index --storage-account mystorage --storage-container docs \
+    create_ai_search_index --storage-account mystorage --storage-container docs \
         --search-service mysearch --index-name myindex
 
 This script parses CLI arguments, validates them, and invokes the CreateSearchIndex engine.
@@ -11,20 +11,20 @@ This script parses CLI arguments, validates them, and invokes the CreateSearchIn
 
 import argparse
 import sys
-from .engine import CreateSearchIndex, Config
+from .engine import CreateAISearchIndex, CreateAISearchIndexConfig
 
 def main(argv=None):
     """
-    Main entry point for the create_search_index CLI.
+    Main entry point for the create_ai_search_index CLI.
 
-    Parses command-line arguments, constructs the Config dataclass,
+    Parses command-line arguments, constructs the CreateSearchIndexConfig dataclass,
     and invokes the CreateSearchIndex engine. Exits with code 1 on error.
 
     Args:
         argv (list, optional): List of arguments to parse. Defaults to sys.argv[1:].
     """
     parser = argparse.ArgumentParser(
-        prog="create_search_index",
+        prog="create_ai_search_index",
         description="Azure AI Search index pipeline builder for RAG scenarios.",
     )
     parser.add_argument("--storage-account", required=True, help="Azure Storage account name.")
@@ -39,7 +39,7 @@ def main(argv=None):
 
     args = parser.parse_args(argv or sys.argv[1:])
 
-    config = Config(
+    config = CreateAISearchIndexConfig(
         storage_account=args.storage_account,
         storage_container=args.storage_container,
         search_service=args.search_service,
@@ -51,7 +51,7 @@ def main(argv=None):
     )
 
     try:
-        CreateSearchIndex(config).run()
+        CreateAISearchIndex(config).run()
     except Exception as ex:
         print(f"ERROR: {ex}", file=sys.stderr)
         sys.exit(1)

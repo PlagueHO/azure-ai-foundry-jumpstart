@@ -28,12 +28,12 @@ from azure.search.documents.indexes.models import (
     HnswAlgorithmConfiguration,
     )
 
-__all__: list[str] = ["CreateSearchIndex", "CreateSearchIndexConfig"]
+__all__: list[str] = ["CreateAISearchIndex", "CreateAISearchIndexConfig"]
 
 @dataclass
-class CreateSearchIndexConfig:
+class CreateAISearchIndexConfig:
     """
-    Configuration dataclass for the CreateSearchIndex pipeline.
+    Configuration dataclass for the CreateAISearchIndex pipeline.
 
     Holds all user-supplied and derived settings required to build and run
     the Azure AI Search indexing pipeline.
@@ -52,7 +52,7 @@ class CreateSearchIndexConfig:
         """Return the full endpoint URL for the Azure AI Search service."""
         return f"https://{self.search_service}.search.windows.net"
 
-class CreateSearchIndex:
+class CreateAISearchIndex:
     """
     Synchronous builder that assembles an Azure AI Search pipeline and triggers
     the first index run.
@@ -62,12 +62,12 @@ class CreateSearchIndex:
     running the indexer to populate the index from a blob container.
     """
 
-    def __init__(self, cfg: CreateSearchIndexConfig, *, log_level: str | int = "INFO") -> None:
+    def __init__(self, cfg: CreateAISearchIndexConfig, *, log_level: str | int = "INFO") -> None:
         """
-        Initialize the CreateSearchIndex orchestrator.
+        Initialize the CreateAISearchIndex orchestrator.
 
         Args:
-            cfg (CreateSearchIndexConfig): Configuration dataclass with pipeline settings.
+            cfg (CreateAISearchIndexConfig): Configuration dataclass with pipeline settings.
             log_level (str|int, optional): Logging verbosity. Defaults to "INFO".
         """
         self.cfg = cfg
@@ -75,7 +75,7 @@ class CreateSearchIndex:
             format="%(asctime)s %(levelname)-8s %(name)s :: %(message)s",
             level=log_level,
         )
-        self.logger = logging.getLogger("create-search-index")
+        self.logger = logging.getLogger("create-ai-search-index")
 
         # Credential: prefer DefaultAzureCredential, fallback to API key
         api_key = None  # Optionally load from env
