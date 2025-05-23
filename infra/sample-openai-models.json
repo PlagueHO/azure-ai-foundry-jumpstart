@@ -130,5 +130,17 @@
       "name": "GlobalStandard",
       "capacity": 150
     }
+  },
+  {
+    "model": {
+      "format": "OpenAI",
+      "name": "model-router",
+      "version": "2025-05-19"
+    },
+    "name": "model-router",
+    "sku": {
+      "name": "GlobalStandard",
+      "capacity": 150
+    }
   }
 ]
