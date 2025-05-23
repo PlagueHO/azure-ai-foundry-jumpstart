@@ -42,6 +42,7 @@ This will deploy the following models into the Azure OpenAI Service. If the mode
 | gpt-4o-mini-transcribe | 2025-03-20 | Global Standard | 100K |
 | o4-mini                | 2025-04-16 | Global Standard | 50K  |
 | text-embedding-3-large | 1          | Global Standard | 150K |
+| model-router           | 2025-05-19 | Global Standard | 150K |
 
 The list of models, versions, quota and TPM are defined in the [infra/sample-openai-models.json](../infra/sample-openai-models.json) file. If you wish to define an alternate models, you can edit this file or alternatively set the [AZURE_OPENAI_MODELS](#azure-openai-models) environment variable.
 
