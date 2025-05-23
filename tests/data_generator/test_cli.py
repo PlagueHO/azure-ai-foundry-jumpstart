@@ -512,5 +512,92 @@ def main(argv=None):
         )
 
 
+class TestCliHelpAndErrors(unittest.TestCase):
+    """Additional tests for CLI help, errors, and edge cases."""
+
+    @patch('argparse.ArgumentParser')
+    def test_missing_required_scenario(self, mock_parser_class):
+        """Test that missing --scenario triggers an error."""
+        mock_parser = MagicMock()
+        mock_parser.parse_known_intermixed_args.side_effect = SystemExit(2)
+        mock_parser_class.return_value = mock_parser
+        with self.assertRaises(SystemExit):
+            # Simulate missing --scenario
+            from src.data_generator import cli
+            cli.main(["--out-dir", "/tmp/output"])  # no --scenario
+
+    @patch('argparse.ArgumentParser')
+    def test_invalid_output_format(self, mock_parser_class):
+        """Test that an invalid output format triggers an error."""
+        # Phase 1 parser
+        mock_phase1 = MagicMock()
+        mock_phase1_args = MagicMock()
+        mock_phase1_args.scenario = "test-scenario"
+        mock_phase1.parse_known_intermixed_args.return_value = (mock_phase1_args, [])
+        # Phase 2 parser
+        mock_parser = MagicMock()
+        mock_parser.parse_args.side_effect = SystemExit(2)
+        mock_parser_class.side_effect = [mock_phase1, mock_parser]
+        # Patch DataGeneratorTool
+        with patch("src.data_generator.cli.DataGeneratorTool") as mock_tool_class:
+            mock_tool = MagicMock()
+            mock_tool.examples.return_value = ["Example 1"]
+            mock_tool.cli_arguments.return_value = []
+            mock_tool_class.from_name.return_value = mock_tool
+            with self.assertRaises(SystemExit):
+                from src.data_generator import cli
+                cli.main([
+                    "--scenario", "test-scenario",
+                    "--out-dir", "/tmp/output",
+                    "--output-format", "invalid"
+                ])
+
+    @patch('argparse.ArgumentParser')
+    def test_main_as_script(self, mock_parser_class):
+        """Test that __main__ entrypoint works without error (happy path)."""
+        # Phase 1 parser
+        mock_phase1 = MagicMock()
+        mock_phase1_args = MagicMock()
+        mock_phase1_args.scenario = "test-scenario"
+        mock_phase1.parse_known_intermixed_args.return_value = (mock_phase1_args, [])
+        # Phase 2 parser
+        mock_parser = MagicMock()
+        mock_args = MagicMock()
+        mock_args.count = 1
+        mock_args.out_dir = Path("/tmp/output")
+        mock_args.output_format = "json"
+        mock_args.azure_openai_endpoint = None
+        mock_args.azure_openai_deployment = None
+        mock_args.azure_openai_api_key = None
+        mock_parser.parse_args.return_value = mock_args
+        mock_parser_class.side_effect = [mock_phase1, mock_parser]
+        # Patch DataGeneratorTool and DataGenerator
+        with patch("src.data_generator.cli.DataGeneratorTool") as mock_tool_class, \
+             patch("src.data_generator.cli.DataGenerator") as mock_generator_class:
+            mock_tool = MagicMock()
+            mock_tool.examples.return_value = ["Example 1"]
+            mock_tool.cli_arguments.return_value = []
+            mock_tool.validate_args.return_value = None
+            mock_tool_class.from_name.return_value = mock_tool
+            mock_generator = MagicMock()
+            mock_generator_class.return_value = mock_generator
+            from src.data_generator import cli
+            cli.main([
+                "--scenario", "test-scenario",
+                "--out-dir", "/tmp/output"
+            ])
+            mock_generator.run.assert_called_once()
+
+    @patch('argparse.ArgumentParser')
+    def test_help_text_prints(self, mock_parser_class):
+        """Test that help text is printed when -h is passed."""
+        mock_parser = MagicMock()
+        mock_parser.parse_known_intermixed_args.side_effect = SystemExit(0)
+        mock_parser_class.return_value = mock_parser
+        with self.assertRaises(SystemExit):
+            from src.data_generator import cli
+            cli.main(["-h"])
+
+
 if __name__ == "__main__":
     unittest.main()
