@@ -20,6 +20,7 @@ param aiFoundryProjectDeploy = toLower(readEnvironmentVariable('AZURE_AI_FOUNDRY
 param aiFoundryProjectName = readEnvironmentVariable('AZURE_AI_FOUNDRY_PROJECT_NAME', 'sample-project') 
 param aiFoundryProjectDisplayName = readEnvironmentVariable('AZURE_AI_FOUNDRY_PROJECT_DISPLAY_NAME', 'Sample Project')
 param aiFoundryProjectDescription = readEnvironmentVariable('AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION', 'A sample project for Azure AI Foundry')
+param aiFoundryProjectsFromJson = toLower(readEnvironmentVariable('AZURE_AI_FOUNDRY_PROJECTS_FROM_JSON', 'false')) == 'true'
 
 // Sample data parameters
 param sampleOpenAiModelsDeploy = toLower(readEnvironmentVariable('SAMPLE_OPENAI_MODELS_DEPLOY', 'true')) == 'true'
