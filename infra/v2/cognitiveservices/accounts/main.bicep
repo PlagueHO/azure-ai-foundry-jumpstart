@@ -138,8 +138,11 @@ param deployments deploymentType[]?
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
-@description('Optional. The AI Foundry Projects to create in the Cognitive Services account.')
-param projects aiFoundryProjectType[]?
+@description('Optional. The Projects to create in the Cognitive Services account.')
+param projects projectType[]?
+
+@sys.description('Optional. Connections to create in the Cognitive Services account.')
+param connections connectionType[] = []
 
 var enableReferencedModulesTelemetry = false
 
@@ -499,6 +502,25 @@ module cognitiveService_projects './project/main.bicep' = [
   }
 ]
 
+module cognitiveServices_connections 'connection/main.bicep' = [
+  for connection in connections: {
+    name: '${cognitiveService.name}-${connection.name}-connection'
+    params: {
+      accountName: cognitiveService.name
+      name: connection.name
+      category: connection.category
+      expiryTime: connection.?expiryTime
+      isSharedToAll: connection.?isSharedToAll
+      metadata: connection.?metadata
+      sharedUserList: connection.?sharedUserList
+      target: connection.target
+      value: connection.?value
+      connectionProperties: connection.connectionProperties
+    }
+  }
+]
+
+
 resource cognitiveService_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: roleAssignment.?name ?? guid(cognitiveService.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
@@ -584,7 +606,7 @@ output privateEndpoints privateEndpointOutputType[] = [
 ]
 
 @description('The AI Foundry Projects created in the Cognitive Services account.')
-output projects aiFoundryProjectType[] = [
+output projects projectType[] = [
   for (project, index) in (projects ?? []): {
     name: project.outputs.name
     location: project.outputs.location
@@ -694,7 +716,7 @@ type secretsExportConfigurationType = {
 
 @sys.export()
 @sys.description('Defines the properties for an Azure AI Foundry Project.')
-type aiFoundryProjectType = {
+type projectType = {
   @sys.description('The unique name of the Foundry Project. This corresponds to the "name" property of the Microsoft.CognitiveServices/accounts/projects resource.')
   name: string
 
@@ -723,3 +745,38 @@ type aiFoundryProjectPropertiesType = {
   description: string
 }
 
+import { categoryType, connectionPropertyType } from 'connection/main.bicep'
+
+@export()
+@sys.description('The type for the workspace connection.')
+type connectionType = {
+  @sys.description('Required. Name of the connection to create.')
+  name: string
+
+  @sys.description('Required. Category of the connection.')
+  category: categoryType
+
+  @sys.description('Optional. The expiry time of the connection.')
+  expiryTime: string?
+
+  @sys.description('Optional. Indicates whether the connection is shared to all users in the workspace.')
+  isSharedToAll: bool?
+
+  @sys.description('Optional. User metadata for the connection.')
+  metadata: {
+    @sys.description('Required. The metadata key-value pairs.')
+    *: string
+  }?
+
+  @sys.description('Optional. The shared user list of the connection.')
+  sharedUserList: string[]?
+
+  @sys.description('Required. The target of the connection.')
+  target: string
+
+  @sys.description('Optional. Value details of the workspace connection.')
+  value: string?
+
+  @sys.description('Required. The properties of the connection, specific to the auth type.')
+  connectionProperties: connectionPropertyType
+}

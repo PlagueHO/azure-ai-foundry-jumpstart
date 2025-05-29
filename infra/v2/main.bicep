@@ -399,11 +399,11 @@ module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = if (azure
 // ---------- AI FOUNDRY ----------
 var openAiSampleModels = loadJsonContent('./sample-openai-models.json')
 
-import { aiFoundryProjectType } from './cognitiveservices/accounts/main.bicep'
+import { projectType } from './cognitiveservices/accounts/main.bicep'
 
 var projectsFromJson = loadJsonContent('./sample-ai-foundry-projects.json')
 
-var aiFoundryProjectsFromJsonArray aiFoundryProjectType[] = [for project in projectsFromJson: {
+var aiFoundryProjectsFromJsonArray projectType[] = [for project in projectsFromJson: {
   name: replace(project.Name,' ','-')
   location: location
   properties: {
@@ -419,7 +419,7 @@ var aiFoundryProjectsFromJsonArray aiFoundryProjectType[] = [for project in proj
   ]
 }]
 
-var aiFoundryProjectsSingleArray aiFoundryProjectType[] = [
+var aiFoundryProjectsSingleArray projectType[] = [
   {
     name: replace(aiFoundryProjectName,' ','-')
     location: location
@@ -440,6 +440,29 @@ var aiFoundryProjectsSingleArray aiFoundryProjectType[] = [
 var effectiveAiFoundryProjects = aiFoundryProjectDeploy 
   ? (aiFoundryProjectsFromJson ? aiFoundryProjectsFromJsonArray : aiFoundryProjectsSingleArray)
   : []
+
+import { connectionType } from './cognitiveservices/accounts/main.bicep'
+
+var aiFoundryConnections connectionType[] = azureAiSearchDeploy ? [
+  {
+    // CognitiveSearch connection
+    category: 'CognitiveSearch'
+    connectionProperties: {
+      authType: 'AAD'
+    }
+    metadata: {
+      Type: 'azure_ai_search'
+      ApiType: 'Azure'
+      ApiVersion: '2024-05-01-preview'
+      DeploymentApiVersion: '2023-11-01'
+      Location: location
+      ResourceId: aiSearchService.outputs.resourceId
+    }
+    name: aiSearchName
+    target: aiSearchService.outputs.endpoint
+    isSharedToAll: true
+  }
+] : []
 
 module aiFoundryAccount 'cognitiveservices/accounts/main.bicep' = {
   name: 'ai-foundry-account-deployment'
@@ -473,6 +496,7 @@ module aiFoundryAccount 'cognitiveservices/accounts/main.bicep' = {
       }
     ] : []
     projects: effectiveAiFoundryProjects
+    connections: aiFoundryConnections
     publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
     sku: 'S0'
     tags: tags
@@ -530,44 +554,6 @@ module aiFoundryRoleAssignments './core/security/role_aifoundry.bicep' = {
 
 // ---------- AI FOUNDRY ----------
 // Role assignments for the AI Foundry
-// var aiFoundryConnections = concat([
-//   {
-//     // Storage Connection
-//     category: 'AIServices'
-//     connectionProperties: {
-//       authType: 'AAD'
-//     }
-//     metadata: {
-//       ApiType: 'Azure'
-//       ApiVersion: '2023-07-01-preview'
-//       DeploymentApiVersion: '2023-10-01-preview'
-//       Location: location
-//       ResourceId: aiServicesAccount.outputs.resourceId
-//     }
-//     name: aiFoundryName
-//     target: aiServicesAccount.outputs.endpoint
-//     isSharedToAll: true
-//   }
-// ], azureAiSearchDeploy ? [
-//   {
-//     // CognitiveSearch connection
-//     category: 'CognitiveSearch'
-//     connectionProperties: {
-//       authType: 'AAD'
-//     }
-//     metadata: {
-//       Type: 'azure_ai_search'
-//       ApiType: 'Azure'
-//       ApiVersion: '2024-05-01-preview'
-//       DeploymentApiVersion: '2023-11-01'
-//       Location: location
-//       ResourceId: aiSearchService.outputs.resourceId
-//     }
-//     name: aiSearchName
-//     target: aiSearchService.outputs.endpoint
-//     isSharedToAll: true
-//   }
-// ] : [])
 
 // ---------- AI FOUNDRY PROJECTS ----------
 
