@@ -30,6 +30,11 @@ param displayName string
 @sys.description('Optional. Description of the Foundry Project.')
 param description string = ''
 
+import { connectionType, categoryType, connectionPropertyType } from '../connection/main.bicep'
+@sys.description('Optional. Connections to create in the Cognitive Services account.')
+param connections connectionType[] = []
+
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},

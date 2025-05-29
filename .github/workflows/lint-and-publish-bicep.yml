@@ -16,12 +16,20 @@ jobs:
       run: |
         bicep lint ./infra/main.bicep
   
-    - name: Publish Bicep as Workflow Artifact
+    - name: Publish hub based project (v1) Bicep as Workflow Artifact
       uses: actions/upload-artifact@v4
       with:
         name: infrastructure_bicep
         path: |
-           ./infra/*.bicep
-           ./infra/*.json
-           ./infra/core/
-           ./infra/types/
+           ./infra/v1/*.bicep
+           ./infra/v1/*.json
+           ./infra/v1/**/
+
+    - name: Publish Foundry project (v2) Bicep as Workflow Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: infrastructure_bicep
+        path: |
+           ./infra/v2/*.bicep
+           ./infra/v2/*.json
+           ./infra/v2/**/

@@ -144,6 +144,7 @@ param secretsExportConfiguration secretsExportConfigurationType?
 @description('Optional. The Projects to create in the Cognitive Services account.')
 param projects projectType[]?
 
+import { connectionType, categoryType, connectionPropertyType } from 'connection/main.bicep'
 @sys.description('Optional. Connections to create in the Cognitive Services account.')
 param connections connectionType[] = []
 
@@ -634,17 +635,11 @@ output privateEndpoints privateEndpointOutputType[] = [
 ]
 
 @description('The AI Foundry Projects created in the Cognitive Services account.')
-output projects projectType[] = [
+output projects projectOutputType[] = [
   for (project, index) in (projects ?? []): {
-    name: project.outputs.name
-    location: project.outputs.location
-    properties: {
-      displayName: project.outputs.displayName
-      description: project.outputs.description
-    }
-    identity: project.outputs.identity
-    roleAssignments: project.outputs.roleAssignments
-    tags: project.outputs.tags
+    name: cognitiveService_projects[index].outputs.projectResourceName
+    resourceId: cognitiveService_projects[index].outputs.projectResourceId
+    systemAssignedMIPrincipalId: cognitiveService_projects[index].outputs.?systemAssignedMIPrincipalId
   }
 ]
 
@@ -676,6 +671,20 @@ type privateEndpointOutputType = {
   @description('The IDs of the network interfaces associated with the private endpoint.')
   networkInterfaceResourceIds: string[]
 }
+
+@export()
+@description('The type for the private endpoint output.')
+type projectOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The principal ID of the system assigned identity.')
+  systemAssignedMIPrincipalId: string?
+}
+
 
 @export()
 @description('The type for a cognitive services account deployment.')
@@ -771,40 +780,4 @@ type aiFoundryProjectPropertiesType = {
 
   @sys.description('A description for the Foundry Project. This corresponds to the "description" property within the "properties" of the Microsoft.CognitiveServices/accounts/projects resource.')
   description: string
-}
-
-import { categoryType, connectionPropertyType } from 'connection/main.bicep'
-
-@export()
-@sys.description('The type for the workspace connection.')
-type connectionType = {
-  @sys.description('Required. Name of the connection to create.')
-  name: string
-
-  @sys.description('Required. Category of the connection.')
-  category: categoryType
-
-  @sys.description('Optional. The expiry time of the connection.')
-  expiryTime: string?
-
-  @sys.description('Optional. Indicates whether the connection is shared to all users in the workspace.')
-  isSharedToAll: bool?
-
-  @sys.description('Optional. User metadata for the connection.')
-  metadata: {
-    @sys.description('Required. The metadata key-value pairs.')
-    *: string
-  }?
-
-  @sys.description('Optional. The shared user list of the connection.')
-  sharedUserList: string[]?
-
-  @sys.description('Required. The target of the connection.')
-  target: string
-
-  @sys.description('Optional. Value details of the workspace connection.')
-  value: string?
-
-  @sys.description('Required. The properties of the connection, specific to the auth type.')
-  connectionProperties: connectionPropertyType
 }

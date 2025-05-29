@@ -418,3 +418,38 @@ type connectionPropertyType =
   | sasAuthTypeWorkspaceConnectionPropertyType
   | servicePrincipalAuthTypeWorkspaceConnectionPropertyType
   | usernamePasswordAuthTypeWorkspaceConnectionPropertyType
+
+
+@export()
+@sys.description('The type for the workspace connection.')
+type connectionType = {
+  @sys.description('Required. Name of the connection to create.')
+  name: string
+
+  @sys.description('Required. Category of the connection.')
+  category: categoryType
+
+  @sys.description('Optional. The expiry time of the connection.')
+  expiryTime: string?
+
+  @sys.description('Optional. Indicates whether the connection is shared to all users in the workspace.')
+  isSharedToAll: bool?
+
+  @sys.description('Optional. User metadata for the connection.')
+  metadata: {
+    @sys.description('Required. The metadata key-value pairs.')
+    *: string
+  }?
+
+  @sys.description('Optional. The shared user list of the connection.')
+  sharedUserList: string[]?
+
+  @sys.description('Required. The target of the connection.')
+  target: string
+
+  @sys.description('Optional. Value details of the workspace connection.')
+  value: string?
+
+  @sys.description('Required. The properties of the connection, specific to the auth type.')
+  connectionProperties: connectionPropertyType
+}

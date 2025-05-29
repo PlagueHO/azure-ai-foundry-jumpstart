@@ -219,7 +219,7 @@ var storageAccountRoleAssignments = [
     {
       roleDefinitionIdOrName: 'Storage Blob Data Contributor'
       principalType: 'ServicePrincipal'
-      principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
+      principalId: aiSearchService.outputs.?systemAssignedMIPrincipalId
     }
   ] : [])
   // Developer role assignments
@@ -399,7 +399,7 @@ module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = if (azure
 // ---------- AI FOUNDRY ----------
 var openAiSampleModels = loadJsonContent('./sample-openai-models.json')
 
-import { projectType } from './cognitiveservices/accounts/main.bicep'
+import { projectType } from './cognitive-services/accounts/main.bicep'
 
 var projectsFromJson = loadJsonContent('./sample-ai-foundry-projects.json')
 
@@ -441,7 +441,7 @@ var effectiveAiFoundryProjects = aiFoundryProjectDeploy
   ? (aiFoundryProjectsFromJson ? aiFoundryProjectsFromJsonArray : aiFoundryProjectsSingleArray)
   : []
 
-import { connectionType } from './cognitiveservices/accounts/main.bicep'
+import { connectionType } from './cognitive-services/accounts/connection/main.bicep'
 
 var aiFoundryConnections connectionType[] = azureAiSearchDeploy ? [
   {
@@ -464,7 +464,7 @@ var aiFoundryConnections connectionType[] = azureAiSearchDeploy ? [
   }
 ] : []
 
-module aiFoundryAccount 'cognitiveservices/accounts/main.bicep' = {
+module aiFoundryAccount 'cognitive-services/accounts/main.bicep' = {
   name: 'ai-foundry-account-deployment'
   scope: rg
   params: {
