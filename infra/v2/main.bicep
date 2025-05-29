@@ -412,7 +412,7 @@ var aiFoundryProjectsFromJsonArray projectType[] = [for project in projectsFromJ
   }
   roleAssignments: [
     {
-      roleDefinitionIdOrName: 'AzureML Data Scientist'
+      roleDefinitionIdOrName: 'Azure AI User'
       principalType: principalIdType
       principalId: principalId
     }
@@ -429,7 +429,7 @@ var aiFoundryProjectsSingleArray projectType[] = [
     }
     roleAssignments: [
       {
-        roleDefinitionIdOrName: 'AzureML Data Scientist'
+        roleDefinitionIdOrName: 'Azure AI User'
         principalType: principalIdType
         principalId: principalId
       }
