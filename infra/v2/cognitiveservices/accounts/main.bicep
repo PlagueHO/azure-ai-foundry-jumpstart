@@ -1,9 +1,11 @@
-// This is a temporary module for deploying Azure AI Foundry Cognitive Services accounts.
-// It is intended to be replaced by the Azure Verified Module (AVM) for
-// Microsoft.CognitiveServices accounts once it supports AI Foundry V2 (projects, connections etc)
 
 metadata name = 'Cognitive Services'
-metadata description = 'This module deploys a Cognitive Service.'
+metadata description = '''
+This module deploys a Cognitive Service account.
+This is a temporary module for deploying Azure AI Foundry Cognitive Services accounts.
+It is intended to be replaced by the Azure Verified Module (AVM) for Microsoft.CognitiveServices accounts
+once it supports AI Foundry V2 (projects, connections etc)
+'''
 
 @description('Required. The name of Cognitive Services account.')
 param name string
@@ -135,6 +137,9 @@ param deployments deploymentType[]?
 
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
+
+@description('Optional. The AI Foundry Projects to create in the Cognitive Services account.')
+param projects aiFoundryProjectType[]?
 
 var enableReferencedModulesTelemetry = false
 
@@ -379,8 +384,6 @@ resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/depl
   }
 ]
 
-
-
 resource cognitiveService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
@@ -476,6 +479,26 @@ module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endp
   }
 ]
 
+module cognitiveService_projects './project/main.bicep' = [
+  for (project, index) in (projects ?? []): {
+    name: '${uniqueString(deployment().name, location)}-cognitiveService-project-${index}'
+    scope: resourceGroup(
+        split(project.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+        split(project.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+      )
+    params: {
+      accountName: cognitiveService.name
+      name: project.?name ?? '${name}-project-${index}'
+      displayName: project.?displayName ?? project.?name ?? '${name}-project-${index}'
+      description: project.?description ?? ''
+      location: project.?location ?? location
+      managedIdentities: project.?managedIdentities ?? managedIdentities
+      roleAssignments: project.?roleAssignments ?? roleAssignments
+      tags: project.?tags ?? tags
+    }
+  }
+]
+
 resource cognitiveService_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: roleAssignment.?name ?? guid(cognitiveService.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
@@ -557,6 +580,21 @@ output privateEndpoints privateEndpointOutputType[] = [
     groupId: cognitiveService_privateEndpoints[index].outputs.?groupId!
     customDnsConfigs: cognitiveService_privateEndpoints[index].outputs.customDnsConfigs
     networkInterfaceResourceIds: cognitiveService_privateEndpoints[index].outputs.networkInterfaceResourceIds
+  }
+]
+
+@description('The AI Foundry Projects created in the Cognitive Services account.')
+output projects aiFoundryProjectType[] = [
+  for (project, index) in (projects ?? []): {
+    name: project.outputs.name
+    location: project.outputs.location
+    properties: {
+      displayName: project.outputs.displayName
+      description: project.outputs.description
+    }
+    identity: project.outputs.identity
+    roleAssignments: project.outputs.roleAssignments
+    tags: project.outputs.tags
   }
 ]
 
@@ -653,3 +691,35 @@ type secretsExportConfigurationType = {
   @description('Optional. The name for the accessKey2 secret to create.')
   accessKey2Name: string?
 }
+
+@sys.export()
+@sys.description('Defines the properties for an Azure AI Foundry Project.')
+type aiFoundryProjectType = {
+  @sys.description('The unique name of the Foundry Project. This corresponds to the "name" property of the Microsoft.CognitiveServices/accounts/projects resource.')
+  name: string
+
+  @sys.description('The geo-location where the resource lives. This corresponds to the "location" property of the Microsoft.CognitiveServices/accounts/projects resource.')
+  location: string
+
+  @sys.description('Properties of Foundry Project project. This corresponds to the "properties" object of the Microsoft.CognitiveServices/accounts/projects resource.')
+  properties: aiFoundryProjectPropertiesType
+
+  @sys.description('Identity for the resource. This corresponds to the "identity" property of the Microsoft.CognitiveServices/accounts/projects resource.')
+  identity: managedIdentityAllType?
+
+  @sys.description('Role assignments to apply to the workspace.')
+  roleAssignments: roleAssignmentType[]?
+
+  @sys.description('Resource tags. This corresponds to the "tags" property of the Microsoft.CognitiveServices/accounts/projects resource.')
+  tags: object?
+}
+
+@sys.description('Defines the nested properties for an Azure AI Foundry Project, corresponding to the "properties" object of the Microsoft.CognitiveServices/accounts/projects resource.')
+type aiFoundryProjectPropertiesType = {
+  @sys.description('The display name for the Foundry Project. This corresponds to the "displayName" property within the "properties" of the Microsoft.CognitiveServices/accounts/projects resource.')
+  displayName: string
+
+  @sys.description('A description for the Foundry Project. This corresponds to the "description" property within the "properties" of the Microsoft.CognitiveServices/accounts/projects resource.')
+  description: string
+}
+

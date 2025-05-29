@@ -1,19 +1,48 @@
-metadata description = 'Creates role assignments on an Azure AI Foundry account.'
+metadata name = 'Cognitive Services Project'
+metadata description = '''
+This module deploys a Project within a Cognitive Services account.
+It allows for the creation of a AI Foundry Project with optional managed identities and role assignments.
+'''
 
-// TODO: Once this proposal is implemented: https://github.com/azure/bicep/issues/2245
-// We can create a generalized version of this resource that can be used any resource
-// by passing in the resource as a parameter.
+@sys.description('Required. The name of the parent Cognitive Services account.')
+param accountName string
+
+@sys.description('Required. The name of the Foundry Project.')
+param name string
+
+@sys.description('Required. The location for the Foundry Project.')
+param location string
+
+@sys.description('Optional. Resource tags for the Foundry Project.')
+param tags object?
+
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@sys.description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentityAllType?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@sys.description('Optional. Array of role assignments to create.')
+@sys.description('Optional. Role assignments to apply to the Foundry Project.')
 param roleAssignments roleAssignmentType[]?
 
-@description('The name of the Azure AI Foundry account to set the role assignments on.')
-param azureAiFoundryName string
+@sys.description('Required. Display name of the Foundry Project.')
+param displayName string
 
-resource azureAiFoundryAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
-  name: azureAiFoundryName
-}
+@sys.description('Optional. Description of the Foundry Project.')
+param description string = ''
+
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 var builtInRoleNames = {
   'Cognitive Services Contributor': subscriptionResourceId(
@@ -136,18 +165,46 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource aiService_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+resource parentAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
+  name: accountName
+}
+
+resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview' = {
+  parent: parentAccount
+  name: name
+  location: location
+  tags: tags
+  identity: identity
+  properties: {
+    displayName: displayName
+    description: description
+  }
+}
+
+resource project_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
-    name: roleAssignment.?name ?? guid(azureAiFoundryAccount.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
+    name: roleAssignment.?name ?? guid(project.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
       roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
-    scope: azureAiFoundryAccount
+    scope: project
   }
 ]
+
+@sys.description('The resource ID of the created Foundry Project.')
+output projectResourceId string = project.id
+
+@sys.description('The name of the created Foundry Project.')
+output projectResourceName string = project.name
+
+@sys.description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string? = project.?identity.?principalId
+
+@sys.description('The name of the resource group the Foundry Project created in.')
+output resourceGroupName string = resourceGroup().name

@@ -67,8 +67,8 @@ param aiFoundryProjectDeploy bool
 @sys.description('The name of the Azure AI Foundry project to create.')
 param aiFoundryProjectName string
 
-@sys.description('The friendly name of the Azure AI Foundry project to create.')
-param aiFoundryProjectFriendlyName string
+@sys.description('The display name of the Azure AI Foundry project to create.')
+param aiFoundryProjectDisplayName string
 
 @sys.description('The description of the Azure AI Foundry project to create.') 
 param aiFoundryProjectDescription string
@@ -352,33 +352,22 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.10.0' = if (az
   }
 }
 
-// The Service Principal of the Azure Machine Learning service.
-// This is used to assign the Reader role for AI Search and AI Services.
-resource azureMachineLearningServicePrincipal 'Microsoft.Graph/servicePrincipals@v1.0' = {
-  appId: '0736f41a-0425-4b46-bdb5-1563eff02385' // Azure Machine Learning service principal
-}
-
-// Role assignments (only when Search exists)
+// Role assignments (only when AI Search exists)
 var aiSearchRoleAssignmentsArray = azureAiSearchDeploy ? [
   {
     roleDefinitionIdOrName: 'Search Index Data Contributor'
     principalType: 'ServicePrincipal'
-    principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
+    principalId: aiFoundryAccount.outputs.?systemAssignedMIPrincipalId
   }
   {
     roleDefinitionIdOrName: 'Search Index Data Reader'
     principalType: 'ServicePrincipal'
-    principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
+    principalId: aiFoundryAccount.outputs.?systemAssignedMIPrincipalId
   }
   {
     roleDefinitionIdOrName: 'Search Service Contributor'
     principalType: 'ServicePrincipal'
-    principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
-  }
-  {
-      roleDefinitionIdOrName: 'Reader'
-      principalType: 'ServicePrincipal'
-      principalId: azureMachineLearningServicePrincipal.id
+    principalId: aiFoundryAccount.outputs.?systemAssignedMIPrincipalId
   }
   // Developer role assignments
   ...(!empty(principalId) ? [
@@ -410,7 +399,49 @@ module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = if (azure
 // ---------- AI FOUNDRY ----------
 var openAiSampleModels = loadJsonContent('./sample-openai-models.json')
 
-module aiFoundryAccount 'core/ai/ai-foundry-v2.bicep' = {
+import { aiFoundryProjectType } from './cognitiveservices/accounts/main.bicep'
+
+var projectsFromJson = loadJsonContent('./sample-ai-foundry-projects.json')
+
+var aiFoundryProjectsFromJsonArray aiFoundryProjectType[] = [for project in projectsFromJson: {
+  name: replace(project.Name,' ','-')
+  location: location
+  properties: {
+    displayName: project.DisplayName
+    description: project.Description
+  }
+  roleAssignments: [
+    {
+      roleDefinitionIdOrName: 'AzureML Data Scientist'
+      principalType: principalIdType
+      principalId: principalId
+    }
+  ]
+}]
+
+var aiFoundryProjectsSingleArray aiFoundryProjectType[] = [
+  {
+    name: replace(aiFoundryProjectName,' ','-')
+    location: location
+    properties: {
+      displayName: aiFoundryProjectDisplayName
+      description: aiFoundryProjectDescription
+    }
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'AzureML Data Scientist'
+        principalType: principalIdType
+        principalId: principalId
+      }
+    ]
+  }
+]
+
+var effectiveAiFoundryProjects = aiFoundryProjectDeploy 
+  ? (aiFoundryProjectsFromJson ? aiFoundryProjectsFromJsonArray : aiFoundryProjectsSingleArray)
+  : []
+
+module aiFoundryAccount 'cognitiveservices/accounts/main.bicep' = {
   name: 'ai-foundry-account-deployment'
   scope: rg
   params: {
@@ -433,7 +464,7 @@ module aiFoundryAccount 'core/ai/ai-foundry-v2.bicep' = {
         privateDnsZoneGroup: {
           privateDnsZoneGroupConfigs: [
             {
-              privateDnsZoneResourceId: aiServicesPrivateDnsZone.outputs.resourceId
+              privateDnsZoneResourceId: aiFoundryPrivateDnsZone.outputs.resourceId
             }
           ]
         }
@@ -441,6 +472,7 @@ module aiFoundryAccount 'core/ai/ai-foundry-v2.bicep' = {
         tags: tags
       }
     ] : []
+    projects: effectiveAiFoundryProjects
     publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
     sku: 'S0'
     tags: tags
@@ -456,12 +488,12 @@ var aiFoundryRoleAssignmentsArray = [
     {
       roleDefinitionIdOrName: 'Cognitive Services Contributor'
       principalType: 'ServicePrincipal'
-      principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
+      principalId: aiSearchService.outputs.?systemAssignedMIPrincipalId
     }
     {
       roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
       principalType: 'ServicePrincipal'
-      principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
+      principalId: aiSearchService.outputs.?systemAssignedMIPrincipalId
     }
   ] : [])
   // Developer/Owner role assignments
@@ -477,9 +509,9 @@ var aiFoundryRoleAssignmentsArray = [
       principalId: principalId
     }
     {
-      roleDefinitionIdOrName: 'Reader'
-      principalType: 'ServicePrincipal'
-      principalId: azureMachineLearningServicePrincipal.id
+      roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/b78c5d69-af96-48a3-bf8d-a8b4d589de94' // 'Azure AI Administrator'
+      principalType: principalIdType
+      principalId: principalId
     }
   ] : [])
 ]
@@ -498,193 +530,151 @@ module aiFoundryRoleAssignments './core/security/role_aifoundry.bicep' = {
 
 // ---------- AI FOUNDRY ----------
 // Role assignments for the AI Foundry
-var aiFoundryRoleAssignments = !empty(principalId) ? [
-  {
-    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/b78c5d69-af96-48a3-bf8d-a8b4d589de94' // 'Azure AI Administrator'
-    principalType: principalIdType
-    principalId: principalId
-  }
-] : []
-
-var aiFoundryConnections = concat([
-  {
-    // Storage Connection
-    category: 'AIServices'
-    connectionProperties: {
-      authType: 'AAD'
-    }
-    metadata: {
-      ApiType: 'Azure'
-      ApiVersion: '2023-07-01-preview'
-      DeploymentApiVersion: '2023-10-01-preview'
-      Location: location
-      ResourceId: aiServicesAccount.outputs.resourceId
-    }
-    name: aiFoundryName
-    target: aiServicesAccount.outputs.endpoint
-    isSharedToAll: true
-  }
-], azureAiSearchDeploy ? [
-  {
-    // CognitiveSearch connection
-    category: 'CognitiveSearch'
-    connectionProperties: {
-      authType: 'AAD'
-    }
-    metadata: {
-      Type: 'azure_ai_search'
-      ApiType: 'Azure'
-      ApiVersion: '2024-05-01-preview'
-      DeploymentApiVersion: '2023-11-01'
-      Location: location
-      ResourceId: aiSearchService.outputs.resourceId
-    }
-    name: aiSearchName
-    target: aiSearchService.outputs.endpoint
-    isSharedToAll: true
-  }
-] : [])
+// var aiFoundryConnections = concat([
+//   {
+//     // Storage Connection
+//     category: 'AIServices'
+//     connectionProperties: {
+//       authType: 'AAD'
+//     }
+//     metadata: {
+//       ApiType: 'Azure'
+//       ApiVersion: '2023-07-01-preview'
+//       DeploymentApiVersion: '2023-10-01-preview'
+//       Location: location
+//       ResourceId: aiServicesAccount.outputs.resourceId
+//     }
+//     name: aiFoundryName
+//     target: aiServicesAccount.outputs.endpoint
+//     isSharedToAll: true
+//   }
+// ], azureAiSearchDeploy ? [
+//   {
+//     // CognitiveSearch connection
+//     category: 'CognitiveSearch'
+//     connectionProperties: {
+//       authType: 'AAD'
+//     }
+//     metadata: {
+//       Type: 'azure_ai_search'
+//       ApiType: 'Azure'
+//       ApiVersion: '2024-05-01-preview'
+//       DeploymentApiVersion: '2023-11-01'
+//       Location: location
+//       ResourceId: aiSearchService.outputs.resourceId
+//     }
+//     name: aiSearchName
+//     target: aiSearchService.outputs.endpoint
+//     isSharedToAll: true
+//   }
+// ] : [])
 
 // ---------- AI FOUNDRY PROJECTS ----------
-import { aiFoundryProjectType } from './types/ai/aiFoundryProjectType.bicep'
 
-var projectsFromJson = loadJsonContent('./sample-ai-foundry-projects.json')
 
-var aiFoundryProjectsFromJsonArray = [for project in projectsFromJson: {
-  name: replace(project.Name,' ','-')
-  displayName: project.DisplayName
-  description: project.Description
-  roleAssignments: [
-    {
-      roleDefinitionIdOrName: 'AzureML Data Scientist'
-      principalType: principalIdType
-      principalId: principalId
-    }
-  ]
-}]
-
-var aiFoundryProjectsSingleArray = [
-  {
-    name: replace(aiFoundryProjectName,' ','-')
-    friendlyName: aiFoundryProjectFriendlyName
-    description: aiFoundryProjectDescription
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'AzureML Data Scientist'
-        principalType: principalIdType
-        principalId: principalId
-      }
-    ]
-  }
-]
-
-var effectiveAiFoundryProjects = aiFoundryProjectDeploy 
-  ? (aiFoundryProjectsFromJson ? aiFoundryProjectsFromJsonArray : aiFoundryProjectsSingleArray)
-  : []
-
-module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = [for project in effectiveAiFoundryProjects: {
-  name: take('aifp-${project.name}',64)
-  scope: rg
-  params: {
-    name: project.name
-    friendlyName: project.friendlyName
-    description: project.description
-    location: location
-    kind: 'Project'
-    sku: 'Basic'
-    diagnosticSettings: [
-      {
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: sendTologAnalyticsCustomSettingName
-        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-      }
-    ]
-    hubResourceId: aiFoundryHub.outputs.resourceId
-    managedIdentities: {
-      systemAssigned: true
-    }
-    publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
-    roleAssignments: project.roleAssignments ?? []
-    tags: tags
-  }
-}]
+// module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = [for project in effectiveAiFoundryProjects: {
+//   name: take('aifp-${project.name}',64)
+//   scope: rg
+//   params: {
+//     name: project.name
+//     friendlyName: project.friendlyName
+//     description: project.description
+//     location: location
+//     kind: 'Project'
+//     sku: 'Basic'
+//     diagnosticSettings: [
+//       {
+//         metricCategories: [
+//           {
+//             category: 'AllMetrics'
+//           }
+//         ]
+//         name: sendTologAnalyticsCustomSettingName
+//         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+//       }
+//     ]
+//     hubResourceId: aiFoundryHub.outputs.resourceId
+//     managedIdentities: {
+//       systemAssigned: true
+//     }
+//     publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
+//     roleAssignments: project.roleAssignments ?? []
+//     tags: tags
+//   }
+// }]
 
 // ---------- AI FOUNDRY PROJECTS ROLE ASSIGNMENTS TO AI SERVICES ----------
 // Add any Azure AI Developer role for each AI Foundry project to the AI Services account
 // This ensures a developer with access to the AI Foundry project can also access the AI Services
-module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aiservice.bicep' = [for (project,index) in effectiveAiFoundryProjects: {
-  name: take('aifp-aisvc-ra-${project.name}',64)
-  scope: rg
-  dependsOn: [
-    aiFoundryHubProjects
-  ]
-  params: {
-    azureAiServiceName: aiFoundryName
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/64702f94-c441-49e6-a78b-ef80e0188fee' // 'Azure AI Developer'
-        principalType: 'ServicePrincipal'
-        principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
-      }
-    ]
-  }
-}]
+// module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aiservice.bicep' = [for (project,index) in effectiveAiFoundryProjects: {
+//   name: take('aifp-aisvc-ra-${project.name}',64)
+//   scope: rg
+//   dependsOn: [
+//     aiFoundryHubProjects
+//   ]
+//   params: {
+//     azureAiServiceName: aiFoundryName
+//     roleAssignments: [
+//       {
+//         roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/64702f94-c441-49e6-a78b-ef80e0188fee' // 'Azure AI Developer'
+//         principalType: 'ServicePrincipal'
+//         principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
+//       }
+//     ]
+//   }
+// }]
 
 // ---------- AI FOUNDRY PROJECT ROLE ASSIGNMENTS TO AI SEARCH ----------
 // Add any Search Index Reader and Search Service Contributor roles for each AI Foundry project
 // to the AI Search Account. This ensures Agents created within a project can access indexes in
 // the AI Search account.
-module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.bicep' = [
-  for (project,index) in effectiveAiFoundryProjects : if (azureAiSearchDeploy) {
-    name: take('aifp-aisch-ra-${project.name}',64)
-    scope: rg
-    dependsOn: [
-      aiFoundryHubProjects
-    ]
-    params: {
-      azureAiSearchName: aiSearchName
-      roleAssignments: [
-        {
-          roleDefinitionIdOrName: 'Search Index Data Reader'
-          principalType: 'ServicePrincipal'
-          principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
-        }
-        {
-          roleDefinitionIdOrName: 'Search Service Contributor'
-          principalType: 'ServicePrincipal'
-          principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
-        }
-      ]
-    }
-  }
-]
+// module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.bicep' = [
+//   for (project,index) in effectiveAiFoundryProjects : if (azureAiSearchDeploy) {
+//     name: take('aifp-aisch-ra-${project.name}',64)
+//     scope: rg
+//     dependsOn: [
+//       aiFoundryHubProjects
+//     ]
+//     params: {
+//       azureAiSearchName: aiSearchName
+//       roleAssignments: [
+//         {
+//           roleDefinitionIdOrName: 'Search Index Data Reader'
+//           principalType: 'ServicePrincipal'
+//           principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
+//         }
+//         {
+//           roleDefinitionIdOrName: 'Search Service Contributor'
+//           principalType: 'ServicePrincipal'
+//           principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
+//         }
+//       ]
+//     }
+//   }
+// ]
 
 // ---------- AI FOUNDRY PROJECTS DATASTORES ----------
 // Build a Cartesian product index across projects and sample-data containers
-var projectCount   = length(effectiveAiFoundryProjects)
-var sampleDataContainerCount = length(sampleDataContainersArray)
+// var projectCount   = length(effectiveAiFoundryProjects)
+// var sampleDataContainerCount = length(sampleDataContainersArray)
 
-// One module instance per <project, container> when sampleDataDeploy == true
-module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
-  for idx in range(0, (projectCount * sampleDataContainerCount)) : if (sampleDataDeploy && aiFoundryProjectDeploy) {
-    // Make the module deployment name unique
-    name: replace(toLower(take('datastore_${effectiveAiFoundryProjects[idx / sampleDataContainerCount].name}_${sampleDataContainersArray[idx % sampleDataContainerCount]}',64)),'-','_')
-    scope: rg
-    dependsOn: [
-      aiFoundryHubProjects
-    ]
-    params: {
-      projectWorkspaceName: aiFoundryHubProjects[idx / sampleDataContainerCount].outputs.name
-      storageAccountName: storageAccountName
-      storageContainerName: sampleDataContainersArray[idx % sampleDataContainerCount]
-      dataStoreName: replace(toLower(sampleDataContainersArray[idx % sampleDataContainerCount]),'-','_')
-    }
-  }
-]
+// // One module instance per <project, container> when sampleDataDeploy == true
+// module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
+//   for idx in range(0, (projectCount * sampleDataContainerCount)) : if (sampleDataDeploy && aiFoundryProjectDeploy) {
+//     // Make the module deployment name unique
+//     name: replace(toLower(take('datastore_${effectiveAiFoundryProjects[idx / sampleDataContainerCount].name}_${sampleDataContainersArray[idx % sampleDataContainerCount]}',64)),'-','_')
+//     scope: rg
+//     dependsOn: [
+//       aiFoundryHubProjects
+//     ]
+//     params: {
+//       projectWorkspaceName: aiFoundryHubProjects[idx / sampleDataContainerCount].outputs.name
+//       storageAccountName: storageAccountName
+//       storageContainerName: sampleDataContainersArray[idx % sampleDataContainerCount]
+//       dataStoreName: replace(toLower(sampleDataContainersArray[idx % sampleDataContainerCount]),'-','_')
+//     }
+//   }
+// ]
 
 // ------------- BASTION HOST (OPTIONAL) -------------
 module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (bastionHostDeploy && azureNetworkIsolation) {
@@ -727,22 +717,10 @@ output AZURE_STORAGE_ACCOUNT_SERVICE_ENDPOINTS object = storageAccount.outputs.s
 output AZURE_DISABLE_API_KEYS bool = disableApiKeys
 output AZURE_AI_SEARCH_NAME string = azureAiSearchDeploy ? aiSearchService.outputs.name : ''
 output AZURE_AI_SEARCH_ID   string = azureAiSearchDeploy ? aiSearchService.outputs.resourceId : ''
-output AZURE_AI_SERVICES_NAME string = aiServicesAccount.outputs.name
-output AZURE_AI_SERVICES_ID string = aiServicesAccount.outputs.resourceId
-output AZURE_AI_SERVICES_ENDPOINT string = aiServicesAccount.outputs.endpoint
-output AZURE_AI_SERVICES_RESOURCE_ID string = aiServicesAccount.outputs.resourceId
+output AZURE_AI_FOUNDRY_NAME string = aiFoundryAccount.outputs.name
+output AZURE_AI_FOUNDRY_ID string = aiFoundryAccount.outputs.resourceId
+output AZURE_AI_FOUNDRY_ENDPOINT string = aiFoundryAccount.outputs.endpoint
 
-// Output the Azure AI Foundry resources
-output AZURE_AI_FOUNDRY_HUB_NAME string = aiFoundryHub.outputs.name
-output AZURE_AI_FOUNDRY_HUB_RESOURCE_ID string = aiFoundryHub.outputs.resourceId
-output AZURE_AI_FOUNDRY_HUB_PRIVATE_ENDPOINTS array = aiFoundryHub.outputs.privateEndpoints
-
-// Output the AI Foundry project
-output AZURE_AI_FOUNDRY_PROJECT_DEPLOY bool = aiFoundryProjectDeploy
-output AZURE_AI_FOUNDRY_PROJECTS_FROM_JSON bool = aiFoundryProjectsFromJson
-output AZURE_AI_FOUNDRY_PROJECT_NAME string = aiFoundryProjectDeploy ? aiFoundryProjectName : ''
-output AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION string = aiFoundryProjectDeploy ? aiFoundryProjectDescription : ''
-output AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME string = aiFoundryProjectDeploy ? aiFoundryProjectFriendlyName : ''
 
 // Output the Bastion Host resources
 output AZURE_BASTION_HOST_DEPLOY bool = bastionHostDeploy

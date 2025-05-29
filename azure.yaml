@@ -5,6 +5,8 @@ metadata:
   template: azure-ai-foundry-jumpstart@1.0
   name: azure-ai-foundry-jumpstart@1.0
 
+infra:
+  path: ./infra/v2
 hooks:
   postprovision:
     windows:
