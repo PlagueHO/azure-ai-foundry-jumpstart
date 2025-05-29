@@ -37,8 +37,7 @@ The virtual network is segmented into multiple subnets to enable granular networ
 | `Default`           | 10.0.0.0/24      | Reserved for future use (not used)                          |
 | `AiServices`        | 10.0.1.0/24      | AI Foundry Hub, AI Search & AI Services private endpoints   |
 | `Data`              | 10.0.2.0/24      | Key Vault, Storage private endpoints                        |
-| `ContainerRegistry` | 10.0.3.0/24      | Azure Container Registry private endpoints (optional)       |
-| `Management`        | 10.0.4.0/24      | Reserved for future management endpoints (currently unused) |
+| `Management`        | 10.0.3.0/24      | Reserved for future management endpoints (currently unused) |
 | `AzureBastionSubnet`| 10.0.255.0/27    | Bastion gateway (optional)                                  |
 
 > **Note:** The `Management` subnet is currently empty and reserved for future use (e.g., private endpoints for monitoring or management).
@@ -55,18 +54,13 @@ flowchart RL
         subgraph VNet["10.0.0.0/16 – Virtual Network"]
             direction RL
             subgraph S1["AiServices (10.0.1.0/24)"]
-                PE_Hub["PE: AI Foundry Hub"]    
-                PE_Services["PE: AI Services"]
+                PE_Foundry["PE: AI Foundry (AI Services)"]    
                 PE_Search["PE: AI Search (Optional)"]
             end
             subgraph S2["Data (10.0.2.0/24)"]
-                PE_AKV["PE: Key Vault"]
                 PE_Storage["PE: Storage"]
             end
-            subgraph S3["ContainerRegistry (10.0.3.0/24)"]
-                PE_ACR["PE: Container Registry (Optional)"]
-            end
-            subgraph S4["Management (10.0.4.0/24)"]
+            subgraph S3["Management (10.0.3.0/24)"]
                 EmptyMgmt["(reserved for future use)"]
             end
             subgraph S5["AzureBastionSubnet (10.0.255.0/27)"]
@@ -78,11 +72,9 @@ flowchart RL
     end
 
     LA ---|Diagnostic Settings| PE_Search
-    LA ---|Diagnostic Settings| PE_Services
-    LA ---|Diagnostic Settings| PE_Hub
+    LA ---|Diagnostic Settings| PE_Foundry
     LA ---|Diagnostic Settings| PE_Search
     LA ---|Diagnostic Settings| PE_Storage
-    LA ---|Diagnostic Settings| PE_ACR
     LA ---|Diagnostic Settings| Bastion
     AI --- LA
 ```
@@ -99,12 +91,15 @@ The following diagram illustrates the architecture of the Azure resources deploy
 |-------------------------|--------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
 | Management & Monitoring | Log Analytics Workspace             | [avm/res/operational-insights/workspace](https://github.com/Azure/bicep-registry-modules/tree/main/modules/operational-insights/workspace)           |
 |                         | Application Insights                | [avm/res/insights/component](https://github.com/Azure/bicep-registry-modules/tree/main/modules/insights/component)                                   |
-| Security                | Azure Key Vault                     | [avm/res/key-vault/vault](https://github.com/Azure/bicep-registry-modules/tree/main/modules/key-vault/vault)                                         |
 | Data                    | Storage Account                     | [avm/res/storage/storage-account](https://github.com/Azure/bicep-registry-modules/tree/main/modules/storage/storage-account)                         |
 |                         | Azure AI Search                     | [avm/res/search/search-service](https://github.com/Azure/bicep-registry-modules/tree/main/modules/search/search-service)                             |
-| AI Services             | Azure AI Services (Cognitive)       | [avm/res/cognitive-services/account](https://github.com/Azure/bicep-registry-modules/tree/main/modules/cognitive-services/account)                   |
-|                         | Azure AI Foundry Hub (ML Workspace) | [avm/res/machine-learning-services/workspace](https://github.com/Azure/bicep-registry-modules/tree/main/modules/machine-learning-services/workspace) |
-| Containers (Optional)   | Azure Container Registry            | [avm/res/container-registry/registry](https://github.com/Azure/bicep-registry-modules/tree/main/modules/container-registry/registry)                 |
+| AI Foundry             | Azure AI Foundry                     | [avm/res/cognitive-services/account](https://github.com/Azure/bicep-registry-modules/tree/main/modules/cognitive-services/account)                   |
+| AI Foundry Project     | Azure AI Foundry                     | Not currently supported by AVM                 |
+
+> [!IMPORTANT]
+> The Azure AI Foundry v2 resource structure is not currently supported by Azure Verified Modules (AVM), but once it is, this solution accelerator will be updated to use it.
+>
+> The Azure AI Foundry v1 (Hub and Project) resources are no longer deployed by this solution accelerator, and instead the Azure AI Foundry [Microsoft.CognitiveServices/accounts@2025-04-01-preview](https://learn.microsoft.com/azure/templates/microsoft.cognitiveservices/2025-04-01-preview/accounts) resource is used to provide the Foundry and AI Services capabilities. The [projects](https://learn.microsoft.com/azure/templates/microsoft.cognitiveservices/2025-04-01-preview/accounts/projects) child resource is used to create the AI Foundry Project, which is the equivalent of the Azure AI Foundry Project resource.
 
 ## Security & Best Practices
 

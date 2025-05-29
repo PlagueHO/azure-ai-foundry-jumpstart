@@ -23,7 +23,7 @@ The configuration options are grouped into the following categories:
 
 These options control the creation of sample data and configuration in the Azure AI Foundry hub.
 
-### DEPLOY_SAMPLE_OPENAI_MODELS
+### SAMPLE_OPENAI_MODELS_DEPLOY
 
 Deploy seme common OpenAI models into the Azure OpenAI Service connected to the Azure AI Foundry Hub.
 Default: `true`.
@@ -47,10 +47,10 @@ This will deploy the following models into the Azure OpenAI Service. If the mode
 The list of models, versions, quota and TPM are defined in the [infra/sample-openai-models.json](../infra/sample-openai-models.json) file. If you wish to define an alternate models, you can edit this file or alternatively set the [AZURE_OPENAI_MODELS](#azure-openai-models) environment variable.
 
 ```powershell
-azd env set DEPLOY_SAMPLE_OPENAI_MODELS false
+azd env set SAMPLE_OPENAI_MODELS_DEPLOY false
 ```
 
-### DEPLOY_SAMPLE_DATA
+### SAMPLE_DATA_DEPLOY
 
 Create containers in the Azure Storage account connected to the Azure AI Foundry Hub and upload sample data.
 It will also create a connection to each container in the Azure AI Foundry hub.
@@ -68,7 +68,7 @@ When set to `true`, the following containers will be created in the storage acco
 - `insurance-claims`
 
 ```powershell
-azd env set DEPLOY_SAMPLE_DATA true
+azd env set SAMPLE_DATA_DEPLOY true
 ```
 
 ## Networking & Isolation
@@ -251,36 +251,4 @@ Default: `false`.
 
 ```powershell
 azd env set AZURE_BASTION_HOST_DEPLOY true
-```
-
-### AZURE_CONTAINER_REGISTRY_RESOURCE_ID
-
-Provide the full resource-id of an existing Azure Container Registry to associate with the deployment.  
-When set, the accelerator **does not** create a new registry.  
-If `AZURE_NETWORK_ISOLATION` is `true`, ensure the registry already has the required private endpoints and DNS zones.
-
-```powershell
-azd env set AZURE_CONTAINER_REGISTRY_RESOURCE_ID "/subscriptions/<subId>/resourceGroups/rg-xyz/providers/Microsoft.ContainerRegistry/registries/acrExisting"
-```
-
-### AZURE_CONTAINER_REGISTRY_DEPLOY
-
-Deploy a new Azure Container Registry **or** attach an existing one (`true`).  
-When set to `false`, `AZURE_CONTAINER_REGISTRY_RESOURCE_ID` is ignored and the AI Foundry Hub is created without an attached registry.
-
-Default: `true`.
-
-```powershell
-azd env set AZURE_CONTAINER_REGISTRY_DEPLOY false
-```
-
-## Security
-
-### AZURE_KEYVAULT_ENABLE_PURGE_PROTECTION
-
-Enable purge protection on the Key Vault (`true`). When enabled, the vault cannot be permanently deleted until purge protection is disabled.  
-Default: `false`.
-
-```powershell
-azd env set AZURE_KEYVAULT_ENABLE_PURGE_PROTECTION true
 ```

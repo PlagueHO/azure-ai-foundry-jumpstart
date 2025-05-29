@@ -4,23 +4,14 @@ This solution accelerator leverages a range of Azure services and technologies t
 
 ## Core Azure Services Deployed
 
-- **Azure AI Foundry Hub & Projects**  
-  Central workspace for managing AI resources, projects, and collaboration.
-
-- **Azure AI Services (Cognitive Services / OpenAI)**  
-  Provides access to Azure OpenAI and Cognitive Services for model deployment and inferencing.
+- **Azure AI Foundry (formerly Azure AI Services)**  
+  Provides access to Azure AI Services for model deployment and inferencing.
 
 - **Azure AI Search** *(Optional, but recommended)*  
   Enterprise-grade search service for AI-powered indexing and retrieval. Can be excluded from deployment if not required.
 
 - **Azure Storage Account**  
   Secure storage for data, models, and sample datasets.
-
-- **Azure Key Vault**  
-  Securely manages secrets, keys, and certificates.
-
-- **Azure Container Registry** *(Optional)*  
-  Stores and manages container images for AI workloads. You may use an existing registry, deploy a new one, or skip entirely.
 
 - **Azure Virtual Network (VNet) & Subnets**  
   Provides network isolation and secure communication between resources.

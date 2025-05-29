@@ -6,13 +6,13 @@ set -e # Exit immediately if a command exits with a non-zero status.
 echo "Starting sample data upload script..."
 
 # Get environment variables from azd
-deploy_sample_data=$(azd env get-value DEPLOY_SAMPLE_DATA)
+SAMPLE_DATA_DEPLOY=$(azd env get-value SAMPLE_DATA_DEPLOY)
 storage_account_name=$(azd env get-value AZURE_STORAGE_ACCOUNT_NAME)
 resource_group_name=$(azd env get-value AZURE_RESOURCE_GROUP)
 azure_network_isolation=$(azd env get-value AZURE_NETWORK_ISOLATION)
 
-if [ "$deploy_sample_data" != "true" ]; then
-    echo "DEPLOY_SAMPLE_DATA is not 'true'. Skipping sample data upload."
+if [ "$SAMPLE_DATA_DEPLOY" != "true" ]; then
+    echo "SAMPLE_DATA_DEPLOY is not 'true'. Skipping sample data upload."
     exit 0
 fi
 

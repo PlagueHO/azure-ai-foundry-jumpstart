@@ -123,9 +123,8 @@ You can control many aspects of the AI Foundry environment during deployment by 
 
 ```powershell
 azd env set AZURE_NETWORK_ISOLATION false
-azd env set DEPLOY_SAMPLE_OPENAI_MODELS true
-azd env set DEPLOY_SAMPLE_DATA true
-azd env set AZURE_CONTAINER_REGISTRY_DEPLOY false
+azd env set SAMPLE_OPENAI_MODELS_DEPLOY true
+azd env set SAMPLE_DATA_DEPLOY true
 azd env set AZURE_AI_SEARCH_DEPLOY false
 azd env set AZURE_AI_FOUNDRY_PROJECT true
 azd env set AZURE_AI_FOUNDRY_HUB_DESCRIPTION "Sandbox hub for PoC work"
