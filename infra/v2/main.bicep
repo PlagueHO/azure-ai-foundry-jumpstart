@@ -472,6 +472,7 @@ module aiFoundryAccount 'cognitiveservices/accounts/main.bicep' = {
     name: aiFoundryName
     location: location
     customSubDomainName: aiFoundryCustomSubDomainName
+    allowProjectManagement: true // Needed for AI Foundry projects
     deployments: sampleOpenAiModelsDeploy ? openAiSampleModels : []
     disableLocalAuth: disableApiKeys
     diagnosticSettings: [

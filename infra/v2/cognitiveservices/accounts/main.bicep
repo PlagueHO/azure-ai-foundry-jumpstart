@@ -99,6 +99,9 @@ param tags object?
 @description('Optional. List of allowed FQDN.')
 param allowedFqdnList array?
 
+@description('Optional. Specifies whether this resource support project management as child resources, used as containers for access management, data isolation and cost in AI Foundry.')
+param allowProjectManagement bool = false
+
 @description('Optional. The API properties for special APIs.')
 param apiProperties object?
 
@@ -342,6 +345,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-previ
       ? publicNetworkAccess
       : (!empty(networkAcls) ? 'Enabled' : 'Disabled')
     allowedFqdnList: allowedFqdnList
+    allowProjectManagement: allowProjectManagement
     apiProperties: apiProperties
     disableLocalAuth: disableLocalAuth
     encryption: !empty(customerManagedKey)
