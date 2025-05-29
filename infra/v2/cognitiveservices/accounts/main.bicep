@@ -164,6 +164,30 @@ var identity = !empty(managedIdentities)
   : null
 
 var builtInRoleNames = {
+  'Azure AI Account Owner': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'e47c6f54-e4a2-4754-9501-8e0985b135e1'
+  )
+  'Azure AI Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'b78c5d69-af96-48a3-bf8d-a8b4d589de94'
+  )
+  'Azure AI Developer': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '64702f94-c441-49e6-a78b-ef80e0188fee'
+  )
+  'Azure AI Enterprise Network Connection Approver': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'b556d68e-0be0-4f35-a333-ad7ee1ce17ea'
+  )
+  'Azure AI Project Manager': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'eadc314b-1a2d-4efa-be10-5d325db5065e'
+  )
+  'Azure AI User': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '53ca6127-db72-4b80-b1b0-d745d6d5456d'
+  )
   'Cognitive Services Contributor': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     '25fbc0a9-bd7c-42a3-aa1a-3b75d497ee68'
