@@ -316,7 +316,7 @@ var storageAccountRoleAssignments = [
     {
       roleDefinitionIdOrName: 'Storage Blob Data Contributor'
       principalType: 'ServicePrincipal'
-      principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
+      principalId: aiSearchService.outputs.?systemAssignedMIPrincipalId
     }
   ] : [])
   // Developer role assignments
@@ -503,17 +503,17 @@ var aiSearchRoleAssignmentsArray = azureAiSearchDeploy ? [
   {
     roleDefinitionIdOrName: 'Search Index Data Contributor'
     principalType: 'ServicePrincipal'
-    principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
+    principalId: aiServicesAccount.outputs.?systemAssignedMIPrincipalId
   }
   {
     roleDefinitionIdOrName: 'Search Index Data Reader'
     principalType: 'ServicePrincipal'
-    principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
+    principalId: aiServicesAccount.outputs.?systemAssignedMIPrincipalId
   }
   {
     roleDefinitionIdOrName: 'Search Service Contributor'
     principalType: 'ServicePrincipal'
-    principalId: aiServicesAccount.outputs.systemAssignedMIPrincipalId
+    principalId: aiServicesAccount.outputs.?systemAssignedMIPrincipalId
   }
   {
       roleDefinitionIdOrName: 'Reader'
@@ -596,12 +596,12 @@ var aiServicesRoleAssignmentsArray = [
     {
       roleDefinitionIdOrName: 'Cognitive Services Contributor'
       principalType: 'ServicePrincipal'
-      principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
+      principalId: aiSearchService.outputs.?systemAssignedMIPrincipalId
     }
     {
       roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
       principalType: 'ServicePrincipal'
-      principalId: aiSearchService.outputs.systemAssignedMIPrincipalId
+      principalId: aiSearchService.outputs.?systemAssignedMIPrincipalId
     }
   ] : [])
   // Developer role assignments
@@ -817,7 +817,8 @@ module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspa
 // ---------- AI FOUNDRY PROJECTS ROLE ASSIGNMENTS TO AI SERVICES ----------
 // Add any Azure AI Developer role for each AI Foundry project to the AI Services account
 // This ensures a developer with access to the AI Foundry project can also access the AI Services
-module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aiservice.bicep' = [for (project,index) in effectiveAiFoundryProjects: {
+module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aiservice.bicep' = [
+  for (project,index) in effectiveAiFoundryProjects: {
   name: take('aifp-aisvc-ra-${project.name}',64)
   scope: rg
   dependsOn: [
@@ -829,7 +830,7 @@ module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aiservic
       {
         roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/64702f94-c441-49e6-a78b-ef80e0188fee' // 'Azure AI Developer'
         principalType: 'ServicePrincipal'
-        principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
+        principalId: aiFoundryHubProjects[index].?outputs.systemAssignedMIPrincipalId
       }
     ]
   }

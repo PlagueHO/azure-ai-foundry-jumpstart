@@ -5,6 +5,9 @@ metadata:
   template: azure-ai-foundry-jumpstart@1.0
   name: azure-ai-foundry-jumpstart@1.0
 
+infra:
+  path: infra/v1/main.bicep # change to infra/v2/main.bicep to support Foundry Project.
+
 hooks:
   postprovision:
     windows:

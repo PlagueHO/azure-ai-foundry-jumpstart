@@ -181,7 +181,18 @@ azd env set AZURE_NETWORK_ISOLATION false
 
 A complete list of environment variables can be found in the [Configuration Options](docs/CONFIGURATION_OPTIONS.md) document.
 
-## Archtecture
+## Foundry Project Types
+
+Azure AI Foundry supports [two types of projects](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry#project-types), Foundry Projects and Hub-based Projects. Currently this solution accelerator supports Hub-based projects only, but some work has been done to support Foundry Projects.
+
+| Project Type         | Bicep Path             |                  |
+| -------------------- | ---------------------- | ---------------- |
+| Hub-based project    | [infra/v1/](infra/v1/) | Recommended      |
+| Foundry Project      | [infra/v2/](infra/v2/) | Work-in-progress |
+
+Foundry Projects are a new type of structure for Azure AI Foundry resourcs that simplify the resource requirements making it simpler to deploy an Azure AI Foundry environment. However, due to the newness of this project type, it is not yet fully supported by the Azure AI Foundry Jumpstart Solution Accelerator and Azure Verified Modules. For more information on Foundry Projects, see the [Foundry Project Types](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry#project-types) document.
+
+## Architecture
 
 The following diagrams illustrate the architecture of the solution accelerator. For a detailed overview of the architecture of the solution accelerator, see the [Architecture](docs/design/ARCHITECTURE.md) document.
 
