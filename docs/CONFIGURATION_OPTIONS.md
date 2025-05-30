@@ -243,6 +243,24 @@ azd env set AZURE_PRINCIPAL_ID_TYPE serviceprincipal
 
 ## Optional Infrastructure
 
+### AZURE_STORAGE_ACCOUNT_DEPLOY
+
+Toggle deployment of the Azure Storage account connected to the AI Foundry Hub.  
+Default: `true`.
+
+```powershell
+azd env set AZURE_STORAGE_ACCOUNT_DEPLOY false
+```
+
+### AZURE_STORAGE_ACCOUNT_NAME
+
+Override the auto-generated name of the Azure Storage account. Must be 3–24 lowercase alphanumeric.  
+Default: The same as the environment name.
+
+```powershell
+azd env set AZURE_STORAGE_ACCOUNT_NAME "mycustomstorage"
+```
+
 ### AZURE_BASTION_HOST_DEPLOY
 
 Deploy an Azure Bastion host for secure RDP/SSH access (`true`).  

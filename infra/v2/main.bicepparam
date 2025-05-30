@@ -12,8 +12,12 @@ param principalIdType = toLower(readEnvironmentVariable('AZURE_PRINCIPAL_ID_TYPE
 param azureNetworkIsolation = toLower(readEnvironmentVariable('AZURE_NETWORK_ISOLATION', 'true')) == 'true'
 
 // AI resources parameters
-param aiSearchSku = toLower(readEnvironmentVariable('AZURE_AI_SEARCH_SKU', 'standard'))
+param azureAiSearchSku = toLower(readEnvironmentVariable('AZURE_AI_SEARCH_SKU', 'standard'))
 param azureAiSearchDeploy = toLower(readEnvironmentVariable('AZURE_AI_SEARCH_DEPLOY', 'true')) == 'true'
+
+// Storage account toggle and override
+param azureStorageAccountDeploy = toLower(readEnvironmentVariable('AZURE_STORAGE_ACCOUNT_DEPLOY', 'true')) == 'true'
+param azureStorageAccountName = readEnvironmentVariable('AZURE_STORAGE_ACCOUNT_NAME', 'default')
 
 // AI Foundry project parameters
 param aiFoundryProjectDeploy = toLower(readEnvironmentVariable('AZURE_AI_FOUNDRY_PROJECT_DEPLOY', 'true')) == 'true'

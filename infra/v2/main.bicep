@@ -23,16 +23,6 @@ param location string
 })
 param resourceGroupName string = 'rg-${environmentName}'
 
-@sys.description('SKU for the Azure AI Search service. Defaults to standard.')
-@allowed([
-  'standard'
-  'standard2'
-  'standard3'
-  'storage_optimized_l1'
-  'storage_optimized_l2'
-])
-param aiSearchSku string = 'standard'
-
 @sys.description('Id of the user or app to assign application roles.')
 param principalId string
 
@@ -42,6 +32,24 @@ param principalId string
   'ServicePrincipal'
 ])
 param principalIdType string = 'User'
+
+@sys.description('SKU for the Azure AI Search service. Defaults to standard.')
+@allowed([
+  'standard'
+  'standard2'
+  'standard3'
+  'storage_optimized_l1'
+  'storage_optimized_l2'
+])
+param azureAiSearchSku string = 'standard'
+
+@sys.description('Toggle deployment of the Azure Storage account. Set to false to skip storage account creation.')
+param azureStorageAccountDeploy bool = true
+
+@sys.description('Optional override for the storage account name (3-24 lowercase letters & numbers).')
+@minLength(3)
+@maxLength(24)
+param azureStorageAccountName string = 'default' // 'Magic string' to indicate no value provided
 
 @sys.description('Enable network isolation. When false no virtual network, private endpoint or private DNS resources are created and all services expose public endpoints')
 param azureNetworkIsolation bool = true
@@ -97,7 +105,7 @@ var sendTologAnalyticsCustomSettingName = 'send-to-${logAnalyticsName}'
 var applicationInsightsName = '${abbrs.insightsComponents}${environmentName}'
 var virtualNetworkName = '${abbrs.networkVirtualNetworks}${environmentName}'
 // Ensure the storage account name is ≤ 24 characters as required by Azure.
-var storageAccountName = take(toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', '')),24)
+var storageAccountName = azureStorageAccountName == 'default' ? take(toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', '')), 24) : azureStorageAccountName 
 var aiSearchName = '${abbrs.aiSearchSearchServices}${environmentName}'
 var aiFoundryName = '${abbrs.aiFoundryAccounts}${environmentName}'
 var aiFoundryCustomSubDomainName = toLower(replace(environmentName, '-', ''))
@@ -248,7 +256,7 @@ var sampleDataContainers = [for name in sampleDataContainersArray: {
   publicAccess: 'None'
 }]
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = if (azureStorageAccountDeploy) {
   name: 'storage-account-deployment'
   scope: rg
   params: {
@@ -312,7 +320,7 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.10.0' = if (az
   params: {
     name: aiSearchName
     location: location
-    sku: aiSearchSku
+    sku: azureAiSearchSku
     diagnosticSettings: [
       {
         metricCategories: [
@@ -443,26 +451,50 @@ var effectiveAiFoundryProjects = aiFoundryProjectDeploy
 
 import { connectionType } from './cognitive-services/accounts/connection/main.bicep'
 
-var aiFoundryConnections connectionType[] = azureAiSearchDeploy ? [
-  {
-    // CognitiveSearch connection
-    category: 'CognitiveSearch'
-    connectionProperties: {
-      authType: 'AAD'
+var aiFoundryConnections connectionType[] = [
+  // AI Search connection
+  ...(azureAiSearchDeploy ? [
+    {
+      category: 'CognitiveSearch'
+      connectionProperties: {
+        authType: 'AAD'
+      }
+      metadata: {
+        Type: 'azure_ai_search'
+        ApiType: 'Azure'
+        ApiVersion: '2024-05-01-preview'
+        DeploymentApiVersion: '2023-11-01'
+        Location: location
+        ResourceId: aiSearchService.outputs.resourceId
+      }
+      name: aiSearchName
+      target: aiSearchService.outputs.endpoint
+      isSharedToAll: true
     }
-    metadata: {
-      Type: 'azure_ai_search'
-      ApiType: 'Azure'
-      ApiVersion: '2024-05-01-preview'
-      DeploymentApiVersion: '2023-11-01'
-      Location: location
-      ResourceId: aiSearchService.outputs.resourceId
+  ] : [])
+
+  // Storage account connection
+  ...(azureStorageAccountDeploy ? [
+    {
+      category: 'AzureStorageAccount'
+      connectionProperties: {
+        authType: 'AAD'
+      }
+      metadata: {
+        Type: 'azure_blob_storage'
+        ApiType: 'Azure'
+        ApiVersion: '2021-06-01'
+        Location: location
+        ResourceId: storageAccount.outputs.resourceId
+        ContainerName: ''
+        AccountName: ''
+      }
+      name: storageAccountName
+      target: storageAccount.outputs.primaryBlobEndpoint
+      isSharedToAll: true
     }
-    name: aiSearchName
-    target: aiSearchService.outputs.endpoint
-    isSharedToAll: true
-  }
-] : []
+  ] : [])
+]
 
 module aiFoundryAccount 'cognitive-services/accounts/main.bicep' = {
   name: 'ai-foundry-account-deployment'
