@@ -274,6 +274,15 @@ Default: `true`.
 azd env set AZURE_CONTAINER_REGISTRY_DEPLOY false
 ```
 
+### AZURE_STORAGE_ACCOUNT_NAME
+
+Override the default storage account name, which is automatically generated from the environment name.
+Default: `environment-name`.
+
+```powershell
+azd env set AZURE_STORAGE_ACCOUNT_NAME mycustomstorage
+```
+
 ## Security
 
 ### AZURE_KEYVAULT_ENABLE_PURGE_PROTECTION

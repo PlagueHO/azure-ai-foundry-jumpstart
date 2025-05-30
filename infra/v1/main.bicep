@@ -43,7 +43,7 @@ param aiFoundryHubIpAllowList array = []
   'storage_optimized_l1'
   'storage_optimized_l2'
 ])
-param aiSearchSku string = 'standard'
+param azureAiSearchSku string = 'standard'
 
 @sys.description('Id of the user or app to assign application roles.')
 param principalId string
@@ -94,6 +94,11 @@ param aiFoundryProjectsFromJson bool = false
 @sys.description('Deploy Azure AI Search and all dependent configuration. Set to false to skip its deployment.')
 param azureAiSearchDeploy bool = true
 
+@sys.description('Override the default storage account name. Use the magic string `default` to fall back to the generated name.')
+@minLength(3)
+@maxLength(24)
+param azureStorageAccountName string = 'default'
+
 var abbrs = loadJsonContent('./abbreviations.json')
 
 // tags that should be applied to all resources.
@@ -112,7 +117,9 @@ var sendTologAnalyticsCustomSettingName = 'send-to-${logAnalyticsName}'
 var applicationInsightsName = '${abbrs.insightsComponents}${environmentName}'
 var virtualNetworkName = '${abbrs.networkVirtualNetworks}${environmentName}'
 // Ensure the storage account name is ≤ 24 characters as required by Azure.
-var storageAccountName = take(toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', '')),24)
+var storageAccountName = azureStorageAccountName == 'default'
+  ? take(toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', '')), 24)
+  : azureStorageAccountName
 // Ensure the key vault name is ≤ 24 characters as required by Azure.
 var keyVaultName = take(toLower(replace('${abbrs.keyVaultVaults}${environmentName}', '-', '')),24)
 var containerRegistryName = toLower(replace('${abbrs.containerRegistryRegistries}${environmentName}', '-', ''))
@@ -349,6 +356,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
   name: 'storage-account-deployment'
   scope: rg
   params: {
+    // use the computed storageAccountName
     name: storageAccountName
     allowBlobPublicAccess: false
     blobServices: {
@@ -452,7 +460,7 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.10.0' = if (az
   params: {
     name: aiSearchName
     location: location
-    sku: aiSearchSku
+    sku: azureAiSearchSku
     diagnosticSettings: [
       {
         metricCategories: [
@@ -830,7 +838,7 @@ module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aiservic
       {
         roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/64702f94-c441-49e6-a78b-ef80e0188fee' // 'Azure AI Developer'
         principalType: 'ServicePrincipal'
-        principalId: aiFoundryHubProjects[index].?outputs.systemAssignedMIPrincipalId
+        principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
       }
     ]
   }
