@@ -33,7 +33,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/PlagueHO/azure-ai-foundry-jumpstart/tree/main/src/create_search_index"
+Homepage = "https://github.com/PlagueHO/azure-ai-foundry-jumpstart/tree/main/src/create_ai_search_index"
 Repository = "https://github.com/PlagueHO/azure-ai-foundry-jumpstart"
 # BugTracker = "https://github.com/PlagueHO/azure-ai-foundry-jumpstart/issues" # Optional
 

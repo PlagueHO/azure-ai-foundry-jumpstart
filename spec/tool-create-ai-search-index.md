@@ -6,7 +6,7 @@
 
 ## 1. Purpose & Scope
 
-This specification defines the requirements, constraints, and interfaces for a Python CLI tool named `create_ai_search_index`. The tool is responsible for building an Azure AI Search index using Azure's built-in Skills and Indexers. It is intended for data engineers, AI developers, and DevOps teams deploying or managing Azure AI Search solutions. The tool will reside in the `src/create_search_index` directory.
+This specification defines the requirements, constraints, and interfaces for a Python CLI tool named `create_ai_search_index`. The tool is responsible for building an Azure AI Search index using Azure's built-in Skills and Indexers. It is intended for data engineers, AI developers, and DevOps teams deploying or managing Azure AI Search solutions. The tool will reside in the `src/create_ai_search_index` directory.
 
 ## 2. Definitions
 
@@ -69,10 +69,10 @@ This specification defines the requirements, constraints, and interfaces for a P
 
 ```bash
 # Basic usage
-python -m create_search_index.cli --endpoint https://mysearch.search.windows.net --api-key $API_KEY --index-name my-index --data-source $DATA_CONN --skillset-config skillset.json
+python -m create_ai_search_index.cli --endpoint https://mysearch.search.windows.net --api-key $API_KEY --index-name my-index --data-source $DATA_CONN --skillset-config skillset.json
 
 # Dry-run validation
-python -m create_search_index.cli --endpoint https://mysearch.search.windows.net --api-key $API_KEY --index-name my-index --data-source $DATA_CONN --skillset-config skillset.json --dry-run
+python -m create_ai_search_index.cli --endpoint https://mysearch.search.windows.net --api-key $API_KEY --index-name my-index --data-source $DATA_CONN --skillset-config skillset.json --dry-run
 
 # Edge case: Skillset config missing required fields
 # Should return a clear error message and exit with non-zero status

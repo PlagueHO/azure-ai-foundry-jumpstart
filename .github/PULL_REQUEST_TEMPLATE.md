@@ -5,7 +5,7 @@ Please check all that apply:
 -->
 - [ ] Infrastructure (Bicep/infra)
 - [ ] Sample Data
-- [ ] Sample Apps (e.g., data_generator, create_search_index)
+- [ ] Sample Apps (e.g., data_generator, create_ai_search_index)
 - [ ] Documentation
 - [ ] Other
 
