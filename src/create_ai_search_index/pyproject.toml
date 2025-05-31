@@ -1,0 +1,107 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "create-ai-search-index"
+version = "0.1.0"
+description = "Azure AI Search index pipeline builder for RAG scenarios."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Your Name / Organization", email = "your.email@example.com" }, # Please update this
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "python-dotenv==1.1.0",
+    "azure-identity==1.23.0",
+    "azure-search-documents==11.6.0b11", # Note: data_generator uses 11.4.0b8, consider aligning if issues arise
+    "azure-storage-blob==12.25.1",
+    "openai==1.79.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.5", # Align with data_generator's pytest version (e.g., >=8.1) if desired
+    "pytest-cov==6.1.1", # Align with data_generator's pytest-cov version (e.g., >=5.0)
+    "pytest-asyncio==0.23.7", # If async tests are planned
+    "flake8==7.2.0", # Consider switching to ruff fully, data_generator uses ruff
+    "black==24.4.2", # Align with data_generator
+    "mypy==1.15.0",    # Align with data_generator
+    "isort==5.0",    # Ruff can handle import sorting
+    "types-python-dotenv",
+    "ruff==0.11.10",   # Add ruff, align with data_generator
+    # "types-azure-identity", # Optional: if available and useful
+    # "types-azure-search-documents", # Optional
+]
+
+[project.urls]
+Homepage = "https://github.com/PlagueHO/azure-ai-foundry-jumpstart/tree/main/src/create_ai_search_index"
+Repository = "https://github.com/PlagueHO/azure-ai-foundry-jumpstart"
+# BugTracker = "https://github.com/PlagueHO/azure-ai-foundry-jumpstart/issues" # Optional
+
+[project.scripts]
+# This assumes the package, when installed, is importable as `create_ai_search_index`
+create-ai-search-index = "create_ai_search_index.cli:main"
+
+# Remove [tool.setuptools]
+
+[tool.hatch.build.targets.wheel]
+# The 'packages' key indicates the directory name of the package in the wheel.
+# The 'sources' key maps this package name to the source directory.
+# Here, content of "." (current directory) will become the "create_ai_search_index" package.
+packages = ["create_ai_search_index"]
+sources = {"create_ai_search_index" = "."}
+
+[tool.hatch.build.targets.sdist]
+# Include all .py files from the current directory, README, and pyproject.toml (auto-included)
+include = ["*.py", "README.md"]
+
+
+[tool.black]
+line-length = 88
+target-version = ["py310"] # Align with requires-python
+
+[tool.ruff] # Add ruff configuration, align with data_generator
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"] # Common selection, adjust as needed
+
+[tool.isort] # Retained for now, but ruff can also handle this (via ruff.lint.isort)
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.10"
+# strict = true # Consider enabling for stricter checks, like in data_generator
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+# The package source files are in the current directory "."
+# Mypy will scan .py files here.
+# If tests are added in a "tests" subdir, add "tests" to this list.
+files = ["."]
+
+
+[tool.pytest.ini_options] # Add pytest configuration, align with data_generator
+# Assuming tests will be in a 'tests' directory and source code (package) is 'create_ai_search_index'
+# For current structure where source is '.', cov target is the package name.
+addopts = "-ra --cov=create_ai_search_index --cov-report=term-missing"
+markers = ["live: marks tests that hit live Azure endpoints (deselect with -m 'not live')"]
+# python_files = "tests.py test_*.py *_test.py" # Default, can be explicit
+# python_classes = "Test*"
+# python_functions = "test_*"

@@ -45,7 +45,7 @@
     "forwardPorts": [
         // Forward ports if needed for local development
     ],
-    "postCreateCommand": "pip3 install -r /workspaces/azure-ai-foundry-jumpstart/requirements-dev.txt;",
+    "postCreateCommand": "git config --global core.autocrlf input && git config --global core.fileMode false; pip3 install -r /workspaces/azure-ai-foundry-jumpstart/requirements-dev.txt;",
     "remoteUser": "vscode",
     "hostRequirements": {
         "memory": "8gb"

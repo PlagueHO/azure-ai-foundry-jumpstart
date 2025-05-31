@@ -6,7 +6,7 @@
 
 ## 1. Purpose & Scope
 
-This specification defines the requirements, constraints, and interfaces for a Python CLI tool named `create_ai_search_index`. The tool is responsible for building an Azure AI Search index using the LlamaIndex library. It is intended for data engineers, AI developers, and DevOps teams deploying or managing Azure AI Search solutions. The tool will reside in the `src/create_search_index` directory.
+This specification defines the requirements, constraints, and interfaces for a Python CLI tool named `create_ai_search_index`. The tool is responsible for building an Azure AI Search index using the LlamaIndex library. It is intended for data engineers, AI developers, and DevOps teams deploying or managing Azure AI Search solutions. The tool will reside in the `src/create_ai_search_index` directory.
 
 ## 2. Definitions
 
@@ -67,10 +67,10 @@ This specification defines the requirements, constraints, and interfaces for a P
 
 ```bash
 # Basic usage
-python -m create_search_index.cli --endpoint https://mysearch.search.windows.net --api-key $API_KEY --index-name my-index --input data.json
+python -m create_ai_search_index.cli --endpoint https://mysearch.search.windows.net --api-key $API_KEY --index-name my-index --input data.json
 
 # Dry-run validation
-python -m create_search_index.cli --endpoint https://mysearch.search.windows.net --api-key $API_KEY --index-name my-index --input data.csv --dry-run
+python -m create_ai_search_index.cli --endpoint https://mysearch.search.windows.net --api-key $API_KEY --index-name my-index --input data.csv --dry-run
 
 # Edge case: Input file missing required fields
 # Should return a clear error message and exit with non-zero status

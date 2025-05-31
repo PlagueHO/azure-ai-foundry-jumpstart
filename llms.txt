@@ -86,7 +86,7 @@ azure-ai-foundry-jumpstart/
 │       └── deploy.ps1
 │
 ├── src/                 # Source code for tools and samples
-│   ├── create_search_index/
+│   ├── create_ai_search_index/
 │   │   ├── __main__.py
 │   │   ├── cli.py
 │   │   ├── engine.py
