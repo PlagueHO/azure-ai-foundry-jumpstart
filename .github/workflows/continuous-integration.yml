@@ -19,4 +19,4 @@ jobs:
     uses: ./.github/workflows/python-tests.yml
     with:
       # List all app names (folders) in /src and /tests that should be tested
-      app_names: '["data_generator"]'
+      app_names: '["data_generator","create_ai_search_index"]'

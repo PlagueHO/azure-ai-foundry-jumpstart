@@ -11,9 +11,10 @@ This script parses CLI arguments, validates them, and invokes the CreateSearchIn
 
 import argparse
 import sys
+from typing import List, Optional
+
 from .engine import CreateAISearchIndex, CreateAISearchIndexConfig
 
-from typing import List, Optional
 
 def main(argv: Optional[List[str]] = None):
     """
@@ -29,14 +30,34 @@ def main(argv: Optional[List[str]] = None):
         prog="create_ai_search_index",
         description="Azure AI Search index pipeline builder for RAG scenarios.",
     )
-    parser.add_argument("--storage-account", required=True, help="Azure Storage account name.")
-    parser.add_argument("--storage-container", required=True, help="Blob container with documents.")
-    parser.add_argument("--search-service", required=True, help="Azure AI Search service name.")
-    parser.add_argument("--index-name", required=True, help="Name of the search index to create or update.")
-    parser.add_argument("--azure-openai-endpoint", help="Azure OpenAI endpoint URL.")
-    parser.add_argument("--embedding-model", help="Azure OpenAI embedding model name.")
-    parser.add_argument("--embedding-deployment", help="Azure OpenAI embedding deployment name.")
-    parser.add_argument("--delete-existing", action="store_true", help="Delete and re-create pipeline resources if they exist.")
+    parser.add_argument(
+        "--storage-account", required=True, help="Azure Storage account name."
+    )
+    parser.add_argument(
+        "--storage-container", required=True, help="Blob container with documents."
+    )
+    parser.add_argument(
+        "--search-service", required=True, help="Azure AI Search service name."
+    )
+    parser.add_argument(
+        "--index-name",
+        required=True,
+        help="Name of the search index to create or update.",
+    )
+    parser.add_argument(
+        "--azure-openai-endpoint", help="Azure OpenAI endpoint URL."
+    )
+    parser.add_argument(
+        "--embedding-model", help="Azure OpenAI embedding model name."
+    )
+    parser.add_argument(
+        "--embedding-deployment", help="Azure OpenAI embedding deployment name."
+    )
+    parser.add_argument(
+        "--delete-existing",
+        action="store_true",
+        help="Delete and re-create pipeline resources if they exist.",
+    )
     # ...add more arguments as needed (chunk-size, overlap, etc.)...
 
     args = parser.parse_args(argv or sys.argv[1:])
@@ -54,9 +75,10 @@ def main(argv: Optional[List[str]] = None):
 
     try:
         CreateAISearchIndex(config).run()
-    except Exception as ex:
+    except RuntimeError as ex:  # Changed from general Exception to RuntimeError
         print(f"ERROR: {ex}", file=sys.stderr)
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
