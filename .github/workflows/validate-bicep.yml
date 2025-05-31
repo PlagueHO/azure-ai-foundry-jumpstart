@@ -19,6 +19,10 @@ on:
         description: "The name of the Azure environment"
         required: true
         type: string
+      BICEP_VERSION:
+        description: "The Bicep template version to validate (v1 or v2)"
+        required: true
+        type: string
 
     secrets:
       AZURE_TENANT_ID:
@@ -48,7 +52,7 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
 
-      - name: Validate
+      - name: Validate Bicep
         id: validate-azure-infrastructure
         uses: azure/bicep-deploy@v2
         with:
@@ -58,7 +62,7 @@ jobs:
           scope: subscription
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           location: ${{ inputs.AZURE_LOCATION }}
-          template-file: ./infra/v1/main.bicep
+          template-file: ./infra/${{ inputs.BICEP_VERSION }}/main.bicep
           parameters: >
             {
               "location": "${{ inputs.AZURE_LOCATION }}",
