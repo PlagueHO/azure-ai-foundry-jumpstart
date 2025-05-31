@@ -10,7 +10,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "4592312823970509798"
+      "templateHash": "1770616315631460880"
     }
   },
   "definitions": {
@@ -194,7 +194,7 @@
         "description": "Array of public IPv4 addresses or CIDR ranges that will be added to the Azure AI Foundry Hub allow-list when azureNetworkIsolation is true."
       }
     },
-    "aiSearchSku": {
+    "azureAiSearchSku": {
       "type": "string",
       "defaultValue": "standard",
       "allowedValues": [
@@ -310,6 +310,15 @@
       "defaultValue": true,
       "metadata": {
         "description": "Deploy Azure AI Search and all dependent configuration. Set to false to skip its deployment."
+      }
+    },
+    "azureStorageAccountName": {
+      "type": "string",
+      "defaultValue": "default",
+      "minLength": 3,
+      "maxLength": 24,
+      "metadata": {
+        "description": "Override the default storage account name. Use the magic string `default` to fall back to the generated name."
       }
     }
   },
@@ -654,7 +663,7 @@
     "sendTologAnalyticsCustomSettingName": "[format('send-to-{0}', variables('logAnalyticsName'))]",
     "applicationInsightsName": "[format('{0}{1}', variables('abbrs').insightsComponents, parameters('environmentName'))]",
     "virtualNetworkName": "[format('{0}{1}', variables('abbrs').networkVirtualNetworks, parameters('environmentName'))]",
-    "storageAccountName": "[take(toLower(replace(format('{0}{1}', variables('abbrs').storageStorageAccounts, parameters('environmentName')), '-', '')), 24)]",
+    "storageAccountName": "[if(equals(parameters('azureStorageAccountName'), 'default'), take(toLower(replace(format('{0}{1}', variables('abbrs').storageStorageAccounts, parameters('environmentName')), '-', '')), 24), parameters('azureStorageAccountName'))]",
     "keyVaultName": "[take(toLower(replace(format('{0}{1}', variables('abbrs').keyVaultVaults, parameters('environmentName')), '-', '')), 24)]",
     "containerRegistryName": "[toLower(replace(format('{0}{1}', variables('abbrs').containerRegistryRegistries, parameters('environmentName')), '-', ''))]",
     "aiSearchName": "[format('{0}{1}', variables('abbrs').aiSearchSearchServices, parameters('environmentName'))]",
@@ -40190,7 +40199,7 @@
             "value": "[parameters('location')]"
           },
           "sku": {
-            "value": "[parameters('aiSearchSku')]"
+            "value": "[parameters('azureAiSearchSku')]"
           },
           "diagnosticSettings": {
             "value": [
@@ -53455,7 +53464,7 @@
               {
                 "roleDefinitionIdOrName": "/providers/Microsoft.Authorization/roleDefinitions/64702f94-c441-49e6-a78b-ef80e0188fee",
                 "principalType": "ServicePrincipal",
-                "principalId": "[tryGet(reference(format('aiFoundryHubProjects[{0}]', copyIndex())), 'outputs').systemAssignedMIPrincipalId.value]"
+                "principalId": "[reference(format('aiFoundryHubProjects[{0}]', copyIndex())).outputs.systemAssignedMIPrincipalId.value]"
               }
             ]
           }

@@ -61,7 +61,7 @@ jobs:
           - name: public
             AZURE_NETWORK_ISOLATION: 'false'
             DEPLOY_SAMPLE_OPENAI_MODELS: 'false'
-    name: Test Template (${{ matrix.name }})
+    name: Test Template v1 (${{ matrix.name }})
     uses: ./.github/workflows/test-template.yml
     with:
       ENVIRONMENT: Test
