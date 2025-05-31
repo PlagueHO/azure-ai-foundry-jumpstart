@@ -35,7 +35,7 @@ jobs:
             BICEP_VERSION: v1
           - name: v2
             BICEP_VERSION: v2
-    name: Validate Bicep (${{ matrix.BICEP_VERSION }})
+    name: Validate Bicep (${{ matrix.name }})
     uses: ./.github/workflows/validate-bicep.yml
     with:
       ENVIRONMENT: Test
@@ -48,7 +48,7 @@ jobs:
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   
-  test-template:
+  test-template-v1:
     needs:
       - set-build-variables
       - validate-bicep
@@ -67,7 +67,7 @@ jobs:
       ENVIRONMENT: Test
       BUILD_VERSION: ${{ needs.set-build-variables.outputs.BUILD_VERSION }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
-      AZURE_ENV_NAME: ${{ format('aifj-{0}-{1}-{2}', matrix.name, github.ref_name, github.run_id) }}
+      AZURE_ENV_NAME: ${{ format('aifjv1-{0}-{1}-{2}', matrix.name, github.ref_name, github.run_id) }}
       AZURE_NETWORK_ISOLATION: ${{ matrix.AZURE_NETWORK_ISOLATION }}
       DEPLOY_SAMPLE_OPENAI_MODELS: ${{ matrix.DEPLOY_SAMPLE_OPENAI_MODELS }}
     secrets:
