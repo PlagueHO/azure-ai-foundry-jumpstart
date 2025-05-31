@@ -41,7 +41,6 @@ dev = [
     "black==24.4.2", # Align with data_generator
     "mypy==1.15.0",    # Align with data_generator
     "isort==5.0",    # Ruff can handle import sorting
-    "types-python-dotenv",
     "ruff==0.11.10",   # Add ruff, align with data_generator
     # "types-azure-identity", # Optional: if available and useful
     # "types-azure-search-documents", # Optional
