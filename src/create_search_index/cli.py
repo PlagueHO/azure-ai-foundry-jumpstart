@@ -13,7 +13,9 @@ import argparse
 import sys
 from .engine import CreateAISearchIndex, CreateAISearchIndexConfig
 
-def main(argv=None):
+from typing import List, Optional
+
+def main(argv: Optional[List[str]] = None):
     """
     Main entry point for the create_ai_search_index CLI.
 

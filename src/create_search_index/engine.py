@@ -169,11 +169,12 @@ class CreateAISearchIndex:
         ds_name = f"{self.cfg.index_name}-blob-ds"
         connection_string = f"DefaultEndpointsProtocol=https;AccountName={self.cfg.storage_account};EndpointSuffix=core.windows.net"
         # For production, use Key Vault or Managed Identity
+        from azure.search.documents.indexes.models import SearchIndexerDataContainer
         ds = SearchIndexerDataSourceConnection(
             name=ds_name,
             type="azureblob",
             connection_string=connection_string,
-            container={"name": self.cfg.storage_container},
+            container=SearchIndexerDataContainer(name=self.cfg.storage_container),
             description="Blob container for RAG documents"
         )
         try:
@@ -192,7 +193,8 @@ class CreateAISearchIndex:
         """
         self.logger.info("Ensuring skillset...")
         skillset_name = f"{self.cfg.index_name}-skillset"
-        skills = [
+        from azure.search.documents.indexes.models import SearchIndexerSkill
+        skills: list[SearchIndexerSkill] = [
             SplitSkill(
                 name="splitSkill",
                 description="Split content into chunks",
@@ -202,15 +204,8 @@ class CreateAISearchIndex:
                 inputs=[InputFieldMappingEntry(name="text", source="/document/content")],
                 outputs=[OutputFieldMappingEntry(name="pages", target_name="chunks")]
             ),
-            AzureOpenAIVectorizer(
-                name="embeddingSkill",
-                context="/document/chunks/*",
-                resource_uri="https://{your-openai-resource}.openai.azure.com/",
-                deployment_id=self.cfg.embedding_model or "text-embedding-ada-002",
-                inputs=[InputFieldMappingEntry(name="text", source="/document/chunks/*")],
-                outputs=[OutputFieldMappingEntry(name="vector", target_name="contentVector")],
-                vectorizer_name="myOpenAI",
-            ),
+            # TODO: Add a supported embedding skill here, such as a CustomSkill or CognitiveSkill, if required.
+            # AzureOpenAIVectorizer is not a valid SearchIndexerSkill and cannot be used here.
         ]
         skillset = SearchIndexerSkillset(
             name=skillset_name,
@@ -276,8 +271,9 @@ class CreateAISearchIndex:
                     self.logger.info("Indexer completed successfully.")
                     return
                 else:
-                    self.logger.error("Indexer failed: %s", status.error_message)
-                    raise RuntimeError(f"Indexer failed: {status.error_message}")
+                    error_message = getattr(status.last_result, "error_message", "Unknown error")
+                    self.logger.error("Indexer failed: %s", error_message)
+                    raise RuntimeError(f"Indexer failed: {error_message}")
             self.logger.warning("Indexer did not complete within expected time.")
         except Exception as ex:
             self.logger.error("Failed to run indexer: %s", ex)
