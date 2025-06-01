@@ -4,6 +4,10 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - infra/**
+      - src/**
+      - tests/**
   workflow_dispatch:
 
 permissions:
