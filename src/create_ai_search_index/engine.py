@@ -44,12 +44,15 @@ class CreateAISearchIndexConfig:
     the Azure AI Search indexing pipeline.
     """
 
-    storage_account: str
-    storage_container: str
     search_service: str
     index_name: str
-    embedding_model: str | None = None
+    storage_container: str
+    storage_account: str | None = None
+    storage_account_key: str | None = None
+    storage_account_connection_string: str | None = None
+    embedding_model: str | None = "text-embedding-ada-002"
     embedding_deployment: str | None = None
+    embedding_dimension: int = 1536
     azure_openai_endpoint: str | None = None
     delete_existing: bool = False
 
@@ -152,7 +155,7 @@ class CreateAISearchIndex:
             SearchField(
                 name="text_vector",
                 type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
-                vector_search_dimensions=1024,
+                vector_search_dimensions=self.cfg.embedding_dimension,
                 vector_search_profile_name="myHnswProfile",
             ),
         ]
@@ -165,6 +168,7 @@ class CreateAISearchIndex:
                 VectorSearchProfile(
                     name="myHnswProfile",
                     algorithm_configuration_name="myHnsw",
+                    dimensions=self.cfg.embedding_dimension,
                     vectorizer_name="myOpenAI",
                 )
             ],
@@ -197,6 +201,26 @@ class CreateAISearchIndex:
             self.logger.error("Failed to create/update index: %s", ex)
             raise
 
+    def _get_storage_account_connection_string(self) -> str:
+        """
+        Assemble and return the storage account connection string.
+
+        Returns:
+            str: The storage account connection string.
+
+        Raises:
+            ValueError: If required storage account information is missing.
+        """
+        if self.cfg.storage_account_connection_string:
+            return self.cfg.storage_account_connection_string
+        if not self.cfg.storage_account or not self.cfg.storage_account_key:
+            raise ValueError("Both storage_account and storage_account_key are required if connection string is not provided.")
+        return (
+            f"DefaultEndpointsProtocol=https;AccountName={self.cfg.storage_account};"
+            f"AccountKey={self.cfg.storage_account_key};"
+            f"EndpointSuffix=core.windows.net"
+        )
+
     def _ensure_data_source(self) -> None:
         """
         Create or update the data source connection for the indexer.
@@ -206,11 +230,7 @@ class CreateAISearchIndex:
         """
         self.logger.info("Ensuring data source connection...")
         ds_name = f"{self.cfg.index_name}-blob-ds"
-        connection_string = (
-            f"DefaultEndpointsProtocol=https;AccountName={self.cfg.storage_account};"
-            f"EndpointSuffix=core.windows.net"
-        )
-        # For production, use Key Vault or Managed Identity
+        connection_string = self._get_storage_account_connection_string()
         ds = SearchIndexerDataSourceConnection(
             name=ds_name,
             type="azureblob",
