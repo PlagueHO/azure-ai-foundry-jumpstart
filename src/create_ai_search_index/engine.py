@@ -33,9 +33,7 @@ from azure.search.documents.indexes.models import (
 if TYPE_CHECKING:
     pass
 
-
 __all__: list[str] = ["CreateAISearchIndex", "CreateAISearchIndexConfig"]
-
 
 @dataclass
 class CreateAISearchIndexConfig:
@@ -59,7 +57,6 @@ class CreateAISearchIndexConfig:
     def search_endpoint(self) -> str:
         """Return the full endpoint URL for the Azure AI Search service."""
         return f"https://{self.search_service}.search.windows.net"
-
 
 class CreateAISearchIndex:
     """
@@ -88,7 +85,6 @@ class CreateAISearchIndex:
             level=log_level,
         )
         self.logger = logging.getLogger("create-ai-search-index")
-
 
         # Credential: prefer DefaultAzureCredential, fallback to API key
         self.credential: AzureKeyCredential | DefaultAzureCredential
