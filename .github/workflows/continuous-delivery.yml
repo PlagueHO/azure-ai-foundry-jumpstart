@@ -61,11 +61,11 @@ jobs:
       max-parallel: 1
       matrix:
         include:
-          - name: isolated
-            AZURE_NETWORK_ISOLATION: 'true'
-            DEPLOY_SAMPLE_OPENAI_MODELS: 'true'
           - name: public
             AZURE_NETWORK_ISOLATION: 'false'
+            DEPLOY_SAMPLE_OPENAI_MODELS: 'true'
+          - name: isolated
+            AZURE_NETWORK_ISOLATION: 'true'
             DEPLOY_SAMPLE_OPENAI_MODELS: 'false'
 
     name: E2E Test v1 (${{ matrix.name }})
