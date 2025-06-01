@@ -1,9 +1,9 @@
 targetScope = 'subscription'
 extension microsoftGraphV1
 
-@sys.description('Name of the the environment which is used to generate a short unique hash used in all resources. Must be 34 characters or less and can only contain lowercase letters, numbers and hyphens. The name must start with a letter and end with a letter or number.')
+@sys.description('Name of the the environment which is used to generate a short unique hash used in all resources.')
 @minLength(1)
-@maxLength(34)
+@maxLength(40)
 param environmentName string
 
 @sys.description('Location for all resources')
@@ -668,7 +668,8 @@ var aiFoundryHubConnections = concat([
       Location: location
       ResourceId: aiServicesAccount.outputs.resourceId
     }
-    name: aiServicesName
+    // Full aiServicesName can't be used because may cause deployment name to be too long
+    name: replace(abbrs.aiServicesAccounts,'-','')
     target: aiServicesAccount.outputs.endpoint
     isSharedToAll: true
   }
@@ -687,7 +688,8 @@ var aiFoundryHubConnections = concat([
       Location: location
       ResourceId: aiSearchService.outputs.resourceId
     }
-    name: aiSearchName
+    // Full aiSearchName can't be used because may cause deployment name to be too long
+    name: replace(abbrs.aiSearchSearchServices,'-','')
     target: aiSearchService.outputs.endpoint
     isSharedToAll: true
   }
