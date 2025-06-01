@@ -82,11 +82,11 @@ param aiFoundryProjectDeploy bool
 @sys.description('The name of the Azure AI Foundry project to create.')
 param aiFoundryProjectName string
 
-@sys.description('The friendly name of the Azure AI Foundry project to create.')
-param aiFoundryProjectFriendlyName string
-
 @sys.description('The description of the Azure AI Foundry project to create.') 
 param aiFoundryProjectDescription string
+
+@sys.description('The friendly name of the Azure AI Foundry project to create.')
+param aiFoundryProjectFriendlyName string
 
 @sys.description('Use projects defined in sample-ai-foundry-projects.json file instead of the single project parameters. When true, the aiFoundryProject* parameters are ignored.')
 param aiFoundryProjectsFromJson bool = false
