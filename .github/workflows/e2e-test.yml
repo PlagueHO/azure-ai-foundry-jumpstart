@@ -66,6 +66,7 @@ jobs:
 
   delete-infrastructure:
     needs: [provision-infrastructure, e2e-tests]
+    if: always()
     uses: ./.github/workflows/delete-infrastructure.yml
     with:
       ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
