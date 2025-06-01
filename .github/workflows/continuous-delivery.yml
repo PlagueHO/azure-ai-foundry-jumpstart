@@ -21,9 +21,11 @@ permissions:
 
 jobs:
   set-build-variables:
+    name: Set Build Variables
     uses: ./.github/workflows/set-build-variables.yml
 
   lint-and-publish-bicep:
+    name: Lint and Publish Bicep
     uses: ./.github/workflows/lint-and-publish-bicep.yml
 
   validate-bicep:
