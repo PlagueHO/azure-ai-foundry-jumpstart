@@ -1,35 +1,20 @@
-name: test-template
+name: delete-infrastructure
 
 on:
   workflow_call:
     inputs:
       ENVIRONMENT:
-        description: "The environment to validate the application infrastructure for"
-        required: true
-        type: string
-      BUILD_VERSION:
-        description: "The version of the build to deploy to the application resources"
-        required: true
-        type: string
-      AZURE_LOCATION:
-        description: "The Azure region to deploy the application resources to"
+        description: "The environment to delete the application infrastructure for"
         required: true
         type: string
       AZURE_ENV_NAME:
         description: "The name of the Azure environment"
         required: true
         type: string
-      AZURE_NETWORK_ISOLATION:
-        description: "Whether to deploy the application resources in a network isolated environment"
-        required: false
+      AZURE_LOCATION:
+        description: "The Azure region to deploy the application resources to"
+        required: true
         type: string
-        default: 'false'
-      DEPLOY_SAMPLE_OPENAI_MODELS:
-        description: "Whether to deploy the sample OpenAI models"
-        required: false
-        type: string
-        default: 'false'
-
     secrets:
       AZURE_TENANT_ID:
         description: "The Azure tenant ID to use for authentication to Azure for deployment"
@@ -42,24 +27,19 @@ on:
         required: true
 
 jobs:
-  test-template:
-    name: Deploy Infrastructure ${{ inputs.ENVIRONMENT }}
+  delete-infrastructure:
+    name: Delete Infrastructure ${{ inputs.ENVIRONMENT }}
     env:
-      # Required for azd to authenticate with Azure using Federated Credentials
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      # Required for azd to provision the infrastructure
       AZURE_ENV_NAME: ${{ inputs.AZURE_ENV_NAME }}
       AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
-      # Optional azd parameters
-      AZURE_NETWORK_ISOLATION: ${{ inputs.AZURE_NETWORK_ISOLATION }}
-      DEPLOY_SAMPLE_OPENAI_MODELS: ${{ inputs.DEPLOY_SAMPLE_OPENAI_MODELS }}
       AZURE_PRINCIPAL_ID_TYPE: 'ServicePrincipal'
-
+    
     environment: ${{ inputs.ENVIRONMENT }}
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -69,15 +49,10 @@ jobs:
 
       - name: Authenticate azd (Federated Credentials)
         run: |
-          azd auth login `
-            --client-id "$Env:AZURE_CLIENT_ID" `
-            --federated-credential-provider "github" `
-            --tenant-id "$Env:AZURE_TENANT_ID"
-        shell: pwsh
+          azd auth login \
+            --client-id "$AZURE_CLIENT_ID" \
+            --federated-credential-provider "github" \
+            --tenant-id "$AZURE_TENANT_ID"
 
-      - name: Provision Infrastructure
-        run: azd provision --no-prompt --debug
-          
       - name: Delete Infrastructure
-        if: always()
         run: azd down --no-prompt --purge --force --debug

@@ -8,6 +8,8 @@ on:
       - v*
     paths:
       - infra/**
+      - src/**
+      - tests/**
 
   workflow_dispatch:
   
@@ -48,7 +50,8 @@ jobs:
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   
-  test-template-v1:
+
+  e2e-test-v1:
     needs:
       - set-build-variables
       - validate-bicep
@@ -61,8 +64,9 @@ jobs:
           - name: public
             AZURE_NETWORK_ISOLATION: 'false'
             DEPLOY_SAMPLE_OPENAI_MODELS: 'false'
-    name: Test Template v1 (${{ matrix.name }})
-    uses: ./.github/workflows/test-template.yml
+
+    name: E2E Test v1 (${{ matrix.name }})
+    uses: ./.github/workflows/e2e-test.yml
     with:
       ENVIRONMENT: Test
       BUILD_VERSION: ${{ needs.set-build-variables.outputs.BUILD_VERSION }}

@@ -6,17 +6,17 @@ Usage (once the project is installed in the active Python environment):
     create_ai_search_index --storage-account mystorage --storage-container docs \
         --search-service mysearch --index-name myindex
 
-This script parses CLI arguments, validates them, and invokes the CreateSearchIndex engine.
+This script parses CLI arguments, validates them,
+and invokes the CreateSearchIndex engine.
 """
 
 import argparse
 import sys
-from typing import List, Optional
 
 from .engine import CreateAISearchIndex, CreateAISearchIndexConfig
 
 
-def main(argv: Optional[List[str]] = None):
+def main(argv: list[str] | None = None):
     """
     Main entry point for the create_ai_search_index CLI.
 

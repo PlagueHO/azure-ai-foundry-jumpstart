@@ -1,0 +1,77 @@
+name: e2e-test
+
+on:
+  workflow_call:
+    inputs:
+      AZURE_NETWORK_ISOLATION:
+        description: "Whether to deploy the application resources in a network isolated environment"
+        required: true
+        type: string
+      DEPLOY_SAMPLE_OPENAI_MODELS:
+        description: "Whether to deploy the sample OpenAI models"
+        required: true
+        type: string
+      ENVIRONMENT:
+        description: "The environment to use for E2E testing"
+        required: true
+        type: string
+      BUILD_VERSION:
+        description: "The version of the build to deploy to the application resources"
+        required: true
+        type: string
+      AZURE_LOCATION:
+        description: "The Azure region to deploy the application resources to"
+        required: true
+        type: string
+      AZURE_ENV_NAME:
+        description: "The name of the Azure environment"
+        required: true
+        type: string
+    secrets:
+      AZURE_TENANT_ID:
+        description: "The Azure tenant ID to use for authentication to Azure for deployment"
+        required: true
+      AZURE_SUBSCRIPTION_ID:
+        description: "The Azure subscription ID to use for authentication to Azure for deployment"
+        required: true
+      AZURE_CLIENT_ID:
+        description: "The Azure client ID to use for authentication to Azure for deployment"
+        required: true
+
+jobs:
+  provision-infrastructure:
+    uses: ./.github/workflows/provision-infrastructure.yml
+    with:
+      ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+      BUILD_VERSION: ${{ inputs.BUILD_VERSION }}
+      AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
+      AZURE_ENV_NAME: ${{ inputs.AZURE_ENV_NAME }}
+      AZURE_NETWORK_ISOLATION: ${{ inputs.AZURE_NETWORK_ISOLATION }}
+      DEPLOY_SAMPLE_OPENAI_MODELS: ${{ inputs.DEPLOY_SAMPLE_OPENAI_MODELS }}
+    secrets:
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+
+  # Placeholder for E2E test job(s)
+  e2e-tests:
+    needs: provision-infrastructure
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.ENVIRONMENT }}
+    steps:
+      - name: Echo endpoints
+        run: |
+          echo "AI Endpoint: ${{ needs.provision-infrastructure.outputs.AZURE_AI_SERVICES_ENDPOINT }}"
+          echo "Storage Endpoint: ${{ needs.provision-infrastructure.outputs.AZURE_STORAGE_ACCOUNT_BLOB_ENDPOINT }}"
+
+  delete-infrastructure:
+    needs: [provision-infrastructure, e2e-tests]
+    uses: ./.github/workflows/delete-infrastructure.yml
+    with:
+      ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+      AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
+      AZURE_ENV_NAME: ${{ inputs.AZURE_ENV_NAME }}
+    secrets:
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}

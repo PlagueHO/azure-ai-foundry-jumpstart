@@ -89,7 +89,9 @@ class CreateAISearchIndex:
         )
         self.logger = logging.getLogger("create-ai-search-index")
 
+
         # Credential: prefer DefaultAzureCredential, fallback to API key
+        self.credential: AzureKeyCredential | DefaultAzureCredential
         api_key = None  # Optionally load from env
         if api_key:
             self.credential = AzureKeyCredential(api_key)

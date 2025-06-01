@@ -34,6 +34,15 @@ dev = [
 [project.scripts]
 generate-data = "data_generator.cli:main"   # CLI entry-point (stub to be implemented)
 
+[tool.hatch.build.targets.wheel]
+# The 'packages' key indicates the directory name of the package in the wheel.
+# The 'sources' key maps this package name to the source directory.
+# Here, content of "." (current directory) will become the "create_ai_search_index" package.
+packages = ["data_generator"]
+sources = [
+  { include = ".", dest = "data_generator" }
+]
+
 [tool.black]
 line-length = 88
 target-version = ["py310"]
@@ -53,9 +62,6 @@ files = ["data_generator", "tests"]
 [tool.pytest.ini_options]
 addopts = "-ra --cov=data_generator --cov-report=term-missing"
 markers = ["live: marks tests that hit live Azure endpoints (deselect with -m 'not live')"]
-
-[tool.hatch.build.targets.wheel]
-packages = ["data_generator"]   # the package lives in this folder (same dir as pyproject)
 
 [tool.hatch.build.targets.sdist]
 include = ["data_generator/**", "README.md", "pyproject.toml"]

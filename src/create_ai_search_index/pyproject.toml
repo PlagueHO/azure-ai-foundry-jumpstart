@@ -49,20 +49,20 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/PlagueHO/azure-ai-foundry-jumpstart/tree/main/src/create_ai_search_index"
 Repository = "https://github.com/PlagueHO/azure-ai-foundry-jumpstart"
-# BugTracker = "https://github.com/PlagueHO/azure-ai-foundry-jumpstart/issues" # Optional
+BugTracker = "https://github.com/PlagueHO/azure-ai-foundry-jumpstart/issues"
 
 [project.scripts]
 # This assumes the package, when installed, is importable as `create_ai_search_index`
 create-ai-search-index = "create_ai_search_index.cli:main"
-
-# Remove [tool.setuptools]
 
 [tool.hatch.build.targets.wheel]
 # The 'packages' key indicates the directory name of the package in the wheel.
 # The 'sources' key maps this package name to the source directory.
 # Here, content of "." (current directory) will become the "create_ai_search_index" package.
 packages = ["create_ai_search_index"]
-sources = {"create_ai_search_index" = "."}
+sources = [
+  { include = ".", dest = "create_ai_search_index" }
+]
 
 [tool.hatch.build.targets.sdist]
 # Include all .py files from the current directory, README, and pyproject.toml (auto-included)
