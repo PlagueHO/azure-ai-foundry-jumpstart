@@ -1,9 +1,9 @@
 targetScope = 'subscription'
 extension microsoftGraphV1
 
-@sys.description('Name of the the environment which is used to generate a short unique hash used in all resources')
+@sys.description('Name of the the environment which is used to generate a short unique hash used in all resources. Must be 34 characters or less and can only contain lowercase letters, numbers and hyphens. The name must start with a letter and end with a letter or number.')
 @minLength(1)
-@maxLength(64)
+@maxLength(34)
 param environmentName string
 
 @sys.description('Location for all resources')
