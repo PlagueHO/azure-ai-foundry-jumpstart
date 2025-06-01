@@ -58,6 +58,7 @@ jobs:
       - set-build-variables
       - validate-bicep
     strategy:
+      max-parallel: 1
       matrix:
         include:
           - name: isolated
