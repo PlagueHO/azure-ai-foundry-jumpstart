@@ -18,10 +18,12 @@ The file should be formatted in well formed Markdown.
 - Ensure the document is self-contained and does not rely on external context.
 
 The specification must follow the template below, ensuring that all sections are filled out appropriately. The front matter for the MD should be structured correctly as per the example following:
+```Markdown
 ---
-specification: [Concise Title Describing the Specification's Focus]
+title: [Concise Title Describing the Specification's Focus]
 version: [Optional: e.g., 1.0, Date]  
-last_update: [Optional: YYYY-MM-DD]  
+date_created: [YYYY-MM-DD]  
+last_updated: [Optional: YYYY-MM-DD]  
 owner: [Optional: Team/Individual responsible for this spec]
 tags: [Optional: List of relevant tags or categories, e.g., `infrastructure`, `process`, `design`, `app` etc]
 ---
@@ -57,9 +59,9 @@ tags: [Optional: List of relevant tags or categories, e.g., `infrastructure`, `p
 
 ## 6. Examples & Edge Cases
 
-```
+``````
 // Code snippet or data example demonstrating the correct application of the guidelines, including edge cases
-```
+``````
 
 ## 7. Validation Criteria
 
@@ -69,3 +71,4 @@ tags: [Optional: List of relevant tags or categories, e.g., `infrastructure`, `p
 
 [Link to related spec 1]  
 [Link to relevant external documentation]
+```

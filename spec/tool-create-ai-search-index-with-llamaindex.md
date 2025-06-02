@@ -1,7 +1,8 @@
 ---
-specification: Python CLI Tool for Azure AI Search Index Creation with LlamaIndex
+title: Python CLI Tool for Azure AI Search Index Creation with LlamaIndex
 version: 1.0
-last_update: 2025-06-02
+date_created: 2025-06-02
+last_updated: 2025-06-02
 owner: Azure AI Foundry Jumpstart Team
 tags: [tool, ai-search, llamaindex, cli, python]
 ---

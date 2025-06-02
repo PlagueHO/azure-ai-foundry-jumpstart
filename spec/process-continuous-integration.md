@@ -1,7 +1,8 @@
 ---
-specification: Continuous Integration Workflow for Azure AI Foundry Jumpstart
+title: Continuous Integration Workflow for Azure AI Foundry Jumpstart
 version: 1.1
-last_update: 2025-06-02
+date_created: 2025-06-02
+last_updated: 2025-06-02
 owner: Azure AI Foundry Jumpstart DevOps Team
 tags: [process, ci, github-actions, infrastructure, python, bicep]
 ---
