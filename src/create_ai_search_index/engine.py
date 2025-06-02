@@ -214,7 +214,10 @@ class CreateAISearchIndex:
         if self.cfg.storage_account_connection_string:
             return self.cfg.storage_account_connection_string
         if not self.cfg.storage_account or not self.cfg.storage_account_key:
-            raise ValueError("Both storage_account and storage_account_key are required if connection string is not provided.")
+            raise ValueError(
+                "Both storage_account and storage_account_key are required if "
+                "connection string is not provided."
+            )
         return (
             f"DefaultEndpointsProtocol=https;AccountName={self.cfg.storage_account};"
             f"AccountKey={self.cfg.storage_account_key};"

@@ -17,13 +17,18 @@ The file should be formatted in well formed Markdown.
 - Include examples and edge cases where applicable.
 - Ensure the document is self-contained and does not rely on external context.
 
-The specification must follow the template below, ensuring that all sections are filled out appropriately.
+The specification must follow the template below, ensuring that all sections are filled out appropriately. The front matter for the MD should be structured correctly as per the example following:
+---
+specification: [Concise Title Describing the Specification's Focus]
+version: [Optional: e.g., 1.0, Date]  
+last_update: [Optional: YYYY-MM-DD]  
+owner: [Optional: Team/Individual responsible for this spec]
+tags: [Optional: List of relevant tags or categories, e.g., `infrastructure`, `process`, `design`, `app` etc]
+---
 
-# Specification: [Concise Title Describing the Specification's Focus]
+# Introduction
 
-**Version:** [Optional: e.g., 1.0, Date]  
-**Last Updated:** [Optional: YYYY-MM-DD]  
-**Owner:** [Optional: Team/Individual responsible for this spec]
+[A short concise introduction to the specification and the goal it is intended to achieve.]
 
 ## 1. Purpose & Scope
 

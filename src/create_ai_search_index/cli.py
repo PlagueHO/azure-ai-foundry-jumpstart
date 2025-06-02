@@ -31,15 +31,23 @@ def main(argv: list[str] | None = None):
         description="Azure AI Search index pipeline builder for RAG scenarios.",
     )
     parser.add_argument(
-        "--storage-account", help="Azure Storage account name. Required if not using a connection string."
+        "--storage-account",
+        help=(
+            "Azure Storage account name. Required if not using a connection string."
+        ),
     )
     parser.add_argument(
         "--storage-account-key",
-        help="Azure Storage account key. Required if not using a connection string."
+        help=(
+            "Azure Storage account key. Required if not using a connection string."
+        ),
     )
     parser.add_argument(
         "--storage-account-connection-string",
-        help="Azure Storage account connection string. If provided, overrides storage-account and storage-account-key."
+        help=(
+            "Azure Storage account connection string. If provided, overrides "
+            "storage-account and storage-account-key."
+        ),
     )
     parser.add_argument(
         "--storage-container",
@@ -69,7 +77,10 @@ def main(argv: list[str] | None = None):
     parser.add_argument(
         "--embedding-deployment",
         default="text-embedding-ada-002",
-        help="Azure OpenAI embedding deployment name. Defaults to 'text-embedding-ada-002'."
+        help=(
+            "Azure OpenAI embedding deployment name. "
+            "Defaults to 'text-embedding-ada-002'."
+        ),
     )
     parser.add_argument(
         "--embedding-dimension",
@@ -86,16 +97,19 @@ def main(argv: list[str] | None = None):
 
     args = parser.parse_args(argv or sys.argv[1:])
 
-    # Validation: If connection string is provided, do not allow storage-account or storage-account-key to be required
+    # Validation: If connection string is provided, do not allow storage-account or
+    # storage-account-key to be required.
     if args.storage_account_connection_string:
         if args.storage_account or args.storage_account_key:
             parser.error(
-                "--storage-account-connection-string cannot be used with --storage-account or --storage-account-key"
+                "--storage-account-connection-string cannot be used with "
+                "--storage-account or --storage-account-key"
             )
     else:
         if not args.storage_account_key:
             parser.error(
-                "--storage-account-key is required unless --storage-account-connection-string is provided"
+                "--storage-account-key is required unless "
+                "--storage-account-connection-string is provided"
             )
 
     config = CreateAISearchIndexConfig(
