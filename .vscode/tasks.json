@@ -49,6 +49,22 @@
                 "isDefault": false
             },
             "problemMatcher": ["$python"]
+        },
+        {
+            "label": "Run Flake8 Linting",
+            "type": "shell",
+            "command": "flake8",
+            "args": [
+                "src/"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": ["$python"],
+            "presentation": {
+                "reveal": "always"
+            }
         }
     ]
 }
