@@ -1,4 +1,3 @@
-
 ---
 specification: Python CLI Tool for Azure AI Search Index Creation
 version: 2.0
