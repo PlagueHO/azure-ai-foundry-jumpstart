@@ -22,8 +22,7 @@
             "installAzModule": true
         },
         "ghcr.io/devcontainers/features/node:1": {
-            "version": "lts",
-            "installYarn": true
+            "version": "lts"
         }
     },
     "customizations": {
@@ -39,8 +38,7 @@
                 "ms-python.python",
                 "ms-toolsai.jupyter",
                 "dbaeumer.vscode-eslint",
-                "ms-python.black-formatter",
-                "bungcip.better-toml"
+                "ms-python.black-formatter"
             ]
         }
     },
