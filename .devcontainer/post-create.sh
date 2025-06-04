@@ -4,7 +4,7 @@
 
 set -e  # Exit on any error
 
-echo "🚀 Running post-create setup for Azure AI Foundry Jumpstart..."
+echo "🚀 Running post-create setup for Azure AI Foundry Jumpstart devcontainer..."
 
 # Configure Git settings
 echo "📝 Configuring Git settings..."
@@ -13,7 +13,7 @@ git config --global core.fileMode false
 
 # Install Python development dependencies
 echo "🐍 Installing Python development dependencies..."
-pip3 install -r ../requirements-dev.txt
+pip3 install -r ./requirements-dev.txt
 
 # Ensure Node.js tools are properly sourced and available
 echo "🔧 Setting up Node.js environment..."
