@@ -1,4 +1,13 @@
-{    "servers": {
+{
+    // MCP Server Configuration for Azure AI Foundry Jumpstart
+    // 
+    // This configuration uses 'npx' from PATH to ensure MCP servers work
+    // across different environments (dev containers, Windows, macOS, Linux).
+    // 
+    // The dev container setup ensures npx is available in PATH.
+    // On Windows/macOS/Linux hosts, npx should be available after Node.js installation.
+    
+    "servers": {
         "filesystem": {
             "command": "npx",
             "args": [
@@ -14,7 +23,9 @@
             "args": [
                 "-y",
                 "@playwright/mcp@latest"
-            ]
+            ],
+            "type": "stdio",
+            "env": {}
         },
         "github": {
             "command": "npx",
@@ -25,7 +36,16 @@
             "env": {
                 "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:github_token}"
             }
-      }
+        },
+        "azure": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@azure/mcp-server-azure"
+            ],
+            "type": "stdio",
+            "env": {}
+        }
     },
     "inputs": [
         {
