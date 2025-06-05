@@ -58,7 +58,7 @@ This specification defines the infrastructure requirements, configuration option
 
 ### Naming Constraints
 
-- **NAME-001**: The sample data storage account name MUST be ≤ 24 characters (Azure Storage Account limit)
+- **NAME-001**: The sample data storage account name MUST be <= 24 characters (Azure Storage Account limit)
 - **NAME-002**: The sample data storage account name MUST follow the pattern: `{foundryStorageAccountName}sample`
 - **NAME-003**: If the combined name exceeds 24 characters, the base name MUST be truncated to accommodate the 'sample' suffix
 
@@ -74,22 +74,15 @@ This specification defines the infrastructure requirements, configuration option
 ### Bicep Parameters
 
 ```bicep
-@sys.description('Deploy a dedicated storage account for sample data. When true, creates a separate storage account for sample data instead of using the foundry storage account.')
-param deploySampleDataStorageAccount bool = false
-
-@sys.description('Override the default sample data storage account name. Use the magic string `default` to fall back to the generated name.')
-@minLength(3)
-@maxLength(24)
-param sampleDataStorageAccountName string = 'default'
+@sys.description('Deploy sample data containers into the Azure Storage Account. Defaults to false.')
+param deploySampleData bool = false
 ```
 
 ### Storage Account Configuration Schema
 
 ```bicep
 // Sample data storage account naming logic
-var sampleDataStorageAccountBaseName = deploySampleDataStorageAccount && sampleDataStorageAccountName == 'default'
-  ? take(toLower(replace('${storageAccountName}sample', '-', '')), 24)
-  : sampleDataStorageAccountName
+var sampleDataStorageAccountName = take(toLower(replace('${storageAccountName}sample', '-', '')), 24)
 
 // Sample data storage account module parameters
 module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = if (deploySampleDataStorageAccount && deploySampleData) {
