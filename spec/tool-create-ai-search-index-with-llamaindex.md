@@ -27,19 +27,19 @@ The purpose of this specification is to outline the requirements, constraints, a
 
 ## 3. Requirements, Constraints & Guidelines
 
-* **Requirement 1:** The tool must be implemented in Python 3.13 or later.
-* **Requirement 2:** The CLI must accept parameters for Azure Search endpoint, API key, index name, and input data location.
-* **Requirement 3:** The tool must use LlamaIndex for index creation and data ingestion.
-* **Requirement 4:** The tool must validate input parameters and provide clear, actionable error messages.
-* **Requirement 5:** The tool must log all operations and errors to stdout and optionally to a log file.
-* **Requirement 6:** The tool must support both JSON and CSV input data formats.
-* **Requirement 7:** The tool must be idempotent—re-running with the same parameters must not create duplicate indexes or documents.
-* **Requirement 8:** The tool must support a dry-run mode for validation without making changes.
-* **Constraint 1:** Only public, stable APIs of Azure AI Search and LlamaIndex may be used.
-* **Constraint 2:** No sensitive information (e.g., API keys) may be logged or exposed in error messages.
-* **Guideline 1:** Follow PEP8 and project Python style guidelines.
-* **Guideline 2:** Use type hints and docstrings for all public functions.
-* **Pattern to follow:** Use the `argparse` library for CLI argument parsing.
+- **Requirement 1:** The tool must be implemented in Python 3.13 or later.
+- **Requirement 2:** The CLI must accept parameters for Azure Search endpoint, API key, index name, and input data location.
+- **Requirement 3:** The tool must use LlamaIndex for index creation and data ingestion.
+- **Requirement 4:** The tool must validate input parameters and provide clear, actionable error messages.
+- **Requirement 5:** The tool must log all operations and errors to stdout and optionally to a log file.
+- **Requirement 6:** The tool must support both JSON and CSV input data formats.
+- **Requirement 7:** The tool must be idempotent—re-running with the same parameters must not create duplicate indexes or documents.
+- **Requirement 8:** The tool must support a dry-run mode for validation without making changes.
+- **Constraint 1:** Only public, stable APIs of Azure AI Search and LlamaIndex may be used.
+- **Constraint 2:** No sensitive information (e.g., API keys) may be logged or exposed in error messages.
+- **Guideline 1:** Follow PEP8 and project Python style guidelines.
+- **Guideline 2:** Use type hints and docstrings for all public functions.
+- **Pattern to follow:** Use the `argparse` library for CLI argument parsing.
 
 ## 4. Interfaces & Data Contracts
 
@@ -55,6 +55,7 @@ The purpose of this specification is to outline the requirements, constraints, a
 | --dry-run    | flag   | No       | Validate only, do not create index                |
 
 #### Example Data Schema (JSON)
+
 ```json
 {
   "id": "string",
@@ -70,7 +71,7 @@ The tool leverages LlamaIndex to enable advanced semantic search and indexing ca
 
 ## 6. Examples & Edge Cases
 
-```
+```bash
 # Basic usage
 python -m create_ai_search_index.cli --endpoint https://mysearch.search.windows.net --api-key $API_KEY --index-name my-index --input data.json
 

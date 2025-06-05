@@ -38,20 +38,20 @@ Intended audience: Developers, DevOps engineers, maintainers, and automated agen
 
 ## 3. Requirements, Constraints & Guidelines
 
-* **Requirement 1:** The workflow MUST trigger on:
-  * Pushes to the `main` branch
-  * Tags matching `v*`
-  * Changes to any file under `infra/**`, `src/**`, or `tests/**`
-* **Requirement 2:** The workflow MUST support manual invocation via `workflow_dispatch`.
-* **Requirement 3:** The workflow MUST set build variables, lint and publish Bicep files, and validate Bicep templates for multiple versions (v1, v2) using a matrix strategy.
-* **Requirement 4:** The workflow MUST run E2E tests for both isolated and public network configurations using a matrix strategy.
-* **Requirement 5:** The E2E test workflow MUST provision infrastructure, run E2E tests, and then delete infrastructure, passing all required secrets and parameters.
-* **Constraint 1:** All secrets (tenant ID, subscription ID, client ID) MUST be passed securely to reusable workflows using the `secrets` block.
-* **Constraint 2:** The workflow MUST use job-level `uses` to reference reusable workflows and pass required inputs explicitly.
-* **Constraint 3:** The workflow MUST NOT expose secrets in logs or outputs.
-* **Guideline 1:** Use descriptive job names and maintain modularity by leveraging reusable workflows for each major step.
-* **Guideline 2:** Use matrix strategies for both Bicep validation and E2E test scenarios to ensure coverage of all deployment modes.
-* **Pattern to follow:** Reference reusable workflows via relative paths and pass all required `with` and `secrets` inputs explicitly.
+- **Requirement 1:** The workflow MUST trigger on:
+  - Pushes to the `main` branch
+  - Tags matching `v*`
+  - Changes to any file under `infra/**`, `src/**`, or `tests/**`
+- **Requirement 2:** The workflow MUST support manual invocation via `workflow_dispatch`.
+- **Requirement 3:** The workflow MUST set build variables, lint and publish Bicep files, and validate Bicep templates for multiple versions (v1, v2) using a matrix strategy.
+- **Requirement 4:** The workflow MUST run E2E tests for both isolated and public network configurations using a matrix strategy.
+- **Requirement 5:** The E2E test workflow MUST provision infrastructure, run E2E tests, and then delete infrastructure, passing all required secrets and parameters.
+- **Constraint 1:** All secrets (tenant ID, subscription ID, client ID) MUST be passed securely to reusable workflows using the `secrets` block.
+- **Constraint 2:** The workflow MUST use job-level `uses` to reference reusable workflows and pass required inputs explicitly.
+- **Constraint 3:** The workflow MUST NOT expose secrets in logs or outputs.
+- **Guideline 1:** Use descriptive job names and maintain modularity by leveraging reusable workflows for each major step.
+- **Guideline 2:** Use matrix strategies for both Bicep validation and E2E test scenarios to ensure coverage of all deployment modes.
+- **Pattern to follow:** Reference reusable workflows via relative paths and pass all required `with` and `secrets` inputs explicitly.
 
 ## 4. Interfaces & Data Contracts
 
@@ -64,7 +64,8 @@ Intended audience: Developers, DevOps engineers, maintainers, and automated agen
 | `validate-bicep`              | Workflow Job | Validates Bicep templates for v1 and v2 using a matrix           |
 | `e2e-test-v1`                 | Workflow Job | Runs E2E tests for isolated and public configs using a matrix    |
 
-**Example: Matrix for Bicep Validation**
+### Example: Matrix for Bicep Validation
+
 ```yaml
 strategy:
   matrix:
@@ -75,7 +76,8 @@ strategy:
         BICEP_VERSION: v2
 ```
 
-**Example: Matrix for E2E Tests**
+### Example: Matrix for E2E Tests
+
 ```yaml
 strategy:
   max-parallel: 1

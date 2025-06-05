@@ -26,15 +26,15 @@ The purpose of this specification is to provide a clear, machine-readable defini
 
 ## 3. Requirements, Constraints & Guidelines
 
-* Requirement 1: The workflow MUST trigger on all pull requests targeting the `main` branch and on manual invocation (`workflow_dispatch`).
-* Requirement 2: The workflow MUST run with permissions to read repository contents and write checks and pull request statuses.
-* Requirement 3: The workflow MUST lint and publish Bicep files using a reusable workflow (`lint-and-publish-bicep.yml`).
-* Requirement 4: The workflow MUST lint and test all Python applications listed in the `app_names` input using a reusable workflow (`lint-and-test-python-apps.yml`).
-* Constraint 1: The list of Python app names MUST be explicitly provided as a JSON array string in the `app_names` input.
-* Constraint 2: Only changes to `infra/**`, `src/**`, or `tests/**` paths should trigger the workflow on pull requests.
-* Guideline 1: All jobs SHOULD be defined as reusable workflows for maintainability and DRY (Don't Repeat Yourself) principles.
-* Guideline 2: Use job-level `uses` to reference reusable workflows and pass required inputs explicitly.
-* Pattern to follow: Use explicit, self-documenting job and input names for clarity and maintainability.
+- Requirement 1: The workflow MUST trigger on all pull requests targeting the `main` branch and on manual invocation (`workflow_dispatch`).
+- Requirement 2: The workflow MUST run with permissions to read repository contents and write checks and pull request statuses.
+- Requirement 3: The workflow MUST lint and publish Bicep files using a reusable workflow (`lint-and-publish-bicep.yml`).
+- Requirement 4: The workflow MUST lint and test all Python applications listed in the `app_names` input using a reusable workflow (`lint-and-test-python-apps.yml`).
+- Constraint 1: The list of Python app names MUST be explicitly provided as a JSON array string in the `app_names` input.
+- Constraint 2: Only changes to `infra/**`, `src/**`, or `tests/**` paths should trigger the workflow on pull requests.
+- Guideline 1: All jobs SHOULD be defined as reusable workflows for maintainability and DRY (Don't Repeat Yourself) principles.
+- Guideline 2: Use job-level `uses` to reference reusable workflows and pass required inputs explicitly.
+- Pattern to follow: Use explicit, self-documenting job and input names for clarity and maintainability.
 
 ## 4. Interfaces & Data Contracts
 
@@ -46,11 +46,13 @@ The purpose of this specification is to provide a clear, machine-readable defini
 | `lint-and-test-python-apps`   | Workflow Job | Lints and tests Python apps; receives `app_names` as JSON string |
 
 **Example `app_names` input:**
+
 ```json
 ["data_generator","create_ai_search_index"]
 ```
 
 **Example workflow structure:**
+
 ```yaml
 on:
   pull_request:
@@ -85,7 +87,7 @@ The CI workflow enforces code quality, security, and infrastructure standards be
 
 ## 6. Examples & Edge Cases
 
-```
+```yaml
 # Example: Pull request triggers CI only for relevant paths
 on:
   pull_request:
