@@ -50,5 +50,8 @@
     "remoteUser": "vscode",
     "hostRequirements": {
         "memory": "8gb"
+    },
+    "containerEnv": {
+        "PATH": "/usr/local/bin:/usr/local/share/nvm/versions/node/v22.16.0/bin:${PATH}"
     }
 }
