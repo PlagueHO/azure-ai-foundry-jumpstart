@@ -85,11 +85,11 @@ param deploySampleData bool = false
 var sampleDataStorageAccountName = take(toLower(replace('${storageAccountName}sample', '-', '')), 24)
 
 // Sample data storage account module parameters
-module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = if (deploySampleDataStorageAccount && deploySampleData) {
+module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = if (deploySampleData) {
   name: 'sample-data-storage-account-deployment'
   scope: rg
   params: {
-    name: sampleDataStorageAccountBaseName
+    name: sampleDataStorageAccountName
     // Inherit all configuration from foundry storage account
     // except containers are for sample data only
   }
