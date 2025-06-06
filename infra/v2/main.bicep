@@ -269,7 +269,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = if (a
       containerDeleteRetentionPolicyEnabled: false
       deleteRetentionPolicyEnabled: false
       lastAccessTimeTrackingPolicyEnabled: true
-      containers: [] // Sample data containers will be deployed in dedicated storage account when sampleDataDeploy is true
     }
     diagnosticSettings: [
       {
