@@ -4,7 +4,11 @@ Write-Host "Starting sample data upload script..."
 
 # Get environment variables from azd
 $deploySampleData = azd env get-value DEPLOY_SAMPLE_DATA
-$storageAccountName = azd env get-value AZURE_STORAGE_ACCOUNT_NAME
+$storageAccountName = azd env get-value AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_NAME
+if (-not $storageAccountName) {
+    # Fallback to foundry storage account for backward compatibility
+    $storageAccountName = azd env get-value AZURE_STORAGE_ACCOUNT_NAME
+}
 $resourceGroupName = azd env get-value AZURE_RESOURCE_GROUP
 $azureNetworkIsolation = azd env get-value AZURE_NETWORK_ISOLATION
 
@@ -14,7 +18,7 @@ if ($deploySampleData -ne "true") {
 }
 
 if (-not $storageAccountName) {
-    Write-Error "AZURE_STORAGE_ACCOUNT_NAME environment variable not found. Ensure 'azd env get-value AZURE_STORAGE_ACCOUNT_NAME' works."
+    Write-Error "Sample data storage account name not found. Ensure 'azd env get-value AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_NAME' or 'azd env get-value AZURE_STORAGE_ACCOUNT_NAME' works."
     exit 1
 }
 
