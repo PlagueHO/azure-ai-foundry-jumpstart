@@ -120,6 +120,8 @@ var virtualNetworkName = '${abbrs.networkVirtualNetworks}${environmentName}'
 var storageAccountName = azureStorageAccountName == 'default'
   ? take(toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', '')), 24)
   : azureStorageAccountName
+// Sample data storage account name - derive from foundry storage account with 'sample' postfix
+var sampleDataStorageAccountName = take(toLower(replace('${storageAccountName}sample', '-', '')), 24)
 // Ensure the key vault name is ≤ 24 characters as required by Azure.
 var keyVaultName = take(toLower(replace('${abbrs.keyVaultVaults}${environmentName}', '-', '')),24)
 var containerRegistryName = toLower(replace('${abbrs.containerRegistryRegistries}${environmentName}', '-', ''))
@@ -364,7 +366,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
       containerDeleteRetentionPolicyEnabled: false
       deleteRetentionPolicyEnabled: false
       lastAccessTimeTrackingPolicyEnabled: true
-      containers: deploySampleData ? sampleDataContainers : []
     }
     diagnosticSettings: [
       {
@@ -400,6 +401,64 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
         }
         service: 'blob'
         subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2] // SharedServices
+        tags: tags
+      }
+    ] : []
+    roleAssignments: storageAccountRoleAssignments
+    sasExpirationPeriod: '180.00:00:00'
+    skuName: 'Standard_LRS'
+    tags: tags
+  }
+}
+
+// ---------- SAMPLE DATA STORAGE ACCOUNT (CONDITIONAL) ----------
+module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = if (deploySampleData) {
+  name: 'sample-data-storage-account-deployment'
+  scope: rg
+  params: {
+    name: sampleDataStorageAccountName
+    allowBlobPublicAccess: false
+    blobServices: {
+      automaticSnapshotPolicyEnabled: false
+      containerDeleteRetentionPolicyEnabled: false
+      deleteRetentionPolicyEnabled: false
+      lastAccessTimeTrackingPolicyEnabled: true
+      containers: sampleDataContainers
+    }
+    diagnosticSettings: [
+      {
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: sendTologAnalyticsCustomSettingName
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+      }
+    ]
+    enableHierarchicalNamespace: false // not supported for AI Foundry
+    enableNfsV3: false
+    enableSftp: false
+    largeFileSharesState: 'Enabled'
+    location: location
+    managedIdentities: {
+      systemAssigned: true
+    }
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: networkDefaultAction
+    }
+    privateEndpoints: azureNetworkIsolation ? [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: storageBlobPrivateDnsZone.outputs.resourceId
+            }
+          ]
+        }
+        service: 'blob'
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2] // Data subnet
         tags: tags
       }
     ] : []
@@ -891,7 +950,7 @@ module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
     ]
     params: {
       projectWorkspaceName: aiFoundryHubProjects[idx / sampleDataContainerCount].outputs.name
-      storageAccountName: storageAccountName
+      storageAccountName: sampleDataStorageAccountName
       storageContainerName: sampleDataContainersArray[idx % sampleDataContainerCount]
       dataStoreName: replace(toLower(sampleDataContainersArray[idx % sampleDataContainerCount]),'-','_')
     }
@@ -934,6 +993,9 @@ output AZURE_STORAGE_ACCOUNT_RESOURCE_ID string = storageAccount.outputs.resourc
 output AZURE_STORAGE_ACCOUNT_BLOB_ENDPOINT string = storageAccount.outputs.primaryBlobEndpoint
 output AZURE_STORAGE_ACCOUNT_PRIVATE_ENDPOINTS array = storageAccount.outputs.privateEndpoints
 output AZURE_STORAGE_ACCOUNT_SERVICE_ENDPOINTS object = storageAccount.outputs.serviceEndpoints
+output AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_NAME string = deploySampleData ? sampleDataStorageAccount.outputs.name : ''
+output AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_RESOURCE_ID string = deploySampleData ? sampleDataStorageAccount.outputs.resourceId : ''
+output AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_BLOB_ENDPOINT string = deploySampleData ? sampleDataStorageAccount.outputs.primaryBlobEndpoint : ''
 output AZURE_KEY_VAULT_NAME string = keyVault.outputs.name
 output AZURE_KEY_VAULT_RESOURCE_ID string = keyVault.outputs.resourceId
 output AZURE_KEY_VAULT_ENDPOINT string = keyVault.outputs.uri
