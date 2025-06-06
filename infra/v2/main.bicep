@@ -106,6 +106,8 @@ var applicationInsightsName = '${abbrs.insightsComponents}${environmentName}'
 var virtualNetworkName = '${abbrs.networkVirtualNetworks}${environmentName}'
 // Ensure the storage account name is ≤ 24 characters as required by Azure.
 var storageAccountName = azureStorageAccountName == 'default' ? take(toLower(replace('${abbrs.storageStorageAccounts}${environmentName}', '-', '')), 24) : azureStorageAccountName 
+// Sample data storage account name - derive from foundry storage account with 'sample' postfix
+var sampleDataStorageAccountName = take(toLower(replace('${storageAccountName}sample', '-', '')), 24)
 var aiSearchName = '${abbrs.aiSearchSearchServices}${environmentName}'
 var aiFoundryName = '${abbrs.aiFoundryAccounts}${environmentName}'
 var aiFoundryCustomSubDomainName = toLower(replace(environmentName, '-', ''))
@@ -267,7 +269,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = if (a
       containerDeleteRetentionPolicyEnabled: false
       deleteRetentionPolicyEnabled: false
       lastAccessTimeTrackingPolicyEnabled: true
-      containers: sampleDataDeploy ? sampleDataContainers : []
+      containers: [] // Sample data containers will be deployed in dedicated storage account when sampleDataDeploy is true
     }
     diagnosticSettings: [
       {
@@ -313,6 +315,63 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = if (a
   }
 }
 
+// ---------- SAMPLE DATA STORAGE ACCOUNT (CONDITIONAL) ----------
+module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = if (sampleDataDeploy) {
+  name: 'sample-data-storage-account-deployment'
+  scope: rg
+  params: {
+    name: sampleDataStorageAccountName
+    allowBlobPublicAccess: false
+    blobServices: {
+      automaticSnapshotPolicyEnabled: false
+      containerDeleteRetentionPolicyEnabled: false
+      deleteRetentionPolicyEnabled: false
+      lastAccessTimeTrackingPolicyEnabled: true
+      containers: sampleDataContainers
+    }
+    diagnosticSettings: [
+      {
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: sendTologAnalyticsCustomSettingName
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+      }
+    ]
+    enableHierarchicalNamespace: false
+    enableNfsV3: false
+    enableSftp: false
+    largeFileSharesState: 'Enabled'
+    location: location
+    managedIdentities: {
+      systemAssigned: true
+    }
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: networkDefaultAction
+    }
+    privateEndpoints: azureNetworkIsolation ? [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: storageBlobPrivateDnsZone.outputs.resourceId
+            }
+          ]
+        }
+        service: 'blob'
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2] // Data Subnet
+        tags: tags
+      }
+    ] : []
+    roleAssignments: storageAccountRoleAssignments
+    sasExpirationPeriod: '180.00:00:00'
+    skuName: 'Standard_LRS'
+    tags: tags
+  }
+}
 // ---------- AI SEARCH ----------
 module aiSearchService 'br/public:avm/res/search/search-service:0.10.0' = if (azureAiSearchDeploy) {
   name: 'ai-search-service-deployment'
@@ -731,6 +790,9 @@ output AZURE_STORAGE_ACCOUNT_RESOURCE_ID string = storageAccount.outputs.resourc
 output AZURE_STORAGE_ACCOUNT_BLOB_ENDPOINT string = storageAccount.outputs.primaryBlobEndpoint
 output AZURE_STORAGE_ACCOUNT_PRIVATE_ENDPOINTS array = storageAccount.outputs.privateEndpoints
 output AZURE_STORAGE_ACCOUNT_SERVICE_ENDPOINTS object = storageAccount.outputs.serviceEndpoints
+output AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_NAME string = sampleDataDeploy ? sampleDataStorageAccount.outputs.name : ''
+output AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_RESOURCE_ID string = sampleDataDeploy ? sampleDataStorageAccount.outputs.resourceId : ''
+output AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_BLOB_ENDPOINT string = sampleDataDeploy ? sampleDataStorageAccount.outputs.primaryBlobEndpoint : ''
 
 // Output the AI resources
 output AZURE_DISABLE_API_KEYS bool = disableApiKeys
