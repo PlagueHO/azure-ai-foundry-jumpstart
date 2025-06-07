@@ -55,4 +55,4 @@ jobs:
             --tenant-id "$AZURE_TENANT_ID"
 
       - name: Delete Infrastructure
-        run: azd down --no-prompt --purge --force --debug
+        run: azd down --no-prompt --purge --force
