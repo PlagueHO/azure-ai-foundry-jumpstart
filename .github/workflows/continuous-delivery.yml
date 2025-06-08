@@ -8,6 +8,8 @@ on:
       - v*
     paths:
       - infra/**
+      - src/**
+      - tests/**
 
   workflow_dispatch:
   
@@ -19,46 +21,60 @@ permissions:
 
 jobs:
   set-build-variables:
+    name: Set Build Variables
     uses: ./.github/workflows/set-build-variables.yml
 
   lint-and-publish-bicep:
+    name: Lint and Publish Bicep
     uses: ./.github/workflows/lint-and-publish-bicep.yml
 
   validate-bicep:
     needs:
       - set-build-variables
       - lint-and-publish-bicep
+    strategy:
+      matrix:
+        include:
+          - name: v1
+            BICEP_VERSION: v1
+          - name: v2
+            BICEP_VERSION: v2
+    name: Validate Bicep (${{ matrix.name }})
     uses: ./.github/workflows/validate-bicep.yml
     with:
       ENVIRONMENT: Test
       BUILD_VERSION: ${{ needs.set-build-variables.outputs.BUILD_VERSION }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
-      AZURE_ENV_NAME: ${{ format('aifj-{0}-{1}', github.ref_name, github.run_id) }}
+      AZURE_ENV_NAME: ${{ format('aifj-{0}', github.run_id) }}
+      BICEP_VERSION: ${{ matrix.BICEP_VERSION }}
     secrets:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   
-  test-template:
+
+  e2e-test-v1:
     needs:
       - set-build-variables
       - validate-bicep
     strategy:
+      max-parallel: 1
       matrix:
         include:
-          - name: isolated
-            AZURE_NETWORK_ISOLATION: 'true'
-            DEPLOY_SAMPLE_OPENAI_MODELS: 'true'
           - name: public
             AZURE_NETWORK_ISOLATION: 'false'
+            DEPLOY_SAMPLE_OPENAI_MODELS: 'true'
+          - name: isolated
+            AZURE_NETWORK_ISOLATION: 'true'
             DEPLOY_SAMPLE_OPENAI_MODELS: 'false'
-    name: Test Template (${{ matrix.name }})
-    uses: ./.github/workflows/test-template.yml
+
+    name: E2E Test v1 (${{ matrix.name }})
+    uses: ./.github/workflows/e2e-test.yml
     with:
       ENVIRONMENT: Test
       BUILD_VERSION: ${{ needs.set-build-variables.outputs.BUILD_VERSION }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
-      AZURE_ENV_NAME: ${{ format('aifj-{0}-{1}-{2}', matrix.name, github.ref_name, github.run_id) }}
+      AZURE_ENV_NAME: ${{ format('aifjv1-{0}-{1}', matrix.name, github.run_id) }}
       AZURE_NETWORK_ISOLATION: ${{ matrix.AZURE_NETWORK_ISOLATION }}
       DEPLOY_SAMPLE_OPENAI_MODELS: ${{ matrix.DEPLOY_SAMPLE_OPENAI_MODELS }}
     secrets:

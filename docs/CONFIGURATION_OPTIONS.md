@@ -52,14 +52,17 @@ azd env set DEPLOY_SAMPLE_OPENAI_MODELS false
 
 ### DEPLOY_SAMPLE_DATA
 
-Create containers in the Azure Storage account connected to the Azure AI Foundry Hub and upload sample data.
-It will also create a connection to each container in the Azure AI Foundry hub.
+Create a dedicated Azure Storage Account for sample data with separation of concerns from the Azure AI Foundry Hub operational storage.
+When enabled, sample data containers will be created in the dedicated storage account and datastores will be created in the Azure AI Foundry projects to connect to each container.
 
 > [!IMPORTANT]
 > When being deployed from a Windows machine, a PowerShell script is used to upload the sample data to the containers. This script will require the [PowerShell script execution policy](https://learn.microsoft.com/powershell/module/microsoft.powershell.core/about/about_execution_policies) to be set to `RemoteSigned` or `Unrestricted`, otherwise an execution error will occur.
+
 Default: `false`.
 
-When set to `true`, the following containers will be created in the storage account:
+When set to `true`:
+- A dedicated sample data storage account will be deployed (named with 'sample' postfix)
+- The following containers will be created in the sample data storage account:
 
 - `tech-support`
 - `retail-products`

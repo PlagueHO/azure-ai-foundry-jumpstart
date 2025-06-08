@@ -33,11 +33,11 @@ There is **no background thread** or async I/O – each step completes before th
 
 | Path                                  | Purpose                               |
 |---------------------------------------|---------------------------------------|
-| `src/create_search_index/__init__.py` | Export `CreateSearchIndex` & version  |
-| `src/create_search_index/engine.py`   | `CreateSearchIndex` implementation    |
-| `src/create_search_index/cli.py`      | CLI argument parsing & hand-off       |
-| `src/create_search_index/__main__.py` | `python -m create_search_index` entry |
-| `src/create_search_index/docs/`       | User & design docs (this file)        |
+| `src/create_ai_search_index/__init__.py` | Export `CreateSearchIndex` & version  |
+| `src/create_ai_search_index/engine.py`   | `CreateSearchIndex` implementation    |
+| `src/create_ai_search_index/cli.py`      | CLI argument parsing & hand-off       |
+| `src/create_ai_search_index/__main__.py` | `python -m create_ai_search_index` entry |
+| `src/create_ai_search_index/docs/`       | User & design docs (this file)        |
 
 ## 5. Class Design  
 
@@ -89,7 +89,7 @@ The `cli.py` module handles command-line argument parsing and validation. It use
 ## 6. Workflow Example  
 
 ```bash
-python -m create_search_index \
+python -m create_ai_search_index \
   --storage-account contosodata \
   --storage-container kb \
   --search-service contoso-search \

@@ -10,16 +10,25 @@
             "type": "stdio",
             "env": {}
         },
+        "playwright": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@playwright/mcp@latest"
+            ],
+            "type": "stdio",
+            "env": {}
+        },
         "github": {
             "command": "npx",
             "args": [
-            "-y",
-            "@modelcontextprotocol/server-github"
+                "-y",
+                "@modelcontextprotocol/server-github"
             ],
             "env": {
                 "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:github_token}"
             }
-      }
+        }
     },
     "inputs": [
         {

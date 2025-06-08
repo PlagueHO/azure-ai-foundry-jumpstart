@@ -1,6 +1,6 @@
 {
     "name": "Azure Developer CLI",
-    "image": "mcr.microsoft.com/devcontainers/python:3.10-bullseye",
+    "image": "mcr.microsoft.com/devcontainers/python:3",
     "features": {
         // See https://containers.dev/features for list of features
         "ghcr.io/devcontainers/features/docker-in-docker:2": {},
@@ -22,8 +22,7 @@
             "installAzModule": true
         },
         "ghcr.io/devcontainers/features/node:1": {
-            "version": "lts",
-            "installYarn": true
+            "version": "lts"
         }
     },
     "customizations": {
@@ -38,14 +37,16 @@
                 "ms-python.pylint",
                 "ms-python.python",
                 "ms-toolsai.jupyter",
-                "dbaeumer.vscode-eslint"
+                "dbaeumer.vscode-eslint",
+                "ms-python.black-formatter",
+                "ms-playwright.playwright"
             ]
         }
     },
     "forwardPorts": [
         // Forward ports if needed for local development
     ],
-    "postCreateCommand": "pip3 install -r /workspaces/azure-ai-foundry-jumpstart/requirements-dev.txt;",
+    "postCreateCommand": "./.devcontainer/post-create.sh",
     "remoteUser": "vscode",
     "hostRequirements": {
         "memory": "8gb"

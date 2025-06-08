@@ -3,30 +3,35 @@ from __future__ import annotations
 import logging
 import time
 from dataclasses import dataclass
-from typing import Optional
+from typing import TYPE_CHECKING
 
 from azure.core.credentials import AzureKeyCredential
 from azure.identity import DefaultAzureCredential
 from azure.search.documents.indexes import SearchIndexClient, SearchIndexerClient
 from azure.search.documents.indexes.models import (
-    SearchIndex,
-    SearchField,
-    SearchFieldDataType,
-    VectorSearch,
-    VectorSearchProfile,
-    SearchIndexer,
-    SearchIndexerDataSourceConnection,
-    SearchIndexerSkillset,
-    InputFieldMappingEntry,
-    OutputFieldMappingEntry,
     AzureOpenAIVectorizer,
     AzureOpenAIVectorizerParameters,
-    SplitSkill,
-    IndexingParameters,
-    IndexingParametersConfiguration,
     CorsOptions,
     HnswAlgorithmConfiguration,
-    )
+    IndexingParameters,
+    IndexingParametersConfiguration,
+    InputFieldMappingEntry,
+    OutputFieldMappingEntry,
+    SearchField,
+    SearchFieldDataType,
+    SearchIndex,
+    SearchIndexer,
+    SearchIndexerDataContainer,
+    SearchIndexerDataSourceConnection,
+    SearchIndexerSkill,
+    SearchIndexerSkillset,
+    SplitSkill,
+    VectorSearch,
+    VectorSearchProfile,
+)
+
+if TYPE_CHECKING:
+    pass
 
 __all__: list[str] = ["CreateAISearchIndex", "CreateAISearchIndexConfig"]
 
@@ -38,13 +43,17 @@ class CreateAISearchIndexConfig:
     Holds all user-supplied and derived settings required to build and run
     the Azure AI Search indexing pipeline.
     """
-    storage_account: str
-    storage_container: str
+
     search_service: str
     index_name: str
-    embedding_model: Optional[str] = None
-    embedding_deployment: Optional[str] = None
-    azure_openai_endpoint: Optional[str] = None
+    storage_container: str
+    storage_account: str | None = None
+    storage_account_key: str | None = None
+    storage_account_connection_string: str | None = None
+    embedding_model: str | None = "text-embedding-ada-002"
+    embedding_deployment: str | None = None
+    embedding_dimension: int = 1536
+    azure_openai_endpoint: str | None = None
     delete_existing: bool = False
 
     @property
@@ -62,13 +71,16 @@ class CreateAISearchIndex:
     running the indexer to populate the index from a blob container.
     """
 
-    def __init__(self, cfg: CreateAISearchIndexConfig, *, log_level: str | int = "INFO") -> None:
+    def __init__(
+        self, cfg: CreateAISearchIndexConfig, *, log_level: str | int = "INFO"
+    ) -> None:
         """
         Initialize the CreateAISearchIndex orchestrator.
 
         Args:
-            cfg (CreateAISearchIndexConfig): Configuration dataclass with pipeline settings.
-            log_level (str|int, optional): Logging verbosity. Defaults to "INFO".
+            cfg (CreateAISearchIndexConfig): Configuration dataclass with
+                pipeline settings.
+            log_level (str | int, optional): Logging verbosity. Defaults to "INFO".
         """
         self.cfg = cfg
         logging.basicConfig(
@@ -78,14 +90,21 @@ class CreateAISearchIndex:
         self.logger = logging.getLogger("create-ai-search-index")
 
         # Credential: prefer DefaultAzureCredential, fallback to API key
+        self.credential: AzureKeyCredential | DefaultAzureCredential
         api_key = None  # Optionally load from env
         if api_key:
             self.credential = AzureKeyCredential(api_key)
         else:
-            self.credential = DefaultAzureCredential(exclude_interactive_browser_credential=False)
+            self.credential = DefaultAzureCredential(
+                exclude_interactive_browser_credential=False
+            )
 
-        self.index_client = SearchIndexClient(self.cfg.search_endpoint, self.credential)
-        self.indexer_client = SearchIndexerClient(self.cfg.search_endpoint, self.credential)
+        self.index_client = SearchIndexClient(
+            self.cfg.search_endpoint, self.credential
+        )
+        self.indexer_client = SearchIndexerClient(
+            self.cfg.search_endpoint, self.credential
+        )
 
     def run(self) -> None:
         """
@@ -112,11 +131,34 @@ class CreateAISearchIndex:
         fields = [
             SearchField(name="parent_id", type=SearchFieldDataType.String),
             SearchField(name="title", type=SearchFieldDataType.String),
-            SearchField(name="locations", type=SearchFieldDataType.Collection(SearchFieldDataType.String), filterable=True),
-            SearchField(name="chunk_id", type=SearchFieldDataType.String, key=True, sortable=True, filterable=True, facetable=True, analyzer_name="keyword"),  
-            SearchField(name="chunk", type=SearchFieldDataType.String, sortable=False, filterable=False, facetable=False),  
-            SearchField(name="text_vector", type=SearchFieldDataType.Collection(SearchFieldDataType.Single), vector_search_dimensions=1024, vector_search_profile_name="myHnswProfile")
-            ]
+            SearchField(
+                name="locations",
+                type=SearchFieldDataType.Collection(SearchFieldDataType.String),
+                filterable=True,
+            ),
+            SearchField(
+                name="chunk_id",
+                type=SearchFieldDataType.String,
+                key=True,
+                sortable=True,
+                filterable=True,
+                facetable=True,
+                analyzer_name="keyword",
+            ),
+            SearchField(
+                name="chunk",
+                type=SearchFieldDataType.String,
+                sortable=False,
+                filterable=False,
+                facetable=False,
+            ),
+            SearchField(
+                name="text_vector",
+                type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
+                vector_search_dimensions=self.cfg.embedding_dimension,
+                vector_search_profile_name="myHnswProfile",
+            ),
+        ]
 
         vector_search = VectorSearch(
             algorithms=[
@@ -126,6 +168,7 @@ class CreateAISearchIndex:
                 VectorSearchProfile(
                     name="myHnswProfile",
                     algorithm_configuration_name="myHnsw",
+                    dimensions=self.cfg.embedding_dimension,
                     vectorizer_name="myOpenAI",
                 )
             ],
@@ -133,7 +176,7 @@ class CreateAISearchIndex:
                 AzureOpenAIVectorizer(
                     vectorizer_name="myOpenAI",
                     kind="azureOpenAI",
-                    parameters=AzureOpenAIVectorizerParameters(  
+                    parameters=AzureOpenAIVectorizerParameters(
                         resource_url=self.cfg.azure_openai_endpoint,
                         deployment_name=self.cfg.embedding_deployment,
                         model_name=self.cfg.embedding_model
@@ -158,6 +201,29 @@ class CreateAISearchIndex:
             self.logger.error("Failed to create/update index: %s", ex)
             raise
 
+    def _get_storage_account_connection_string(self) -> str:
+        """
+        Assemble and return the storage account connection string.
+
+        Returns:
+            str: The storage account connection string.
+
+        Raises:
+            ValueError: If required storage account information is missing.
+        """
+        if self.cfg.storage_account_connection_string:
+            return self.cfg.storage_account_connection_string
+        if not self.cfg.storage_account or not self.cfg.storage_account_key:
+            raise ValueError(
+                "Both storage_account and storage_account_key are required if "
+                "connection string is not provided."
+            )
+        return (
+            f"DefaultEndpointsProtocol=https;AccountName={self.cfg.storage_account};"
+            f"AccountKey={self.cfg.storage_account_key};"
+            f"EndpointSuffix=core.windows.net"
+        )
+
     def _ensure_data_source(self) -> None:
         """
         Create or update the data source connection for the indexer.
@@ -167,13 +233,12 @@ class CreateAISearchIndex:
         """
         self.logger.info("Ensuring data source connection...")
         ds_name = f"{self.cfg.index_name}-blob-ds"
-        connection_string = f"DefaultEndpointsProtocol=https;AccountName={self.cfg.storage_account};EndpointSuffix=core.windows.net"
-        # For production, use Key Vault or Managed Identity
+        connection_string = self._get_storage_account_connection_string()
         ds = SearchIndexerDataSourceConnection(
             name=ds_name,
             type="azureblob",
             connection_string=connection_string,
-            container={"name": self.cfg.storage_container},
+            container=SearchIndexerDataContainer(name=self.cfg.storage_container),
             description="Blob container for RAG documents"
         )
         try:
@@ -192,25 +257,24 @@ class CreateAISearchIndex:
         """
         self.logger.info("Ensuring skillset...")
         skillset_name = f"{self.cfg.index_name}-skillset"
-        skills = [
+        skills: list[SearchIndexerSkill] = [
             SplitSkill(
                 name="splitSkill",
                 description="Split content into chunks",
                 context="/document/content",
                 text_split_mode="pages",
                 maximum_page_length=2000,
-                inputs=[InputFieldMappingEntry(name="text", source="/document/content")],
-                outputs=[OutputFieldMappingEntry(name="pages", target_name="chunks")]
+                inputs=[
+                    InputFieldMappingEntry(name="text", source="/document/content")
+                ],
+                outputs=[
+                    OutputFieldMappingEntry(name="pages", target_name="chunks")
+                ],
             ),
-            AzureOpenAIVectorizer(
-                name="embeddingSkill",
-                context="/document/chunks/*",
-                resource_uri="https://{your-openai-resource}.openai.azure.com/",
-                deployment_id=self.cfg.embedding_model or "text-embedding-ada-002",
-                inputs=[InputFieldMappingEntry(name="text", source="/document/chunks/*")],
-                outputs=[OutputFieldMappingEntry(name="vector", target_name="contentVector")],
-                vectorizer_name="myOpenAI",
-            ),
+            # TODO: Add a supported embedding skill here, such as a CustomSkill
+            # or CognitiveSkill, if required.
+            # AzureOpenAIVectorizer is not a valid SearchIndexerSkill and
+            # cannot be used here.
         ]
         skillset = SearchIndexerSkillset(
             name=skillset_name,
@@ -276,8 +340,11 @@ class CreateAISearchIndex:
                     self.logger.info("Indexer completed successfully.")
                     return
                 else:
-                    self.logger.error("Indexer failed: %s", status.error_message)
-                    raise RuntimeError(f"Indexer failed: {status.error_message}")
+                    error_message = getattr(
+                        status.last_result, "error_message", "Unknown error"
+                    )
+                    self.logger.error("Indexer failed: %s", error_message)
+                    raise RuntimeError(f"Indexer failed: {error_message}")
             self.logger.warning("Indexer did not complete within expected time.")
         except Exception as ex:
             self.logger.error("Failed to run indexer: %s", ex)

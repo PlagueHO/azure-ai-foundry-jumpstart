@@ -5,23 +5,25 @@ on:
 
 jobs:
   build-armtemplates:
-    name: Lint and Publish Bicep
+    name: Lint and Publish Bicep - ${{ matrix.version }}
     runs-on: ubuntu-latest
-    
+    strategy:
+      matrix:
+        version: ['v1', 'v2']
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    
-    - name: Lint Bicep
-      run: |
-        bicep lint ./infra/main.bicep
-  
-    - name: Publish Bicep as Workflow Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: infrastructure_bicep
-        path: |
-           ./infra/*.bicep
-           ./infra/*.json
-           ./infra/core/
-           ./infra/types/
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Lint Bicep
+        run: |
+          bicep lint ./infra/${{ matrix.version }}/main.bicep
+
+      - name: Publish Bicep as Workflow Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: infrastructure_bicep_${{ matrix.version }}
+          path: |
+            ./infra/${{ matrix.version }}/*.bicep
+            ./infra/${{ matrix.version }}/*.json
+            ./infra/${{ matrix.version }}/**/*

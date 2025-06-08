@@ -1,0 +1,6 @@
+# Enforce LF line endings for all text files
+* text=auto eol=lf
+
+# Optionally, set specific rules for certain file types
+*.sh text eol=lf
+*.ps1 text eol=crlf

@@ -1,4 +1,4 @@
-name: test-template
+name: provision-infrastructure
 
 on:
   workflow_call:
@@ -42,23 +42,24 @@ on:
         required: true
 
 jobs:
-  test-template:
-    name: Deploy Infrastructure ${{ inputs.ENVIRONMENT }}
+  provision-infrastructure:
+    name: Provision Infrastructure ${{ inputs.ENVIRONMENT }}
     env:
-      # Required for azd to authenticate with Azure using Federated Credentials
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      # Required for azd to provision the infrastructure
       AZURE_ENV_NAME: ${{ inputs.AZURE_ENV_NAME }}
       AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
-      # Optional azd parameters
       AZURE_NETWORK_ISOLATION: ${{ inputs.AZURE_NETWORK_ISOLATION }}
       DEPLOY_SAMPLE_OPENAI_MODELS: ${{ inputs.DEPLOY_SAMPLE_OPENAI_MODELS }}
       AZURE_PRINCIPAL_ID_TYPE: 'ServicePrincipal'
 
     environment: ${{ inputs.ENVIRONMENT }}
     runs-on: ubuntu-latest
+
+    outputs:
+      AZURE_AI_SERVICES_ENDPOINT: ${{ steps.get_endpoints.outputs.AZURE_AI_SERVICES_ENDPOINT }}
+      AZURE_STORAGE_ACCOUNT_BLOB_ENDPOINT: ${{ steps.get_endpoints.outputs.AZURE_STORAGE_ACCOUNT_BLOB_ENDPOINT }}
 
     steps:
       - name: Checkout
@@ -69,15 +70,18 @@ jobs:
 
       - name: Authenticate azd (Federated Credentials)
         run: |
-          azd auth login `
-            --client-id "$Env:AZURE_CLIENT_ID" `
-            --federated-credential-provider "github" `
-            --tenant-id "$Env:AZURE_TENANT_ID"
-        shell: pwsh
+          azd auth login \
+            --client-id "$AZURE_CLIENT_ID" \
+            --federated-credential-provider "github" \
+            --tenant-id "$AZURE_TENANT_ID"
 
       - name: Provision Infrastructure
-        run: azd provision --no-prompt --debug
-          
-      - name: Delete Infrastructure
-        if: always()
-        run: azd down --no-prompt --purge --force --debug
+        run: azd provision --no-prompt
+
+      - name: Get Output Endpoints
+        id: get_endpoints
+        run: |
+          AI_ENDPOINT=$(azd env get-values | grep AZURE_AI_SERVICES_ENDPOINT | cut -d'=' -f2- | xargs)
+          STORAGE_ENDPOINT=$(azd env get-values | grep AZURE_STORAGE_ACCOUNT_BLOB_ENDPOINT | cut -d'=' -f2- | xargs)
+          echo "AZURE_AI_SERVICES_ENDPOINT=$AI_ENDPOINT" >> $GITHUB_OUTPUT
+          echo "AZURE_STORAGE_ACCOUNT_BLOB_ENDPOINT=$STORAGE_ENDPOINT" >> $GITHUB_OUTPUT
