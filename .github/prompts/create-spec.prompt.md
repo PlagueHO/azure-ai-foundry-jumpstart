@@ -1,7 +1,7 @@
 ---
 mode: 'agent'
 description: 'Create a new specification file for the solution, optimized for Generative AI consumption'
-tools: [ "codebase", "read_file", "read_multiple_files", "write_file", "edit_file", "create_directory", "list_directory", "move_file", "search_files", "get_file_info", "list_allowed_directories"]
+tools: ['codebase', 'filesystem', 'github', 'websearch']
 ---
 Your goal is to create a new specification file for `${input:SpecPurpose}`.
 The specification file must define the requirements, constraints, and interfaces for the solution components in a manner that is clear, unambiguous, and structured for effective use by Generative AIs. Follow established documentation standards and ensure the content is machine-readable and self-contained.
