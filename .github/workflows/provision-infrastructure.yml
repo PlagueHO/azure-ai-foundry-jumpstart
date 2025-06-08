@@ -1,4 +1,4 @@
-name: provision-infrastructure
+name: Provision Infrastructure
 
 on:
   workflow_call:

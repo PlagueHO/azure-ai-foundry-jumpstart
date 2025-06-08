@@ -1,4 +1,4 @@
-name: lint-and-test-python-apps
+name: Lint and Test Python Apps
 
 on:
   workflow_call:

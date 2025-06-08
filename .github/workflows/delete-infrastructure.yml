@@ -1,4 +1,4 @@
-name: delete-infrastructure
+name: Delete Infrastructure
 
 on:
   workflow_call:
@@ -15,6 +15,7 @@ on:
         description: "The Azure region to deploy the application resources to"
         required: true
         type: string
+
     secrets:
       AZURE_TENANT_ID:
         description: "The Azure tenant ID to use for authentication to Azure for deployment"

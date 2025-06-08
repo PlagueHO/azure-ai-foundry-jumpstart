@@ -1,4 +1,4 @@
-name: continuous-delivery
+name: Continuous Delivery
 
 on:
   push:
@@ -28,7 +28,7 @@ jobs:
     name: Lint and Publish Bicep
     uses: ./.github/workflows/lint-and-publish-bicep.yml
 
-  validate-bicep:
+  validate-infrastructure:
     needs:
       - set-build-variables
       - lint-and-publish-bicep
@@ -39,8 +39,8 @@ jobs:
             BICEP_VERSION: v1
           - name: v2
             BICEP_VERSION: v2
-    name: Validate Bicep (${{ matrix.name }})
-    uses: ./.github/workflows/validate-bicep.yml
+    name: Validate Infrastructure (${{ matrix.name }})
+    uses: ./.github/workflows/validate-infrastructure.yml
     with:
       ENVIRONMENT: Test
       BUILD_VERSION: ${{ needs.set-build-variables.outputs.BUILD_VERSION }}
@@ -51,12 +51,11 @@ jobs:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-  
 
   e2e-test-v1:
     needs:
       - set-build-variables
-      - validate-bicep
+      - validate-infrastructure
     strategy:
       max-parallel: 1
       matrix:

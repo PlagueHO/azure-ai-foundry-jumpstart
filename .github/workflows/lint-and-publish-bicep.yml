@@ -1,4 +1,4 @@
-name: lint-and-publish-bicep
+name: Lint and Publish Bicep
 
 on:
   workflow_call:

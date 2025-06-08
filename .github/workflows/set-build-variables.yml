@@ -1,4 +1,4 @@
-name: set-build-variables
+name: Set Build Variables
 
 on:
   workflow_call:
