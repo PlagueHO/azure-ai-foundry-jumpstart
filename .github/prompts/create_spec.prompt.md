@@ -1,11 +1,11 @@
 ---
 mode: 'agent'
-description: 'Create a new specification file for the solution, optimized for Generative AI consumption'
-tools: ['codebase', 'filesystem', 'github', 'websearch']
+description: 'Create a new specification file for the Azure AI Foundry solution accelerator project.'
+tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'filesystem', 'create_directory', 'directory_tree', 'edit_file', 'get_file_info', 'list_allowed_directories', 'list_directory', 'read_file', 'read_multiple_files', 'search_files', 'write_file', 'move_file']
 ---
-Your goal is to create a new specification file for `${input:SpecPurpose}`.
+Your goal is to create a new specification file for `${input:SpecPurpose}` in the [/spec/](/spec/) directory of this repository.
 The specification file must define the requirements, constraints, and interfaces for the solution components in a manner that is clear, unambiguous, and structured for effective use by Generative AIs. Follow established documentation standards and ensure the content is machine-readable and self-contained.
-The specification should be saved in the [/spec/](/spec/) directory and named according to the following convention: `[a-z0-9-]+.md`, where the name should be descriptive of the specification's content and starting with the highlevel purpose, which is one of [schema, tool, data, infrastructure, process, architecture, or design].
+The specification must be named according to the following convention: `[a-z0-9-]+.md`, where the name should be descriptive of the specification's content and starting with the highlevel purpose, which is one of [schema, tool, data, infrastructure, process, architecture, or design].
 The file should be formatted in well formed Markdown.
 
 **Best Practices for AI-Ready Specifications:**
