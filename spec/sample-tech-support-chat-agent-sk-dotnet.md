@@ -17,10 +17,10 @@ The purpose of this specification is to provide requirements, constraints, and i
 
 - Interactive console-based chat interface for tech support scenarios
 - Implementation using Semantic Kernel Agent Framework with Azure AI Agent type
-- Azure AI Foundry SDK client libraries integration for AI services
+- Azure AI Foundry Agent Service providing complete agent functionality and RAG capabilities
 - Agent Templates for structured conversation patterns
-- RAG (Retrieval-Augmented Generation) capabilities using Azure AI Search
-- Tech support knowledge base integration through Agent Framework
+- Built-in RAG (Retrieval-Augmented Generation) capabilities through Azure AI Foundry Agent Service
+- Tech support knowledge base integration via Azure AI Foundry's managed vector stores and file search
 - Conversation state management via Agent Framework's built-in capabilities
 - Escalation and handoff workflows using Agent orchestration
 
@@ -30,10 +30,13 @@ Intended audience: .NET developers, AI/ML developers, and solution architects bu
 
 - **Azure AI Agent**: A specialized agent within the Semantic Kernel framework (AzureAIAgent class) that integrates with Azure AI services
 - **Azure AI Foundry**: Azure's unified platform for AI application development and deployment
+- **Azure AI Foundry Agent Service**: Managed service providing agent capabilities, vector stores, and file search for RAG scenarios
 - **Semantic Kernel Agent Framework**: Microsoft's framework for building conversational AI agents with structured conversation management
 - **PersistentAgentsClient**: The client class for interacting with Azure AI Agent Service through Azure AI Foundry projects
 - **AzureAIAgentThread**: Thread management class for maintaining conversation state in Azure AI Agents
 - **PromptTemplateConfig**: Configuration structure for defining agent instructions using templated parameters
+- **Vector Store**: Azure AI Foundry's managed storage for embeddings and semantic search capabilities
+- **File Search Tool**: Built-in Azure AI Foundry capability for retrieving information from uploaded documents
 - **Azure AI Foundry SDK**: Client libraries for integrating with Azure AI Foundry services
 - **RAG**: Retrieval-Augmented Generation, combining search with generative AI for contextual responses
 - **Chat Agent**: An AI-powered conversational interface designed to assist users with technical support
@@ -51,7 +54,7 @@ Intended audience: .NET developers, AI/ML developers, and solution architects bu
 | **REQ-003** | SDK         | The application must use PersistentAgentsClient for Azure AI Foundry project integration. |
 | **REQ-004** | Templates   | The application must utilize PromptTemplateConfig for structured agent instructions and YAML-based templates. |
 | **REQ-005** | Interface   | The application must provide an interactive console-based chat interface. |
-| **REQ-006** | Knowledge   | The application must integrate with Azure AI Search using AzureAISearchToolDefinition via Agent Framework. |
+| **REQ-006** | Knowledge   | The application must integrate with Azure AI Foundry's built-in file search and vector store capabilities for RAG. |
 | **REQ-007** | Context     | The application must use AzureAIAgentThread for conversation state management and threading. |
 | **REQ-008** | Intent      | The application must recognize common tech support intents using templated agent instructions. |
 | **REQ-009** | Responses   | The application must provide contextual, helpful responses using agent streaming capabilities. |
@@ -81,17 +84,17 @@ Intended audience: .NET developers, AI/ML developers, and solution architects bu
     "TenantId": "your-tenant-id",
     "ClientId": "your-client-id"
   },
-  "AzureSearch": {
-    "ServiceName": "your-search-service",
-    "IndexName": "tech-support-kb",
-    "ConnectionId": "your-search-connection-id"
-  },
   "AgentFramework": {
     "AgentName": "TechSupportAgent",
     "AgentDescription": "Technical support agent for troubleshooting and assistance",
     "MaxConversationTurns": 50,
     "EscalationThreshold": 3,
-    "Instructions": "You are a helpful tech support agent that assists users with technical issues. Use the available knowledge base to provide accurate solutions and escalate complex issues when needed."
+    "Instructions": "You are a helpful tech support agent that assists users with technical issues. Use the file search tool to find relevant information from the knowledge base and escalate complex issues when needed.",
+    "VectorStoreId": "your-vector-store-id",
+    "KnowledgeBaseFiles": [
+      "tech-support-kb-file-1-id",
+      "tech-support-kb-file-2-id"
+    ]
   },
   "Logging": {
     "LogLevel": {
@@ -135,7 +138,7 @@ public class TechSupportAgentService
 ### Agent Configuration and Setup
 
 ```csharp
-// Agent creation using current Azure AI Agent patterns
+// Agent creation using Azure AI Foundry Agent Service with built-in RAG
 using Microsoft.SemanticKernel.Agents.AzureAI;
 using Azure.Identity;
 
@@ -148,27 +151,41 @@ public class TechSupportAgentSetup
             configuration["AzureAI:FoundryEndpoint"], 
             new DefaultAzureCredential());
 
-        // Define agent with Azure AI Search tool integration
+        // Define agent with File Search tool for RAG capabilities
         PersistentAgent agentDefinition = await agentsClient.Administration.CreateAgentAsync(
             configuration["AzureAI:ModelName"], // e.g., "gpt-4o"
             name: configuration["AgentFramework:AgentName"],
             description: configuration["AgentFramework:AgentDescription"],
             instructions: configuration["AgentFramework:Instructions"],
-            tools: [new AzureAISearchToolDefinition()],
+            tools: [new FileSearchToolDefinition()],
             toolResources: new()
             {
-                AzureAISearch = new()
+                FileSearch = new()
                 {
-                    IndexList = { 
-                        new AISearchIndexResource(
-                            configuration["AzureSearch:ConnectionId"], 
-                            configuration["AzureSearch:IndexName"]) 
-                    }
+                    VectorStoreIds = { configuration["AgentFramework:VectorStoreId"] }
                 }
             });
 
         // Create Semantic Kernel agent from definition
         return new AzureAIAgent(agentDefinition, agentsClient);
+    }
+    
+    public static async Task<string> UploadKnowledgeBaseAsync(
+        PersistentAgentsClient agentsClient, 
+        string filePath, 
+        string vectorStoreId)
+    {
+        // Upload knowledge base file to Azure AI Foundry
+        var file = await agentsClient.Files.UploadFileAsync(
+            filePath, 
+            AgentFilePurpose.Assistants);
+            
+        // Add file to vector store for search capabilities
+        await agentsClient.VectorStores.AddFileToVectorStoreAsync(
+            vectorStoreId, 
+            file.Value.Id);
+            
+        return file.Value.Id;
     }
 }
 ```
@@ -197,7 +214,8 @@ dotnet run -- --help
 - **PromptTemplateConfig**: Provides structured, templated instructions and reusable conversation patterns for tech support scenarios
 - **PersistentAgentsClient**: Ensures seamless integration with Azure AI Foundry projects and agent lifecycle management
 - **AzureAIAgentThread**: Provides automatic conversation state management and thread persistence
-- **RAG Integration**: Ensures responses are grounded in authoritative knowledge base content through AzureAISearchToolDefinition
+- **Azure AI Foundry Agent Service RAG**: Provides built-in RAG capabilities through file search and vector stores, eliminating the need for external search services
+- **File Search Tool**: Built-in Azure AI Foundry capability that automatically handles document indexing, embedding generation, and semantic search
 - **Escalation Logic**: Demonstrates real-world support scenarios using agent orchestration capabilities
 - **Configuration-driven**: Enables easy adaptation to different environments and use cases
 - **.NET 8**: Provides modern language features, performance improvements, and long-term support
@@ -289,13 +307,14 @@ finally
 - Agent instructions must be correctly configured using PromptTemplateConfig patterns
 - The chat interface must accept user input and provide relevant responses within the specified time limit
 - Conversation context must be maintained through AzureAIAgentThread functionality
-- Knowledge base integration must successfully retrieve and cite relevant information through AzureAISearchToolDefinition
+- Knowledge base integration must successfully retrieve and cite relevant information through Azure AI Foundry's File Search tool
+- Vector store must be properly configured with uploaded knowledge base files
 - Escalation logic must trigger appropriately using agent orchestration patterns
 - Configuration must be loaded correctly from appsettings.json and environment variables
 - All Azure AI Agent API calls must include proper error handling with user-friendly messages
 - The application must log relevant events without exposing sensitive information
 - Unit tests must achieve minimum 80% code coverage including Azure AI Agent components
-- Integration tests must validate end-to-end Azure AI Agent conversation scenarios
+- Integration tests must validate end-to-end Azure AI Agent conversation scenarios with RAG capabilities
 
 ## 8. Related Specifications / Further Reading
 
@@ -304,8 +323,8 @@ finally
 - [Agent Templates Documentation](https://learn.microsoft.com/en-us/semantic-kernel/frameworks/agent/agent-templates?pivots=programming-language-csharp)
 - [Azure AI Foundry SDK Documentation](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/develop/sdk-overview?pivots=programming-language-csharp)
 - [Azure AI Foundry Documentation](https://learn.microsoft.com/en-us/azure/ai-studio/)
+- [Azure AI Agent Service Documentation](https://learn.microsoft.com/en-us/azure/ai-services/agents/overview)
+- [Azure AI Agent Service File Search Tool](https://learn.microsoft.com/en-us/azure/ai-services/agents/how-to/tools/file-search)
 - [Semantic Kernel Documentation](https://learn.microsoft.com/en-us/semantic-kernel/)
 - [.NET 8 Documentation](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-8)
-- [Azure AI Search Documentation](https://learn.microsoft.com/en-us/azure/search/)
 - [Azure Identity Documentation](https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication)
-- [tool-create-ai-search-index.md](./tool-create-ai-search-index.md)
