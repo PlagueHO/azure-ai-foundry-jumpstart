@@ -77,7 +77,7 @@
       "name": "gpt-4o-transcribe",
       "version": "2025-03-20"
     },
-    "name": "pt-4o-transcribe",
+    "name": "gpt-4o-transcribe",
     "sku": {
       "name": "GlobalStandard",
       "capacity": 100
