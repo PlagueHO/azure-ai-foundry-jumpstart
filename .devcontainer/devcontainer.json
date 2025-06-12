@@ -23,6 +23,9 @@
         },
         "ghcr.io/devcontainers/features/node:1": {
             "version": "lts"
+        },
+        "ghcr.io/devcontainers/features/dotnet:2": {
+            "version": "8.0"
         }
     },
     "customizations": {
@@ -39,7 +42,9 @@
                 "ms-toolsai.jupyter",
                 "dbaeumer.vscode-eslint",
                 "ms-python.black-formatter",
-                "ms-playwright.playwright"
+                "ms-playwright.playwright",
+                "ms-dotnettools.csharp",
+                "ms-dotnettools.csdevkit"
             ]
         }
     },
