@@ -6,7 +6,7 @@ Prerequisites:
 - pip install -r requirements.txt
 - Configure a .env file in this folder with the following content (replace values as needed):
 
-    AZURE_AI_AGENT_PROJECT_CONNECTION_STRING="eastus2.api.azureml.ms;78700012-09f8-4425-b47f-7e98d215cfeb;rg-6clicks;6clicks-proactive"
+    AZURE_AI_AGENT_PROJECT_CONNECTION_STRING="eastus2.api.azureml.ms;78700012-09f8-4425-b47f-7e98d215cfeb;rg-techsupport;techsupport-project"
     AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME="gpt-4o"
     AZURE_AI_AGENT_ID="your-agent-id" (from Azure AI Foundry or Azure Agent Service)
 
