@@ -6,7 +6,7 @@ on:
       app_names:
         description: 'List of python app names (folders in /src and /tests) to test'
         type: string
-        default: '["data_generator"]'
+        default: '["tools/data_generator"]'
   pull_request:
     branches:
       - main
@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        app: ${{ fromJSON(inputs.app_names || '["data_generator"]') }}
+        app: ${{ fromJSON(inputs.app_names || '["tools/data_generator"]') }}
       fail-fast: false
 
     name: Test ${{ matrix.app }}
@@ -58,7 +58,7 @@ jobs:
       - name: Test with pytest
         run: |
           cd src/${{ matrix.app }}
-          python -m pytest ../../tests/${{ matrix.app }} --cov --cov-report=xml --cov-fail-under=10
+          python -m pytest ../../../tests/${{ matrix.app }} --cov --cov-report=xml --cov-fail-under=10
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v4
