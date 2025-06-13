@@ -201,14 +201,14 @@ The following diagrams illustrate the architecture of the solution accelerator. 
 
 ### Foundry Project Mode
 
-#### Zero-trust with network isolation - Foundry Project Mode
+#### Foundry Mode with Network Isolation
 
 The following diagram illustrates the architecture of the solution accelerator with network isolation when deploying a newer Foundry-based project.
 
 > [!IMPORTANT]
 > Diagram TBC
 
-#### Without network isolation - Foundry Project Mode
+#### Foundry Mode without Metwork Isolation
 
 The following diagram illustrates the architecture of the solution accelerator without network isolation when deploying a newer Project-based project.
 
@@ -217,13 +217,13 @@ The following diagram illustrates the architecture of the solution accelerator w
 
 ### Hub-based Project Mode
 
-#### Zero-trust with network isolation - Hub-based Project Mode
+#### Hub Mode with Network Isolation
 
 The following diagram illustrates the architecture of the solution accelerator with network isolation when deploying a Hub-based project.
 
 [![Azure AI Foundry Jumpstart Solution Accelerator with Network Isolation](docs/images/azure-ai-foundry-jumpstart-zero-trust.svg)](docs/images/azure-ai-foundry-jumpstart-zero-trust.svg)
 
-#### Without network isolation - Hub-based Project Mode
+#### Hub Mode without Network Isolation
 
 The following diagram illustrates the architecture of the solution accelerator without network isolation when deploying a Hub-based project.
 
