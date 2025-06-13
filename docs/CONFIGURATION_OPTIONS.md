@@ -259,8 +259,9 @@ azd env set AZURE_BASTION_HOST_DEPLOY true
 ### AZURE_CONTAINER_REGISTRY_RESOURCE_ID
 
 Provide the full resource-id of an existing Azure Container Registry to associate with the deployment.  
-When set, the accelerator **does not** create a new registry.  
+When set, the accelerator **does not** create a new registry.
 If `AZURE_NETWORK_ISOLATION` is `true`, ensure the registry already has the required private endpoints and DNS zones.
+If `AZURE_CONTAINER_REGISTRY_DEPLOY` is set to `true`, this setting is ignored.
 
 ```powershell
 azd env set AZURE_CONTAINER_REGISTRY_RESOURCE_ID "/subscriptions/<subId>/resourceGroups/rg-xyz/providers/Microsoft.ContainerRegistry/registries/acrExisting"
@@ -269,12 +270,12 @@ azd env set AZURE_CONTAINER_REGISTRY_RESOURCE_ID "/subscriptions/<subId>/resourc
 ### AZURE_CONTAINER_REGISTRY_DEPLOY
 
 Deploy a new Azure Container Registry **or** attach an existing one (`true`).  
-When set to `false`, `AZURE_CONTAINER_REGISTRY_RESOURCE_ID` is ignored and the AI Foundry Hub is created without an attached registry.
+When set to `true`, `AZURE_CONTAINER_REGISTRY_RESOURCE_ID` is ignored and the AI Foundry Hub is created without an attached registry.
 
-Default: `true`.
+Default: `false`.
 
 ```powershell
-azd env set AZURE_CONTAINER_REGISTRY_DEPLOY false
+azd env set AZURE_CONTAINER_REGISTRY_DEPLOY true
 ```
 
 ### AZURE_STORAGE_ACCOUNT_NAME

@@ -47,5 +47,5 @@ param bastionHostDeploy = toLower(readEnvironmentVariable('AZURE_BASTION_HOST_DE
 param disableApiKeys = toLower(readEnvironmentVariable('AZURE_DISABLE_API_KEYS', 'false')) == 'true'
 
 // Container registry parameters
-param containerRegistryDeploy   = toLower(readEnvironmentVariable('AZURE_CONTAINER_REGISTRY_DEPLOY', 'true')) == 'true'
+param containerRegistryDeploy   = toLower(readEnvironmentVariable('AZURE_CONTAINER_REGISTRY_DEPLOY', 'false')) == 'true'
 param containerRegistryResourceId = readEnvironmentVariable('AZURE_CONTAINER_REGISTRY_RESOURCE_ID', '')

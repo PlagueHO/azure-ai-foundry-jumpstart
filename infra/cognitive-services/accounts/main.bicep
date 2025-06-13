@@ -100,9 +100,6 @@ param tags object?
 @description('Optional. List of allowed FQDN.')
 param allowedFqdnList array?
 
-@description('Optional. Specifies whether this resource support project management as child resources, used as containers for access management, data isolation and cost in AI Foundry.')
-param allowProjectManagement bool = false
-
 @description('Optional. The API properties for special APIs.')
 param apiProperties object?
 
@@ -141,6 +138,9 @@ param deployments deploymentType[]?
 
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
+
+@description('Optional. Enable/Disable project management feature for AI Foundry.')
+param allowProjectManagement bool?
 
 @description('Optional. The Projects to create in the Cognitive Services account.')
 param projects projectType[]?
@@ -329,14 +329,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
@@ -359,6 +359,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-previ
     name: sku
   }
   properties: {
+    allowProjectManagement: allowProjectManagement
     customSubDomainName: customSubDomainName
     networkAcls: !empty(networkAcls ?? {})
       ? {
@@ -371,7 +372,6 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-previ
       ? publicNetworkAccess
       : (!empty(networkAcls) ? 'Enabled' : 'Disabled')
     allowedFqdnList: allowedFqdnList
-    allowProjectManagement: allowProjectManagement
     apiProperties: apiProperties
     disableLocalAuth: disableLocalAuth
     encryption: !empty(customerManagedKey)
@@ -457,7 +457,7 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
   }
 ]
 
-module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}'
     scope: resourceGroup(

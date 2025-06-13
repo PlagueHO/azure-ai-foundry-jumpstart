@@ -26,9 +26,9 @@ It automates the deployment of the services using the same approach as the instr
 
 ## Project Modes
 
-This solution accelerator supports two different project modes for Azure AI Foundry:
+This solution can deploy both types of Foundry Project modes:
 
-- **Foundry project mode**: This is a newer project mode that uses Azure AI Services resources to manage projects. It is the recommended approach for new projects as it simplifies the resource requirements.
+- **Foundry project mode** (Recommended): This is a newer project mode that uses Azure AI Services resources to manage projects. It is the recommended approach for new projects as it simplifies the resource requirements.
 - **Hub-based project mode**: This is the traditional project mode that uses an Azure AI Hub and projects.
 
 For more information on the project modes, see the [The AI Foundry document](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry#which-type-of-project-do-i-need).
@@ -190,10 +190,6 @@ azd env set AZURE_NETWORK_ISOLATION false
 ```
 
 A complete list of environment variables can be found in the [Configuration Options](docs/CONFIGURATION_OPTIONS.md) document.
-
-## Foundry Project Modes
-
-This solution accelerator supports both types of Foundry Project modes, but the recommended project mode is the Foundry Project. The [main.bicep](infra/main.bicep) file will deploy either type of project based on the `aiFoundryProjectMode` parameter value (`Foundry` or `Hub`). The default value is `Foundry`.
 
 ## Architecture
 

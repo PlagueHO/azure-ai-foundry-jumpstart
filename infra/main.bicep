@@ -26,7 +26,7 @@ param resourceGroupName string = 'rg-${environmentName}'
 @sys.description('AI Foundry project mode. Hub uses MachineLearning workspace hub with projects, Foundry uses CognitiveServices account with projects. Defaults to Hub for backward compatibility.')
 @allowed([
   'Foundry'
-  'Project'
+  'Hub'
 ])
 param aiFoundryProjectMode string = 'Foundry'
 
@@ -234,19 +234,14 @@ var subnets = [
     addressPrefix: '10.0.1.0/24'
   }
   {
-    // Data Subnet (Storage, Key Vault)
+    // Data Subnet (Storage, Key Vault, Container Registry)
     name: 'Data'
     addressPrefix: '10.0.2.0/24'
   }
   {
-    // Container Registry Subnet (ACR private endpoints)
-    name: 'ContainerRegistry'
-    addressPrefix: '10.0.3.0/24'
-  }
-  {
-    // Management Subnet (Log Analytics, Application Insights)
+    // Management Subnet (Log Analytics, Application Insights) - Not used yet
     name: 'Management'
-    addressPrefix: '10.0.4.0/24'
+    addressPrefix: '10.0.3.0/24'
   }
   {
     // Bastion Gateway Subnet
@@ -367,7 +362,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (isHubMode) {
           ]
         }
         service: 'vault'
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2] // SharedServices
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2] // Data subnet
       }
     ] : []
     tags: tags
@@ -486,7 +481,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
             }
           ]
         }
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2] // SharedServices
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2] // Data Subnet
         tags: tags
       }
     ] : []
@@ -593,7 +588,7 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.10.0' = if (az
             }
           ]
         }
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1] // AiServices
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1] // AiServices Subnet
         tags: tags
       }
     ] : []
@@ -668,7 +663,7 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.11.0' =
     kind: 'AIServices'
     name: aiServicesName
     location: location
-    allowProjectManagement: isFoundryMode
+    allowProjectManagement: false
     customSubDomainName: aiServicesCustomSubDomainName
     disableLocalAuth: disableApiKeys
     diagnosticSettings: [
@@ -688,7 +683,7 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.11.0' =
             }
           ]
         }
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1] // AiServices
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1] // AiServices Subnet
         tags: tags
       }
     ] : []
@@ -845,7 +840,7 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
             }
           ]
         }
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1] // AiServices
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1] // AiServices Subnet
         tags: tags
       }
     ] : []
@@ -994,7 +989,7 @@ module aiFoundryAccount './cognitive-services/accounts/main.bicep' = if (isFound
           ]
         }
         service: 'account'
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1] // AiServices subnet
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1] // AiServices Subnet
       }
     ] : []
     publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
