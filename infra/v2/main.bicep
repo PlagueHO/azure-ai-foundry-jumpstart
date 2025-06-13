@@ -258,7 +258,7 @@ var sampleDataContainers = [for name in sampleDataContainersArray: {
   publicAccess: 'None'
 }]
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = if (azureStorageAccountDeploy) {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = if (azureStorageAccountDeploy) {
   name: 'storage-account-deployment'
   scope: rg
   params: {
@@ -315,7 +315,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = if (a
 }
 
 // ---------- SAMPLE DATA STORAGE ACCOUNT (CONDITIONAL) ----------
-module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = if (sampleDataDeploy) {
+module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = if (sampleDataDeploy) {
   name: 'sample-data-storage-account-deployment'
   scope: rg
   params: {

@@ -200,17 +200,18 @@ var subnets = [
   }
 ]
 
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (azureNetworkIsolation) {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if (azureNetworkIsolation) {
   name: 'virtualNetwork'
   scope: rg
   params: {
     name: virtualNetworkName
     location: location
-    tags: tags
     addressPrefixes: [
       '10.0.0.0/16'
     ]
     subnets: subnets
+    tags: tags
+    ddosProtectionPlanResourceId: null // Corrected parameter name
   }
 }
 
@@ -285,7 +286,7 @@ module aiHubNotebooksPrivateDnsZone'br/public:avm/res/network/private-dns-zone:0
 }
 
 // ---------- KEY VAULT ----------
-module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
+module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = {
   name: 'keyVault'
   scope: rg
   params: {
@@ -354,42 +355,36 @@ var sampleDataContainers = [for name in sampleDataContainersArray: {
   publicAccess: 'None'
 }]
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
-  name: 'storage-account-deployment'
+module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
+  name: 'storageAccount'
   scope: rg
   params: {
-    // use the computed storageAccountName
     name: storageAccountName
-    allowBlobPublicAccess: false
-    blobServices: {
-      automaticSnapshotPolicyEnabled: false
-      containerDeleteRetentionPolicyEnabled: false
-      deleteRetentionPolicyEnabled: false
-      lastAccessTimeTrackingPolicyEnabled: true
-    }
-    diagnosticSettings: [
-      {
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: sendTologAnalyticsCustomSettingName
-        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-      }
-    ]
-    enableHierarchicalNamespace: false // not supported for AI Foundry
-    enableNfsV3: false
-    enableSftp: false
-    largeFileSharesState: 'Enabled'
     location: location
-    managedIdentities: {
-      systemAssigned: true
+    kind: 'StorageV2'
+    skuName: 'Standard_LRS'
+    accessTier: 'Hot'
+    allowBlobPublicAccess: false
+    allowCrossTenantReplication: false
+    blobServices: {
+      deleteRetentionPolicy: {
+        enabled: true
+        days: 7
+      }
+      containerDeleteRetentionPolicy: {
+        enabled: true
+        days: 7
+      }
     }
+    supportsHttpsTrafficOnly: true // Corrected parameter name
+    enableHierarchicalNamespace: false // Corrected parameter name (was isHnsEnabled)
+    largeFileSharesState: 'Disabled'
+    minimumTlsVersion: 'TLS1_2'
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: networkDefaultAction
     }
+    publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
     privateEndpoints: azureNetworkIsolation ? [
       {
         privateDnsZoneGroup: {
@@ -400,14 +395,14 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = {
           ]
         }
         service: 'blob'
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2] // SharedServices
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2] // Data subnet
         tags: tags
       }
     ] : []
     roleAssignments: storageAccountRoleAssignments
-    sasExpirationPeriod: '180.00:00:00'
-    skuName: 'Standard_LRS'
+    sasExpirationPeriod: '1.00:00:00'
     tags: tags
+    allowSharedKeyAccess: true
   }
 }
 
@@ -617,7 +612,7 @@ module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = if (azure
 // ---------- AI SERVICES ----------
 var openAiSampleModels = loadJsonContent('./sample-openai-models.json')
 
-module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.10.2' = {
+module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.11.0' = {
   name: 'ai-services-account-deployment'
   scope: rg
   params: {
@@ -754,7 +749,7 @@ var aiFoundryHubConnections = concat([
   }
 ] : [])
 
-module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = {
+module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' = {
   name: 'ai-foundry-hub-workspace-deployment'
   scope: rg
   params: {
@@ -816,8 +811,6 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
 }
 
 // ---------- AI FOUNDRY PROJECTS ----------
-import { aiFoundryProjectType } from './types/ai/aiFoundryProjectType.bicep'
-
 var projectsFromJson = loadJsonContent('./sample-ai-foundry-projects.json')
 
 var aiFoundryProjectsFromJsonArray = [for project in projectsFromJson: {
@@ -899,7 +892,7 @@ module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aiservic
       {
         roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/64702f94-c441-49e6-a78b-ef80e0188fee' // 'Azure AI Developer'
         principalType: 'ServicePrincipal'
-        principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
+        principalId: aiFoundryHubProjects[index].outputs.?systemAssignedMIPrincipalId
       }
     ]
   }
@@ -1018,7 +1011,7 @@ output AZURE_AI_SERVICES_RESOURCE_ID string = aiServicesAccount.outputs.resource
 // Output the Azure AI Foundry resources
 output AZURE_AI_FOUNDRY_HUB_NAME string = aiFoundryHub.outputs.name
 output AZURE_AI_FOUNDRY_HUB_RESOURCE_ID string = aiFoundryHub.outputs.resourceId
-output AZURE_AI_FOUNDRY_HUB_PRIVATE_ENDPOINTS array = aiFoundryHub.outputs.privateEndpoints
+output AZURE_AI_FOUNDRY_HUB_PRIVATE_ENDPOINTS array = azureNetworkIsolation ? aiFoundryHub.outputs.privateEndpoints : []
 
 // Output the AI Foundry project
 output AZURE_AI_FOUNDRY_PROJECT_DEPLOY bool = aiFoundryProjectDeploy
