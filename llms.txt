@@ -31,34 +31,22 @@ azure-ai-foundry-jumpstart/
 │   └── tool-create-ai-search-index.md
 │
 ├── infra/               # Infrastructure as Code (Bicep, AVM)
-│   ├── v1/              # Version 1 modules and configurations
-│   │   ├── abbreviations.json
-│   │   ├── bicepconfig.json
-│   │   ├── main.bicep
-│   │   ├── main.bicepparam
-│   │   ├── main.json
-│   │   ├── sample-ai-foundry-projects.json
-│   │   ├── sample-data-containers.json
-│   │   ├── sample-openai-models.json
-│   │   ├── core/        # Core AVM modules
-│   │   │   ├── ai/
-│   │   │   └── security/
-│   │   └── types/       # Custom Bicep types
-│   │       └── ai/
-│   │           └── aiFoundryProjectType.bicep
-│   └── v2/              # Version 2 modules and enhancements
-│       ├── abbreviations.json
-│       ├── bicepconfig.json
-│       ├── main.bicep
-│       ├── main.bicepparam
-│       ├── main.json
-│       ├── sample-ai-foundry-projects.json
-│       ├── sample-data-containers.json
-│       ├── sample-openai-models.json
-│       ├── cognitive-services/
-│       │   └── accounts/
-│       └── core/        # Security and core modules
-│           └── security/
+│   ├── abbreviations.json
+│   ├── bicepconfig.json
+│   ├── main.bicep
+│   ├── main.bicepparam
+│   ├── main.json
+│   ├── sample-ai-foundry-projects.json
+│   ├── sample-data-containers.json
+│   ├── sample-openai-models.json
+│   ├── cognitive-services/  # CognitiveServices modules for Project mode
+│   │   └── accounts/
+│   ├── core/            # Core AVM modules
+│   │   ├── ai/
+│   │   └── security/
+│   └── types/           # Custom Bicep types
+│       └── ai/
+│           └── aiFoundryProjectType.bicep
 │
 ├── sample-data/         # Example datasets for testing/demo
 │   ├── financial-transactions/

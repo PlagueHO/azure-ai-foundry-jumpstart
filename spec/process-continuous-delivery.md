@@ -43,7 +43,7 @@ Intended audience: Developers, DevOps engineers, maintainers, and automated agen
   - Tags matching `v*`
   - Changes to any file under `infra/**`, `src/**`, or `tests/**`
 - **Requirement 2:** The workflow MUST support manual invocation via `workflow_dispatch`.
-- **Requirement 3:** The workflow MUST set build variables, lint and publish Bicep files, and validate Bicep templates for multiple versions (v1, v2) using a matrix strategy.
+- **Requirement 3:** The workflow MUST set build variables, lint and publish Bicep files, and validate Bicep templates for multiple project modes (Hub, Project) using a matrix strategy.
 - **Requirement 4:** The workflow MUST run E2E tests for both isolated and public network configurations using a matrix strategy.
 - **Requirement 5:** The E2E test workflow MUST provision infrastructure, run E2E tests, and then delete infrastructure, passing all required secrets and parameters.
 - **Constraint 1:** All secrets (tenant ID, subscription ID, client ID) MUST be passed securely to reusable workflows using the `secrets` block.
@@ -61,8 +61,8 @@ Intended audience: Developers, DevOps engineers, maintainers, and automated agen
 | `workflow_dispatch` trigger   | Event        | Allows manual workflow runs                                      |
 | `set-build-variables`         | Workflow Job | Sets build variables for downstream jobs (reusable workflow)     |
 | `lint-and-publish-bicep`      | Workflow Job | Lints and publishes Bicep files (reusable workflow)              |
-| `validate-bicep`              | Workflow Job | Validates Bicep templates for v1 and v2 using a matrix           |
-| `e2e-test-v1`                 | Workflow Job | Runs E2E tests for isolated and public configs using a matrix    |
+| `validate-bicep`              | Workflow Job | Validates Bicep templates for hub and project using a matrix     |
+| `e2e-test-hub`                 | Workflow Job | Runs E2E tests for isolated and public configs using a matrix   |
 
 ### Example: Matrix for Bicep Validation
 
@@ -70,10 +70,10 @@ Intended audience: Developers, DevOps engineers, maintainers, and automated agen
 strategy:
   matrix:
     include:
-      - name: v1
-        BICEP_VERSION: v1
-      - name: v2
-        BICEP_VERSION: v2
+      - name: Hub
+        BICEP_VERSION: hub
+      - name: Project
+        BICEP_VERSION: project
 ```
 
 ### Example: Matrix for E2E Tests
@@ -112,7 +112,7 @@ on:
 
 # Example: E2E test matrix
 jobs:
-  e2e-test-v1:
+  e2e-test-hub:
     strategy:
       max-parallel: 1
       matrix:

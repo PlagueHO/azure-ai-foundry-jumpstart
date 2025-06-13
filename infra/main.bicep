@@ -23,17 +23,24 @@ param location string
 })
 param resourceGroupName string = 'rg-${environmentName}'
 
-@sys.description('Enable purge protection on the Key Vault. When set to true the vault cannot be permanently deleted until purge protection is disabled. Defaults to false.')
+@sys.description('AI Foundry project mode. Hub uses ML workspace hub with projects, Project uses CognitiveServices account with projects. Defaults to Hub for backward compatibility.')
+@allowed([
+  'Hub'
+  'Project'
+])
+param aiFoundryProjectMode string = 'Hub'
+
+@sys.description('Enable purge protection on the Key Vault. When set to true the vault cannot be permanently deleted until purge protection is disabled. Defaults to false. Only applies when aiFoundryProjectMode is Hub.')
 param keyVaultEnablePurgeProtection bool = false
 
-@sys.description('Optional friendly name for the AI Foundry Hub workspace.')
+@sys.description('Optional friendly name for the AI Foundry Hub workspace. Only applies when aiFoundryProjectMode is Hub.')
 param aiFoundryHubFriendlyName string
 
-@sys.description('Optional description for the AI Foundry Hub workspace.')
+@sys.description('Optional description for the AI Foundry Hub workspace. Only applies when aiFoundryProjectMode is Hub.')
 param aiFoundryHubDescription string
 
-@sys.description('Array of public IPv4 addresses or CIDR ranges that will be added to the Azure AI Foundry Hub allow-list when azureNetworkIsolation is true.')
-param aiFoundryHubIpAllowList array = []
+@sys.description('Array of public IPv4 addresses or CIDR ranges that will be added to the Azure AI Foundry allow-list when azureNetworkIsolation is true.')
+param aiFoundryIpAllowList array = []
 
 @sys.description('SKU for the Azure AI Search service. Defaults to standard.')
 @allowed([
@@ -70,10 +77,10 @@ param deploySampleOpenAiModels bool = false
 @sys.description('Deploy sample data containers into the Azure Storage Account. Defaults to false.')
 param deploySampleData bool = false
 
-@sys.description('Resource ID of an existing Azure Container Registry (ACR) to use instead of deploying a new one. When provided the registry module is skipped. If `azureNetworkIsolation` is true you must ensure the registry has the required private networking configuration.')
+@sys.description('Resource ID of an existing Azure Container Registry (ACR) to use instead of deploying a new one. When provided the registry module is skipped. If `azureNetworkIsolation` is true you must ensure the registry has the required private networking configuration. Only applies when aiFoundryProjectMode is Hub.')
 param containerRegistryResourceId string = ''
 
-@sys.description('Deploy Azure Container Registry and all dependent configuration. Set to false to skip its deployment.')
+@sys.description('Deploy Azure Container Registry and all dependent configuration. Set to false to skip its deployment. Only applies when aiFoundryProjectMode is Hub.')
 param containerRegistryDeploy bool = true
 
 @sys.description('Deploy an Azure AI Foundry project. Set to false to skip its deployment.')
@@ -130,20 +137,27 @@ var aiServicesName = '${abbrs.aiServicesAccounts}${environmentName}'
 var aiServicesCustomSubDomainName = toLower(replace(environmentName, '-', ''))
 // Ensure the AI Foundry Hub name is ≤ 32 characters as required by Azure.
 var aiFoundryHubName = take('${abbrs.aiFoundryHubs}${environmentName}',32)
+// AI Foundry account name for v2 mode
+var aiFoundryAccountName = '${abbrs.aiFoundryAccounts}${environmentName}'
+var aiFoundryAccountCustomSubDomainName = toLower(replace(environmentName, '-', ''))
 var bastionHostName = '${abbrs.networkBastionHosts}${environmentName}'
 var networkDefaultAction = azureNetworkIsolation ? 'Deny' : 'Allow'
+
+// Deployment mode flags
+var isHubMode = aiFoundryProjectMode == 'Hub'
+var isProjectMode = aiFoundryProjectMode == 'Project'
 
 // List of sample data containers
 var sampleDataContainersArray = loadJsonContent('./sample-data-containers.json')
 
-// ---------- RESOURCE GROUP ----------
+// ---------- RESOURCE GROUP (BOTH HUB AND PROJECT MODE) ----------
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
   location: location
   tags: tags
 }
 
-// ---------- MONITORING RESOURCES ----------
+// ---------- MONITORING RESOURCES (BOTH HUB AND PROJECT MODE) ----------
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
   name: 'logAnalyticsWorkspace'
   scope: rg
@@ -216,7 +230,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if (az
 }
 
 // ---------- PRIVTE DNS ZONES (REQUIRED FOR NETOWRK ISOLATION) ----------
-module keyVaultPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
+module keyVaultPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (isHubMode && azureNetworkIsolation) {
   name: 'keyvault-private-dns-zone'
   scope: rg
   params: {
@@ -225,7 +239,7 @@ module keyVaultPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1'
   }
 }
 
-module storageBlobPrivateDnsZone   'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
+module storageBlobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if ((isHubMode || deploySampleData) && azureNetworkIsolation) {
   name: 'storage-blobservice-private-dns-zone'
   scope: rg
   params: {
@@ -235,7 +249,7 @@ module storageBlobPrivateDnsZone   'br/public:avm/res/network/private-dns-zone:0
   }
 }
 
-module containerRegistryPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
+module containerRegistryPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (isHubMode && azureNetworkIsolation) {
   name: 'container-registry-private-dns-zone'
   scope: rg
   params: {
@@ -265,7 +279,7 @@ module aiServicesPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.
   }
 }
 
-module aiHubApiMlPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
+module aiHubApiMlPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (isHubMode && azureNetworkIsolation) {
   name: 'ai-hub-apiml-private-dns-zone'
   scope: rg
   params: {
@@ -275,7 +289,7 @@ module aiHubApiMlPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.
   }
 }
 
-module aiHubNotebooksPrivateDnsZone'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
+module aiHubNotebooksPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (isHubMode && azureNetworkIsolation) {
   name: 'ai-hub-notebooks-private-dns-zone'
   scope: rg
   params: {
@@ -285,8 +299,8 @@ module aiHubNotebooksPrivateDnsZone'br/public:avm/res/network/private-dns-zone:0
   }
 }
 
-// ---------- KEY VAULT ----------
-module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = {
+// ---------- KEY VAULT (HUB MODE ONLY) ----------
+module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (isHubMode) {
   name: 'keyVault'
   scope: rg
   params: {
@@ -319,7 +333,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = {
   }
 }
 
-// ---------- STORAGE ACCOUNT ----------
+// ---------- STORAGE ACCOUNT (HUB MODE ONLY) ----------
 // Role assignments for Storage Account
 var storageAccountRoleAssignments = [
   ...(azureAiSearchDeploy ? [
@@ -355,7 +369,7 @@ var sampleDataContainers = [for name in sampleDataContainersArray: {
   publicAccess: 'None'
 }]
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = if (isHubMode) {
   name: 'storageAccount'
   scope: rg
   params: {
@@ -406,7 +420,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
   }
 }
 
-// ---------- SAMPLE DATA STORAGE ACCOUNT (CONDITIONAL) ----------
+// ---------- SAMPLE DATA STORAGE ACCOUNT (BOTH HUB AND PROJECT MODE - OPTIONAL) ----------
 module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = if (deploySampleData) {
   name: 'sample-data-storage-account-deployment'
   scope: rg
@@ -464,8 +478,8 @@ module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.19.
   }
 }
 
-// ---------- CONTAINER REGISTRY ----------
-module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = if (containerRegistryDeploy && empty(containerRegistryResourceId)) {
+// ---------- CONTAINER REGISTRY (HUB MODE ONLY) ----------
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = if (isHubMode && containerRegistryDeploy && empty(containerRegistryResourceId)) {
   name: 'container-registry-deployment'
   scope: rg
   params: {
@@ -507,7 +521,7 @@ var effectiveContainerRegistryResourceId = containerRegistryDeploy
   ? (empty(containerRegistryResourceId) ? containerRegistry.outputs.resourceId : containerRegistryResourceId)
   : ''
 
-// ---------- AI SEARCH ----------
+// ---------- AI SEARCH (BOTH HUB AND PROJECT MODE - OPTIONAL) ----------
 module aiSearchService 'br/public:avm/res/search/search-service:0.10.0' = if (azureAiSearchDeploy) {
   name: 'ai-search-service-deployment'
   scope: rg
@@ -609,7 +623,7 @@ module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = if (azure
   }
 }
 
-// ---------- AI SERVICES ----------
+// ============================================= HUB MODE ONLY ==============================================
 var openAiSampleModels = loadJsonContent('./sample-openai-models.json')
 
 module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.11.0' = {
@@ -619,6 +633,7 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.11.0' =
     kind: 'AIServices'
     name: aiServicesName
     location: location
+    allowProjectManagement: isProjectMode
     customSubDomainName: aiServicesCustomSubDomainName
     disableLocalAuth: disableApiKeys
     diagnosticSettings: [
@@ -698,7 +713,6 @@ module aiServicesRoleAssignments './core/security/role_aiservice.bicep' = {
   }
 }
 
-// ---------- AI FOUNDRY HUB ----------
 // Role assignments for the AI Foundry Hub
 var aiFoundryHubRoleAssignments = !empty(principalId) ? [
   {
@@ -749,7 +763,7 @@ var aiFoundryHubConnections = concat([
   }
 ] : [])
 
-module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' = {
+module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' = if (isHubMode) {
   name: 'ai-foundry-hub-workspace-deployment'
   scope: rg
   params: {
@@ -760,8 +774,8 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
     kind: 'Hub'
     sku: 'Basic'
     associatedApplicationInsightsResourceId: applicationInsights.outputs.resourceId
-    associatedKeyVaultResourceId: keyVault.outputs.resourceId
-    associatedStorageAccountResourceId: storageAccount.outputs.resourceId
+    associatedKeyVaultResourceId: isHubMode ? keyVault.outputs.resourceId : null
+    associatedStorageAccountResourceId: isHubMode ? storageAccount.outputs.resourceId : null
     associatedContainerRegistryResourceId: containerRegistryDeploy ? effectiveContainerRegistryResourceId : null
     connections: aiFoundryHubConnections
     diagnosticSettings: [
@@ -775,7 +789,7 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
-    ipAllowlist: aiFoundryHubIpAllowList
+    ipAllowlist: aiFoundryIpAllowList
     managedIdentities: {
       systemAssigned: true
     }
@@ -810,7 +824,7 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
   }
 }
 
-// ---------- AI FOUNDRY PROJECTS ----------
+// ---------- AI FOUNDRY PROJECTS (HUB MODE) ----------
 var projectsFromJson = loadJsonContent('./sample-ai-foundry-projects.json')
 
 var aiFoundryProjectsFromJsonArray = [for project in projectsFromJson: {
@@ -841,11 +855,11 @@ var aiFoundryProjectsSingleArray = [
   }
 ]
 
-var effectiveAiFoundryProjects = aiFoundryProjectDeploy 
+var effectiveAiFoundryProjects = (aiFoundryProjectDeploy && isHubMode) 
   ? (aiFoundryProjectsFromJson ? aiFoundryProjectsFromJsonArray : aiFoundryProjectsSingleArray)
   : []
 
-module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = [for project in effectiveAiFoundryProjects: {
+module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = [for project in effectiveAiFoundryProjects: if (isHubMode) {
   name: take('aifp-${project.name}',64)
   scope: rg
   params: {
@@ -866,7 +880,7 @@ module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspa
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
-    hubResourceId: aiFoundryHub.outputs.resourceId
+    hubResourceId: isHubMode ? aiFoundryHub.outputs.resourceId : ''
     managedIdentities: {
       systemAssigned: true
     }
@@ -876,11 +890,11 @@ module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspa
   }
 }]
 
-// ---------- AI FOUNDRY PROJECTS ROLE ASSIGNMENTS TO AI SERVICES ----------
+// ---------- AI FOUNDRY PROJECTS ROLE ASSIGNMENTS TO AI SERVICES (ONLY FOR HUB MODE) ----------
 // Add any Azure AI Developer role for each AI Foundry project to the AI Services account
 // This ensures a developer with access to the AI Foundry project can also access the AI Services
 module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aiservice.bicep' = [
-  for (project,index) in effectiveAiFoundryProjects: {
+  for (project,index) in effectiveAiFoundryProjects: if (isHubMode) {
   name: take('aifp-aisvc-ra-${project.name}',64)
   scope: rg
   dependsOn: [
@@ -892,18 +906,18 @@ module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aiservic
       {
         roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/64702f94-c441-49e6-a78b-ef80e0188fee' // 'Azure AI Developer'
         principalType: 'ServicePrincipal'
-        principalId: aiFoundryHubProjects[index].outputs.?systemAssignedMIPrincipalId
+        principalId: aiFoundryHubProjects[index].outputs.?systemAssignedMIPrincipalId ?? ''
       }
     ]
   }
 }]
 
-// ---------- AI FOUNDRY PROJECT ROLE ASSIGNMENTS TO AI SEARCH ----------
+// ---------- AI FOUNDRY PROJECT ROLE ASSIGNMENTS TO AI SEARCH (ONLY FOR HUB MODE) ----------
 // Add any Search Index Reader and Search Service Contributor roles for each AI Foundry project
 // to the AI Search Account. This ensures Agents created within a project can access indexes in
 // the AI Search account.
 module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.bicep' = [
-  for (project,index) in effectiveAiFoundryProjects : if (azureAiSearchDeploy) {
+  for (project,index) in effectiveAiFoundryProjects : if (azureAiSearchDeploy && isHubMode) {
     name: take('aifp-aisch-ra-${project.name}',64)
     scope: rg
     dependsOn: [
@@ -915,26 +929,26 @@ module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.
         {
           roleDefinitionIdOrName: 'Search Index Data Reader'
           principalType: 'ServicePrincipal'
-          principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
+          principalId: aiFoundryHubProjects[index].outputs.?systemAssignedMIPrincipalId ?? ''
         }
         {
           roleDefinitionIdOrName: 'Search Service Contributor'
           principalType: 'ServicePrincipal'
-          principalId: aiFoundryHubProjects[index].outputs.systemAssignedMIPrincipalId
+          principalId: aiFoundryHubProjects[index].outputs.?systemAssignedMIPrincipalId ?? ''
         }
       ]
     }
   }
 ]
 
-// ---------- AI FOUNDRY PROJECTS DATASTORES ----------
+// ---------- AI FOUNDRY PROJECTS DATASTORES (ONLY FOR HUB MODE) ----------
 // Build a Cartesian product index across projects and sample-data containers
 var projectCount   = length(effectiveAiFoundryProjects)
 var sampleDataContainerCount = length(sampleDataContainersArray)
 
 // One module instance per <project, container> when deploySampleData == true
 module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
-  for idx in range(0, (projectCount * sampleDataContainerCount)) : if (deploySampleData && aiFoundryProjectDeploy) {
+  for idx in range(0, (projectCount * sampleDataContainerCount)) : if (deploySampleData && aiFoundryProjectDeploy && isHubMode) {
     // Make the module deployment name unique
     name: replace(toLower(take('datastore_${effectiveAiFoundryProjects[idx / sampleDataContainerCount].name}_${sampleDataContainersArray[idx % sampleDataContainerCount]}',64)),'-','_')
     scope: rg
@@ -949,6 +963,78 @@ module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
     }
   }
 ]
+
+
+// ============================================= PROJECT MODE ONLY ==============================================
+module aiFoundryAccount './cognitive-services/accounts/main.bicep' = if (isProjectMode) {
+  name: 'ai-foundry-account-deployment'
+  scope: rg
+  params: {
+    name: aiFoundryAccountName
+    kind: 'AIServices'
+    location: location
+    customSubDomainName: aiFoundryAccountCustomSubDomainName
+    disableLocalAuth: disableApiKeys
+    allowProjectManagement: true
+    diagnosticSettings: [
+      {
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+      }
+    ]
+    managedIdentities: {
+      systemAssigned: true
+    }
+    privateEndpoints: azureNetworkIsolation ? [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: aiServicesPrivateDnsZone.outputs.resourceId
+            }
+          ]
+        }
+        service: 'account'
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1] // AiServices subnet
+      }
+    ] : []
+    publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
+    sku: 'S0'
+    deployments: deploySampleOpenAiModels ? openAiSampleModels : []
+    connections: azureAiSearchDeploy ? [
+      {
+        name: replace(abbrs.aiSearchSearchServices,'-','')
+        category: 'CognitiveSearch'
+        target: aiSearchService.outputs.endpoint
+        connectionProperties: {
+          authType: 'AAD'
+        }
+        metadata: {}
+        isSharedToAll: true
+      }
+    ] : []
+    projects: isProjectMode ? (aiFoundryProjectsFromJson ? projectsFromJson : [
+      {
+        name: replace(aiFoundryProjectName,' ','-')
+        location: location
+        properties: {
+          displayName: aiFoundryProjectFriendlyName
+          description: aiFoundryProjectDescription
+        }
+        managedIdentities: {
+          systemAssigned: true
+        }
+        roleAssignments: !empty(principalId) ? [
+          {
+            roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/64702f94-c441-49e6-a78b-ef80e0188fee' // 'Azure AI Developer'
+            principalType: principalIdType
+            principalId: principalId
+          }
+        ] : []
+      }
+    ]) : []
+    tags: tags
+  }
+}
 
 // ------------- BASTION HOST (OPTIONAL) -------------
 module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (bastionHostDeploy && azureNetworkIsolation) {
@@ -966,6 +1052,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (bastionH
 output AZURE_RESOURCE_GROUP string = rg.name
 output AZURE_PRINCIPAL_ID string = principalId
 output AZURE_PRINCIPAL_ID_TYPE string = principalIdType
+output AZURE_AI_FOUNDRY_PROJECT_MODE string = aiFoundryProjectMode
 
 // Output the monitoring resources
 output LOG_ANALYTICS_WORKSPACE_NAME string = logAnalyticsWorkspace.outputs.name
@@ -980,18 +1067,18 @@ output AZURE_NETWORK_ISOLATION bool = azureNetworkIsolation
 output AZURE_VIRTUAL_NETWORK_NAME string = azureNetworkIsolation ? virtualNetwork.outputs.name : ''
 output AZURE_VIRTUAL_NETWORK_RESOURCE_ID string = azureNetworkIsolation ? virtualNetwork.outputs.resourceId : ''
 
-// Output the supporting resources
-output AZURE_STORAGE_ACCOUNT_NAME string = storageAccount.outputs.name
-output AZURE_STORAGE_ACCOUNT_RESOURCE_ID string = storageAccount.outputs.resourceId
-output AZURE_STORAGE_ACCOUNT_BLOB_ENDPOINT string = storageAccount.outputs.primaryBlobEndpoint
-output AZURE_STORAGE_ACCOUNT_PRIVATE_ENDPOINTS array = storageAccount.outputs.privateEndpoints
-output AZURE_STORAGE_ACCOUNT_SERVICE_ENDPOINTS object = storageAccount.outputs.serviceEndpoints
+// Output the supporting resources (conditional for v1 mode)
+output AZURE_STORAGE_ACCOUNT_NAME string = isHubMode ? storageAccount.outputs.name : ''
+output AZURE_STORAGE_ACCOUNT_RESOURCE_ID string = isHubMode ? storageAccount.outputs.resourceId : ''
+output AZURE_STORAGE_ACCOUNT_BLOB_ENDPOINT string = isHubMode ? storageAccount.outputs.primaryBlobEndpoint : ''
+output AZURE_STORAGE_ACCOUNT_PRIVATE_ENDPOINTS array = isHubMode ? storageAccount.outputs.privateEndpoints : []
+output AZURE_STORAGE_ACCOUNT_SERVICE_ENDPOINTS object = isHubMode ? storageAccount.outputs.serviceEndpoints : {}
 output AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_NAME string = deploySampleData ? sampleDataStorageAccount.outputs.name : ''
 output AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_RESOURCE_ID string = deploySampleData ? sampleDataStorageAccount.outputs.resourceId : ''
 output AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_BLOB_ENDPOINT string = deploySampleData ? sampleDataStorageAccount.outputs.primaryBlobEndpoint : ''
-output AZURE_KEY_VAULT_NAME string = keyVault.outputs.name
-output AZURE_KEY_VAULT_RESOURCE_ID string = keyVault.outputs.resourceId
-output AZURE_KEY_VAULT_ENDPOINT string = keyVault.outputs.uri
+output AZURE_KEY_VAULT_NAME string = isHubMode ? keyVault.outputs.name : ''
+output AZURE_KEY_VAULT_RESOURCE_ID string = isHubMode ? keyVault.outputs.resourceId : ''
+output AZURE_KEY_VAULT_ENDPOINT string = isHubMode ? keyVault.outputs.uri : ''
 output AZURE_KEY_VAULT_ENABLE_PURGE_PROTECTION bool = keyVaultEnablePurgeProtection
 output AZURE_CONTAINER_REGISTRY_DEPLOY bool = containerRegistryDeploy
 output AZURE_CONTAINER_REGISTRY_NAME string = (containerRegistryDeploy && empty(containerRegistryResourceId)) ? containerRegistry.outputs.name : ''
@@ -1008,10 +1095,15 @@ output AZURE_AI_SERVICES_ID string = aiServicesAccount.outputs.resourceId
 output AZURE_AI_SERVICES_ENDPOINT string = aiServicesAccount.outputs.endpoint
 output AZURE_AI_SERVICES_RESOURCE_ID string = aiServicesAccount.outputs.resourceId
 
-// Output the Azure AI Foundry resources
-output AZURE_AI_FOUNDRY_HUB_NAME string = aiFoundryHub.outputs.name
-output AZURE_AI_FOUNDRY_HUB_RESOURCE_ID string = aiFoundryHub.outputs.resourceId
-output AZURE_AI_FOUNDRY_HUB_PRIVATE_ENDPOINTS array = azureNetworkIsolation ? aiFoundryHub.outputs.privateEndpoints : []
+// Output the Azure AI Foundry resources (conditional based on deployment mode)
+output AZURE_AI_FOUNDRY_HUB_NAME string = isHubMode ? aiFoundryHub.outputs.name : ''
+output AZURE_AI_FOUNDRY_HUB_RESOURCE_ID string = isHubMode ? aiFoundryHub.outputs.resourceId : ''
+output AZURE_AI_FOUNDRY_HUB_PRIVATE_ENDPOINTS array = (isHubMode && azureNetworkIsolation) ? aiFoundryHub.outputs.privateEndpoints : []
+
+// Output the AI Foundry account (v2 mode)
+output AZURE_AI_FOUNDRY_ACCOUNT_NAME string = isProjectMode ? aiFoundryAccount.outputs.name : ''
+output AZURE_AI_FOUNDRY_ACCOUNT_RESOURCE_ID string = isProjectMode ? aiFoundryAccount.outputs.resourceId : ''
+output AZURE_AI_FOUNDRY_ACCOUNT_ENDPOINT string = isProjectMode ? aiFoundryAccount.outputs.endpoint : ''
 
 // Output the AI Foundry project
 output AZURE_AI_FOUNDRY_PROJECT_DEPLOY bool = aiFoundryProjectDeploy

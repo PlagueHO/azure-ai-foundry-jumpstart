@@ -23,4 +23,4 @@ hooks:
       interactive: true
 
 infra:
-  path: ./infra/v1/
+  path: ./infra/

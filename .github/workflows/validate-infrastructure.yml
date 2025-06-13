@@ -19,8 +19,8 @@ on:
         description: "The name of the Azure environment"
         required: true
         type: string
-      BICEP_VERSION:
-        description: "The Bicep template version to validate (v1 or v2)"
+      PROJECT_MODE:
+        description: "The project mode to validate (hub or project)"
         required: true
         type: string
 

@@ -4,12 +4,16 @@ using './main.bicep'
 param environmentName = readEnvironmentVariable('AZURE_ENV_NAME', 'azdtemp')
 param location = readEnvironmentVariable('AZURE_LOCATION', 'EastUS2')
 
+// AI Foundry project mode
+param aiFoundryProjectMode = readEnvironmentVariable('AZURE_AI_FOUNDRY_PROJECT_MODE', 'Hub')
+
 // User or service principal deploying the resources
 param principalId = readEnvironmentVariable('AZURE_PRINCIPAL_ID', '')
 param principalIdType = toLower(readEnvironmentVariable('AZURE_PRINCIPAL_ID_TYPE', 'user')) == 'serviceprincipal' ? 'ServicePrincipal' : 'User'
 
 // Networking parameters
 param azureNetworkIsolation = toLower(readEnvironmentVariable('AZURE_NETWORK_ISOLATION', 'true')) == 'true'
+param aiFoundryIpAllowList = empty(readEnvironmentVariable('AZURE_AI_FOUNDRY_IP_ALLOW_LIST', '')) ? [] : split(readEnvironmentVariable('AZURE_AI_FOUNDRY_IP_ALLOW_LIST',''), ',')
 
 // Supporting resources parameters
 param keyVaultEnablePurgeProtection = toLower(readEnvironmentVariable('AZURE_KEYVAULT_ENABLE_PURGE_PROTECTION', 'false')) == 'true'
@@ -24,7 +28,6 @@ param azureStorageAccountName = readEnvironmentVariable('AZURE_STORAGE_ACCOUNT_N
 // Azure AI Foundry resources parameters
 param aiFoundryHubFriendlyName = readEnvironmentVariable('AZURE_AI_FOUNDRY_HUB_FRIENDLY_NAME', '')
 param aiFoundryHubDescription = readEnvironmentVariable('AZURE_AI_FOUNDRY_HUB_DESCRIPTION', '')
-param aiFoundryHubIpAllowList = empty(readEnvironmentVariable('AZURE_AI_FOUNDRY_HUB_IP_ALLOW_LIST', '')) ? [] : split(readEnvironmentVariable('AZURE_AI_FOUNDRY_HUB_IP_ALLOW_LIST',''), ',')
 
 // AI Foundry project parameters
 param aiFoundryProjectDeploy = toLower(readEnvironmentVariable('AZURE_AI_FOUNDRY_PROJECT_DEPLOY', 'true')) == 'true'

@@ -3,14 +3,6 @@ name: End-to-End Test
 on:
   workflow_call:
     inputs:
-      AZURE_NETWORK_ISOLATION:
-        description: "Whether to deploy the application resources in a network isolated environment"
-        required: true
-        type: string
-      DEPLOY_SAMPLE_OPENAI_MODELS:
-        description: "Whether to deploy the sample OpenAI models"
-        required: true
-        type: string
       ENVIRONMENT:
         description: "The environment to use for E2E testing"
         required: true
@@ -27,6 +19,19 @@ on:
         description: "The name of the Azure environment"
         required: true
         type: string
+      AZURE_NETWORK_ISOLATION:
+        description: "Whether to deploy the application resources in a network isolated environment"
+        required: true
+        type: string
+      DEPLOY_SAMPLE_OPENAI_MODELS:
+        description: "Whether to deploy the sample OpenAI models"
+        required: true
+        type: string
+      AZURE_AI_FOUNDRY_PROJECT_MODE:
+        description: "The project mode to use for the Azure AI Foundry (Hub or Project)"
+        required: true
+        type: string
+
     secrets:
       AZURE_TENANT_ID:
         description: "The Azure tenant ID to use for authentication to Azure for deployment"
@@ -48,6 +53,7 @@ jobs:
       AZURE_ENV_NAME: ${{ inputs.AZURE_ENV_NAME }}
       AZURE_NETWORK_ISOLATION: ${{ inputs.AZURE_NETWORK_ISOLATION }}
       DEPLOY_SAMPLE_OPENAI_MODELS: ${{ inputs.DEPLOY_SAMPLE_OPENAI_MODELS }}
+      AZURE_AI_FOUNDRY_PROJECT_MODE: ${{ inputs.AZURE_AI_FOUNDRY_PROJECT_MODE }}
     secrets:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}

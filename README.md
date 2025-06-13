@@ -37,6 +37,7 @@ Before you begin, ensure you have the following prerequisites in place:
 
 There are several features of the solution accelerator that are worth highlighting:
 
+- **Two project modes**: Support for both traditional Hub-based and streamlined AI Services-based deployments. See [Project Modes](docs/DEPLOYMENT_MODES.md) for details.
 - **Zero-trust**: Support for deploying a zero-trust environment (network isolation).
 - **Managed identities**: Use of managed identities for Azure resources to authenticate to each other. API keys are not used and can optionally be disabled.
 - **Azure Verified Modules**: Use of Bicep[Azure verified modules](https://aka.ms/avm) to deploy the resources where possible.
@@ -183,14 +184,9 @@ A complete list of environment variables can be found in the [Configuration Opti
 
 ## Foundry Project Types
 
-Azure AI Foundry supports [two types of projects](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry#project-types), Foundry Projects and Hub-based Projects. Currently this solution accelerator supports Hub-based projects only, but some work has been done to support Foundry Projects.
+Azure AI Foundry supports [two types of projects](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry#project-types), Foundry Projects and Hub-based Projects. This solution accelerator supports both types of projects, but the recommended project type is the Hub-based project. The [main.bicep](infra/main.bicep) file will deploy either type of project based on the `aiFoundryProjectMode` parameter value. 
 
-| Project Type         | Bicep Path             |                  |
-| -------------------- | ---------------------- | ---------------- |
-| Hub-based project    | [infra/v1/](infra/v1/) | Recommended      |
-| Foundry Project      | [infra/v2/](infra/v2/) | Work-in-progress |
-
-Foundry Projects are a new type of structure for Azure AI Foundry resourcs that simplify the resource requirements making it simpler to deploy an Azure AI Foundry environment. However, due to the newness of this project type, it is not yet fully supported by the Azure AI Foundry Jumpstart Solution Accelerator and Azure Verified Modules. For more information on Foundry Projects, see the [Foundry Project Types](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry#project-types) document.
+Foundry Projects are a new type of structure for Azure AI Foundry resources that simplify the resource requirements making it simpler to deploy an Azure AI Foundry environment. However, due to the newness of this project type, it is not yet fully supported by the Azure AI Foundry Jumpstart Solution Accelerator and Azure Verified Modules. For more information on Foundry Projects, see the [Foundry Project Types](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry#project-types) document.
 
 ## Architecture
 
