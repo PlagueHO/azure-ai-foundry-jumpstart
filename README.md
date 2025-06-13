@@ -40,7 +40,7 @@ There are several features of the solution accelerator that are worth highlighti
 - **Two project modes**: Support for both traditional Hub-based and streamlined AI Services-based deployments. See [Project Modes](docs/DEPLOYMENT_MODES.md) for details.
 - **Zero-trust**: Support for deploying a zero-trust environment (network isolation).
 - **Managed identities**: Use of managed identities for Azure resources to authenticate to each other. API keys are not used and can optionally be disabled.
-- **Azure Verified Modules**: Use of Bicep[Azure verified modules](https://aka.ms/avm) to deploy the resources where possible.
+- **Azure Verified Modules**: Use of Bicep [Azure verified modules](https://aka.ms/avm) to deploy the resources where possible.
 - **Hub deployment and supporting resources**: Deployment of an Azure AI Hub and required supporting resources.
 - **Project deployment**: Optional deployment of an [Azure AI Foundry project during](https://learn.microsoft.com/azure/ai-foundry/concepts/ai-resources#organize-work-in-projects-for-customization) in the hub.
 - **Diagnostic settings**: Diagnostic settings are configured for all resources to send logs to a Log Analytics workspace.
@@ -128,10 +128,10 @@ azd env set DEPLOY_SAMPLE_OPENAI_MODELS true
 azd env set DEPLOY_SAMPLE_DATA true
 azd env set AZURE_CONTAINER_REGISTRY_DEPLOY false
 azd env set AZURE_AI_SEARCH_DEPLOY false
-azd env set AZURE_AI_FOUNDRY_PROJECT true
-azd env set AZURE_AI_FOUNDRY_HUB_DESCRIPTION "Sandbox hub for PoC work"
-azd env set AZURE_AI_FOUNDRY_HUB_FRIENDLY_NAME "My AI Hub"
-azd env set AZURE_AI_FOUNDRY_PROJECT_DEPLOY true
+azd env set AZURE_AI_FOUNDRY_PROJECT_MODE Hub # or Project
+azd env set AZURE_AI_FOUNDRY_HUB_DESCRIPTION "Sandbox hub for PoC work" # Only when AZURE_AI_FOUNDRY_PROJECT_MODE is set to Hub
+azd env set AZURE_AI_FOUNDRY_HUB_FRIENDLY_NAME "My AI Hub" # Only when AZURE_AI_FOUNDRY_PROJECT_MODE is set to Hub
+azd env set AZURE_AI_FOUNDRY_PROJECT_DEPLOY true # Deploy projects (sample or single)
 azd env set AZURE_AI_FOUNDRY_PROJECT_NAME "my-ai-project"
 azd env set AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION "This is my first AI project."
 azd env set AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME "My AI Project"
