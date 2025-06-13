@@ -24,6 +24,15 @@ It automates the deployment of the services using the same approach as the instr
 > Zero-trust with network isolation is the default configuration for this solution accelerator. But you can choose to deploy the resources without a virtual network and public endpoints if you prefer. See the [Configuration Options](#configuration-options) section for more details.
 > When deployed with zero-trust, the Azure AI Foundry hub and project are not accessible from the public internet. You will need to use a VPN or Azure Bastion to access the Azure AI Foundry environment.
 
+## Project Modes
+
+This solution accelerator supports two different project modes for Azure AI Foundry:
+
+- **Foundry project mode**: This is a newer project mode that uses Azure AI Services resources to manage projects. It is the recommended approach for new projects as it simplifies the resource requirements.
+- **Hub-based project mode**: This is the traditional project mode that uses an Azure AI Hub and projects.
+
+For more information on the project modes, see the [The AI Foundry document](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry#which-type-of-project-do-i-need).
+
 ## Requirements
 
 Before you begin, ensure you have the following prerequisites in place:
@@ -37,16 +46,16 @@ Before you begin, ensure you have the following prerequisites in place:
 
 There are several features of the solution accelerator that are worth highlighting:
 
-- **Two project modes**: Support for both traditional Hub-based and streamlined AI Services-based deployments. See [Project Modes](docs/DEPLOYMENT_MODES.md) for details.
+- **Project modes**: Support for both traditional Hub-based and streamlined Foundry project deployments. See [Project Modes](docs/DEPLOYMENT_MODES.md) for details.
 - **Zero-trust**: Support for deploying a zero-trust environment (network isolation).
 - **Managed identities**: Use of managed identities for Azure resources to authenticate to each other. API keys are not used and can optionally be disabled.
 - **Azure Verified Modules**: Use of Bicep [Azure verified modules](https://aka.ms/avm) to deploy the resources where possible.
-- **Hub deployment and supporting resources**: Deployment of an Azure AI Hub and required supporting resources.
-- **Project deployment**: Optional deployment of an [Azure AI Foundry project during](https://learn.microsoft.com/azure/ai-foundry/concepts/ai-resources#organize-work-in-projects-for-customization) in the hub.
+- **Hub deployment and supporting resources**: Deployment of an Azure AI Hub and required supporting resources when using the Hub-based project mode.
+- **Project deployment**: Optional deployment of [Azure AI Foundry projects during](https://learn.microsoft.com/azure/ai-foundry/concepts/ai-resources#organize-work-in-projects-for-customization) using the selected project mode.
 - **Diagnostic settings**: Diagnostic settings are configured for all resources to send logs to a Log Analytics workspace.
-- **Model deployment**: Deploy a selection of current AI models, speeding up getting started.
-- **Sample data deployment**: Optionally upload sample data to the storage accounts help you get started with Azure AI Foundry.
-- **Sample data creation**: Scripts to create custom sample data for using with Azure AI Foundry.
+- **Model deployment**: Optionally deploy a selection of current AI models, speeding up getting started.
+- **Sample data deployment**: Optionally upload sample data to an additional sample data storage account help you get started with Azure AI Foundry.
+- **Sample data creation**: Data generation tool to create custom synthetic data for using with Azure AI Foundry.
 
 ## Deploying
 
@@ -128,7 +137,7 @@ azd env set DEPLOY_SAMPLE_OPENAI_MODELS true
 azd env set DEPLOY_SAMPLE_DATA true
 azd env set AZURE_CONTAINER_REGISTRY_DEPLOY false
 azd env set AZURE_AI_SEARCH_DEPLOY false
-azd env set AZURE_AI_FOUNDRY_PROJECT_MODE Hub # or Project
+azd env set AZURE_AI_FOUNDRY_PROJECT_MODE Hub # or Foundry
 azd env set AZURE_AI_FOUNDRY_HUB_DESCRIPTION "Sandbox hub for PoC work" # Only when AZURE_AI_FOUNDRY_PROJECT_MODE is set to Hub
 azd env set AZURE_AI_FOUNDRY_HUB_FRIENDLY_NAME "My AI Hub" # Only when AZURE_AI_FOUNDRY_PROJECT_MODE is set to Hub
 azd env set AZURE_AI_FOUNDRY_PROJECT_DEPLOY true # Deploy projects (sample or single)
@@ -182,25 +191,41 @@ azd env set AZURE_NETWORK_ISOLATION false
 
 A complete list of environment variables can be found in the [Configuration Options](docs/CONFIGURATION_OPTIONS.md) document.
 
-## Foundry Project Types
+## Foundry Project Modes
 
-Azure AI Foundry supports [two types of projects](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry#project-types), Foundry Projects and Hub-based Projects. This solution accelerator supports both types of projects, but the recommended project type is the Hub-based project. The [main.bicep](infra/main.bicep) file will deploy either type of project based on the `aiFoundryProjectMode` parameter value. 
-
-Foundry Projects are a new type of structure for Azure AI Foundry resources that simplify the resource requirements making it simpler to deploy an Azure AI Foundry environment. However, due to the newness of this project type, it is not yet fully supported by the Azure AI Foundry Jumpstart Solution Accelerator and Azure Verified Modules. For more information on Foundry Projects, see the [Foundry Project Types](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry#project-types) document.
+This solution accelerator supports both types of Foundry Project modes, but the recommended project mode is the Foundry Project. The [main.bicep](infra/main.bicep) file will deploy either type of project based on the `aiFoundryProjectMode` parameter value (`Foundry` or `Hub`). The default value is `Foundry`.
 
 ## Architecture
 
 The following diagrams illustrate the architecture of the solution accelerator. For a detailed overview of the architecture of the solution accelerator, see the [Architecture](docs/design/ARCHITECTURE.md) document.
 
-### Zero-trust with network isolation
+### Foundry Project Mode
 
-The following diagram illustrates the architecture of the solution accelerator with network isolation.
+#### Zero-trust with network isolation - Foundry Project Mode
+
+The following diagram illustrates the architecture of the solution accelerator with network isolation when deploying a newer Foundry-based project.
+
+> [!IMPORTANT]
+> Diagram TBC
+
+#### Without network isolation - Foundry Project Mode
+
+The following diagram illustrates the architecture of the solution accelerator without network isolation when deploying a newer Project-based project.
+
+> [!IMPORTANT]
+> Diagram TBC
+
+### Hub-based Project Mode
+
+#### Zero-trust with network isolation - Hub-based Project Mode
+
+The following diagram illustrates the architecture of the solution accelerator with network isolation when deploying a Hub-based project.
 
 [![Azure AI Foundry Jumpstart Solution Accelerator with Network Isolation](docs/images/azure-ai-foundry-jumpstart-zero-trust.svg)](docs/images/azure-ai-foundry-jumpstart-zero-trust.svg)
 
-### Without network isolation
+#### Without network isolation - Hub-based Project Mode
 
-The following diagram illustrates the architecture of the solution accelerator without network isolation.
+The following diagram illustrates the architecture of the solution accelerator without network isolation when deploying a Hub-based project.
 
 [![Azure AI Foundry Jumpstart Solution Accelerator without network isolation](docs/images/azure-ai-foundry-jumpstart-public.svg)](docs/images/azure-ai-foundry-jumpstart-public.svg)
 

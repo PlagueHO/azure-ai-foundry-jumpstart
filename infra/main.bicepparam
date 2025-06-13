@@ -5,7 +5,7 @@ param environmentName = readEnvironmentVariable('AZURE_ENV_NAME', 'azdtemp')
 param location = readEnvironmentVariable('AZURE_LOCATION', 'EastUS2')
 
 // AI Foundry project mode
-param aiFoundryProjectMode = readEnvironmentVariable('AZURE_AI_FOUNDRY_PROJECT_MODE', 'Hub')
+param aiFoundryProjectMode = readEnvironmentVariable('AZURE_AI_FOUNDRY_PROJECT_MODE', 'Foundry')
 
 // User or service principal deploying the resources
 param principalId = readEnvironmentVariable('AZURE_PRINCIPAL_ID', '')

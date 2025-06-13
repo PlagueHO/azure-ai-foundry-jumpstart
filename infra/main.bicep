@@ -23,12 +23,12 @@ param location string
 })
 param resourceGroupName string = 'rg-${environmentName}'
 
-@sys.description('AI Foundry project mode. Hub uses ML workspace hub with projects, Project uses CognitiveServices account with projects. Defaults to Hub for backward compatibility.')
+@sys.description('AI Foundry project mode. Hub uses MachineLearning workspace hub with projects, Foundry uses CognitiveServices account with projects. Defaults to Hub for backward compatibility.')
 @allowed([
-  'Hub'
+  'Foundry'
   'Project'
 ])
-param aiFoundryProjectMode string = 'Hub'
+param aiFoundryProjectMode string = 'Foundry'
 
 @sys.description('Enable purge protection on the Key Vault. When set to true the vault cannot be permanently deleted until purge protection is disabled. Defaults to false. Only applies when aiFoundryProjectMode is Hub.')
 param keyVaultEnablePurgeProtection bool = false
@@ -137,7 +137,7 @@ var aiServicesName = '${abbrs.aiServicesAccounts}${environmentName}'
 var aiServicesCustomSubDomainName = toLower(replace(environmentName, '-', ''))
 // Ensure the AI Foundry Hub name is ≤ 32 characters as required by Azure.
 var aiFoundryHubName = take('${abbrs.aiFoundryHubs}${environmentName}',32)
-// AI Foundry account name for Project mode
+// AI Foundry account name for Foundry mode
 var aiFoundryAccountName = '${abbrs.aiFoundryAccounts}${environmentName}'
 var aiFoundryAccountCustomSubDomainName = toLower(replace(environmentName, '-', ''))
 var bastionHostName = '${abbrs.networkBastionHosts}${environmentName}'
@@ -145,7 +145,7 @@ var networkDefaultAction = azureNetworkIsolation ? 'Deny' : 'Allow'
 
 // Deployment mode flags
 var isHubMode = aiFoundryProjectMode == 'Hub'
-var isProjectMode = aiFoundryProjectMode == 'Project'
+var isFoundryMode = aiFoundryProjectMode == 'Foundry'
 
 
 // Assemble list of sample data containers
@@ -668,7 +668,7 @@ module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.11.0' =
     kind: 'AIServices'
     name: aiServicesName
     location: location
-    allowProjectManagement: isProjectMode
+    allowProjectManagement: isFoundryMode
     customSubDomainName: aiServicesCustomSubDomainName
     disableLocalAuth: disableApiKeys
     diagnosticSettings: [
@@ -965,8 +965,8 @@ module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
   }
 ]
 
-// ============================================= PROJECT MODE ONLY ==============================================
-module aiFoundryAccount './cognitive-services/accounts/main.bicep' = if (isProjectMode) {
+// ============================================= FOUNDRY MODE ONLY ==============================================
+module aiFoundryAccount './cognitive-services/accounts/main.bicep' = if (isFoundryMode) {
   name: 'ai-foundry-account-deployment'
   scope: rg
   params: {
@@ -1012,7 +1012,7 @@ module aiFoundryAccount './cognitive-services/accounts/main.bicep' = if (isProje
         isSharedToAll: true
       }
     ] : []
-    projects: isProjectMode ? (aiFoundryProjectsFromJson ? projectsFromJson : [
+    projects: isFoundryMode ? (aiFoundryProjectsFromJson ? projectsFromJson : [
       {
         name: replace(aiFoundryProjectName,' ','-')
         location: location
@@ -1101,9 +1101,9 @@ output AZURE_AI_FOUNDRY_HUB_RESOURCE_ID string = isHubMode ? aiFoundryHub.output
 output AZURE_AI_FOUNDRY_HUB_PRIVATE_ENDPOINTS array = (isHubMode && azureNetworkIsolation) ? aiFoundryHub.outputs.privateEndpoints : []
 
 // Output the AI Foundry account (v2 mode)
-output AZURE_AI_FOUNDRY_ACCOUNT_NAME string = isProjectMode ? aiFoundryAccount.outputs.name : ''
-output AZURE_AI_FOUNDRY_ACCOUNT_RESOURCE_ID string = isProjectMode ? aiFoundryAccount.outputs.resourceId : ''
-output AZURE_AI_FOUNDRY_ACCOUNT_ENDPOINT string = isProjectMode ? aiFoundryAccount.outputs.endpoint : ''
+output AZURE_AI_FOUNDRY_ACCOUNT_NAME string = isFoundryMode ? aiFoundryAccount.outputs.name : ''
+output AZURE_AI_FOUNDRY_ACCOUNT_RESOURCE_ID string = isFoundryMode ? aiFoundryAccount.outputs.resourceId : ''
+output AZURE_AI_FOUNDRY_ACCOUNT_ENDPOINT string = isFoundryMode ? aiFoundryAccount.outputs.endpoint : ''
 
 // Output the AI Foundry project
 output AZURE_AI_FOUNDRY_PROJECT_DEPLOY bool = aiFoundryProjectDeploy
