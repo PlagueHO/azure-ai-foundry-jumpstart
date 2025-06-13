@@ -5,6 +5,7 @@ This module deploys a Cognitive Service account.
 This is a temporary module for deploying Azure AI Foundry Cognitive Services accounts.
 It is intended to be replaced by the Azure Verified Module (AVM) for Microsoft.CognitiveServices accounts
 once it supports AI Foundry V2 (projects, connections etc)
+https://github.com/Azure/bicep-registry-modules/issues/5390
 '''
 
 @description('Required. The name of Cognitive Services account.')

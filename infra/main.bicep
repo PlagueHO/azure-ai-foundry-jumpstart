@@ -137,7 +137,7 @@ var aiServicesName = '${abbrs.aiServicesAccounts}${environmentName}'
 var aiServicesCustomSubDomainName = toLower(replace(environmentName, '-', ''))
 // Ensure the AI Foundry Hub name is ≤ 32 characters as required by Azure.
 var aiFoundryHubName = take('${abbrs.aiFoundryHubs}${environmentName}',32)
-// AI Foundry account name for v2 mode
+// AI Foundry account name for Project mode
 var aiFoundryAccountName = '${abbrs.aiFoundryAccounts}${environmentName}'
 var aiFoundryAccountCustomSubDomainName = toLower(replace(environmentName, '-', ''))
 var bastionHostName = '${abbrs.networkBastionHosts}${environmentName}'
@@ -147,8 +147,49 @@ var networkDefaultAction = azureNetworkIsolation ? 'Deny' : 'Allow'
 var isHubMode = aiFoundryProjectMode == 'Hub'
 var isProjectMode = aiFoundryProjectMode == 'Project'
 
-// List of sample data containers
+
+// Assemble list of sample data containers
 var sampleDataContainersArray = loadJsonContent('./sample-data-containers.json')
+var sampleDataContainers = [for name in sampleDataContainersArray: {
+  name: name
+  publicAccess: 'None'
+}]
+
+// Assemble the list of AI Foundry projects to deploy.
+var projectsFromJson = loadJsonContent('./sample-ai-foundry-projects.json')
+
+var aiFoundryProjectsFromJsonArray = [for project in projectsFromJson: {
+  name: replace(project.Name,' ','-')
+  friendlyName: project.FriendlyName
+  description: project.Description
+  roleAssignments: [
+    {
+      roleDefinitionIdOrName: 'AzureML Data Scientist'
+      principalType: principalIdType
+      principalId: principalId
+    }
+  ]
+}]
+
+var aiFoundryProjectsSingleArray = [
+  {
+    name: replace(aiFoundryProjectName,' ','-')
+    friendlyName: aiFoundryProjectFriendlyName
+    description: aiFoundryProjectDescription
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'AzureML Data Scientist'
+        principalType: principalIdType
+        principalId: principalId
+      }
+    ]
+  }
+]
+
+var effectiveAiFoundryProjects = (aiFoundryProjectDeploy && isHubMode) 
+  ? (aiFoundryProjectsFromJson ? aiFoundryProjectsFromJsonArray : aiFoundryProjectsSingleArray)
+  : []
+
 
 // ---------- RESOURCE GROUP (BOTH HUB AND PROJECT MODE) ----------
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -363,12 +404,6 @@ var storageAccountRoleAssignments = [
   ] : [])
 ]
 
-// Sample data containers for the storage account
-var sampleDataContainers = [for name in sampleDataContainersArray: {
-  name: name
-  publicAccess: 'None'
-}]
-
 module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = if (isHubMode) {
   name: 'storageAccount'
   scope: rg
@@ -419,6 +454,49 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = if (i
     allowSharedKeyAccess: true
   }
 }
+
+// ---------- CONTAINER REGISTRY (HUB MODE ONLY) ----------
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = if (isHubMode && containerRegistryDeploy && empty(containerRegistryResourceId)) {
+  name: 'container-registry-deployment'
+  scope: rg
+  params: {
+    name: containerRegistryName
+    location: location
+    acrSku: 'Premium'
+    acrAdminUserEnabled: false
+    publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
+    exportPolicyStatus: azureNetworkIsolation ? 'disabled' : 'enabled'
+    diagnosticSettings: [
+      {
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: sendTologAnalyticsCustomSettingName
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+      }
+    ]
+    privateEndpoints: azureNetworkIsolation ? [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: containerRegistryPrivateDnsZone.outputs.resourceId
+            }
+          ]
+        }
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2] // SharedServices
+        tags: tags
+      }
+    ] : []
+  }
+}
+
+// Effective ACR resource-id used by the hub ('' when not deploying / skipped)
+var effectiveContainerRegistryResourceId = containerRegistryDeploy
+  ? (empty(containerRegistryResourceId) ? containerRegistry.outputs.resourceId : containerRegistryResourceId)
+  : ''
 
 // ---------- SAMPLE DATA STORAGE ACCOUNT (BOTH HUB AND PROJECT MODE - OPTIONAL) ----------
 module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.19.0' = if (deploySampleData) {
@@ -477,49 +555,6 @@ module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.19.
     tags: tags
   }
 }
-
-// ---------- CONTAINER REGISTRY (HUB MODE ONLY) ----------
-module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = if (isHubMode && containerRegistryDeploy && empty(containerRegistryResourceId)) {
-  name: 'container-registry-deployment'
-  scope: rg
-  params: {
-    name: containerRegistryName
-    location: location
-    acrSku: 'Premium'
-    acrAdminUserEnabled: false
-    publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
-    exportPolicyStatus: azureNetworkIsolation ? 'disabled' : 'enabled'
-    diagnosticSettings: [
-      {
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: sendTologAnalyticsCustomSettingName
-        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-      }
-    ]
-    privateEndpoints: azureNetworkIsolation ? [
-      {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: containerRegistryPrivateDnsZone.outputs.resourceId
-            }
-          ]
-        }
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2] // SharedServices
-        tags: tags
-      }
-    ] : []
-  }
-}
-
-// Effective ACR resource-id used by the hub ('' when not deploying / skipped)
-var effectiveContainerRegistryResourceId = containerRegistryDeploy
-  ? (empty(containerRegistryResourceId) ? containerRegistry.outputs.resourceId : containerRegistryResourceId)
-  : ''
 
 // ---------- AI SEARCH (BOTH HUB AND PROJECT MODE - OPTIONAL) ----------
 module aiSearchService 'br/public:avm/res/search/search-service:0.10.0' = if (azureAiSearchDeploy) {
@@ -626,7 +661,7 @@ module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = if (azure
 // ============================================= HUB MODE ONLY ==============================================
 var openAiSampleModels = loadJsonContent('./sample-openai-models.json')
 
-module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.11.0' = {
+module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.11.0' = if (isHubMode) {
   name: 'ai-services-account-deployment'
   scope: rg
   params: {
@@ -701,7 +736,7 @@ var aiServicesRoleAssignmentsArray = [
   ] : [])
 ]
 
-module aiServicesRoleAssignments './core/security/role_aiservice.bicep' = {
+module aiServicesRoleAssignments './core/security/role_aiservice.bicep' = if (isHubMode) {
   name: 'ai-services-role-assignments'
   scope: rg
   dependsOn: [
@@ -825,40 +860,6 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
 }
 
 // ---------- AI FOUNDRY PROJECTS (HUB MODE) ----------
-var projectsFromJson = loadJsonContent('./sample-ai-foundry-projects.json')
-
-var aiFoundryProjectsFromJsonArray = [for project in projectsFromJson: {
-  name: replace(project.Name,' ','-')
-  friendlyName: project.FriendlyName
-  description: project.Description
-  roleAssignments: [
-    {
-      roleDefinitionIdOrName: 'AzureML Data Scientist'
-      principalType: principalIdType
-      principalId: principalId
-    }
-  ]
-}]
-
-var aiFoundryProjectsSingleArray = [
-  {
-    name: replace(aiFoundryProjectName,' ','-')
-    friendlyName: aiFoundryProjectFriendlyName
-    description: aiFoundryProjectDescription
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'AzureML Data Scientist'
-        principalType: principalIdType
-        principalId: principalId
-      }
-    ]
-  }
-]
-
-var effectiveAiFoundryProjects = (aiFoundryProjectDeploy && isHubMode) 
-  ? (aiFoundryProjectsFromJson ? aiFoundryProjectsFromJsonArray : aiFoundryProjectsSingleArray)
-  : []
-
 module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = [for project in effectiveAiFoundryProjects: if (isHubMode) {
   name: take('aifp-${project.name}',64)
   scope: rg
@@ -917,7 +918,7 @@ module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aiservic
 // to the AI Search Account. This ensures Agents created within a project can access indexes in
 // the AI Search account.
 module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.bicep' = [
-  for (project,index) in effectiveAiFoundryProjects : if (azureAiSearchDeploy && isHubMode) {
+  for (project,index) in effectiveAiFoundryProjects : if (isHubMode && azureAiSearchDeploy) {
     name: take('aifp-aisch-ra-${project.name}',64)
     scope: rg
     dependsOn: [
@@ -948,7 +949,7 @@ var sampleDataContainerCount = length(sampleDataContainersArray)
 
 // One module instance per <project, container> when deploySampleData == true
 module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
-  for idx in range(0, (projectCount * sampleDataContainerCount)) : if (deploySampleData && aiFoundryProjectDeploy && isHubMode) {
+  for idx in range(0, (projectCount * sampleDataContainerCount)) : if (isHubMode && deploySampleData && aiFoundryProjectDeploy) {
     // Make the module deployment name unique
     name: replace(toLower(take('datastore_${effectiveAiFoundryProjects[idx / sampleDataContainerCount].name}_${sampleDataContainersArray[idx % sampleDataContainerCount]}',64)),'-','_')
     scope: rg
@@ -963,7 +964,6 @@ module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
     }
   }
 ]
-
 
 // ============================================= PROJECT MODE ONLY ==============================================
 module aiFoundryAccount './cognitive-services/accounts/main.bicep' = if (isProjectMode) {
