@@ -143,7 +143,7 @@ python home_loan_agent.py --interactive
 
 ## 📋 What the Sample Does
 
-The `home_loan_agent.py` script demonstrates a complete agent lifecycle with the following process:
+The `home_loan_agent.py` script demonstrates a complete agent lifecycle with modular resource management and the following process:
 
 ### 1. **Connection & Authentication**
 
@@ -172,20 +172,25 @@ The `home_loan_agent.py` script demonstrates a complete agent lifecycle with the
 - **File Search Tool**: Configured with the vector store for document retrieval
 - **Code Interpreter Tool**: Set up with the loan dataset for calculations and analysis
 
-### 5. **Conversation Execution**
+### 5. **Thread Management**
 
-- Creates a conversation thread
+- **Single Question Mode**: Creates a dedicated thread for each question session
+- **Interactive Mode**: Creates a persistent thread that maintains conversation context
+- Dedicated `create_thread()` and `delete_thread()` functions for proper lifecycle management
+
+### 6. **Conversation Execution**
+
 - Accepts questions via command-line parameters or interactive input
 - Default question: "What documents do I need for a Contoso Bank loan?"
 - Processes the agent's response using both tools
-- Displays the complete conversation history
+- Displays the complete conversation history with proper message ordering
 
-### 6. **Resource Cleanup**
+### 7. **Resource Cleanup**
 
-- Deletes the vector store
-- Removes uploaded files
-- Deletes the created agent
-- Ensures no resources are left behind
+- **Thread Cleanup**: Properly deletes conversation threads when sessions end
+- **Agent Cleanup**: Removes the agent and associated resources
+- **File Cleanup**: Deletes uploaded files and vector stores
+- Ensures no resources are left behind with proper error handling
 
 ### 📊 Sample Output
 
@@ -194,9 +199,41 @@ When you run the script, you'll see:
 - Connection status and agent creation confirmations
 - File upload progress with generated IDs
 - Vector store creation details
+- **Thread creation and management**: Clear indication of thread lifecycle
 - The question being asked (custom or default)
 - The complete conversation between user and agent
-- Step-by-step resource cleanup
+- Step-by-step resource cleanup including thread deletion
+
+### 💡 Architecture Highlights
+
+The script follows a clean separation of concerns:
+
+- **Agent Management**: `create_agent()` and `cleanup_agent()` handle agent lifecycle
+- **Thread Management**: `create_thread()` and `delete_thread()` manage conversation contexts
+- **Question Processing**: `ask_question()` handles individual interactions
+- **Session Management**: `process_question()` and `interactive_mode()` orchestrate complete workflows
+
+### 🔄 Architecture Overview
+
+#### Modular Resource Management
+
+```text
+1. Create agent + resources
+2. Create dedicated thread
+3. Process question
+4. Delete thread
+5. Cleanup agent + resources
+```
+
+#### Interactive Session Architecture
+
+```text
+1. Create agent + resources
+2. Create persistent thread
+3. Process multiple questions (same thread)
+4. Delete thread on exit
+5. Cleanup agent + resources
+```
 
 ### 💬 Usage Examples
 
@@ -210,10 +247,12 @@ python home_loan_agent.py
 python home_loan_agent.py -q "What are the interest rates for FHA loans?"
 
 # Ask about calculations
-python home_loan_agent.py --question "Calculate monthly payment for $350,000 loan at 6.2% for 30 years"
+python home_loan_agent.py --question "Calculate monthly payment for $350,000 loan at 6.2% for 10, 20 and 30 years."
 ```
 
-#### Interactive Session
+Each single question creates its own isolated session with dedicated thread management.
+
+#### Interactive Session Mode
 
 ```bash
 python home_loan_agent.py --interactive
@@ -221,9 +260,24 @@ python home_loan_agent.py --interactive
 
 In interactive mode, you can:
 
-- Ask multiple questions in sequence
+- Ask multiple questions in sequence within the **same conversation thread**
+- The agent maintains conversation context between questions
+- Reference previous questions and build upon earlier responses
 - Type 'quit', 'exit', or 'q' to stop
-- Each question creates a fresh agent session with full context
+- The agent and conversation thread persist throughout the entire session
+
+**Example Interactive Session:**
+
+```text
+Your question: What documents do I need for a conventional loan?
+[Agent provides document checklist...]
+
+Your question: Can you calculate payments for a $400,000 loan with those requirements?
+[Agent references previous context and performs calculations...]
+
+Your question: What if I put down 25% instead of 20%?
+[Agent builds on previous calculation context...]
+```
 
 ### 📁 Required Files
 
@@ -235,3 +289,81 @@ Ensure these files exist in the same directory:
 ---
 
 ## 🔧 Customization & Extension Ideas
+
+### 🏗️ Modular Architecture Benefits
+
+The refactored code structure provides several advantages for customization:
+
+- **Thread Management**: Separate `create_thread()` and `delete_thread()` functions make it easy to implement custom session handling
+- **Resource Isolation**: Clean separation between agent lifecycle and thread lifecycle enables better resource management
+- **Session Flexibility**: Easy to extend for different conversation patterns (e.g., multi-user sessions, conversation branching)
+- **Error Handling**: Modular cleanup ensures proper resource disposal even when errors occur
+- **Testing**: Individual components can be tested independently
+
+### 🚀 Financial Planner Agent Extension
+
+Transform the Home Loan Agent into a specialized tool within a comprehensive Financial Planner agent architecture:
+
+#### 💰 Financial Planner Agent Configuration
+
+**Agent Name**: `financial_planner`
+
+**Instructions**:
+
+```text
+You are a financial planner that helps people perform financial planning and save for things. You are financially responsible and give responsible financial advice. You are for demonstration purposes only.
+```
+
+**Available Tools**:
+
+- **Home Loan Agent Tool**
+  - **Name**: `home_loan_agent`
+  - **Activation Criteria**: "Activate when information about home loans and home loan requirements or application requirements are needed"
+  - **Detailed Steps to Activate the Agent**:
+    1. User asks questions related to mortgage loans, home buying, or loan documentation
+    2. User requests calculations for mortgage payments, interest rates, or loan comparisons
+    3. User needs guidance on loan application processes or eligibility requirements
+    4. User inquires about specific loan products or documentation checklists
+
+#### 🏗️ Implementation Architecture
+
+```text
+Financial Planner Agent (Main)
+├── General financial planning and advice
+├── Savings strategies and budgeting
+├── Investment guidance
+└── Home Loan Agent Tool (Specialized)
+    ├── Mortgage calculations
+    ├── Loan documentation guidance
+    ├── Application requirements
+    └── Loan product comparisons
+```
+
+#### 💡 Usage Examples
+
+##### Scenario 1: Home Purchase Planning
+
+- **User**: "I want to buy a house in 2 years. How should I prepare financially?"
+- **Financial Planner**: Provides savings strategy, credit improvement tips
+- **Activates Home Loan Agent**: When user asks "What documents will I need for the mortgage application?"
+
+##### Scenario 2: Comprehensive Financial Review
+
+- **User**: "I'm 30 years old, make $80k, and want to plan for homeownership and retirement"
+- **Financial Planner**: Creates holistic financial plan
+- **Activates Home Loan Agent**: When discussing mortgage affordability and loan options
+
+##### Scenario 3: Refinancing Decision
+
+- **User**: "Should I refinance my mortgage given current rates?"
+- **Financial Planner**: Analyzes overall financial impact
+- **Activates Home Loan Agent**: For detailed refinancing calculations and documentation requirements
+
+#### 🔧 Technical Implementation
+
+The modular architecture of the Home Loan Agent makes it ideal for integration as a specialized tool:
+
+- **Clean Resource Management**: Each tool activation creates isolated agent and thread resources
+- **Context Preservation**: Financial Planner maintains overall conversation context while delegating specialized tasks
+- **Error Isolation**: Home Loan Agent tool failures don't affect the main Financial Planner session
+- **Scalable Design**: Additional specialized agents (investment advisor, tax planner) can be added following the same pattern

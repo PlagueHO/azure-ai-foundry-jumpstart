@@ -62,49 +62,43 @@ def initialize_client():
 
     return project_client
 
-# Function to process a single question
-def process_question(project_client, question):
+# Function to create and setup the agent with files
+def create_agent(project_client):
     # Get the model deployment name from environment
     model_deployment_name = os.environ.get("MODEL_DEPLOYMENT_NAME", "gpt-4o-mini")
 
-    with project_client:
-        # Get absolute paths for the files
-        current_dir = Path(__file__).parent
-        checklist_file_path = current_dir / 'Contoso_Loan_Documentation_Checklist.md'
-        dataset_file_path = current_dir / 'loan_product_eligibility_dataset.csv'
+    # Get absolute paths for the files
+    current_dir = Path(__file__).parent
+    checklist_file_path = current_dir / 'Contoso_Loan_Documentation_Checklist.md'
+    dataset_file_path = current_dir / 'loan_product_eligibility_dataset.csv'
 
-        print(f"Uploading checklist file from: {checklist_file_path}")
-        print(f"File exists: {checklist_file_path.exists()}")
+    print(f"Uploading checklist file from: {checklist_file_path}")
+    print(f"File exists: {checklist_file_path.exists()}")
 
-        # Upload the loan checklist file
-        checklist_file = project_client.agents.files.upload_and_poll(file_path=str(checklist_file_path), purpose=FilePurpose.AGENTS)
-        print(f"Uploaded file, file ID: {checklist_file.id}")
+    # Upload the loan checklist file
+    checklist_file = project_client.agents.files.upload_and_poll(file_path=str(checklist_file_path), purpose=FilePurpose.AGENTS)
+    print(f"Uploaded file, file ID: {checklist_file.id}")
 
-        # Upload a file for use with Code Interpreter
-        code_interpreter_file = project_client.agents.files.upload_and_poll(
-            file_path=str(dataset_file_path), purpose=FilePurpose.AGENTS
-        )
-        print(f"Uploaded file, file ID: {code_interpreter_file.id}")
+    # Upload a file for use with Code Interpreter
+    code_interpreter_file = project_client.agents.files.upload_and_poll(
+        file_path=str(dataset_file_path), purpose=FilePurpose.AGENTS
+    )
+    print(f"Uploaded file, file ID: {code_interpreter_file.id}")
 
-        # create a vector store with the file you uploaded
-        vector_store = project_client.agents.vector_stores.create_and_poll(file_ids=[checklist_file.id], name="my_vectorstore")
-        print(f"Created vector store, vector store ID: {vector_store.id}")
+    # create a vector store with the file you uploaded
+    vector_store = project_client.agents.vector_stores.create_and_poll(file_ids=[checklist_file.id], name="my_vectorstore")
+    print(f"Created vector store, vector store ID: {vector_store.id}")
 
-        # create a file search tool
-        file_search_tool = FileSearchTool(vector_store_ids=[vector_store.id])
-        # create a code interpreter tool
-        code_interpreter = CodeInterpreterTool(file_ids=[code_interpreter_file.id])
+    # create a file search tool
+    file_search_tool = FileSearchTool(vector_store_ids=[vector_store.id])
+    # create a code interpreter tool
+    code_interpreter = CodeInterpreterTool(file_ids=[code_interpreter_file.id])
 
-        # Create an agent following the documentation pattern
-        agent = project_client.agents.create_agent(
-            model=model_deployment_name,
-            name="home-loan-guide",
-            instructions="""
-Home Loan Guide is your expert assistant with over 10 years of experience in mortgage lending and loan processing.
-I am here to simplify the mortgage application process and support borrowers in making informed decisions about their home financing.
-I combine financial logic and document awareness to provide smart, supportive advice through every phase of the mortgage journey.
-I write and execute Python code to analyze financial data, calculate mortgage payments, and generate reports based on user inputs.
-I always use chain-of-thought and think step-by-step to ensure accurate and helpful responses and calculations.
+    # Create an agent following the documentation pattern
+    agent = project_client.agents.create_agent(
+        model=model_deployment_name,
+        name="home-loan-guide",
+        instructions="""Home Loan Guide is your expert assistant with over 10 years of experience in mortgage lending and loan processing. I am here to simplify the mortgage application process and support borrowers in making informed decisions about their home financing. 
 
 My primary responsibilities include:   
 
@@ -117,104 +111,162 @@ My primary responsibilities include:
 7. Explaining mortgage terms and payment structures in simple language.   
 8. Assisting clients in understanding the closing process and associated fees. 
 
+I combine financial logic and document awareness to provide smart, supportive advice through every phase of the mortgage journey. 
+ 
 # Form Details 
-
 To effectively assist you, please provide answers to the following: 
-- What type of mortgage are you interested in? (e.g., conventional, FHA, VA) 
-- What is the purchase price of the property you are considering? 
-- What is your estimated down payment amount? 
-- Do you have a pre-approval letter or any existing mortgage offers? 
-- What is your current credit score range, if known? 
-- Are there specific concerns or questions you have about the mortgage process or options? 
+
+What type of mortgage are you interested in? (e.g., conventional, FHA, VA) 
+
+What is the purchase price of the property you are considering? 
+
+What is your estimated down payment amount? 
+
+Do you have a pre-approval letter or any existing mortgage offers? 
+
+What is your current credit score range, if known? 
+
+Are there specific concerns or questions you have about the mortgage process or options? 
 
 # Manager Feedback 
-
 To enhance my capabilities as a Mortgage Loan Assistant, I follow these feedback insights: 
-- Provide real-time updates on application statuses to keep users informed. 
-- Use clear, jargon-free language to simplify complex mortgage concepts. 
-- Be proactive in offering mortgage rate comparisons and product suggestions. 
-- Maintain a supportive and patient demeanor throughout the application process. 
-- Follow up after application submissions to assist with documentation or next steps.""",
-            tools=file_search_tool.definitions + code_interpreter.definitions,
-            tool_resources=file_search_tool.resources,
-        )
-        print(f"Created agent, agent ID: {agent.id}")
 
-        # Create a thread
-        thread = project_client.agents.threads.create()
-        print(f"Created thread, thread ID: {thread.id}")
-        
-        # Upload the user provided file as a message attachment
-        message_file = project_client.agents.files.upload_and_poll(file_path=str(checklist_file_path), purpose=FilePurpose.AGENTS)
-        print(f"Uploaded file, file ID: {message_file.id}")
+Provide real-time updates on application statuses to keep users informed. 
 
-        # Create a message with the file search attachment
-        # Notice that vector store is created temporarily when using attachments with a default expiration policy of seven days.
-        attachment = MessageAttachment(file_id=message_file.id, tools=FileSearchTool().definitions)
-        
-        print(f"\nAsking question: {question}")
-        message = project_client.agents.messages.create(
-            thread_id=thread.id, role="user", content=question, attachments=[attachment]
-        )
-        print(f"Created message, message ID: {message.id}")
+Use clear, jargon-free language to simplify complex mortgage concepts. 
 
-        run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
-        print(f"Created run, run ID: {run.id}")
-        print(f"Run status: {run.status}")
+Be proactive in offering mortgage rate comparisons and product suggestions. 
 
-        # Get the conversation messages after the run is processed
-        print("\n=== CONVERSATION MESSAGES ===")
-        messages = project_client.agents.messages.list(thread_id=thread.id)
-        
-        # Display messages in chronological order (reverse the list since they come newest first)
-        message_list = list(messages)
-        message_list.reverse()
-        
-        for i, message in enumerate(message_list, 1):
-            role = message.role.upper()
-            content = ""
-            # Extract text content from the message
-            if hasattr(message, 'content') and message.content:
-                for content_part in message.content:
-                    if hasattr(content_part, 'text'):
-                        text_obj = getattr(content_part, 'text')
-                        if hasattr(text_obj, 'value'):
-                            content += getattr(text_obj, 'value')
-                        else:
-                            content += str(text_obj)
+Maintain a supportive and patient demeanor throughout the application process. 
+
+Follow up after application submissions to assist with documentation or next steps.""",
+        tools=file_search_tool.definitions + code_interpreter.definitions,
+        tool_resources=file_search_tool.resources,
+    )
+    print(f"Created agent, agent ID: {agent.id}")
+
+    # Return agent and resources for cleanup later
+    return agent, {
+        'checklist_file': checklist_file,
+        'code_interpreter_file': code_interpreter_file,
+        'vector_store': vector_store
+    }
+
+# Function to create a conversation thread
+def create_thread(project_client):
+    thread = project_client.agents.threads.create()
+    print(f"Created thread, thread ID: {thread.id}")
+    return thread
+
+# Function to delete a conversation thread
+def delete_thread(project_client, thread):
+    if thread:
+        try:
+            project_client.agents.threads.delete(thread.id)
+            print(f"Deleted thread, thread ID: {thread.id}")
+        except Exception as e:
+            print(f"Warning: Could not delete thread {thread.id}: {e}")
+
+# Function to cleanup agent and resources
+def cleanup_agent(project_client, agent, resources):
+    print("\nCleaning up resources...")
+    
+    # Cleanup resources
+    project_client.agents.vector_stores.delete(resources['vector_store'].id)
+    print("Deleted vector store")
+
+    project_client.agents.files.delete(resources['checklist_file'].id)
+    print("Deleted checklist file")
+
+    project_client.agents.files.delete(resources['code_interpreter_file'].id)
+    print("Deleted code interpreter file")
+
+    project_client.agents.delete_agent(agent.id)
+    print("Deleted agent")
+
+# Function to ask a single question using a provided thread
+def ask_question(project_client, agent, question, thread):
+    # Get absolute paths for the files
+    current_dir = Path(__file__).parent
+    checklist_file_path = current_dir / 'Contoso_Loan_Documentation_Checklist.md'
+    
+    print(f"Using thread, thread ID: {thread.id}")
+    
+    # Upload the user provided file as a message attachment
+    message_file = project_client.agents.files.upload_and_poll(file_path=str(checklist_file_path), purpose=FilePurpose.AGENTS)
+    print(f"Uploaded file, file ID: {message_file.id}")
+
+    # Create a message with the file search attachment
+    # Notice that vector store is created temporarily when using attachments with a default expiration policy of seven days.
+    attachment = MessageAttachment(file_id=message_file.id, tools=FileSearchTool().definitions)
+    
+    print(f"\nAsking question: {question}")
+    message = project_client.agents.messages.create(
+        thread_id=thread.id, role="user", content=question, attachments=[attachment]
+    )
+    print(f"Created message, message ID: {message.id}")
+
+    run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+    print(f"Created run, run ID: {run.id}")
+    print(f"Run status: {run.status}")
+
+    # Get the conversation messages after the run is processed
+    print("\n=== CONVERSATION MESSAGES ===")
+    messages = project_client.agents.messages.list(thread_id=thread.id)
+    
+    # Display messages in chronological order (reverse the list since they come newest first)
+    message_list = list(messages)
+    message_list.reverse()
+    
+    for i, message in enumerate(message_list, 1):
+        role = message.role.upper()
+        content = ""
+        # Extract text content from the message
+        if hasattr(message, 'content') and message.content:
+            for content_part in message.content:
+                if hasattr(content_part, 'text'):
+                    text_obj = getattr(content_part, 'text')
+                    if hasattr(text_obj, 'value'):
+                        content += getattr(text_obj, 'value')
                     else:
-                        content += str(content_part)
-            
-            print(f"\n--- Message {i} ({role}) ---")
-            print(f"ID: {message.id}")
-            print(f"Content: {content}")
-            
-            # Show any file attachments
-            if hasattr(message, 'attachments') and message.attachments:
-                print(f"Attachments: {len(message.attachments)} file(s)")
-                for attachment in message.attachments:
-                    if hasattr(attachment, 'file_id'):
-                        print(f"  - File ID: {attachment.file_id}")
+                        content += str(text_obj)
+                else:
+                    content += str(content_part)
         
-        print("\n=== END CONVERSATION ===\n")
+        print(f"\n--- Message {i} ({role}) ---")
+        print(f"ID: {message.id}")
+        print(f"Content: {content}")
+        
+        # Show any file attachments
+        if hasattr(message, 'attachments') and message.attachments:
+            print(f"Attachments: {len(message.attachments)} file(s)")
+            for attachment in message.attachments:
+                if hasattr(attachment, 'file_id'):
+                    print(f"  - File ID: {attachment.file_id}")
+    
+    print("\n=== END CONVERSATION ===\n")
 
-        # Cleanup resources
-        project_client.agents.vector_stores.delete(vector_store.id)
-        print("Deleted vector store")
+    # Clean up only the message file for this question
+    project_client.agents.files.delete(message_file.id)
+    print("Deleted message file")
 
-        project_client.agents.files.delete(checklist_file.id)
-        print("Deleted checklist file")
-
-        project_client.agents.files.delete(code_interpreter_file.id)
-        print("Deleted code interpreter file")
-
-        project_client.agents.files.delete(message_file.id)
-        print("Deleted message file")
-
-        project_client.agents.delete_agent(agent.id)
-        print("Deleted agent")
-
-
+# Function to process a single question with complete lifecycle management
+def process_question(project_client, question):
+    # Create agent and resources
+    agent, resources = create_agent(project_client)
+    thread = None
+    
+    try:
+        # Create thread for this question
+        thread = create_thread(project_client)
+        
+        # Ask the question using the created thread
+        ask_question(project_client, agent, question, thread)
+    finally:
+        # Clean up thread first, then agent and resources
+        if thread:
+            delete_thread(project_client, thread)
+        cleanup_agent(project_client, agent, resources)
 
 # Interactive mode function
 def interactive_mode(project_client):
@@ -222,22 +274,36 @@ def interactive_mode(project_client):
     print("Type 'quit', 'exit', or 'q' to stop.")
     print("Ask questions about home loans and mortgage documentation.\n")
     
-    while True:
-        try:
-            question = input("Your question: ").strip()
-            if question.lower() in ['quit', 'exit', 'q', '']:
-                print("Goodbye!")
+    # Create the agent once for the entire interactive session
+    agent, resources = create_agent(project_client)
+    thread = None
+    
+    try:
+        # Create a persistent thread for the interactive session
+        thread = create_thread(project_client)
+        
+        while True:
+            try:
+                question = input("Your question: ").strip()
+                if question.lower() in ['quit', 'exit', 'q', '']:
+                    print("Goodbye!")
+                    break
+                
+                # Use the persistent thread for all questions in interactive mode
+                ask_question(project_client, agent, question, thread)
+                print("\n" + "="*50 + "\n")
+                
+            except KeyboardInterrupt:
+                print("\nGoodbye!")
                 break
-            
-            process_question(project_client, question)
-            print("\n" + "="*50 + "\n")
-            
-        except KeyboardInterrupt:
-            print("\nGoodbye!")
-            break
-        except Exception as e:
-            print(f"Error processing question: {e}")
-            continue
+            except Exception as e:
+                print(f"Error processing question: {e}")
+                continue
+    finally:
+        # Clean up thread first, then agent and resources when exiting interactive mode
+        if thread:
+            delete_thread(project_client, thread)
+        cleanup_agent(project_client, agent, resources)
 
 # Main execution
 def main():
