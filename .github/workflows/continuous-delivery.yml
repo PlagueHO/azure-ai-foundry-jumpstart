@@ -10,7 +10,6 @@ on:
       - infra/**
       - src/**
       - tests/**
-
   workflow_dispatch:
   
 permissions:
