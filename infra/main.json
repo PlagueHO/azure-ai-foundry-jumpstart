@@ -3,10 +3,14 @@
   "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
+    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+    "_EXPERIMENTAL_FEATURES_ENABLED": [
+      "Extensibility"
+    ],
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "241420242190710573"
+      "version": "0.34.44.8038",
+      "templateHash": "1821949755244687704"
     }
   },
   "parameters": {
@@ -40,13 +44,13 @@
     },
     "aiFoundryProjectMode": {
       "type": "string",
-      "defaultValue": "Hub",
+      "defaultValue": "Foundry",
       "allowedValues": [
-        "Hub",
-        "Project"
+        "Foundry",
+        "Hub"
       ],
       "metadata": {
-        "description": "AI Foundry project mode. Hub uses ML workspace hub with projects, Project uses CognitiveServices account with projects. Defaults to Hub for backward compatibility."
+        "description": "AI Foundry project mode. Hub uses MachineLearning workspace hub with projects, Foundry uses CognitiveServices account with projects. Defaults to Hub for backward compatibility."
       }
     },
     "keyVaultEnablePurgeProtection": {
@@ -546,7 +550,7 @@
     "bastionHostName": "[format('{0}{1}', variables('abbrs').networkBastionHosts, parameters('environmentName'))]",
     "networkDefaultAction": "[if(parameters('azureNetworkIsolation'), 'Deny', 'Allow')]",
     "isHubMode": "[equals(parameters('aiFoundryProjectMode'), 'Hub')]",
-    "isProjectMode": "[equals(parameters('aiFoundryProjectMode'), 'Project')]",
+    "isFoundryMode": "[equals(parameters('aiFoundryProjectMode'), 'Foundry')]",
     "sampleDataContainersArray": "[variables('$fxv#1')]",
     "projectsFromJson": "[variables('$fxv#2')]",
     "aiFoundryProjectsSingleArray": [
@@ -578,12 +582,8 @@
         "addressPrefix": "10.0.2.0/24"
       },
       {
-        "name": "ContainerRegistry",
-        "addressPrefix": "10.0.3.0/24"
-      },
-      {
         "name": "Management",
-        "addressPrefix": "10.0.4.0/24"
+        "addressPrefix": "10.0.3.0/24"
       },
       {
         "name": "AzureBastionSubnet",
@@ -48222,13 +48222,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "7092216398490663291"
+              "version": "0.34.44.8038",
+              "templateHash": "578277851210771986"
             },
             "description": "Creates role assignments on an Azure AI Search service."
           },
@@ -48404,7 +48408,7 @@
             "value": "[parameters('location')]"
           },
           "allowProjectManagement": {
-            "value": "[variables('isProjectMode')]"
+            "value": false
           },
           "customSubDomainName": {
             "value": "[variables('aiServicesCustomSubDomainName')]"
@@ -50729,13 +50733,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "8939606141673741347"
+              "version": "0.34.44.8038",
+              "templateHash": "5199865374286460137"
             },
             "description": "Creates role assignments on an Azure AI Services account."
           },
@@ -50940,7 +50948,7 @@
             "value": "[reference('applicationInsights').outputs.resourceId.value]"
           },
           "associatedKeyVaultResourceId": "[if(variables('isHubMode'), createObject('value', reference('keyVault').outputs.resourceId.value), createObject('value', null()))]",
-          "associatedStorageAccountResourceId": "[if(variables('isHubMode'), createObject('value', listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').resourceId), createObject('value', null()))]",
+          "associatedStorageAccountResourceId": "[if(variables('isHubMode'), createObject('value', reference('storageAccount').outputs.resourceId.value), createObject('value', null()))]",
           "associatedContainerRegistryResourceId": "[if(parameters('containerRegistryDeploy'), if(parameters('containerRegistryDeploy'), if(empty(parameters('containerRegistryResourceId')), createObject('value', reference('containerRegistry').outputs.resourceId.value), createObject('value', parameters('containerRegistryResourceId'))), createObject('value', '')), createObject('value', null()))]",
           "connections": {
             "value": "[concat(createArray(createObject('category', 'AIServices', 'connectionProperties', createObject('authType', 'AAD'), 'metadata', createObject('ApiType', 'Azure', 'ApiVersion', '2023-07-01-preview', 'DeploymentApiVersion', '2023-10-01-preview', 'Location', parameters('location'), 'ResourceId', reference('aiServicesAccount').outputs.resourceId.value), 'name', replace(variables('abbrs').aiServicesAccounts, '-', ''), 'target', reference('aiServicesAccount').outputs.endpoint.value, 'isSharedToAll', true())), if(parameters('azureAiSearchDeploy'), createArray(createObject('category', 'CognitiveSearch', 'connectionProperties', createObject('authType', 'AAD'), 'metadata', createObject('Type', 'azure_ai_search', 'ApiType', 'Azure', 'ApiVersion', '2024-05-01-preview', 'DeploymentApiVersion', '2023-11-01', 'Location', parameters('location'), 'ResourceId', reference('aiSearchService').outputs.resourceId.value), 'name', replace(variables('abbrs').aiSearchSearchServices, '-', ''), 'target', reference('aiSearchService').outputs.endpoint.value, 'isSharedToAll', true())), createArray()))]"
@@ -59366,13 +59374,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "8939606141673741347"
+              "version": "0.34.44.8038",
+              "templateHash": "5199865374286460137"
             },
             "description": "Creates role assignments on an Azure AI Services account."
           },
@@ -59581,13 +59593,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "7092216398490663291"
+              "version": "0.34.44.8038",
+              "templateHash": "578277851210771986"
             },
             "description": "Creates role assignments on an Azure AI Search service."
           },
@@ -59770,12 +59786,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "4751465197827358598"
+              "version": "0.34.44.8038",
+              "templateHash": "8557268353726782417"
             }
           },
           "parameters": {
@@ -59804,8 +59825,14 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "projectWorkspace": {
+              "existing": true,
+              "type": "Microsoft.MachineLearningServices/workspaces",
+              "apiVersion": "2025-01-01-preview",
+              "name": "[parameters('projectWorkspaceName')]"
+            },
+            "dataStore": {
               "type": "Microsoft.MachineLearningServices/workspaces/datastores",
               "apiVersion": "2025-01-01-preview",
               "name": "[format('{0}/{1}', parameters('projectWorkspaceName'), parameters('dataStoreName'))]",
@@ -59821,7 +59848,7 @@
                 "serviceDataAccessAuthIdentity": "None"
               }
             }
-          ],
+          },
           "outputs": {
             "dataStoreResourceId": {
               "type": "string",
@@ -59846,7 +59873,7 @@
       ]
     },
     "aiFoundryAccount": {
-      "condition": "[variables('isProjectMode')]",
+      "condition": "[variables('isFoundryMode')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "ai-foundry-account-deployment",
@@ -59894,20 +59921,24 @@
           },
           "deployments": "[if(parameters('deploySampleOpenAiModels'), createObject('value', variables('openAiSampleModels')), createObject('value', createArray()))]",
           "connections": "[if(parameters('azureAiSearchDeploy'), createObject('value', createArray(createObject('name', replace(variables('abbrs').aiSearchSearchServices, '-', ''), 'category', 'CognitiveSearch', 'target', reference('aiSearchService').outputs.endpoint.value, 'connectionProperties', createObject('authType', 'AAD'), 'metadata', createObject(), 'isSharedToAll', true()))), createObject('value', createArray()))]",
-          "projects": "[if(variables('isProjectMode'), if(parameters('aiFoundryProjectsFromJson'), createObject('value', variables('projectsFromJson')), createObject('value', createArray(createObject('name', replace(parameters('aiFoundryProjectName'), ' ', '-'), 'location', parameters('location'), 'properties', createObject('displayName', parameters('aiFoundryProjectFriendlyName'), 'description', parameters('aiFoundryProjectDescription')), 'managedIdentities', createObject('systemAssigned', true()), 'roleAssignments', if(not(empty(parameters('principalId'))), createArray(createObject('roleDefinitionIdOrName', '/providers/Microsoft.Authorization/roleDefinitions/64702f94-c441-49e6-a78b-ef80e0188fee', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId'))), createArray()))))), createObject('value', createArray()))]",
+          "projects": "[if(variables('isFoundryMode'), if(parameters('aiFoundryProjectsFromJson'), createObject('value', variables('projectsFromJson')), createObject('value', createArray(createObject('name', replace(parameters('aiFoundryProjectName'), ' ', '-'), 'location', parameters('location'), 'properties', createObject('displayName', parameters('aiFoundryProjectFriendlyName'), 'description', parameters('aiFoundryProjectDescription')), 'managedIdentities', createObject('systemAssigned', true()), 'roleAssignments', if(not(empty(parameters('principalId'))), createArray(createObject('roleDefinitionIdOrName', '/providers/Microsoft.Authorization/roleDefinitions/64702f94-c441-49e6-a78b-ef80e0188fee', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId'))), createArray()))))), createObject('value', createArray()))]",
           "tags": {
             "value": "[variables('tags')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "368446115593195023"
+              "version": "0.34.44.8038",
+              "templateHash": "2310394904302142510"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service account.\nThis is a temporary module for deploying Azure AI Foundry Cognitive Services accounts.\nIt is intended to be replaced by the Azure Verified Module (AVM) for Microsoft.CognitiveServices accounts\nonce it supports AI Foundry V2 (projects, connections etc)\nhttps://github.com/Azure/bicep-registry-modules/issues/5390\n"
@@ -61773,13 +61804,6 @@
                 "description": "Optional. List of allowed FQDN."
               }
             },
-            "allowProjectManagement": {
-              "type": "bool",
-              "defaultValue": false,
-              "metadata": {
-                "description": "Optional. Specifies whether this resource support project management as child resources, used as containers for access management, data isolation and cost in AI Foundry."
-              }
-            },
             "apiProperties": {
               "type": "object",
               "nullable": true,
@@ -61867,6 +61891,13 @@
                 "description": "Optional. Key vault reference and secret settings for the module's secrets export."
               }
             },
+            "allowProjectManagement": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable project management feature for AI Foundry."
+              }
+            },
             "projects": {
               "type": "array",
               "items": {
@@ -61942,7 +61973,7 @@
               "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults/keys",
-              "apiVersion": "2023-02-01",
+              "apiVersion": "2023-07-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -61971,7 +62002,7 @@
               "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2023-02-01",
+              "apiVersion": "2023-07-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -61997,11 +62028,11 @@
                 "name": "[parameters('sku')]"
               },
               "properties": {
+                "allowProjectManagement": "[parameters('allowProjectManagement')]",
                 "customSubDomainName": "[parameters('customSubDomainName')]",
                 "networkAcls": "[if(not(empty(coalesce(parameters('networkAcls'), createObject()))), createObject('defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', coalesce(tryGet(parameters('networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(parameters('networkAcls'), 'ipRules'), createArray())), null())]",
                 "publicNetworkAccess": "[if(not(equals(parameters('publicNetworkAccess'), null())), parameters('publicNetworkAccess'), if(not(empty(parameters('networkAcls'))), 'Enabled', 'Disabled'))]",
                 "allowedFqdnList": "[parameters('allowedFqdnList')]",
-                "allowProjectManagement": "[parameters('allowProjectManagement')]",
                 "apiProperties": "[parameters('apiProperties')]",
                 "disableLocalAuth": "[parameters('disableLocalAuth')]",
                 "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createObject('identityClientId', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), ''))), reference('cMKUserAssignedIdentity').clientId, null()), 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), tryGet(parameters('customerManagedKey'), 'keyVersion'), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null())]",
@@ -62176,8 +62207,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "15954548978129725136"
+                      "version": "0.34.44.8038",
+                      "templateHash": "12389807800450456797"
                     },
                     "name": "Private Endpoints",
                     "description": "This module deploys a Private Endpoint."
@@ -62586,7 +62617,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -62604,7 +62635,7 @@
                     },
                     "privateEndpoint": {
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -62692,8 +62723,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "5440815542537978381"
+                              "version": "0.34.44.8038",
+                              "templateHash": "13997305779829540948"
                             },
                             "name": "Private Endpoint Private DNS Zone Groups",
                             "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -62765,12 +62796,12 @@
                             "privateEndpoint": {
                               "existing": true,
                               "type": "Microsoft.Network/privateEndpoints",
-                              "apiVersion": "2023-11-01",
+                              "apiVersion": "2024-05-01",
                               "name": "[parameters('privateEndpointName')]"
                             },
                             "privateDnsZoneGroup": {
                               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                              "apiVersion": "2023-11-01",
+                              "apiVersion": "2024-05-01",
                               "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                               "properties": {
                                 "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -62834,7 +62865,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+                      "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
                     },
                     "customDnsConfigs": {
                       "type": "array",
@@ -62914,13 +62945,17 @@
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "languageVersion": "2.0",
+                  "languageVersion": "2.1-experimental",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
+                    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+                    "_EXPERIMENTAL_FEATURES_ENABLED": [
+                      "Extensibility"
+                    ],
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "5197358057053634319"
+                      "version": "0.34.44.8038",
+                      "templateHash": "3173128729523902635"
                     },
                     "name": "Cognitive Services Project",
                     "description": "This module deploys a Project within a Cognitive Services account.\nIt allows for the creation of a AI Foundry Project with optional managed identities and role assignments.\n"
@@ -64253,13 +64288,17 @@
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "languageVersion": "2.0",
+                  "languageVersion": "2.1-experimental",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
+                    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+                    "_EXPERIMENTAL_FEATURES_ENABLED": [
+                      "Extensibility"
+                    ],
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "2322045734307019606"
+                      "version": "0.34.44.8038",
+                      "templateHash": "18319371933629896379"
                     },
                     "name": "Machine Learning Services Workspaces Connections",
                     "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -65144,18 +65183,22 @@
                     "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
                   },
                   "secretsToSet": {
-                    "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys('cognitiveService', '2025-04-01-preview').key1)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys('cognitiveService', '2025-04-01-preview').key2)), createArray()))]"
+                    "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '2025-04-01-preview').key1)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '2025-04-01-preview').key2)), createArray()))]"
                   }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "languageVersion": "2.0",
+                  "languageVersion": "2.1-experimental",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
+                    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+                    "_EXPERIMENTAL_FEATURES_ENABLED": [
+                      "Extensibility"
+                    ],
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "17210397279620716997"
+                      "version": "0.34.44.8038",
+                      "templateHash": "13041638246567642283"
                     }
                   },
                   "definitions": {
@@ -66733,23 +66776,23 @@
     },
     "AZURE_STORAGE_ACCOUNT_NAME": {
       "type": "string",
-      "value": "[if(variables('isHubMode'), listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').name, '')]"
+      "value": "[if(variables('isHubMode'), reference('storageAccount').outputs.name.value, '')]"
     },
     "AZURE_STORAGE_ACCOUNT_RESOURCE_ID": {
       "type": "string",
-      "value": "[if(variables('isHubMode'), listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').resourceId, '')]"
+      "value": "[if(variables('isHubMode'), reference('storageAccount').outputs.resourceId.value, '')]"
     },
     "AZURE_STORAGE_ACCOUNT_BLOB_ENDPOINT": {
       "type": "string",
-      "value": "[if(variables('isHubMode'), listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').primaryBlobEndpoint, '')]"
+      "value": "[if(variables('isHubMode'), reference('storageAccount').outputs.primaryBlobEndpoint.value, '')]"
     },
     "AZURE_STORAGE_ACCOUNT_PRIVATE_ENDPOINTS": {
       "type": "array",
-      "value": "[if(variables('isHubMode'), listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').privateEndpoints, createArray())]"
+      "value": "[if(variables('isHubMode'), reference('storageAccount').outputs.privateEndpoints.value, createArray())]"
     },
     "AZURE_STORAGE_ACCOUNT_SERVICE_ENDPOINTS": {
       "type": "object",
-      "value": "[if(variables('isHubMode'), listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').serviceEndpoints, createObject())]"
+      "value": "[if(variables('isHubMode'), reference('storageAccount').outputs.serviceEndpoints.value, createObject())]"
     },
     "AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_NAME": {
       "type": "string",
@@ -66833,15 +66876,15 @@
     },
     "AZURE_AI_FOUNDRY_ACCOUNT_NAME": {
       "type": "string",
-      "value": "[if(variables('isProjectMode'), reference('aiFoundryAccount').outputs.name.value, '')]"
+      "value": "[if(variables('isFoundryMode'), reference('aiFoundryAccount').outputs.name.value, '')]"
     },
     "AZURE_AI_FOUNDRY_ACCOUNT_RESOURCE_ID": {
       "type": "string",
-      "value": "[if(variables('isProjectMode'), reference('aiFoundryAccount').outputs.resourceId.value, '')]"
+      "value": "[if(variables('isFoundryMode'), reference('aiFoundryAccount').outputs.resourceId.value, '')]"
     },
     "AZURE_AI_FOUNDRY_ACCOUNT_ENDPOINT": {
       "type": "string",
-      "value": "[if(variables('isProjectMode'), reference('aiFoundryAccount').outputs.endpoint.value, '')]"
+      "value": "[if(variables('isFoundryMode'), reference('aiFoundryAccount').outputs.endpoint.value, '')]"
     },
     "AZURE_AI_FOUNDRY_PROJECT_DEPLOY": {
       "type": "bool",
