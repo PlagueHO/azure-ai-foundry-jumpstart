@@ -188,8 +188,27 @@ var effectiveAiFoundryProjects = (aiFoundryProjectDeploy && aiFoundryHubProjectD
   : []
 
 // Build the projects array for AI Services deployment (only when not deploying to Hub)
+var aiFoundryServiceProjectsFromJsonArray = [for project in projectsFromJson: {
+  name: replace(project.Name,' ','-')
+  location: location
+  properties: {
+    displayName: project.FriendlyName
+    description: project.Description
+  }
+  managedIdentities: {
+    systemAssigned: true
+  }
+  roleAssignments: !empty(principalId) ? [
+    {
+      roleDefinitionIdOrName: 'Azure AI Developer'
+      principalType: principalIdType
+      principalId: principalId
+    }
+  ] : []
+}]
+
 var aiFoundryServiceProjects = (!aiFoundryHubProjectDeploy && aiFoundryProjectDeploy) 
-  ? (aiFoundryProjectsFromJson ? projectsFromJson : [
+  ? (aiFoundryProjectsFromJson ? aiFoundryServiceProjectsFromJsonArray : [
       {
         name: replace(aiFoundryProjectName,' ','-')
         location: location
