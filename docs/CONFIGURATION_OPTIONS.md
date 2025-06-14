@@ -1,12 +1,6 @@
 # Configuration Options
 
-The following environment variables control the deployment behaviour of the Azure AI Foundry Jumpstart Solution Accelerator. They can be set via standard methods of configuring environment variables or by using `azd env set <NAME> <VALUE>`.
-
-> Example:
->
-> ```powershell
-> azd env set LOCATION eastus
-> ```
+The following environment variables control the deployment behaviour of the Azure AI Foundry Jumpstart Solution accelerator.
 
 The configuration options are grouped into the following categories:
 
@@ -61,6 +55,7 @@ When enabled, sample data containers will be created in the dedicated storage ac
 Default: `false`.
 
 When set to `true`:
+
 - A dedicated sample data storage account will be deployed (named with 'sample' postfix)
 - The following containers will be created in the sample data storage account:
 
@@ -107,9 +102,31 @@ azd env set AZURE_DISABLE_API_KEYS true
 
 ## Azure AI Foundry Hub Configuration
 
+### AZURE_AI_FOUNDRY_HUB_DEPLOY
+
+Deploy Azure AI Foundry Hub (Machine Learning workspace) and supporting resources (Key Vault, Storage Account, Container Registry).
+When set to `false`, only Azure AI Services with project management is deployed.
+Default: `false`.
+
+```powershell
+azd env set AZURE_AI_FOUNDRY_HUB_DEPLOY true
+```
+
+### AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY
+
+Deploy AI Foundry projects to the Hub instead of the AI Services resource.
+Only applies when `AZURE_AI_FOUNDRY_HUB_DEPLOY` is set to `true`.
+When set to `false`, projects are deployed to the AI Services resource even when Hub is deployed.
+Default: `false`.
+
+```powershell
+azd env set AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY true
+```
+
 ### AZURE_AI_FOUNDRY_HUB_FRIENDLY_NAME
 
-Friendly display name for the AI Foundry hub.  
+Friendly display name for the AI Foundry hub.
+Only applies when `AZURE_AI_FOUNDRY_HUB_DEPLOY` is set to `true`.
 Default: `''` - the friendly name is automatically generated from the environment name.
 
 ```powershell
@@ -119,6 +136,7 @@ azd env set AZURE_AI_FOUNDRY_HUB_FRIENDLY_NAME "My AI Hub"
 ### AZURE_AI_FOUNDRY_HUB_DESCRIPTION
 
 Optional description shown in the Azure portal.  
+Only applies when `AZURE_AI_FOUNDRY_HUB_DEPLOY` is set to `true`.
 Default: `''` - the friendly name is automatically generated from the environment name.
 
 ```powershell
@@ -129,8 +147,9 @@ azd env set AZURE_AI_FOUNDRY_HUB_DESCRIPTION "Sandbox hub for PoC work"
 
 ### AZURE_AI_FOUNDRY_PROJECT_DEPLOY
 
-Deploy a sample Azure AI Foundry Project (`true`).
+Deploy Azure AI Foundry Projects (`true`).
 When set to `false`, no project resources are created.
+Projects are deployed to either the AI Services resource or the Hub, depending on the `AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY` setting.
 Default: `true`.
 
 ```powershell
