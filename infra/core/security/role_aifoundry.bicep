@@ -1,4 +1,4 @@
-metadata description = 'Creates role assignments on an Azure AI Services account.'
+metadata description = 'Creates role assignments on an Azure AI Foundry account.'
 
 // TODO: Once this proposal is implemented: https://github.com/azure/bicep/issues/2245
 // We can create a generalized version of this resource that can be used any resource
@@ -8,11 +8,11 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@description('The name of the Azure AI Services account to set the role assignments on.')
-param azureAiServiceName string
+@description('The name of the Azure AI Foundry account to set the role assignments on.')
+param azureAiFoundryName string
 
-resource azureAiServiceAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
-  name: azureAiServiceName
+resource azureAiFoundryAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
+  name: azureAiFoundryName
 }
 
 var builtInRoleNames = {
@@ -136,9 +136,9 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource aiService_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+resource aiFoundry_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
-    name: roleAssignment.?name ?? guid(azureAiServiceAccount.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
+    name: roleAssignment.?name ?? guid(azureAiFoundryAccount.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
       roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
@@ -148,6 +148,6 @@ resource aiService_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
       conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
-    scope: azureAiServiceAccount
+    scope: azureAiFoundryAccount
   }
 ]

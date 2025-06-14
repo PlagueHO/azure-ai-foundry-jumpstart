@@ -27,8 +27,8 @@ on:
         description: "Whether to deploy the sample OpenAI models"
         required: true
         type: string
-      AZURE_AI_FOUNDRY_PROJECT_MODE:
-        description: "The project mode to use for the Azure AI Foundry (Hub or Project)"
+      AZURE_AI_FOUNDRY_HUB_DEPLOY:
+        description: "Whether to deploy the Azure AI Foundry Hub"
         required: true
         type: string
 
@@ -44,7 +44,23 @@ on:
         required: true
 
 jobs:
+  validate-infrastructure:
+    uses: ./.github/workflows/validate-infrastructure.yml
+    with:
+      ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
+      BUILD_VERSION: ${{ inputs.BUILD_VERSION }}
+      AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
+      AZURE_ENV_NAME: ${{ inputs.AZURE_ENV_NAME }}
+      AZURE_NETWORK_ISOLATION: ${{ inputs.AZURE_NETWORK_ISOLATION }}
+      DEPLOY_SAMPLE_OPENAI_MODELS: ${{ inputs.DEPLOY_SAMPLE_OPENAI_MODELS }}
+      AZURE_AI_FOUNDRY_HUB_DEPLOY: ${{ inputs.AZURE_AI_FOUNDRY_HUB_DEPLOY }}
+    secrets:
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+
   provision-infrastructure:
+    needs: validate-infrastructure
     uses: ./.github/workflows/provision-infrastructure.yml
     with:
       ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
@@ -53,7 +69,7 @@ jobs:
       AZURE_ENV_NAME: ${{ inputs.AZURE_ENV_NAME }}
       AZURE_NETWORK_ISOLATION: ${{ inputs.AZURE_NETWORK_ISOLATION }}
       DEPLOY_SAMPLE_OPENAI_MODELS: ${{ inputs.DEPLOY_SAMPLE_OPENAI_MODELS }}
-      AZURE_AI_FOUNDRY_PROJECT_MODE: ${{ inputs.AZURE_AI_FOUNDRY_PROJECT_MODE }}
+      AZURE_AI_FOUNDRY_HUB_DEPLOY: ${{ inputs.AZURE_AI_FOUNDRY_HUB_DEPLOY }}
     secrets:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
@@ -61,7 +77,7 @@ jobs:
 
   # Placeholder for E2E test job(s)
   e2e-tests:
-    needs: provision-infrastructure
+    needs: [validate-infrastructure, provision-infrastructure]
     runs-on: ubuntu-latest
     environment: ${{ inputs.ENVIRONMENT }}
     steps:
@@ -71,7 +87,7 @@ jobs:
           echo "Storage Endpoint: ${{ needs.provision-infrastructure.outputs.AZURE_STORAGE_ACCOUNT_BLOB_ENDPOINT }}"
 
   delete-infrastructure:
-    needs: [provision-infrastructure, e2e-tests]
+    needs: [validate-infrastructure, provision-infrastructure, e2e-tests]
     if: always()
     uses: ./.github/workflows/delete-infrastructure.yml
     with:

@@ -4,9 +4,6 @@ using './main.bicep'
 param environmentName = readEnvironmentVariable('AZURE_ENV_NAME', 'azdtemp')
 param location = readEnvironmentVariable('AZURE_LOCATION', 'EastUS2')
 
-// AI Foundry project mode
-param aiFoundryProjectMode = readEnvironmentVariable('AZURE_AI_FOUNDRY_PROJECT_MODE', 'Foundry')
-
 // User or service principal deploying the resources
 param principalId = readEnvironmentVariable('AZURE_PRINCIPAL_ID', '')
 param principalIdType = toLower(readEnvironmentVariable('AZURE_PRINCIPAL_ID_TYPE', 'user')) == 'serviceprincipal' ? 'ServicePrincipal' : 'User'
@@ -25,9 +22,11 @@ param azureAiSearchDeploy = toLower(readEnvironmentVariable('AZURE_AI_SEARCH_DEP
 // Storage account override (use 'default' to keep the generated name)
 param azureStorageAccountName = readEnvironmentVariable('AZURE_STORAGE_ACCOUNT_NAME', 'default')
 
-// Azure AI Foundry resources parameters
+// Azure AI Foundry Hub parameters
+param aiFoundryHubDeploy = toLower(readEnvironmentVariable('AZURE_AI_FOUNDRY_HUB_DEPLOY', 'false')) == 'true'
 param aiFoundryHubFriendlyName = readEnvironmentVariable('AZURE_AI_FOUNDRY_HUB_FRIENDLY_NAME', '')
 param aiFoundryHubDescription = readEnvironmentVariable('AZURE_AI_FOUNDRY_HUB_DESCRIPTION', '')
+param aiFoundryHubProjectDeploy = toLower(readEnvironmentVariable('AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY', 'false')) == 'true'
 
 // AI Foundry project parameters
 param aiFoundryProjectDeploy = toLower(readEnvironmentVariable('AZURE_AI_FOUNDRY_PROJECT_DEPLOY', 'true')) == 'true'

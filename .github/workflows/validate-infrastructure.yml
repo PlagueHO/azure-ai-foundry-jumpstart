@@ -19,8 +19,18 @@ on:
         description: "The name of the Azure environment"
         required: true
         type: string
-      PROJECT_MODE:
-        description: "The project mode to validate (hub or project)"
+      AZURE_NETWORK_ISOLATION:
+        description: "Whether to deploy the application resources in a network isolated environment"
+        required: false
+        type: string
+        default: 'false'
+      DEPLOY_SAMPLE_OPENAI_MODELS:
+        description: "Whether to deploy the sample OpenAI models"
+        required: false
+        type: string
+        default: 'false'
+      AZURE_AI_FOUNDRY_HUB_DEPLOY:
+        description: "Whether to deploy the Azure AI Foundry Hub"
         required: true
         type: string
 
@@ -66,5 +76,8 @@ jobs:
           parameters: >
             {
               "location": "${{ inputs.AZURE_LOCATION }}",
-              "environmentName": "${{ inputs.AZURE_ENV_NAME }}"
+              "environmentName": "${{ inputs.AZURE_ENV_NAME }}",
+              "azureNetworkIsolation": "${{ inputs.AZURE_NETWORK_ISOLATION }}",
+              "deploySampleOpenAIModels": "${{ inputs.DEPLOY_SAMPLE_OPENAI_MODELS }}",
+              "aiFoundryHubDeploy": "${{ inputs.AZURE_AI_FOUNDRY_HUB_DEPLOY }}"
             }

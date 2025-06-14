@@ -26,10 +26,10 @@ It automates the deployment of the services using the same approach as the instr
 
 ## Project Modes
 
-This solution can deploy both types of Foundry Project modes:
+This solution can deploy Foundry with and without support for Azure AI Foundry Hubs. By default, the solution accelerator deploys the Azure AI Foundry without a Hub with projects being added to the AI Foundry resource, but if you want to use the Hub-based project mode, you can enable it in the configuration.
 
-- **Foundry project mode** (Recommended): This is a newer project mode that uses Azure AI Services resources to manage projects. It is the recommended approach for new projects as it simplifies the resource requirements.
-- **Hub-based project mode**: This is the traditional project mode that uses an Azure AI Hub and projects.
+> [!NOTE]
+> It is recommended to use the Foundry project mode for new projects as it simplifies the resource requirements and is the newer approach. Deployment of a Foundry Hub is provided for backward compatibility with existing projects and is not recommended for new projects. Hub deployment support may be removed from this solution accelerator in the future.
 
 For more information on the project modes, see the [The AI Foundry document](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry#which-type-of-project-do-i-need).
 
@@ -137,7 +137,7 @@ azd env set DEPLOY_SAMPLE_OPENAI_MODELS true
 azd env set DEPLOY_SAMPLE_DATA true
 azd env set AZURE_CONTAINER_REGISTRY_DEPLOY false
 azd env set AZURE_AI_SEARCH_DEPLOY false
-azd env set AZURE_AI_FOUNDRY_PROJECT_MODE Hub # or Foundry
+azd env set AZURE_AI_FOUNDRY_HUB_DEPLOY true # Deploys an Azure AI Foundry hub to support older Hub-based projects
 azd env set AZURE_AI_FOUNDRY_HUB_DESCRIPTION "Sandbox hub for PoC work" # Only when AZURE_AI_FOUNDRY_PROJECT_MODE is set to Hub
 azd env set AZURE_AI_FOUNDRY_HUB_FRIENDLY_NAME "My AI Hub" # Only when AZURE_AI_FOUNDRY_PROJECT_MODE is set to Hub
 azd env set AZURE_AI_FOUNDRY_PROJECT_DEPLOY true # Deploy projects (sample or single)
@@ -195,31 +195,13 @@ A complete list of environment variables can be found in the [Configuration Opti
 
 The following diagrams illustrate the architecture of the solution accelerator. For a detailed overview of the architecture of the solution accelerator, see the [Architecture](docs/design/ARCHITECTURE.md) document.
 
-### Foundry Project Mode
-
-#### Foundry Mode with Network Isolation
-
-The following diagram illustrates the architecture of the solution accelerator with network isolation when deploying a newer Foundry-based project.
-
-> [!IMPORTANT]
-> Diagram TBC
-
-#### Foundry Mode without Metwork Isolation
-
-The following diagram illustrates the architecture of the solution accelerator without network isolation when deploying a newer Project-based project.
-
-> [!IMPORTANT]
-> Diagram TBC
-
-### Hub-based Project Mode
-
-#### Hub Mode with Network Isolation
+### With Network Isolation
 
 The following diagram illustrates the architecture of the solution accelerator with network isolation when deploying a Hub-based project.
 
 [![Azure AI Foundry Jumpstart Solution Accelerator with Network Isolation](docs/images/azure-ai-foundry-jumpstart-zero-trust.svg)](docs/images/azure-ai-foundry-jumpstart-zero-trust.svg)
 
-#### Hub Mode without Network Isolation
+### Without Network Isolation
 
 The following diagram illustrates the architecture of the solution accelerator without network isolation when deploying a Hub-based project.
 
