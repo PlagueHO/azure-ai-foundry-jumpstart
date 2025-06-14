@@ -47,6 +47,7 @@ Before you begin, ensure you have the following prerequisites in place:
 There are several features of the solution accelerator that are worth highlighting:
 
 - **Project modes**: Support for both traditional Hub-based and streamlined Foundry project deployments. See [Project Modes](docs/DEPLOYMENT_MODES.md) for details.
+- **Hybrid project mode**: Support for a hybrid deployment where both Azure AI Foundry Hub and AI Foundry service with Project Mode are deployed, allowing for both Hub-based and AI Foundry based projects to be created.
 - **Zero-trust**: Support for deploying a zero-trust environment (network isolation).
 - **Managed identities**: Use of managed identities for Azure resources to authenticate to each other. API keys are not used and can optionally be disabled.
 - **Azure Verified Modules**: Use of Bicep [Azure verified modules](https://aka.ms/avm) to deploy the resources where possible.
@@ -197,13 +198,13 @@ The following diagrams illustrate the architecture of the solution accelerator. 
 
 ### With Network Isolation
 
-The following diagram illustrates the architecture of the solution accelerator with network isolation when deploying a Hub-based project.
+The following diagram illustrates the architecture of the solution accelerator with network isolation when deploying an Azure AI Foundry project environment as well as including an optional Azure AI Foundry Hub deployment.
 
 [![Azure AI Foundry Jumpstart Solution Accelerator with Network Isolation](docs/images/azure-ai-foundry-jumpstart-zero-trust.svg)](docs/images/azure-ai-foundry-jumpstart-zero-trust.svg)
 
 ### Without Network Isolation
 
-The following diagram illustrates the architecture of the solution accelerator without network isolation when deploying a Hub-based project.
+The following diagram illustrates the architecture of the solution accelerator without network isolation when deploying an Azure AI Foundry project environment as well as including an optional Azure AI Foundry Hub deployment.
 
 [![Azure AI Foundry Jumpstart Solution Accelerator without network isolation](docs/images/azure-ai-foundry-jumpstart-public.svg)](docs/images/azure-ai-foundry-jumpstart-public.svg)
 

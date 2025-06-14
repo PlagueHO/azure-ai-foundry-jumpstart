@@ -801,7 +801,7 @@ var aiFoundryServiceConnections = concat(azureAiSearchDeploy ? [
 ] : [], aiFoundryHubDeploy ? [
   {
     // AzureStorageAccount connection
-    category: 'AzureStorageAccount'
+    category: 'AzureBlob'
     connectionProperties: {
       authType: 'AAD'
     }
@@ -820,7 +820,7 @@ var aiFoundryServiceConnections = concat(azureAiSearchDeploy ? [
 ] : [], deploySampleData ? [
   {
     // SampleDataStorageAccount connection
-    category: 'AzureStorageAccount'
+    category: 'AzureBlob'
     connectionProperties: {
       authType: 'AAD'
     }
@@ -986,7 +986,7 @@ var aiFoundryHubConnections = concat([
 ] : [], aiFoundryHubDeploy ? [
   {
     // AzureStorageAccount connection
-    category: 'AzureStorageAccount'
+    category: 'AzureBlob'
     connectionProperties: {
       authType: 'AAD'
     }
