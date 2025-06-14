@@ -26,7 +26,7 @@ param resourceGroupName string = 'rg-${environmentName}'
 @sys.description('Deploy Azure AI Foundry Hub (MachineLearning workspace) and supporting resources (Key Vault, Storage Account, Container Registry). When false, only Azure AI Services with ProjectMode is deployed. Defaults to false.')
 param aiFoundryHubDeploy bool = false
 
-@sys.description('Deploy AI Foundry projects to the Hub instead of the AI Services resource. Only applies when aiFoundryHubDeploy is true. Defaults to false.')
+@sys.description('Deploy AI Foundry projects to the Azure AI Foundry Hub. Only applies when aiFoundryHubDeploy is true. Defaults to false.')
 param aiFoundryHubProjectDeploy bool = false
 
 @sys.description('Enable purge protection on the Key Vault. When set to true the vault cannot be permanently deleted until purge protection is disabled. Defaults to false. Only applies when aiFoundryHubDeploy is true.')

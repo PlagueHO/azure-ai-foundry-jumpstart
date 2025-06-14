@@ -112,17 +112,6 @@ Default: `false`.
 azd env set AZURE_AI_FOUNDRY_HUB_DEPLOY true
 ```
 
-### AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY
-
-Deploy AI Foundry projects to the Hub instead of the AI Services resource.
-Only applies when `AZURE_AI_FOUNDRY_HUB_DEPLOY` is set to `true`.
-When set to `false`, projects are deployed to the AI Services resource even when Hub is deployed.
-Default: `false`.
-
-```powershell
-azd env set AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY true
-```
-
 ### AZURE_AI_FOUNDRY_HUB_FRIENDLY_NAME
 
 Friendly display name for the AI Foundry hub.
@@ -145,15 +134,43 @@ azd env set AZURE_AI_FOUNDRY_HUB_DESCRIPTION "Sandbox hub for PoC work"
 
 ## Azure AI Foundry Project
 
+The Azure AI Foundry Jumpstart supports multiple project deployment scenarios based on your architecture preferences:
+
+### Project Deployment Scenarios
+
+1. **No Projects**: Set `AZURE_AI_FOUNDRY_PROJECT_DEPLOY=false` and `AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY=false` to deploy only the AI Foundry/AI Services and/or Azure AI Foundry Hub without any projects
+2. **Projects to AI Foundry/AI Services**: Set `AZURE_AI_FOUNDRY_PROJECT_DEPLOY=true` to deploy projects directly to the AI Foundry/AIServices resource.
+3. **Projects to AI Foundry Hub**: Set `AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY=true` to deploy projects as child workspaces under the AI Foundry Hub.
+
+### Project Sources
+
+The projects that will be deployed can be defined in two ways:
+
+- **Single Project**: Use the `AZURE_AI_FOUNDRY_PROJECT_*` parameters to define a single project
+- **Multiple Projects**: Set `AZURE_AI_FOUNDRY_PROJECTS_FROM_JSON=true` to load project definitions from the `infra/sample-ai-foundry-projects.json` file
+
 ### AZURE_AI_FOUNDRY_PROJECT_DEPLOY
 
-Deploy Azure AI Foundry Projects (`true`).
-When set to `false`, no project resources are created.
-Projects are deployed to either the AI Services resource or the Hub, depending on the `AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY` setting.
+Enable deployment of Projects into the Azure AI Foundry/AI Services resource.
+When set to `false`, no project resources are created in the Azure AI Foundry/AI Services resource.
+
 Default: `true`.
 
 ```powershell
 azd env set AZURE_AI_FOUNDRY_PROJECT_DEPLOY false
+```
+
+### AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY
+
+Enable deployment of Projects to the Azure AI Hub resource if it was deployed.
+When set to `true`, projects are deployed as child workspaces under the AI Foundry Hub.
+Only applies when `AZURE_AI_FOUNDRY_HUB_DEPLOY` is set to `true`.
+Default: `false`.
+
+> **Note**: Projects deployed to the Hub have different capabilities compared to projects deployed directly to AI Services. Hub-based projects provide full ML workspace functionality including compute instances, data assets, and model management.
+
+```powershell
+azd env set AZURE_AI_FOUNDRY_HUB_DEPLOY true
 ```
 
 ### AZURE_AI_FOUNDRY_PROJECT_NAME
@@ -202,6 +219,7 @@ The `infra/sample-ai-foundry-projects.json` file contains an array of project de
 | Description  | Optional description shown in the Azure portal            |
 
 Example JSON structure:
+
 ```json
 [
   {

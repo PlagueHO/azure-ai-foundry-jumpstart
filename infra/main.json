@@ -10,7 +10,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "5484153450332641504"
+      "templateHash": "2114339448709484002"
     }
   },
   "parameters": {
@@ -53,7 +53,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Deploy AI Foundry projects to the Hub instead of the AI Services resource. Only applies when aiFoundryHubDeploy is true. Defaults to false."
+        "description": "Deploy AI Foundry projects to the Azure AI Foundry Hub. Only applies when aiFoundryHubDeploy is true. Defaults to false."
       }
     },
     "keyVaultEnablePurgeProtection": {
