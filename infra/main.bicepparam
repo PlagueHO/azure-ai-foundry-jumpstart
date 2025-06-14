@@ -20,7 +20,7 @@ param azureAiSearchSku = toLower(readEnvironmentVariable('AZURE_AI_SEARCH_SKU', 
 param azureAiSearchDeploy = toLower(readEnvironmentVariable('AZURE_AI_SEARCH_DEPLOY', 'true')) == 'true'
 
 // Storage account override (use 'default' to keep the generated name)
-param azureStorageAccountName = readEnvironmentVariable('AZURE_STORAGE_ACCOUNT_NAME', 'default')
+param azureStorageAccountName = readEnvironmentVariable('AZURE_STORAGE_ACCOUNT_NAME', '') == '' ? 'default' : readEnvironmentVariable('AZURE_STORAGE_ACCOUNT_NAME', '')
 
 // Azure AI Foundry Hub parameters
 param aiFoundryHubDeploy = toLower(readEnvironmentVariable('AZURE_AI_FOUNDRY_HUB_DEPLOY', 'false')) == 'true'

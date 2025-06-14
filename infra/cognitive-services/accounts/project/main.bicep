@@ -35,8 +35,8 @@ param displayName string
 @sys.description('Optional. Description of the Foundry Project.')
 param description string = ''
 
-import { connectionType, categoryType, connectionPropertyType } from '../connection/main.bicep'
-@sys.description('Optional. Connections to create in the Cognitive Services account.')
+import { connectionType } from '../connection/main.bicep'
+@sys.description('Optional. Connections to create in the AI Foundry Project.')
 param connections connectionType[] = []
 
 
@@ -214,6 +214,21 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-previ
     description: description
   }
 }
+
+resource project_connections 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = [
+  for (connection, index) in (connections ?? []): {
+    parent: project
+    name: connection.name
+    properties: union(connection.connectionProperties, {
+      category: connection.category
+      expiryTime: connection.?expiryTime
+      isSharedToAll: connection.?isSharedToAll
+      metadata: connection.?metadata
+      sharedUserList: connection.?sharedUserList
+      target: connection.target
+    })
+  }
+]
 
 resource project_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {

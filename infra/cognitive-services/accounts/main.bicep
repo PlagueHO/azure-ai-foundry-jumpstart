@@ -145,7 +145,7 @@ param allowProjectManagement bool?
 @description('Optional. The Projects to create in the Cognitive Services account.')
 param projects projectType[]?
 
-import { connectionType, categoryType, connectionPropertyType } from 'connection/main.bicep'
+import { connectionType } from 'connection/main.bicep'
 @sys.description('Optional. Connections to create in the Cognitive Services account.')
 param connections connectionType[] = []
 
