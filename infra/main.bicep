@@ -798,28 +798,7 @@ var aiFoundryServiceConnections = concat(azureAiSearchDeploy ? [
     target: aiSearchService.outputs.endpoint
     isSharedToAll: true
   }
-] : [], aiFoundryHubDeploy ? [
-  {
-    // AzureStorageAccount connection
-    category: 'AzureBlob'
-    connectionProperties: {
-      authType: 'AAD'
-    }
-    metadata: {
-      Type: 'azure_storage_account'
-      ApiType: 'Azure'
-      ApiVersion: '2023-10-01'
-      DeploymentApiVersion: '2023-10-01'
-      Location: location
-      ResourceId: storageAccount.outputs.resourceId
-      AccountName: storageAccountName
-      ContainerName: 'default'
-    }
-    name: replace(abbrs.storageStorageAccounts,'-','')
-    target: storageAccount.outputs.primaryBlobEndpoint
-    isSharedToAll: true
-  }
-] : [], deploySampleData ? [
+] : [], (deploySampleData) ? [
   {
     // SampleDataStorageAccount connection
     category: 'AzureBlob'
@@ -1006,6 +985,27 @@ var aiFoundryHubConnections = concat([
     }
     name: replace(abbrs.storageStorageAccounts,'-','')
     target: storageAccount.outputs.primaryBlobEndpoint
+    isSharedToAll: true
+  }
+] : [], deploySampleData ? [
+  {
+    // SampleDataStorageAccount connection
+    category: 'AzureBlob'
+    connectionProperties: {
+      authType: 'AAD'
+    }
+    metadata: {
+      Type: 'azure_storage_account'
+      ApiType: 'Azure'
+      ApiVersion: '2023-10-01'
+      DeploymentApiVersion: '2023-10-01'
+      Location: location
+      ResourceId: sampleDataStorageAccount.outputs.resourceId
+      AccountName: sampleDataStorageAccountName
+      ContainerName: 'default'
+    }
+    name: '${replace(abbrs.storageStorageAccounts,'-','')}sample'
+    target: sampleDataStorageAccount.outputs.primaryBlobEndpoint
     isSharedToAll: true
   }
 ] : [])
