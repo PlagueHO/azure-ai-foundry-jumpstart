@@ -812,6 +812,8 @@ var aiFoundryServiceConnections = concat(azureAiSearchDeploy ? [
       DeploymentApiVersion: '2023-10-01'
       Location: location
       ResourceId: storageAccount.outputs.resourceId
+      AccountName: storageAccountName
+      ContainerName: 'default'
     }
     name: replace(abbrs.storageStorageAccounts,'-','')
     target: storageAccount.outputs.primaryBlobEndpoint
@@ -831,6 +833,8 @@ var aiFoundryServiceConnections = concat(azureAiSearchDeploy ? [
       DeploymentApiVersion: '2023-10-01'
       Location: location
       ResourceId: sampleDataStorageAccount.outputs.resourceId
+      AccountName: sampleDataStorageAccountName
+      ContainerName: 'default'
     }
     name: '${replace(abbrs.storageStorageAccounts,'-','')}sample'
     target: sampleDataStorageAccount.outputs.primaryBlobEndpoint
@@ -997,6 +1001,8 @@ var aiFoundryHubConnections = concat([
       DeploymentApiVersion: '2023-10-01'
       Location: location
       ResourceId: storageAccount.outputs.resourceId
+      AccountName: storageAccountName
+      ContainerName: 'default'
     }
     name: replace(abbrs.storageStorageAccounts,'-','')
     target: storageAccount.outputs.primaryBlobEndpoint
