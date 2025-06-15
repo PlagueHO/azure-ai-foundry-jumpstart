@@ -14,7 +14,13 @@ This repository supports flexible Azure AI Foundry project architectures with th
 > [!NOTE]
 > Azure AI Foundry resource is the new name for Azure AI Services. It can be deployed, with our without project capabilities. The Hub is an optional component that provides additional features that are provided by the Azure Machine Learning workspace, such as data asset management, pipelines, and experiment tracking. The Hub is not required for basic AI Foundry capabilities, but can be useful for more complex ML workflows. It is recommended to use the AI Foundry resource for new deployments, as it provides a simpler solution with fewer dependencies.
 
-## Deployment Modes
+The following diagram illustrates the core architecture of the Azure AI Foundry project modes:
+
+[![A diagram of the Azure AI Foundry, Azure AI Foundry project, Azure AI Foundry Hub and project resources](images/azure-ai-foundry-resources.png)](images/azure-ai-foundry-resources.png)
+
+---
+
+## Project Modes Overview
 
 ### AI Foundry Only (Default)
 
