@@ -26,7 +26,7 @@ It automates the deployment of the services using the same approach as the instr
 
 ## Project Modes
 
-This solution can deploy Foundry with and without support for Azure AI Foundry Hubs. By default, the solution accelerator deploys the Azure AI Foundry without a Hub with projects being added to the AI Foundry resource, but if you want to use the Hub-based project mode, you can enable it in the configuration.
+This solution can deploy Foundry with and without support for Azure AI Foundry Hubs. By default, the solution accelerator deploys the Azure AI Foundry without an Azure AI Foundry Hub with projects being added to the AI Foundry resource. If you want to use the Hub-based project mode, you can enable it in the configuration.
 
 > [!NOTE]
 > It is recommended to use the Foundry project mode for new projects as it simplifies the resource requirements and is the newer approach. Deployment of a Foundry Hub is provided for backward compatibility with existing projects and is not recommended for new projects. Hub deployment support may be removed from this solution accelerator in the future.

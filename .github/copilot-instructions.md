@@ -1,5 +1,11 @@
-This is a Azure Developer Console (AZ CLI) solution accelerator for deploying an Azure AI Foundry environment and dependent resurces .
+This is a Azure Developer Console (AZ CLI) solution accelerator for deploying an Azure AI Foundry environment and dependent resurces.
 
+## Glossary
+
+- Azure AI Foundry is the new name of the Azure AI Services resource (Microsoft.CognitiveServices/accounts) and provides a single resource for AI capabilities, including project management.
+- Azure AI Foundry Hub is a resource (Microsoft.MachineLearningServices/workspaces) that is considered legacy, but can be used in combination with Azure AI Foundry resource.
+
+## Key principles
 The key principles you should adopt when suggesting Bicep code is:
 - Use Azure Verified Modules (AVM) for all resources, including networking, security, and compute resources - wherever possible.
 - Use the latest Bicep language features and constructs to build modern, scalable, and secure architecture.

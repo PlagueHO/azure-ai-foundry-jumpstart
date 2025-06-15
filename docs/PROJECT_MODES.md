@@ -1,82 +1,147 @@
 # Azure AI Foundry Project Modes
 
-This repository has been refactored to support two different Azure AI Foundry project modes:
+This repository supports flexible Azure AI Foundry project architectures with the Azure AI Foundry resource always being deployed with project management capabilities, and an optional Hub that can be deployed alongside it.
 
-## Foundry Based-Project - Recommended Architecture
+> [!IMPORTANT]
+> The Azure AI Foundry resource is the new name for Azure AI Services. It will be referenced as such throughout this documentation. It is a resource `Microsoft.CognitiveServices/accounts` with `allowProjectManagement: true`.
 
-**Resource Type**: `Microsoft.CognitiveServices/accounts` with `allowProjectManagement: true`
+## Core Architecture
 
-**Dependencies**:
+- **Azure AI Foundry**: Always deployed as `Microsoft.CognitiveServices/accounts` with `allowProjectManagement: true`, providing the foundation for all AI capabilities including Azure OpenAI, Azure AI Search connections, and project management. Used to be referred to as Azure AI Services.
+- **Azure AI Foundry Hub**: Optionally deployed as `Microsoft.MachineLearningServices/workspaces` with `kind: 'Hub'` when enhanced ML workspace capabilities are needed. This is not recommended for new deployments, but can be used for existing scenarios that require it.
+- **Project Deployment**: Projects can be deployed either to the AI Foundry resource, to the Hub or both, depending on configuration.
 
-- Azure Application Insights (for monitoring)
+> [!NOTE]
+> Azure AI Foundry resource is the new name for Azure AI Services. It can be deployed, with our without project capabilities. The Hub is an optional component that provides additional features that are provided by the Azure Machine Learning workspace, such as data asset management, pipelines, and experiment tracking. The Hub is not required for basic AI Foundry capabilities, but can be useful for more complex ML workflows. It is recommended to use the AI Foundry resource for new deployments, as it provides a simpler solution with fewer dependencies.
+
+## Deployment Modes
+
+### AI Foundry Only (Default)
+
+This is the simplest deployment mode, focusing on AI capabilities without the additional complexity of a Hub.
+
+**Configuration**:
+
+```bash
+azd env set AZURE_AI_FOUNDRY_HUB_DEPLOY false # This is te default
+# AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY is not relevant when Hub is not deployed
+```
+
+**Resources Deployed**:
+
+- Azure AI Services (`Microsoft.CognitiveServices/accounts`) with `allowProjectManagement: true`
 - Azure AI Search (optional)
-- No Azure Storage Account or Key Vault required
-
-**Projects**: Deployed as `Microsoft.CognitiveServices/accounts/projects` (child resources of the AI Services account).
-
-**Connections**: Both `Microsoft.CognitiveServices/accounts` and `Microsoft.CognitiveServices/accounts/projects` can connect to other resources using the connection child resource type `Microsoft.CognitiveServices/accounts/connections` or `Microsoft.CognitiveServices/accounts/projects/connections`.
+- Projects deployed as `Microsoft.CognitiveServices/accounts/projects` (child resources of AI Services)
 
 **Use Case**:
 
 - AI application development focused on Foundry capabilities
 - Simpler deployment with fewer dependencies
 - Cost-optimized scenarios
-- When you don't need the full ML workspace overhead
+- When you don't need full ML workspace capabilities
 
-## Hub Based-Project - Traditional Architecture
+### AI Foundry and AI Foundry Hub with Hub-based Projects
 
-**Resource Type**: `Microsoft.MachineLearningServices/workspaces` with `kind: 'Hub'`
+**Configuration**:
 
-**Dependencies**:
+```bash
+azd env set AZURE_AI_FOUNDRY_HUB_DEPLOY true
+azd env set AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY true
+```
 
-- Azure Storage Account (required for ML workspace)
-- Azure Key Vault (required for ML workspace)
-- Azure Application Insights (required for ML workspace)
-- Azure Container Registry (optional)
+**Resources Deployed**:
+
+- Azure AI Services (`Microsoft.CognitiveServices/accounts`) with `allowProjectManagement: true`
+- Azure AI Foundry Hub (`Microsoft.MachineLearningServices/workspaces`)
+- Azure Storage Account (required for Hub)
+- Azure Key Vault (required for Hub)
+- Azure Container Registry (used with hub, optional)
 - Azure AI Search (optional)
-- Azure AI Services
-
-**Projects**: Deployed as `Microsoft.MachineLearningServices/workspaces` with `kind: 'Project'` that reference the hub via `hubResourceId`.
+- Projects deployed as `Microsoft.MachineLearningServices/workspaces` with `kind: 'Project'` connected to the Hub
 
 **Use Case**:
 
-- Traditional ML/AI workloads
-- Scenarios requiring full ML workspace capabilities
-- When you need data lineage and experiment tracking
+- Traditional ML/AI workloads requiring full workspace capabilities
+- Scenarios needing data lineage and experiment tracking
 - Multi-project environments with shared compute and storage
+- When you need both AI Services capabilities and ML workspace features
 
+### AI Foundry and AI Foundry Hub with AI Services Projects
+
+**Configuration**:
+
+```bash
+azd env set AZURE_AI_FOUNDRY_HUB_DEPLOY true
+azd env set AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY false
+```
+
+**Resources Deployed**:
+
+- Azure AI Services (`Microsoft.CognitiveServices/accounts`) with `allowProjectManagement: true`
+- Azure AI Foundry Hub (`Microsoft.MachineLearningServices/workspaces`)
+- Azure Storage Account (required for Hub)
+- Azure Key Vault (required for Hub)
+- Azure Container Registry (used with hub, optional)
+- Azure AI Search (optional)
+- Projects deployed as `Microsoft.CognitiveServices/accounts/projects` (child resources of AI Services)
+
+**Use Case**:
+
+- Hybrid scenarios where you need Hub capabilities for some workloads
+- Transitioning from Hub-based to AI Services-based project management
+- When you want Hub features available but prefer simpler project management
 
 ## Configuration
 
-Set the project mode using the `aiFoundryProjectMode` parameter:
-
-```bicep
-param aiFoundryProjectMode string = 'Hub' // or 'Project'
-```
-
-Or via environment variable:
+Control the deployment mode using these environment variables:
 
 ```bash
-export AZURE_AI_FOUNDRY_PROJECT_MODE=Project
+azd env set AZURE_AI_FOUNDRY_HUB_DEPLOY false          # Deploy the Hub and supporting resources
+azd env set AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY false  # Deploy projects to Hub (vs AI Foundry Services)
 ```
 
-## Key Differences
+Or alternatively using these parameters directly in the bicep template:
 
-| Aspect | Hub Mode | Project Mode |
-|--------|----------|--------------|
-| **Resource Count** | Higher (Hub + Storage + Key Vault) | Lower (AI Services account only) |
-| **Cost** | Higher due to additional resources | Lower, pay only for what you use |
-| **Complexity** | More complex setup | Simpler deployment |
-| **Features** | Full ML workspace capabilities | AI Foundry focused features |
-| **Projects** | ML workspace projects | CognitiveServices projects |
-| **Dependency Management** | Hub manages shared resources | Projects are more independent |
+```bicep
+param aiFoundryHubDeploy bool = false         // Deploy the Hub and supporting resources
+param aiFoundryHubProjectDeploy bool = false  // Deploy projects to Hub (vs AI Foundry Services)
+```
+
+## Resource Connections
+
+The AI Foundry resource is always connected to:
+
+- Azure AI Search (when deployed)
+- Azure Storage Account (when Hub is deployed)
+- Sample data storage account (when sample data is deployed)
+
+The Azure AI Foundry Hub (when deployed) is connected to:
+
+- Azure AI Foundry resource
+- Azure AI Search (when deployed)
+- Azure Storage Account (always when Hub is deployed)
+- Sample data storage account (when sample data is deployed)
 
 ## Migration Considerations
 
-- **Hub to Project**: Projects need to be recreated as they are different resource types
-- **Project to Hub**: Requires deploying hub infrastructure and migrating project configurations
-- Both modes support the same AI capabilities (Azure OpenAI, AI Search connections, etc.)
+**Adding Hub to AI Services-only deployment**:
+
+- Set `azd env set AZURE_AI_FOUNDRY_HUB_DEPLOY true` to add Hub and supporting resources
+- Existing AI Services projects remain functional
+- Sample projects can be deployed to Hub by setting `azd env set AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY true`
+
+**Removing Hub from deployment**:
+
+- Hub-based projects need to be migrated to AI Services projects (different resource types)
+- Set `azd env set AZURE_AI_FOUNDRY_HUB_DEPLOY false` to remove Hub and supporting resources
+- AI Services resource continues to function independently
+
+**Moving projects between AI Services and Hub**:
+
+- Projects are different resource types and cannot be moved directly
+- Requires recreation of projects in the target location
+- Both deployment targets support the same AI capabilities (Azure OpenAI, AI Search connections, etc.)
 
 ## Backward Compatibility
 
-The refactored template defaults to `Hub` mode to ensure backward compatibility with existing deployments.
+The template defaults to Azure AI Foundry only deployment (`azd env set AZURE_AI_FOUNDRY_HUB_DEPLOY false`) for a simplified experience. It is also the recommended mode for new deployments. Existing deployments using an Azure AI Foundry Hub can continue by setting `azd env set AZURE_AI_FOUNDRY_HUB_DEPLOY true`.
