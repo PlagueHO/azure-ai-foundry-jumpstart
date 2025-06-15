@@ -823,6 +823,11 @@ var aiFoundryServiceConnections = concat(azureAiSearchDeploy ? [
 module aiFoundryService './cognitive-services/accounts/main.bicep' = {
   name: 'ai-foundry-service-deployment'
   scope: rg
+  dependsOn: [
+    aiServicesPrivateDnsZone
+    aiServicesOpenAiDnsZone
+    aiServicesAiDnsZone
+  ]
   params: {
     name: aiFoundryServiceName
     kind: 'AIServices'
