@@ -36,8 +36,10 @@ The purpose of this specification is to standardize infrastructure deployment fo
 - **SEC-001**: All secrets and sensitive values must be passed as secure  
   parameters and never hardcoded.
 - **SEC-002**: Role-based access control (RBAC) and network security rules must be defined using AVM modules where possible.
+- **SEC-003**: Azure Key Vault must be used to store secrets wherever possible. Secret parameters should reference Key Vault secrets using secure parameter patterns rather than passing secrets directly as parameters.
 - **CON-001**: Only Microsoft-verified AVM modules from https://aka.ms/avm may be used for core resources.
 - **GUD-001**: Use parameterization and outputs to maximize reusability and composability.
+- **GUD-002**: All Bicep files must pass `az bicep lint` validation with no errors or warnings to ensure code quality and adherence to best practices.
 - **PAT-001**: Follow the folder and file naming conventions: `infra/main.bicep`, `infra/main.bicepparam`, and `infra/modules/` for custom modules if needed.
 
 ## 4. Interfaces & Data Contracts
@@ -94,17 +96,45 @@ module sql 'br/public:azurerm:mssql-server:2.0.0' = {
     administratorLoginPassword: sqlAdminPassword
   }
 }
+
+// Example: Key Vault integration for secrets
+module keyVault 'br/public:avm/res/key-vault/vault:0.7.1' = {
+  name: 'keyVault'
+  params: {
+    name: 'kv-${environmentName}'
+    location: location
+    secrets: [
+      {
+        name: 'sql-admin-password'
+        value: sqlAdminPassword
+      }
+    ]
+  }
+}
+
+// Example: Referencing Key Vault secret
+module sqlServerWithKeyVault 'br/public:avm/res/sql/server:0.17.0' = {
+  name: 'sqlServer'
+  params: {
+    name: 'sql-${environmentName}'
+    location: location
+    administratorLogin: 'sqladmin'
+    administratorLoginPassword: keyVault.outputs.secrets['sql-admin-password'].secretUri
+  }
+}
 ````
 
 ## 7. Validation Criteria
 
 - All core resources are deployed using AVM modules.
 - No secrets are hardcoded in any Bicep file.
+- Azure Key Vault is used for secret storage with proper secret references.
 - The `main.bicepparam` file exists and is valid.
 - All parameters in `main.bicepparam` use `readEnvironmentVariable()` with  
   Azure Developer CLI naming conventions (UPPERCASE_WITH_UNDERSCORES).
 - The structure matches the referenced pattern.
 - All parameters required by AVM modules are provided.
+- All Bicep files pass `az bicep lint` validation with no errors or warnings.
 
 ## 8. Related Specifications / Further Reading
 
