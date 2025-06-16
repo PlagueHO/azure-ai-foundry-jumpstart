@@ -94,7 +94,7 @@
         <mxCell id="pcRGNQqygn--t2DNfjO_-16" value="AI Search&lt;div&gt;(optional)&lt;/div&gt;" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/app_services/Search_Services.svg;fontFamily=Verdana;rounded=0;strokeColor=#C7C7C7;labelBackgroundColor=#F4F4F4;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;" parent="jMzyqpWjSi7Y2Doyyjrz-6" vertex="1">
           <mxGeometry x="224" y="453.88" width="68" height="49.120000000000005" as="geometry" />
         </mxCell>
-        <mxCell id="pcRGNQqygn--t2DNfjO_-15" value="AI Foundry&lt;br&gt;(FKA AI Services)" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/ai_machine_learning/AI_Studio.svg;fontFamily=Verdana;rounded=0;strokeColor=#C7C7C7;labelBackgroundColor=#F4F4F4;labelPosition=center;verticalLabelPosition=top;verticalAlign=bottom;" parent="jMzyqpWjSi7Y2Doyyjrz-6" vertex="1">
+        <mxCell id="pcRGNQqygn--t2DNfjO_-15" value="AI Foundry&lt;br&gt;(aka AI Services)" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/ai_machine_learning/AI_Studio.svg;fontFamily=Verdana;rounded=0;strokeColor=#C7C7C7;labelBackgroundColor=#F4F4F4;labelPosition=center;verticalLabelPosition=top;verticalAlign=bottom;" parent="jMzyqpWjSi7Y2Doyyjrz-6" vertex="1">
           <mxGeometry x="148.55" y="311.5" width="64" height="68" as="geometry" />
         </mxCell>
         <mxCell id="CsdJewZucDD4-k5Zqt_t-1" value="AI Foundry&lt;br&gt;Project(s)" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/ai_machine_learning/AI_Studio.svg;fontFamily=Verdana;rounded=0;strokeColor=#C7C7C7;labelBackgroundColor=#F4F4F4;" parent="jMzyqpWjSi7Y2Doyyjrz-6" vertex="1">
