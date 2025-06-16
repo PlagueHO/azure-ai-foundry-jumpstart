@@ -1,7 +1,7 @@
 ---
 mode: 'agent'
 description: 'Update the llms.txt file in the root folder to reflect changes in documentation or specifications'
-tools: ['codebase', 'filesystem', 'github', 'websearch']
+tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
 ---
 Your task is to update the [llms.txt](/llms.txt) file located in the root of the repository. This file provides high-level guidance to large language models (LLMs) on where to find relevant content for understanding the solution's purpose and specifications.
 
