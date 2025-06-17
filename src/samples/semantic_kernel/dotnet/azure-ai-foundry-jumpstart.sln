@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "semantic_kernel", "semantic
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet", "dotnet", "{AD3E8D09-30F6-3A71-2EBB-5D8B12EFACAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechSupportChatAgent", "src\samples\semantic_kernel\dotnet\tech-support-chat-agent\TechSupportChatAgent.csproj", "{58F1FCC7-8F2A-BDD7-52FA-2262F4C228FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechSupportChatAgent", "tech-support-chat-agent\TechSupportChatAgent.csproj", "{58F1FCC7-8F2A-BDD7-52FA-2262F4C228FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
