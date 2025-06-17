@@ -53,7 +53,7 @@ def initialize_client():
     # Test the connection first
     try:
         # Try to access the agents client to test the connection
-        agents_client = project_client.agents
+        _ = project_client.agents
         print("Connection successful! Agent client created.")
     except Exception as e:
         print(f"Connection test failed: {e}")

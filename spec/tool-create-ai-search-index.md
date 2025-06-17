@@ -37,23 +37,47 @@ Intended audience: Data engineers, AI/ML developers, DevOps engineers deploying 
 
 ## 3. Requirements, Constraints & Guidelines
 
-| Type        | Description |
-|-------------|-------------|
-| Requirement | The tool must be implemented in Python 3.13+ and follow PEP8 style. |
-| Requirement | The CLI must accept parameters for storage account, storage key or connection string, storage container, search service, index name, Azure OpenAI endpoint, embedding model, deployment, and dimension. |
-| Requirement | The tool must use Azure SDKs to create and configure indexes, indexers, skillsets, and data sources. |
-| Requirement | The tool must validate input parameters and provide clear, actionable error messages. |
-| Requirement | The tool must log all operations and errors to stdout with timestamps. |
-| Requirement | The tool must support idempotent operations and optional teardown of existing resources. |
-| Requirement | The tool must support configuration of chunking and vectorization for RAG scenarios. |
-| Requirement | The tool must not log or expose sensitive information (e.g., keys, connection strings). |
-| Requirement | The tool must exit with code 0 on success, non-zero on error. |
-| Requirement | The tool must support both API key and DefaultAzureCredential authentication. |
-| Constraint  | Only public, stable Azure SDK APIs may be used. |
-| Constraint  | No sensitive information should be logged or exposed in error messages. |
-| Guideline   | Use type hints and docstrings for all public functions and classes. |
-| Guideline   | Use self-explanatory variable and parameter names. |
-| Pattern     | Use the `argparse` library for CLI argument parsing. |
+### Requirements
+
+- **REQ-001**: The tool must be implemented in Python 3.13+ and follow PEP8 style guidelines
+- **REQ-002**: The CLI must accept parameters for storage account, storage key or connection string, storage container, search service, index name, Azure OpenAI endpoint, embedding model, deployment, and dimension
+- **REQ-003**: The tool must use Azure SDKs to create and configure indexes, indexers, skillsets, and data sources
+- **REQ-004**: The tool must validate input parameters and provide clear, actionable error messages
+- **REQ-005**: The tool must log all operations and errors to stdout with timestamps
+- **REQ-006**: The tool must support idempotent operations and optional teardown of existing resources
+- **REQ-007**: The tool must support configuration of chunking and vectorization for RAG scenarios
+- **REQ-008**: The tool must exit with code 0 on success, non-zero on error
+- **REQ-009**: The tool must support both API key and DefaultAzureCredential authentication
+- **REQ-010**: The tool must be executable as a Python module using `python -m` syntax
+- **REQ-011**: The tool must include comprehensive unit tests using pytest that achieve adequate code coverage
+- **REQ-012**: The tool must pass Ruff linting checks without errors or warnings
+- **REQ-013**: The tool must pass pylint code quality checks without errors
+- **REQ-014**: The tool must pass Mypy type checking validation without errors
+
+### Security Requirements
+
+- **SEC-001**: The tool must not log or expose sensitive information (e.g., keys, connection strings)
+- **SEC-002**: All authentication credentials must be handled securely and not exposed in error messages
+- **SEC-003**: The tool must support Azure DefaultAzureCredential for secure authentication
+
+### Constraints
+
+- **CON-001**: Only public, stable Azure SDK APIs may be used
+- **CON-002**: No sensitive information should be logged or exposed in error messages
+- **CON-003**: The tool must be compatible with Azure AI Search service limitations and quotas
+
+### Guidelines
+
+- **GUD-001**: Use type hints and docstrings for all public functions and classes
+- **GUD-002**: Use self-explanatory variable and parameter names
+- **GUD-003**: Follow Python logging best practices with appropriate log levels
+- **GUD-004**: Implement proper exception handling with meaningful error messages
+
+### Patterns
+
+- **PAT-001**: Use the `argparse` library for CLI argument parsing
+- **PAT-002**: Implement the CLI as a main module with proper entry point structure
+- **PAT-003**: Use Azure SDK client patterns for resource management
 
 ## 4. Interfaces & Data Contracts
 
@@ -118,6 +142,10 @@ python -m create_ai_search_index.cli --storage-account mystorage --storage-accou
 - No duplicate indexes or documents should be created on repeated runs.
 - Logs must include timestamps and operation details.
 - No sensitive information is logged or exposed.
+- All unit tests must pass with `pytest tests/`
+- Ruff linting must pass with `python -m ruff check src/`
+- Pylint code quality checks must pass with `pylint src/`
+- Mypy type checking must pass with `mypy src/`
 
 ## 8. Related Specifications / Further Reading
 
