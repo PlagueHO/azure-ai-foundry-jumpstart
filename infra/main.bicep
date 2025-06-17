@@ -302,6 +302,12 @@ module storageBlobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7
     name: 'privatelink.blob.${environment().suffixes.storage}'
     location: 'global'
     tags: tags
+    virtualNetworkLinks: [
+      {
+        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        registrationEnabled: false
+      }
+    ]
   }
 }
 
@@ -313,6 +319,12 @@ module aiSearchPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1'
     name: 'privatelink.search.windows.net'
     location: 'global'
     tags: tags
+    virtualNetworkLinks: [
+      {
+        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        registrationEnabled: false
+      }
+    ]
   }
 }
 
@@ -324,6 +336,12 @@ module aiHubApiMlPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.
     name: 'privatelink.api.azureml.ms'
     location: 'global'
     tags: tags
+    virtualNetworkLinks: [
+      {
+        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        registrationEnabled: false
+      }
+    ]
   }
 }
 
@@ -334,6 +352,12 @@ module aiHubNotebooksPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:
     name: 'privatelink.notebooks.azure.net'
     location: 'global'
     tags: tags
+    virtualNetworkLinks: [
+      {
+        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        registrationEnabled: false
+      }
+    ]
   }
 }
 
@@ -344,6 +368,13 @@ module keyVaultPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1'
   params: {
     name: 'privatelink.vaultcore.azure.net'
     location: 'global'
+    tags: tags
+    virtualNetworkLinks: [
+      {
+        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        registrationEnabled: false
+      }
+    ]
   }
 }
 
@@ -355,6 +386,12 @@ module containerRegistryPrivateDnsZone 'br/public:avm/res/network/private-dns-zo
     name: 'privatelink.azurecr.io'
     location: 'global'
     tags: tags
+    virtualNetworkLinks: [
+      {
+        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        registrationEnabled: false
+      }
+    ]
   }
 }
 
@@ -366,6 +403,12 @@ module aiServicesPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.
     name: 'privatelink.cognitiveservices.azure.com'
     location: 'global'
     tags: tags
+    virtualNetworkLinks: [
+      {
+        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        registrationEnabled: false
+      }
+    ]
   }
 }
 
@@ -376,6 +419,12 @@ module aiServicesOpenAiDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1
     name: 'privatelink.openai.azure.com'
     location: 'global'
     tags: tags
+    virtualNetworkLinks: [
+      {
+        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        registrationEnabled: false
+      }
+    ]
   }
 }
 
@@ -386,6 +435,12 @@ module aiServicesAiDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = 
     name: 'privatelink.services.ai.azure.com'
     location: 'global'
     tags: tags
+    virtualNetworkLinks: [
+      {
+        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        registrationEnabled: false
+      }
+    ]
   }
 }
 
@@ -630,9 +685,6 @@ module storageAccountRoles './core/security/role_storageaccount.bicep' = if (aiF
 module sampleDataStorageAccountRoles './core/security/role_storageaccount.bicep' = if (deploySampleData) {
   name: 'sample-data-storage-account-role-assignments'
   scope: rg
-  dependsOn: [
-    sampleDataStorageAccount
-  ]
   params: {
     azureStorageAccountName: sampleDataStorageAccountName
     roleAssignments: [
@@ -823,11 +875,6 @@ var aiFoundryServiceConnections = concat(azureAiSearchDeploy ? [
 module aiFoundryService './cognitive-services/accounts/main.bicep' = {
   name: 'ai-foundry-service-deployment'
   scope: rg
-  dependsOn: [
-    aiServicesPrivateDnsZone
-    aiServicesOpenAiDnsZone
-    aiServicesAiDnsZone
-  ]
   params: {
     name: aiFoundryServiceName
     kind: 'AIServices'
@@ -842,6 +889,15 @@ module aiFoundryService './cognitive-services/accounts/main.bicep' = {
     ]
     managedIdentities: {
       systemAssigned: true
+    }
+    networkAcls: azureNetworkIsolation ? {
+      defaultAction: 'Deny'
+      ipRules: aiFoundryIpAllowList
+      virtualNetworkRules: []
+    } : {
+      defaultAction: 'Allow'
+      ipRules: []
+      virtualNetworkRules: []
     }
     privateEndpoints: azureNetworkIsolation ? [
       {
