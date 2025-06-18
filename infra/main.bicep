@@ -118,6 +118,7 @@ var tags = {
 #disable-next-line no-unused-vars
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 
+var effectiveResourceGroupName = !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
 var logAnalyticsName = '${abbrs.operationalInsightsWorkspaces}${environmentName}'
 var sendTologAnalyticsCustomSettingName = 'send-to-${logAnalyticsName}'
 var applicationInsightsName = '${abbrs.insightsComponents}${environmentName}'
@@ -224,18 +225,21 @@ var aiFoundryServiceProjects = [for project in aiFoundryServiceProjectsArray: {
 
 var projectCount = length(effectiveProjectList)
 
-
 // ---------- RESOURCE GROUP (BOTH HUB AND PROJECT MODE) ----------
-resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
-  location: location
-  tags: tags
+module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.1' = {
+  name: 'resource-group-deployment'
+  params: {
+    name: effectiveResourceGroupName
+    location: location
+    tags: tags
+  }
 }
 
 // ---------- MONITORING RESOURCES (BOTH HUB AND PROJECT MODE) ----------
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = {
   name: 'logAnalyticsWorkspace'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: logAnalyticsName
     location: location
@@ -245,7 +249,8 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
 
 module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
   name: 'applicationInsights'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: applicationInsightsName
     location: location
@@ -296,7 +301,8 @@ var subnets = [
 
 module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if (azureNetworkIsolation) {
   name: 'virtualNetwork'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: virtualNetworkName
     location: location
@@ -312,7 +318,8 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if (az
 // ---------- PRIVTE DNS ZONES (REQUIRED FOR NETOWRK ISOLATION) ----------
 module storageBlobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if ((aiFoundryHubDeploy || deploySampleData) && azureNetworkIsolation) {
   name: 'storage-blobservice-private-dns-zone'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: 'privatelink.blob.${environment().suffixes.storage}'
     location: 'global'
@@ -329,7 +336,8 @@ module storageBlobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7
 // Private DNS zones for AI Search
 module aiSearchPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation && azureAiSearchDeploy) {
   name: 'ai-search-private-dns-zone'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: 'privatelink.search.windows.net'
     location: 'global'
@@ -346,7 +354,8 @@ module aiSearchPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1'
 // Private DNS zones for AI Foundry Hub
 module aiHubApiMlPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (aiFoundryHubDeploy && azureNetworkIsolation) {
   name: 'ai-hub-apiml-private-dns-zone'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: 'privatelink.api.azureml.ms'
     location: 'global'
@@ -362,7 +371,8 @@ module aiHubApiMlPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.
 
 module aiHubNotebooksPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (aiFoundryHubDeploy && azureNetworkIsolation) {
   name: 'ai-hub-notebooks-private-dns-zone'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: 'privatelink.notebooks.azure.net'
     location: 'global'
@@ -379,7 +389,8 @@ module aiHubNotebooksPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:
 // Private DNS zones for AI Foundry Hub dependencies
 module keyVaultPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (aiFoundryHubDeploy && azureNetworkIsolation) {
   name: 'keyvault-private-dns-zone'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: 'privatelink.vaultcore.azure.net'
     location: 'global'
@@ -396,7 +407,8 @@ module keyVaultPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1'
 
 module containerRegistryPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (aiFoundryHubDeploy && azureNetworkIsolation) {
   name: 'container-registry-private-dns-zone'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: 'privatelink.azurecr.io'
     location: 'global'
@@ -413,7 +425,8 @@ module containerRegistryPrivateDnsZone 'br/public:avm/res/network/private-dns-zo
 // Private DNS zones for AI Services
 module aiServicesPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
   name: 'ai-services-private-dns-zone'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: 'privatelink.cognitiveservices.azure.com'
     location: 'global'
@@ -429,7 +442,8 @@ module aiServicesPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.
 
 module aiServicesOpenAiDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
   name: 'ai-services-openai-dns-zone'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: 'privatelink.openai.azure.com'
     location: 'global'
@@ -445,7 +459,8 @@ module aiServicesOpenAiDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1
 
 module aiServicesAiDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
   name: 'ai-services-ai-dns-zone'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: 'privatelink.services.ai.azure.com'
     location: 'global'
@@ -462,7 +477,8 @@ module aiServicesAiDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = 
 // ---------- KEY VAULT (HUB DEPLOY ONLY) ----------
 module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (aiFoundryHubDeploy) {
   name: 'keyVault'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: keyVaultName
     diagnosticSettings: [
@@ -496,7 +512,8 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (aiFoundryHubDep
 // ---------- STORAGE ACCOUNT (HUB DEPLOY ONLY) ----------
 module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = if (aiFoundryHubDeploy) {
   name: 'storageAccount'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: storageAccountName
     location: location
@@ -553,7 +570,8 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = if (a
 // ---------- CONTAINER REGISTRY (HUB DEPLOY ONLY) ----------
 module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = if (aiFoundryHubDeploy && containerRegistryDeploy && empty(containerRegistryResourceId)) {
   name: 'container-registry-deployment'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: containerRegistryName
     location: location
@@ -596,7 +614,8 @@ var effectiveContainerRegistryResourceId = containerRegistryDeploy
 // ---------- STORAGE ACCOUNT SAMPLE DATA (OPTIONAL) ----------
 module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = if (deploySampleData) {
   name: 'sample-data-storage-account-deployment'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: sampleDataStorageAccountName
     allowBlobPublicAccess: false
@@ -653,8 +672,9 @@ module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.20.
 // ---------- STORAGE ACCOUNT ROLE ASSIGNMENTS (HUB DEPLOY ONLY) ----------
 module storageAccountRoles './core/security/role_storageaccount.bicep' = if (aiFoundryHubDeploy) {
   name: 'storage-account-role-assignments'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [
+    resourceGroup
     storageAccount
   ]
   params: {
@@ -699,7 +719,8 @@ module storageAccountRoles './core/security/role_storageaccount.bicep' = if (aiF
 // ---------- SAMPLE DATA STORAGE ACCOUNT ROLE ASSIGNMENTS (OPTIONAL) ----------
 module sampleDataStorageAccountRoles './core/security/role_storageaccount.bicep' = if (deploySampleData) {
   name: 'sample-data-storage-account-role-assignments'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     azureStorageAccountName: sampleDataStorageAccountName
     roleAssignments: [
@@ -742,7 +763,8 @@ module sampleDataStorageAccountRoles './core/security/role_storageaccount.bicep'
 // ---------- AI SEARCH (OPTIONAL) ----------
 module aiSearchService 'br/public:avm/res/search/search-service:0.10.0' = if (azureAiSearchDeploy) {
   name: 'ai-search-service-deployment'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: aiSearchServiceName
     location: location
@@ -833,7 +855,8 @@ var aiSearchRoleAssignmentsArray = azureAiSearchDeploy ? [
 
 module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = if (azureAiSearchDeploy) {
   name: 'ai-search-role-assignments'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     azureAiSearchName: aiSearchServiceName
     roleAssignments: aiSearchRoleAssignmentsArray
@@ -889,7 +912,8 @@ var aiFoundryServiceConnections = concat(azureAiSearchDeploy ? [
 
 module aiFoundryService './cognitive-services/accounts/main.bicep' = {
   name: 'ai-foundry-service-deployment'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: aiFoundryServiceName
     kind: 'AIServices'
@@ -977,8 +1001,9 @@ var aiFoundryRoleAssignmentsArray = [
 
 module aiFoundryRoleAssignments './core/security/role_aifoundry.bicep' = {
   name: 'ai-foundry-role-assignments'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [
+    resourceGroup
     aiFoundryService
   ]
   params: {
@@ -1043,7 +1068,7 @@ var aiFoundryHubConnections = concat([
 
 module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' = if (aiFoundryHubDeploy) {
   name: 'ai-foundry-hub-workspace-deployment'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
   params: {
     name: aiFoundryHubName
     friendlyName: empty(aiFoundryHubFriendlyName) ? 'AI Foundry Hub (${environmentName})' : aiFoundryHubFriendlyName
@@ -1097,7 +1122,7 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
     systemDatastoresAuthMode: 'Identity'
     tags: tags
     workspaceHubConfig: {
-      defaultWorkspaceResourceGroup: rg.id
+      defaultWorkspaceResourceGroup: resourceGroup.outputs.resourceId
     }
   }
 }
@@ -1107,7 +1132,7 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
 // These are only deployed when using Hub mode (aiFoundryHubDeploy && aiFoundryHubProjectDeploy)
 module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspace:0.12.1' = [for project in aiFoundryHubProjectsList: if (aiFoundryHubDeploy && aiFoundryHubProjectDeploy) {
   name: take('aifp-${project.name}',64)
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
   params: {
     name: project.name
     friendlyName: project.friendlyName
@@ -1142,7 +1167,7 @@ module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspa
 module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aifoundry.bicep' = [
   for (project,index) in aiFoundryHubProjectsList: if (aiFoundryHubDeploy && aiFoundryHubProjectDeploy) {
   name: take('aifp-aisvc-ra-${project.name}',64)
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [
     aiFoundryHubProjects
   ]
@@ -1165,7 +1190,7 @@ module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aifoundr
 module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.bicep' = [
   for (project,index) in aiFoundryHubProjectsList : if (aiFoundryHubDeploy && aiFoundryHubProjectDeploy && azureAiSearchDeploy) {
     name: take('aifp-aisch-ra-${project.name}',64)
-    scope: rg
+    scope: az.resourceGroup(effectiveResourceGroupName)
     dependsOn: [
       aiFoundryHubProjects
     ]
@@ -1193,7 +1218,7 @@ module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
   for idx in range(0, (projectCount * sampleDataContainerCount)) : if (aiFoundryHubDeploy && aiFoundryHubProjectDeploy && deploySampleData && aiFoundryProjectDeploy) {
     // Make the module deployment name unique
     name: replace(toLower(take('datastore_${aiFoundryHubProjectsList[idx / sampleDataContainerCount].name}_${sampleDataContainersArray[idx % sampleDataContainerCount]}',64)),'-','_')
-    scope: rg
+    scope: az.resourceGroup(effectiveResourceGroupName)
     dependsOn: [
       aiFoundryHubProjects
     ]
@@ -1209,7 +1234,8 @@ module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
 // ------------- BASTION HOST (OPTIONAL) -------------
 module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (bastionHostDeploy && azureNetworkIsolation) {
   name: 'bastion-host-deployment'
-  scope: rg
+  scope: az.resourceGroup(effectiveResourceGroupName)
+  dependsOn: [resourceGroup]
   params: {
     name: bastionHostName
     location: location
@@ -1219,7 +1245,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (bastionH
   }
 }
 
-output AZURE_RESOURCE_GROUP string = rg.name
+output AZURE_RESOURCE_GROUP string = resourceGroup.outputs.name
 output AZURE_PRINCIPAL_ID string = principalId
 output AZURE_PRINCIPAL_ID_TYPE string = principalIdType
 output AZURE_AI_FOUNDRY_HUB_DEPLOY bool = aiFoundryHubDeploy

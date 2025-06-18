@@ -331,7 +331,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
-  scope: resourceGroup(
+  scope: az.resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
@@ -343,7 +343,7 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empt
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
-  scope: resourceGroup(
+  scope: az.resourceGroup(
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
@@ -460,7 +460,7 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
 module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}'
-    scope: resourceGroup(
+    scope: az.resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
@@ -515,7 +515,7 @@ module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endp
 module cognitiveService_projects './project/main.bicep' = [
   for (project, index) in (projects ?? []): {
     name: '${uniqueString(deployment().name, location)}-cognitiveService-project-${index}'
-    scope: resourceGroup(
+    scope: az.resourceGroup(
         split(project.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
         split(project.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
       )
@@ -569,7 +569,7 @@ resource cognitiveService_roleAssignments 'Microsoft.Authorization/roleAssignmen
 
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
-  scope: resourceGroup(
+  scope: az.resourceGroup(
     split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
     split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
