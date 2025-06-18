@@ -49,10 +49,13 @@ var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
         ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
-      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : {}
     }
-  : null
+  : {
+      type: 'None'
+      userAssignedIdentities: {}
+    }
 
 var builtInRoleNames = {
   'Azure AI Account Owner': subscriptionResourceId(
@@ -207,8 +210,8 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-previ
   parent: parentAccount
   name: name
   location: location
-  tags: tags
-  identity: identity
+  tags: tags ?? {}
+  identity: identity ?? { type: 'None' }
   properties: {
     displayName: displayName
     description: description

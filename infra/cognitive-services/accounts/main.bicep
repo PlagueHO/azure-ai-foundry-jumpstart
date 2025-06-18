@@ -160,10 +160,13 @@ var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
         ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
-      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : {}
     }
-  : null
+  : {
+      type: 'None'
+      userAssignedIdentities: {}
+    }
 
 var builtInRoleNames = {
   'Azure AI Account Owner': subscriptionResourceId(
@@ -352,9 +355,9 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
 resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
   name: name
   kind: kind
-  identity: identity
+  identity: identity ?? { type: 'None' }
   location: location
-  tags: tags
+  tags: tags ?? {}
   sku: {
     name: sku
   }
@@ -459,7 +462,7 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
 
 module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}'
+    name: take('${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}', 64)
     scope: az.resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]

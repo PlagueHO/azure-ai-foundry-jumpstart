@@ -3,10 +3,14 @@
   "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
+    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+    "_EXPERIMENTAL_FEATURES_ENABLED": [
+      "Extensibility"
+    ],
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "4770780256693553728"
+      "version": "0.34.44.8038",
+      "templateHash": "14332598210260691799"
     }
   },
   "parameters": {
@@ -215,6 +219,13 @@
         "input": {
           "name": "[variables('sampleDataContainersArray')[copyIndex('sampleDataContainers')]]",
           "publicAccess": "None"
+        }
+      },
+      {
+        "name": "aiFoundryIpRules",
+        "count": "[length(parameters('aiFoundryIpAllowList'))]",
+        "input": {
+          "value": "[parameters('aiFoundryIpAllowList')[copyIndex('aiFoundryIpRules')]]"
         }
       },
       {
@@ -548,6 +559,7 @@
       "azd-env-name": "[parameters('environmentName')]"
     },
     "resourceToken": "[toLower(uniqueString(subscription().id, parameters('environmentName'), parameters('location')))]",
+    "effectiveResourceGroupName": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
     "logAnalyticsName": "[format('{0}{1}', variables('abbrs').operationalInsightsWorkspaces, parameters('environmentName'))]",
     "sendTologAnalyticsCustomSettingName": "[format('send-to-{0}', variables('logAnalyticsName'))]",
     "applicationInsightsName": "[format('{0}{1}', variables('abbrs').insightsComponents, parameters('environmentName'))]",
@@ -574,23 +586,33 @@
     "subnets": [
       {
         "name": "Default",
-        "addressPrefix": "10.0.0.0/24"
+        "addressPrefix": "10.0.0.0/24",
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Disabled"
       },
       {
         "name": "AiServices",
-        "addressPrefix": "10.0.1.0/24"
+        "addressPrefix": "10.0.1.0/24",
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Disabled"
       },
       {
         "name": "Data",
-        "addressPrefix": "10.0.2.0/24"
+        "addressPrefix": "10.0.2.0/24",
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Disabled"
       },
       {
         "name": "Management",
-        "addressPrefix": "10.0.3.0/24"
+        "addressPrefix": "10.0.3.0/24",
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Disabled"
       },
       {
         "name": "AzureBastionSubnet",
-        "addressPrefix": "10.0.255.0/27"
+        "addressPrefix": "10.0.255.0/27",
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Disabled"
       }
     ],
     "aiFoundryHubRoleAssignments": "[if(not(empty(parameters('principalId'))), createArray(createObject('roleDefinitionIdOrName', '/providers/Microsoft.Authorization/roleDefinitions/b78c5d69-af96-48a3-bf8d-a8b4d589de94', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId'))), createArray())]"
@@ -602,13 +624,6 @@
     }
   },
   "resources": {
-    "rg": {
-      "type": "Microsoft.Resources/resourceGroups",
-      "apiVersion": "2021-04-01",
-      "name": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
-      "location": "[parameters('location')]",
-      "tags": "[variables('tags')]"
-    },
     "azureMachineLearningServicePrincipal": {
       "import": "microsoftGraphV1",
       "type": "Microsoft.Graph/servicePrincipals@v1.0",
@@ -616,11 +631,502 @@
         "appId": "0736f41a-0425-4b46-bdb5-1563eff02385"
       }
     },
+    "resourceGroup": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "resource-group-deployment",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[variables('effectiveResourceGroupName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[variables('tags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "15010504026239849745"
+            },
+            "name": "Resource Groups",
+            "description": "This module deploys a Resource Group.",
+            "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Resource Group."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[deployment().location]",
+              "metadata": {
+                "description": "Optional. Location of the Resource Group. It uses the deployment's location when not provided."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the storage account resource."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "resourceGroup": {
+              "type": "Microsoft.Resources/resourceGroups",
+              "apiVersion": "2021-04-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {}
+            },
+            "resourceGroup_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-RG-Lock', uniqueString(deployment().name, parameters('location')))]",
+              "resourceGroup": "[parameters('name')]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "lock": {
+                    "value": "[parameters('lock')]"
+                  },
+                  "name": {
+                    "value": "[parameters('name')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.32.4.45862",
+                      "templateHash": "1203907446887412297"
+                    }
+                  },
+                  "definitions": {
+                    "lockType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the name of lock."
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "allowedValues": [
+                            "CanNotDelete",
+                            "None",
+                            "ReadOnly"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the type of lock."
+                          }
+                        }
+                      },
+                      "nullable": true
+                    }
+                  },
+                  "parameters": {
+                    "lock": {
+                      "$ref": "#/definitions/lockType",
+                      "metadata": {
+                        "description": "Optional. The lock settings of the service."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the Resource Group."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "resourceGroup_lock": {
+                      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+                      "type": "Microsoft.Authorization/locks",
+                      "apiVersion": "2020-05-01",
+                      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+                      "properties": {
+                        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                      }
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "resourceGroup"
+              ]
+            },
+            "resourceGroup_roleAssignments": {
+              "condition": "[not(empty(coalesce(parameters('roleAssignments'), createArray())))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-RG-RoleAssignments', uniqueString(deployment().name, parameters('location')))]",
+              "resourceGroup": "[parameters('name')]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "roleAssignments": {
+                    "value": "[parameters('roleAssignments')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.32.4.45862",
+                      "templateHash": "6029968255804453751"
+                    }
+                  },
+                  "definitions": {
+                    "roleAssignmentType": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                            }
+                          },
+                          "roleDefinitionIdOrName": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                            }
+                          },
+                          "principalId": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                            }
+                          },
+                          "principalType": {
+                            "type": "string",
+                            "allowedValues": [
+                              "Device",
+                              "ForeignGroup",
+                              "Group",
+                              "ServicePrincipal",
+                              "User"
+                            ],
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The principal type of the assigned principal ID."
+                            }
+                          },
+                          "description": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The description of the role assignment."
+                            }
+                          },
+                          "condition": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                            }
+                          },
+                          "conditionVersion": {
+                            "type": "string",
+                            "allowedValues": [
+                              "2.0"
+                            ],
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. Version of the condition."
+                            }
+                          },
+                          "delegatedManagedIdentityResourceId": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The Resource Id of the delegated managed identity resource."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true
+                    }
+                  },
+                  "parameters": {
+                    "roleAssignments": {
+                      "$ref": "#/definitions/roleAssignmentType",
+                      "metadata": {
+                        "description": "Optional. Array of role assignments to create."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "copy": [
+                      {
+                        "name": "formattedRoleAssignments",
+                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                      }
+                    ],
+                    "builtInRoleNames": {
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Quota Request Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0e5f05e5-9ab9-446b-b98d-1e2157c94125')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "Tag Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4a9ae827-6dc8-4573-8ac7-8239d42aa03f')]",
+                      "Template Spec Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c9b6475-caf0-4164-b5a1-2142a7116f4b')]",
+                      "Template Spec Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '392ae280-861d-42bd-9ea5-08ee6d83b80e')]",
+                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                    }
+                  },
+                  "resources": {
+                    "resourceGroup_roleAssignments": {
+                      "copy": {
+                        "name": "resourceGroup_roleAssignments",
+                        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceGroup().id, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+                      "properties": {
+                        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                      }
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "resourceGroup"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the resource group."
+              },
+              "value": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('name'))]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+            }
+          }
+        }
+      }
+    },
     "logAnalyticsWorkspace": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "logAnalyticsWorkspace",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3650,14 +4156,14 @@
         }
       },
       "dependsOn": [
-        "rg"
+        "resourceGroup"
       ]
     },
     "applicationInsights": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "applicationInsights",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3674,7 +4180,7 @@
             "value": "[variables('tags')]"
           },
           "workspaceResourceId": {
-            "value": "[listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'logAnalyticsWorkspace'), '2022-09-01').resourceId]"
+            "value": "[reference('logAnalyticsWorkspace').outputs.resourceId.value]"
           }
         },
         "template": {
@@ -4368,7 +4874,7 @@
       },
       "dependsOn": [
         "logAnalyticsWorkspace",
-        "rg"
+        "resourceGroup"
       ]
     },
     "virtualNetwork": {
@@ -4376,7 +4882,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "virtualNetwork",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -6024,7 +6530,7 @@
         }
       },
       "dependsOn": [
-        "rg"
+        "resourceGroup"
       ]
     },
     "storageBlobPrivateDnsZone": {
@@ -6032,7 +6538,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "storage-blobservice-private-dns-zone",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -6047,6 +6553,14 @@
           },
           "tags": {
             "value": "[variables('tags')]"
+          },
+          "virtualNetworkLinks": {
+            "value": [
+              {
+                "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]",
+                "registrationEnabled": false
+              }
+            ]
           }
         },
         "template": {
@@ -9185,7 +9699,8 @@
         }
       },
       "dependsOn": [
-        "rg"
+        "resourceGroup",
+        "virtualNetwork"
       ]
     },
     "aiSearchPrivateDnsZone": {
@@ -9193,7 +9708,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "ai-search-private-dns-zone",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -9208,6 +9723,14 @@
           },
           "tags": {
             "value": "[variables('tags')]"
+          },
+          "virtualNetworkLinks": {
+            "value": [
+              {
+                "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]",
+                "registrationEnabled": false
+              }
+            ]
           }
         },
         "template": {
@@ -12346,7 +12869,8 @@
         }
       },
       "dependsOn": [
-        "rg"
+        "resourceGroup",
+        "virtualNetwork"
       ]
     },
     "aiHubApiMlPrivateDnsZone": {
@@ -12354,7 +12878,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "ai-hub-apiml-private-dns-zone",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -12369,6 +12893,14 @@
           },
           "tags": {
             "value": "[variables('tags')]"
+          },
+          "virtualNetworkLinks": {
+            "value": [
+              {
+                "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]",
+                "registrationEnabled": false
+              }
+            ]
           }
         },
         "template": {
@@ -15507,7 +16039,8 @@
         }
       },
       "dependsOn": [
-        "rg"
+        "resourceGroup",
+        "virtualNetwork"
       ]
     },
     "aiHubNotebooksPrivateDnsZone": {
@@ -15515,7 +16048,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "ai-hub-notebooks-private-dns-zone",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -15530,6 +16063,14 @@
           },
           "tags": {
             "value": "[variables('tags')]"
+          },
+          "virtualNetworkLinks": {
+            "value": [
+              {
+                "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]",
+                "registrationEnabled": false
+              }
+            ]
           }
         },
         "template": {
@@ -18668,7 +19209,8 @@
         }
       },
       "dependsOn": [
-        "rg"
+        "resourceGroup",
+        "virtualNetwork"
       ]
     },
     "keyVaultPrivateDnsZone": {
@@ -18676,7 +19218,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "keyvault-private-dns-zone",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -18688,6 +19230,17 @@
           },
           "location": {
             "value": "global"
+          },
+          "tags": {
+            "value": "[variables('tags')]"
+          },
+          "virtualNetworkLinks": {
+            "value": [
+              {
+                "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]",
+                "registrationEnabled": false
+              }
+            ]
           }
         },
         "template": {
@@ -21826,7 +22379,8 @@
         }
       },
       "dependsOn": [
-        "rg"
+        "resourceGroup",
+        "virtualNetwork"
       ]
     },
     "containerRegistryPrivateDnsZone": {
@@ -21834,7 +22388,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "container-registry-private-dns-zone",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -21849,6 +22403,14 @@
           },
           "tags": {
             "value": "[variables('tags')]"
+          },
+          "virtualNetworkLinks": {
+            "value": [
+              {
+                "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]",
+                "registrationEnabled": false
+              }
+            ]
           }
         },
         "template": {
@@ -24987,7 +25549,8 @@
         }
       },
       "dependsOn": [
-        "rg"
+        "resourceGroup",
+        "virtualNetwork"
       ]
     },
     "aiServicesPrivateDnsZone": {
@@ -24995,7 +25558,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "ai-services-private-dns-zone",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -25010,6 +25573,14 @@
           },
           "tags": {
             "value": "[variables('tags')]"
+          },
+          "virtualNetworkLinks": {
+            "value": [
+              {
+                "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]",
+                "registrationEnabled": false
+              }
+            ]
           }
         },
         "template": {
@@ -28148,7 +28719,8 @@
         }
       },
       "dependsOn": [
-        "rg"
+        "resourceGroup",
+        "virtualNetwork"
       ]
     },
     "aiServicesOpenAiDnsZone": {
@@ -28156,7 +28728,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "ai-services-openai-dns-zone",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -28171,6 +28743,14 @@
           },
           "tags": {
             "value": "[variables('tags')]"
+          },
+          "virtualNetworkLinks": {
+            "value": [
+              {
+                "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]",
+                "registrationEnabled": false
+              }
+            ]
           }
         },
         "template": {
@@ -31309,7 +31889,8 @@
         }
       },
       "dependsOn": [
-        "rg"
+        "resourceGroup",
+        "virtualNetwork"
       ]
     },
     "aiServicesAiDnsZone": {
@@ -31317,7 +31898,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "ai-services-ai-dns-zone",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -31332,6 +31913,14 @@
           },
           "tags": {
             "value": "[variables('tags')]"
+          },
+          "virtualNetworkLinks": {
+            "value": [
+              {
+                "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]",
+                "registrationEnabled": false
+              }
+            ]
           }
         },
         "template": {
@@ -34470,7 +35059,8 @@
         }
       },
       "dependsOn": [
-        "rg"
+        "resourceGroup",
+        "virtualNetwork"
       ]
     },
     "keyVault": {
@@ -34478,7 +35068,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "keyVault",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -34491,7 +35081,7 @@
           "diagnosticSettings": {
             "value": [
               {
-                "workspaceResourceId": "[listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'logAnalyticsWorkspace'), '2022-09-01').resourceId]"
+                "workspaceResourceId": "[reference('logAnalyticsWorkspace').outputs.resourceId.value]"
               }
             ]
           },
@@ -37807,7 +38397,7 @@
       "dependsOn": [
         "keyVaultPrivateDnsZone",
         "logAnalyticsWorkspace",
-        "rg",
+        "resourceGroup",
         "virtualNetwork"
       ]
     },
@@ -37816,7 +38406,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "storageAccount",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -43584,7 +44174,7 @@
         }
       },
       "dependsOn": [
-        "rg",
+        "resourceGroup",
         "storageBlobPrivateDnsZone",
         "virtualNetwork"
       ]
@@ -43594,7 +44184,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "container-registry-deployment",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -43624,7 +44214,7 @@
                   }
                 ],
                 "name": "[variables('sendTologAnalyticsCustomSettingName')]",
-                "workspaceResourceId": "[listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'logAnalyticsWorkspace'), '2022-09-01').resourceId]"
+                "workspaceResourceId": "[reference('logAnalyticsWorkspace').outputs.resourceId.value]"
               }
             ]
           },
@@ -46648,7 +47238,7 @@
       "dependsOn": [
         "containerRegistryPrivateDnsZone",
         "logAnalyticsWorkspace",
-        "rg",
+        "resourceGroup",
         "virtualNetwork"
       ]
     },
@@ -46657,7 +47247,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "sample-data-storage-account-deployment",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -46688,7 +47278,7 @@
                   }
                 ],
                 "name": "[variables('sendTologAnalyticsCustomSettingName')]",
-                "workspaceResourceId": "[listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'logAnalyticsWorkspace'), '2022-09-01').resourceId]"
+                "workspaceResourceId": "[reference('logAnalyticsWorkspace').outputs.resourceId.value]"
               }
             ]
           },
@@ -52422,7 +53012,7 @@
       },
       "dependsOn": [
         "logAnalyticsWorkspace",
-        "rg",
+        "resourceGroup",
         "storageBlobPrivateDnsZone",
         "virtualNetwork"
       ]
@@ -52432,7 +53022,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "storage-account-role-assignments",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -52448,13 +53038,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "3513930396928029321"
+              "version": "0.34.44.8038",
+              "templateHash": "728924872949305435"
             },
             "description": "Creates role assignments on an Azure Storage Account."
           },
@@ -52617,7 +53211,7 @@
       "dependsOn": [
         "aiFoundryService",
         "aiSearchService",
-        "rg",
+        "resourceGroup",
         "storageAccount"
       ]
     },
@@ -52626,7 +53220,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "sample-data-storage-account-role-assignments",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -52642,13 +53236,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "3513930396928029321"
+              "version": "0.34.44.8038",
+              "templateHash": "728924872949305435"
             },
             "description": "Creates role assignments on an Azure Storage Account."
           },
@@ -52811,8 +53409,7 @@
       "dependsOn": [
         "aiFoundryService",
         "aiSearchService",
-        "rg",
-        "sampleDataStorageAccount"
+        "resourceGroup"
       ]
     },
     "aiSearchService": {
@@ -52820,7 +53417,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "ai-search-service-deployment",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -52845,7 +53442,7 @@
                   }
                 ],
                 "name": "[variables('sendTologAnalyticsCustomSettingName')]",
-                "workspaceResourceId": "[listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'logAnalyticsWorkspace'), '2022-09-01').resourceId]"
+                "workspaceResourceId": "[reference('logAnalyticsWorkspace').outputs.resourceId.value]"
               }
             ]
           },
@@ -54942,7 +55539,7 @@
       "dependsOn": [
         "aiSearchPrivateDnsZone",
         "logAnalyticsWorkspace",
-        "rg",
+        "resourceGroup",
         "virtualNetwork"
       ]
     },
@@ -54951,7 +55548,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "ai-search-role-assignments",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -54965,13 +55562,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "7092216398490663291"
+              "version": "0.34.44.8038",
+              "templateHash": "578277851210771986"
             },
             "description": "Creates role assignments on an Azure AI Search service."
           },
@@ -55121,14 +55722,14 @@
       "dependsOn": [
         "aiFoundryService",
         "azureMachineLearningServicePrincipal",
-        "rg"
+        "resourceGroup"
       ]
     },
     "aiFoundryService": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "ai-foundry-service-deployment",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -55156,7 +55757,7 @@
           "diagnosticSettings": {
             "value": [
               {
-                "workspaceResourceId": "[listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'logAnalyticsWorkspace'), '2022-09-01').resourceId]"
+                "workspaceResourceId": "[reference('logAnalyticsWorkspace').outputs.resourceId.value]"
               }
             ]
           },
@@ -55165,6 +55766,7 @@
               "systemAssigned": true
             }
           },
+          "networkAcls": "[if(parameters('azureNetworkIsolation'), createObject('value', createObject('defaultAction', 'Deny', 'ipRules', variables('aiFoundryIpRules'), 'virtualNetworkRules', createArray())), createObject('value', null()))]",
           "privateEndpoints": "[if(parameters('azureNetworkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('aiServicesPrivateDnsZone').outputs.resourceId.value), createObject('privateDnsZoneResourceId', reference('aiServicesOpenAiDnsZone').outputs.resourceId.value), createObject('privateDnsZoneResourceId', reference('aiServicesAiDnsZone').outputs.resourceId.value))), 'service', 'account', 'subnetResourceId', reference('virtualNetwork').outputs.subnetResourceIds.value[1]))), createObject('value', createArray()))]",
           "publicNetworkAccess": "[if(parameters('azureNetworkIsolation'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "sku": {
@@ -55172,7 +55774,7 @@
           },
           "deployments": "[if(parameters('deploySampleOpenAiModels'), createObject('value', variables('openAiSampleModels')), createObject('value', createArray()))]",
           "connections": {
-            "value": "[concat(if(parameters('azureAiSearchDeploy'), createArray(createObject('category', 'CognitiveSearch', 'connectionProperties', createObject('authType', 'AAD'), 'metadata', createObject('Type', 'azure_ai_search', 'ApiType', 'Azure', 'ApiVersion', '2024-05-01-preview', 'DeploymentApiVersion', '2023-11-01', 'Location', parameters('location'), 'ResourceId', reference('aiSearchService').outputs.resourceId.value), 'name', replace(variables('aiSearchServiceName'), '-', ''), 'target', reference('aiSearchService').outputs.endpoint.value, 'isSharedToAll', true())), createArray()), if(parameters('deploySampleData'), createArray(createObject('category', 'AzureBlob', 'connectionProperties', createObject('authType', 'AAD'), 'metadata', createObject('Type', 'azure_storage_account', 'ApiType', 'Azure', 'ApiVersion', '2023-10-01', 'DeploymentApiVersion', '2023-10-01', 'Location', parameters('location'), 'ResourceId', listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'sample-data-storage-account-deployment'), '2022-09-01').resourceId, 'AccountName', variables('sampleDataStorageAccountName'), 'ContainerName', 'default'), 'name', replace(variables('sampleDataStorageAccountName'), '-', ''), 'target', listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'sample-data-storage-account-deployment'), '2022-09-01').primaryBlobEndpoint, 'isSharedToAll', true())), createArray()))]"
+            "value": "[concat(if(parameters('azureAiSearchDeploy'), createArray(createObject('category', 'CognitiveSearch', 'connectionProperties', createObject('authType', 'AAD'), 'metadata', createObject('Type', 'azure_ai_search', 'ApiType', 'Azure', 'ApiVersion', '2024-05-01-preview', 'DeploymentApiVersion', '2023-11-01', 'Location', parameters('location'), 'ResourceId', reference('aiSearchService').outputs.resourceId.value), 'name', replace(variables('aiSearchServiceName'), '-', ''), 'target', reference('aiSearchService').outputs.endpoint.value, 'isSharedToAll', true())), createArray()), if(parameters('deploySampleData'), createArray(createObject('category', 'AzureBlob', 'connectionProperties', createObject('authType', 'AAD'), 'metadata', createObject('Type', 'azure_storage_account', 'ApiType', 'Azure', 'ApiVersion', '2023-10-01', 'DeploymentApiVersion', '2023-10-01', 'Location', parameters('location'), 'ResourceId', reference('sampleDataStorageAccount').outputs.resourceId.value, 'AccountName', variables('sampleDataStorageAccountName'), 'ContainerName', 'default'), 'name', replace(variables('sampleDataStorageAccountName'), '-', ''), 'target', reference('sampleDataStorageAccount').outputs.primaryBlobEndpoint.value, 'isSharedToAll', true())), createArray()))]"
           },
           "projects": {
             "value": "[variables('aiFoundryServiceProjects')]"
@@ -55183,13 +55785,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "4757044389217973547"
+              "version": "0.34.44.8038",
+              "templateHash": "10101057682670785426"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service account.\nThis is a temporary module for deploying Azure AI Foundry Cognitive Services accounts.\nIt is intended to be replaced by the Azure Verified Module (AVM) for Microsoft.CognitiveServices accounts\nonce it supports AI Foundry V2 (projects, connections etc)\nhttps://github.com/Azure/bicep-registry-modules/issues/5390\n"
@@ -57180,7 +57786,7 @@
             ],
             "enableReferencedModulesTelemetry": false,
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), createObject())), createObject('type', 'None', 'userAssignedIdentities', createObject()))]",
             "builtInRoleNames": {
               "Azure AI Account Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e47c6f54-e4a2-4754-9501-8e0985b135e1')]",
               "Azure AI Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b78c5d69-af96-48a3-bf8d-a8b4d589de94')]",
@@ -57272,9 +57878,9 @@
               "apiVersion": "2025-04-01-preview",
               "name": "[parameters('name')]",
               "kind": "[parameters('kind')]",
-              "identity": "[variables('identity')]",
+              "identity": "[coalesce(variables('identity'), createObject('type', 'None'))]",
               "location": "[parameters('location')]",
-              "tags": "[parameters('tags')]",
+              "tags": "[coalesce(parameters('tags'), createObject())]",
               "sku": {
                 "name": "[parameters('sku')]"
               },
@@ -57403,7 +58009,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-cognitiveService-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "name": "[take(format('{0}-cognitiveService-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex()), 64)]",
               "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
               "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
               "properties": {
@@ -58196,13 +58802,17 @@
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "languageVersion": "2.0",
+                  "languageVersion": "2.1-experimental",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
+                    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+                    "_EXPERIMENTAL_FEATURES_ENABLED": [
+                      "Extensibility"
+                    ],
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "12425651692254937527"
+                      "version": "0.34.44.8038",
+                      "templateHash": "7930777196523657675"
                     },
                     "name": "Cognitive Services Project",
                     "description": "This module deploys a Project within a Cognitive Services account.\nIt allows for the creation of a AI Foundry Project with optional managed identities and role assignments.\n"
@@ -59329,7 +59939,7 @@
                       }
                     ],
                     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-                    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+                    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), createObject())), createObject('type', 'None', 'userAssignedIdentities', createObject()))]",
                     "builtInRoleNames": {
                       "Azure AI Account Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e47c6f54-e4a2-4754-9501-8e0985b135e1')]",
                       "Azure AI Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b78c5d69-af96-48a3-bf8d-a8b4d589de94')]",
@@ -59380,8 +59990,8 @@
                       "apiVersion": "2025-04-01-preview",
                       "name": "[format('{0}/{1}', parameters('accountName'), parameters('name'))]",
                       "location": "[parameters('location')]",
-                      "tags": "[parameters('tags')]",
-                      "identity": "[variables('identity')]",
+                      "tags": "[coalesce(parameters('tags'), createObject())]",
+                      "identity": "[coalesce(variables('identity'), createObject('type', 'None'))]",
                       "properties": {
                         "displayName": "[parameters('displayName')]",
                         "description": "[parameters('description')]"
@@ -59548,13 +60158,17 @@
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "languageVersion": "2.0",
+                  "languageVersion": "2.1-experimental",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
+                    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+                    "_EXPERIMENTAL_FEATURES_ENABLED": [
+                      "Extensibility"
+                    ],
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "2322045734307019606"
+                      "version": "0.34.44.8038",
+                      "templateHash": "18319371933629896379"
                     },
                     "name": "Machine Learning Services Workspaces Connections",
                     "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -60439,18 +61053,22 @@
                     "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
                   },
                   "secretsToSet": {
-                    "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys('cognitiveService', '2025-04-01-preview').key1)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys('cognitiveService', '2025-04-01-preview').key2)), createArray()))]"
+                    "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '2025-04-01-preview').key1)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '2025-04-01-preview').key2)), createArray()))]"
                   }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "languageVersion": "2.0",
+                  "languageVersion": "2.1-experimental",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
+                    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+                    "_EXPERIMENTAL_FEATURES_ENABLED": [
+                      "Extensibility"
+                    ],
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "17210397279620716997"
+                      "version": "0.34.44.8038",
+                      "templateHash": "13041638246567642283"
                     }
                   },
                   "definitions": {
@@ -60673,7 +61291,7 @@
         "aiServicesOpenAiDnsZone",
         "aiServicesPrivateDnsZone",
         "logAnalyticsWorkspace",
-        "rg",
+        "resourceGroup",
         "sampleDataStorageAccount",
         "virtualNetwork"
       ]
@@ -60682,7 +61300,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "ai-foundry-role-assignments",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -60698,13 +61316,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "14086008592464593776"
+              "version": "0.34.44.8038",
+              "templateHash": "241685484514715479"
             },
             "description": "Creates role assignments on an Azure AI Foundry account."
           },
@@ -60876,7 +61498,7 @@
         "aiFoundryService",
         "aiSearchService",
         "azureMachineLearningServicePrincipal",
-        "rg"
+        "resourceGroup"
       ]
     },
     "aiFoundryHub": {
@@ -60884,7 +61506,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "ai-foundry-hub-workspace-deployment",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -60909,7 +61531,7 @@
             "value": "[reference('applicationInsights').outputs.resourceId.value]"
           },
           "associatedKeyVaultResourceId": "[if(parameters('aiFoundryHubDeploy'), createObject('value', reference('keyVault').outputs.resourceId.value), createObject('value', null()))]",
-          "associatedStorageAccountResourceId": "[if(parameters('aiFoundryHubDeploy'), createObject('value', listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').resourceId), createObject('value', null()))]",
+          "associatedStorageAccountResourceId": "[if(parameters('aiFoundryHubDeploy'), createObject('value', reference('storageAccount').outputs.resourceId.value), createObject('value', null()))]",
           "associatedContainerRegistryResourceId": "[if(parameters('containerRegistryDeploy'), if(parameters('containerRegistryDeploy'), if(empty(parameters('containerRegistryResourceId')), createObject('value', reference('containerRegistry').outputs.resourceId.value), createObject('value', parameters('containerRegistryResourceId'))), createObject('value', '')), createObject('value', null()))]",
           "connections": {
             "value": "[concat(createArray(createObject('category', 'AIServices', 'connectionProperties', createObject('authType', 'AAD'), 'metadata', createObject('ApiType', 'Azure', 'ApiVersion', '2023-07-01-preview', 'DeploymentApiVersion', '2023-10-01-preview', 'Location', parameters('location'), 'ResourceId', reference('aiFoundryService').outputs.resourceId.value), 'name', replace(variables('aiFoundryServiceName'), '-', ''), 'target', reference('aiFoundryService').outputs.endpoint.value, 'isSharedToAll', true())), if(parameters('azureAiSearchDeploy'), createArray(createObject('category', 'CognitiveSearch', 'connectionProperties', createObject('authType', 'AAD'), 'metadata', createObject('Type', 'azure_ai_search', 'ApiType', 'Azure', 'ApiVersion', '2024-05-01-preview', 'DeploymentApiVersion', '2023-11-01', 'Location', parameters('location'), 'ResourceId', reference('aiSearchService').outputs.resourceId.value), 'name', replace(variables('aiSearchServiceName'), '-', ''), 'target', reference('aiSearchService').outputs.endpoint.value, 'isSharedToAll', true())), createArray()))]"
@@ -60923,7 +61545,7 @@
                   }
                 ],
                 "name": "[variables('sendTologAnalyticsCustomSettingName')]",
-                "workspaceResourceId": "[listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'logAnalyticsWorkspace'), '2022-09-01').resourceId]"
+                "workspaceResourceId": "[reference('logAnalyticsWorkspace').outputs.resourceId.value]"
               }
             ]
           },
@@ -60957,7 +61579,7 @@
           },
           "workspaceHubConfig": {
             "value": {
-              "defaultWorkspaceResourceGroup": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName'))))]"
+              "defaultWorkspaceResourceGroup": "[reference('resourceGroup').outputs.resourceId.value]"
             }
           }
         },
@@ -65101,7 +65723,7 @@
         "containerRegistry",
         "keyVault",
         "logAnalyticsWorkspace",
-        "rg",
+        "resourceGroup",
         "storageAccount",
         "virtualNetwork"
       ]
@@ -65115,7 +65737,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('aifp-{0}', variables('aiFoundryHubProjectsList')[copyIndex()].name), 64)]",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -65149,7 +65771,7 @@
                   }
                 ],
                 "name": "[variables('sendTologAnalyticsCustomSettingName')]",
-                "workspaceResourceId": "[listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'logAnalyticsWorkspace'), '2022-09-01').resourceId]"
+                "workspaceResourceId": "[reference('logAnalyticsWorkspace').outputs.resourceId.value]"
               }
             ]
           },
@@ -69300,8 +69922,7 @@
       },
       "dependsOn": [
         "aiFoundryHub",
-        "logAnalyticsWorkspace",
-        "rg"
+        "logAnalyticsWorkspace"
       ]
     },
     "aiFoundryProjectToAiServiceRoleAssignments": {
@@ -69313,7 +69934,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('aifp-aisvc-ra-{0}', variables('aiFoundryHubProjectsList')[copyIndex()].name), 64)]",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -69335,13 +69956,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "14086008592464593776"
+              "version": "0.34.44.8038",
+              "templateHash": "241685484514715479"
             },
             "description": "Creates role assignments on an Azure AI Foundry account."
           },
@@ -69510,8 +70135,7 @@
         }
       },
       "dependsOn": [
-        "aiFoundryHubProjects",
-        "rg"
+        "aiFoundryHubProjects"
       ]
     },
     "aiFoundryProjectToAiSearchRoleAssignments": {
@@ -69523,7 +70147,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('aifp-aisch-ra-{0}', variables('aiFoundryHubProjectsList')[copyIndex()].name), 64)]",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -69550,13 +70174,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "7092216398490663291"
+              "version": "0.34.44.8038",
+              "templateHash": "578277851210771986"
             },
             "description": "Creates role assignments on an Azure AI Search service."
           },
@@ -69704,8 +70332,7 @@
         }
       },
       "dependsOn": [
-        "aiFoundryHubProjects",
-        "rg"
+        "aiFoundryHubProjects"
       ]
     },
     "projectSampleDataStores": {
@@ -69717,7 +70344,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[replace(toLower(take(format('datastore_{0}_{1}', variables('aiFoundryHubProjectsList')[div(range(0, mul(variables('projectCount'), variables('sampleDataContainerCount')))[copyIndex()], variables('sampleDataContainerCount'))].name, variables('sampleDataContainersArray')[mod(range(0, mul(variables('projectCount'), variables('sampleDataContainerCount')))[copyIndex()], variables('sampleDataContainerCount'))]), 64)), '-', '_')]",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -69739,12 +70366,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "4751465197827358598"
+              "version": "0.34.44.8038",
+              "templateHash": "8557268353726782417"
             }
           },
           "parameters": {
@@ -69773,8 +70405,14 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "projectWorkspace": {
+              "existing": true,
+              "type": "Microsoft.MachineLearningServices/workspaces",
+              "apiVersion": "2025-01-01-preview",
+              "name": "[parameters('projectWorkspaceName')]"
+            },
+            "dataStore": {
               "type": "Microsoft.MachineLearningServices/workspaces/datastores",
               "apiVersion": "2025-01-01-preview",
               "name": "[format('{0}/{1}', parameters('projectWorkspaceName'), parameters('dataStoreName'))]",
@@ -69790,7 +70428,7 @@
                 "serviceDataAccessAuthIdentity": "None"
               }
             }
-          ],
+          },
           "outputs": {
             "dataStoreResourceId": {
               "type": "string",
@@ -69810,8 +70448,7 @@
         }
       },
       "dependsOn": [
-        "aiFoundryHubProjects",
-        "rg"
+        "aiFoundryHubProjects"
       ]
     },
     "bastionHost": {
@@ -69819,7 +70456,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "bastion-host-deployment",
-      "resourceGroup": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -71107,7 +71744,7 @@
         }
       },
       "dependsOn": [
-        "rg",
+        "resourceGroup",
         "virtualNetwork"
       ]
     }
@@ -71115,7 +71752,7 @@
   "outputs": {
     "AZURE_RESOURCE_GROUP": {
       "type": "string",
-      "value": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))]"
+      "value": "[reference('resourceGroup').outputs.name.value]"
     },
     "AZURE_PRINCIPAL_ID": {
       "type": "string",
@@ -71135,15 +71772,15 @@
     },
     "LOG_ANALYTICS_WORKSPACE_NAME": {
       "type": "string",
-      "value": "[listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'logAnalyticsWorkspace'), '2022-09-01').name]"
+      "value": "[reference('logAnalyticsWorkspace').outputs.name.value]"
     },
     "LOG_ANALYTICS_RESOURCE_ID": {
       "type": "string",
-      "value": "[listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'logAnalyticsWorkspace'), '2022-09-01').resourceId]"
+      "value": "[reference('logAnalyticsWorkspace').outputs.resourceId.value]"
     },
     "LOG_ANALYTICS_WORKSPACE_ID": {
       "type": "string",
-      "value": "[listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'logAnalyticsWorkspace'), '2022-09-01').logAnalyticsWorkspaceId]"
+      "value": "[reference('logAnalyticsWorkspace').outputs.logAnalyticsWorkspaceId.value]"
     },
     "APPLICATION_INSIGHTS_NAME": {
       "type": "string",
@@ -71171,35 +71808,35 @@
     },
     "AZURE_STORAGE_ACCOUNT_NAME": {
       "type": "string",
-      "value": "[if(parameters('aiFoundryHubDeploy'), listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').name, '')]"
+      "value": "[if(parameters('aiFoundryHubDeploy'), reference('storageAccount').outputs.name.value, '')]"
     },
     "AZURE_STORAGE_ACCOUNT_RESOURCE_ID": {
       "type": "string",
-      "value": "[if(parameters('aiFoundryHubDeploy'), listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').resourceId, '')]"
+      "value": "[if(parameters('aiFoundryHubDeploy'), reference('storageAccount').outputs.resourceId.value, '')]"
     },
     "AZURE_STORAGE_ACCOUNT_BLOB_ENDPOINT": {
       "type": "string",
-      "value": "[if(parameters('aiFoundryHubDeploy'), listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').primaryBlobEndpoint, '')]"
+      "value": "[if(parameters('aiFoundryHubDeploy'), reference('storageAccount').outputs.primaryBlobEndpoint.value, '')]"
     },
     "AZURE_STORAGE_ACCOUNT_PRIVATE_ENDPOINTS": {
       "type": "array",
-      "value": "[if(parameters('aiFoundryHubDeploy'), listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').privateEndpoints, createArray())]"
+      "value": "[if(parameters('aiFoundryHubDeploy'), reference('storageAccount').outputs.privateEndpoints.value, createArray())]"
     },
     "AZURE_STORAGE_ACCOUNT_SERVICE_ENDPOINTS": {
       "type": "object",
-      "value": "[if(parameters('aiFoundryHubDeploy'), listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'storageAccount'), '2022-09-01').serviceEndpoints, createObject())]"
+      "value": "[if(parameters('aiFoundryHubDeploy'), reference('storageAccount').outputs.serviceEndpoints.value, createObject())]"
     },
     "AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_NAME": {
       "type": "string",
-      "value": "[if(parameters('deploySampleData'), listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'sample-data-storage-account-deployment'), '2022-09-01').name, '')]"
+      "value": "[if(parameters('deploySampleData'), reference('sampleDataStorageAccount').outputs.name.value, '')]"
     },
     "AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_RESOURCE_ID": {
       "type": "string",
-      "value": "[if(parameters('deploySampleData'), listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'sample-data-storage-account-deployment'), '2022-09-01').resourceId, '')]"
+      "value": "[if(parameters('deploySampleData'), reference('sampleDataStorageAccount').outputs.resourceId.value, '')]"
     },
     "AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_BLOB_ENDPOINT": {
       "type": "string",
-      "value": "[if(parameters('deploySampleData'), listOutputsWithSecureValues(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), format('{0}{1}', variables('abbrs').resourcesResourceGroups, parameters('environmentName')))), 'Microsoft.Resources/deployments', 'sample-data-storage-account-deployment'), '2022-09-01').primaryBlobEndpoint, '')]"
+      "value": "[if(parameters('deploySampleData'), reference('sampleDataStorageAccount').outputs.primaryBlobEndpoint.value, '')]"
     },
     "AZURE_KEY_VAULT_NAME": {
       "type": "string",
