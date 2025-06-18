@@ -152,6 +152,11 @@ var openAiSampleModels = loadJsonContent('./sample-openai-models.json')
 // Build a Cartesian product index across projects and sample-data containers
 var sampleDataContainerCount = length(sampleDataContainersArray)
 
+// Transform IP allow list for networkAcls
+var aiFoundryIpRules = [for ip in aiFoundryIpAllowList: {
+  value: ip
+}]
+
 // ---------- PROJECT DEPLOYMENT LOGIC ----------
 // Stage 1: Determine if we should deploy projects and create the effective project list
 
@@ -256,26 +261,36 @@ var subnets = [
     // Default subnet (generally not used)
     name: 'Default'
     addressPrefix: '10.0.0.0/24'
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Disabled'
   }
   {
     // AiServices Subnet (AI Foundry Hub, AI Search, AI Services private endpoints)
     name: 'AiServices'
     addressPrefix: '10.0.1.0/24'
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Disabled'
   }
   {
     // Data Subnet (Storage, Key Vault, Container Registry)
     name: 'Data'
     addressPrefix: '10.0.2.0/24'
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Disabled'
   }
   {
     // Management Subnet (Log Analytics, Application Insights) - Not used yet
     name: 'Management'
     addressPrefix: '10.0.3.0/24'
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Disabled'
   }
   {
     // Bastion Gateway Subnet
     name: 'AzureBastionSubnet'
     addressPrefix: '10.0.255.0/27'
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Disabled'
   }
 ]
 
@@ -892,13 +907,9 @@ module aiFoundryService './cognitive-services/accounts/main.bicep' = {
     }
     networkAcls: azureNetworkIsolation ? {
       defaultAction: 'Deny'
-      ipRules: aiFoundryIpAllowList
+      ipRules: aiFoundryIpRules
       virtualNetworkRules: []
-    } : {
-      defaultAction: 'Allow'
-      ipRules: []
-      virtualNetworkRules: []
-    }
+    } : null
     privateEndpoints: azureNetworkIsolation ? [
       {
         privateDnsZoneGroup: {
@@ -918,7 +929,7 @@ module aiFoundryService './cognitive-services/accounts/main.bicep' = {
         subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1] // AiServices Subnet
       }
     ] : []
-    publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
+    publicNetworkAccess: 'Enabled' // Always start with enabled to avoid provisioning conflicts with private endpoints
     sku: 'S0'
     deployments: deploySampleOpenAiModels ? openAiSampleModels : []
     connections: aiFoundryServiceConnections
