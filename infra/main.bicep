@@ -929,7 +929,7 @@ module aiFoundryService './cognitive-services/accounts/main.bicep' = {
         subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1] // AiServices Subnet
       }
     ] : []
-    publicNetworkAccess: 'Enabled' // Always start with enabled to avoid provisioning conflicts with private endpoints
+    publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
     sku: 'S0'
     deployments: deploySampleOpenAiModels ? openAiSampleModels : []
     connections: aiFoundryServiceConnections
