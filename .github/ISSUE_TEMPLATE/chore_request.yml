@@ -1,0 +1,83 @@
+name: "🧹 Chore Request"
+description: Report maintenance tasks, technical debt, or housekeeping items for the solution accelerator
+title: "[Chore]: "
+labels: [chore]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the solution does this chore relate to?
+      options:
+        - Infrastructure (Bicep/infra)
+        - Sample Data
+        - Sample Apps (e.g., data_generator, create_ai_search_index)
+        - Documentation
+        - CI/CD Pipeline
+        - Dependencies/Packages
+        - Code Quality/Linting
+        - Testing
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: type
+    attributes:
+      label: Chore Type
+      description: What type of maintenance task is this?
+      options:
+        - Dependency update
+        - Code cleanup/refactoring
+        - Documentation update
+        - Configuration update
+        - Technical debt reduction
+        - Performance optimization
+        - Security improvement
+        - Tooling/Build improvement
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the maintenance task or housekeeping item that needs to be addressed.
+      placeholder: "e.g., Update Azure Bicep modules to latest versions, refactor deprecated API usage, improve error handling in data generator..."
+    validations:
+      required: true
+  - type: textarea
+    id: justification
+    attributes:
+      label: Justification
+      description: Why is this chore important? What benefits will it provide?
+      placeholder: "e.g., Improves security posture, reduces technical debt, enhances maintainability, fixes deprecation warnings..."
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: What specific tasks need to be completed? List the deliverables or outcomes.
+      placeholder: "- [ ] Update all Bicep modules to version X.Y.Z\n- [ ] Verify deployment still works\n- [ ] Update documentation if needed\n- [ ] Run all tests to ensure no regressions"
+    validations:
+      required: false
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How urgent is this chore?
+      options:
+        - Low - Can be done when time permits
+        - Medium - Should be addressed in next few releases
+        - High - Important for upcoming release
+        - Critical - Blocking or security-related
+      default: 0
+    validations:
+      required: true
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context, links to relevant issues, or screenshots about the chore here.
+    validations:
+      required: false
