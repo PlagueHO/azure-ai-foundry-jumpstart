@@ -1,7 +1,7 @@
 ---
 mode: 'agent'
 description: 'Update the Azure Verified Module to the latest version for the Bicep infrastructure as code file.'
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
+tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'azure_design_architecture', 'azure_get_code_gen_best_practices', 'azure_get_schema_for_Bicep']
 ---
 
 Your goal is to update the Bicep file `${file}` to use the latest available versions of Azure Verified Modules (AVM).

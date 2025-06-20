@@ -45,6 +45,6 @@
             "type": "promptString",
             "description": "GitHub Personal Access Token",
             "password": true
-        }        
+        }
     ]
 }
