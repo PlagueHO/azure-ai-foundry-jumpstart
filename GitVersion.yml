@@ -27,13 +27,12 @@ ignore:
 branches:
   # Main/Master branch - production releases
   main:
-    regex: ^main$|^master$
+    regex: '^(main|master)$'
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-    source-branches: ['develop', 'release']
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: true
@@ -41,13 +40,12 @@ branches:
 
   # Develop branch - pre-release versions
   develop:
-    regex: ^dev(elop)?(ment)?$
+    regex: '^dev(elop)?(ment)?$'
     mode: ContinuousDelivery
     tag: 'alpha'
     increment: Minor
     prevent-increment-of-merged-branch-version: false
     track-merge-target: true
-    source-branches: []
     tracks-release-branches: true
     is-release-branch: false
     is-mainline: false
@@ -55,13 +53,12 @@ branches:
 
   # Release branches - release candidates
   release:
-    regex: ^releases?[/-]
+    regex: '^releases?[/-]'
     mode: ContinuousDelivery
     tag: 'beta'
     increment: None
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-    source-branches: ['develop', 'main', 'support', 'release']
     tracks-release-branches: false
     is-release-branch: true
     is-mainline: false
@@ -69,13 +66,12 @@ branches:
 
   # Feature branches
   feature:
-    regex: ^features?[/-]
+    regex: '^features?[/-]'
     mode: ContinuousDelivery
     tag: 'feature'
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
-    source-branches: ['develop', 'main', 'release', 'feature', 'support', 'hotfix']
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
@@ -83,13 +79,12 @@ branches:
 
   # Pull request branches
   pull-request:
-    regex: ^(pull|pull\-requests|pr)[/-]
+    regex: '^(pull|pull\-requests|pr)[/-]'
     mode: ContinuousDelivery
     tag: 'pr'
     increment: Inherit
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
-    source-branches: ['develop', 'main', 'release', 'feature', 'support', 'hotfix']
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
@@ -97,13 +92,12 @@ branches:
 
   # Hotfix branches
   hotfix:
-    regex: ^hotfix(es)?[/-]
+    regex: '^hotfix(es)?[/-]'
     mode: ContinuousDelivery
     tag: 'beta'
     increment: Patch
     prevent-increment-of-merged-branch-version: false
     track-merge-target: false
-    source-branches: ['release', 'main', 'support', 'hotfix']
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: false
@@ -111,32 +105,19 @@ branches:
 
   # Support branches for maintenance
   support:
-    regex: ^support[/-]
+    regex: '^support[/-]'
     mode: ContinuousDelivery
     tag: ''
     increment: Patch
     prevent-increment-of-merged-branch-version: true
     track-merge-target: false
-    source-branches: ['main']
     tracks-release-branches: false
     is-release-branch: false
     is-mainline: true
     pre-release-weight: 55000
 
-# Workflow-specific settings for CI/CD
-workflow: 'GitHubFlow'
-
-# Merge message formats (optional)
-merge-message-formats:
-  MergePullRequest: 'Merge pull request #(?<PullRequestNumber>\d+) from (?<SourceBranch>.+)'
-  MergeBranch: 'Merge branch ''(?<SourceBranch>.+)'''
-  MergedPR: 'Merged PR (?<PullRequestNumber>\d+): (?<Title>.*)'
-
 # Commit message increment rules
 commit-message-incrementing: Enabled
-
-# Version filters (useful for monorepos)
-# version-filters: []
 
 # Update build number in CI
 update-build-number: true

@@ -13,6 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       build_version: ${{ steps.build_version.outputs.GitVersion_FullSemVer }}
+      FullSemVer: ${{ steps.build_version.outputs.GitVersion_FullSemVer }}
+      MajorMinorPatch: ${{ steps.build_version.outputs.GitVersion_MajorMinorPatch }}
+      SemVer: ${{ steps.build_version.outputs.GitVersion_SemVer }}
+      NuGetVersion: ${{ steps.build_version.outputs.GitVersion_NuGetVersionV2 }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,16 +24,20 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v3.2.0
+        uses: gittools/actions/gitversion/setup@v3.0.0
         with:
           versionSpec: "6.3.x"
 
       - name: Determine Version
         id: build_version
-        uses: gittools/actions/gitversion/execute@v3.2.0
+        uses: gittools/actions/gitversion/execute@v3.0.0
         with:
           useConfigFile: true
+          configFilePath: GitVersion.yml
 
-      - name: Display FullSemVer
+      - name: Display GitVersion outputs
         run: |
           echo "FullSemVer: ${{ steps.build_version.outputs.GitVersion_FullSemVer }}"
+          echo "MajorMinorPatch: ${{ steps.build_version.outputs.GitVersion_MajorMinorPatch }}"
+          echo "SemVer: ${{ steps.build_version.outputs.GitVersion_SemVer }}"
+          echo "NuGetVersion: ${{ steps.build_version.outputs.GitVersion_NuGetVersionV2 }}"
