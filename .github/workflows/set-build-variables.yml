@@ -10,7 +10,7 @@ on:
 jobs:
   set-build-variables:
     name: Set build variables
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     outputs:
       build_version: ${{ steps.build_version.outputs.GitVersion_FullSemVer }}
     steps:
@@ -20,13 +20,13 @@ jobs:
           fetch-depth: 0
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v3.0.0
+        uses: gittools/actions/gitversion/setup@v3.2.0
         with:
-          versionSpec: "6.x"
+          versionSpec: "6.3.x"
 
       - name: Determine Version
         id: build_version
-        uses: gittools/actions/gitversion/execute@v3.0.0
+        uses: gittools/actions/gitversion/execute@v3.2.0
         with:
           useConfigFile: true
 
