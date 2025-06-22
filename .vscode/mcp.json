@@ -38,6 +38,10 @@
             "env": {
                 "GIPHY_API_KEY": "${input:giphy_api_key}"
             }
+        },
+        "microsoft.docs.mcp": {
+            "type": "http",
+            "url": "https://learn.microsoft.com/api/mcp"
         }
     },
     "inputs": [
