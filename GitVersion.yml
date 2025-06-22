@@ -9,7 +9,6 @@ assembly-informational-format: '{InformationalVersion}'
 
 # Version increment strategy
 increment: Inherit
-continuous-delivery-fallback-tag: ci
 
 # Tag prefix for releases
 tag-prefix: 'v'
@@ -19,105 +18,53 @@ major-version-bump-message: '\+semver:\s?(breaking|major)'
 minor-version-bump-message: '\+semver:\s?(feature|minor)'
 patch-version-bump-message: '\+semver:\s?(fix|patch)'
 
-# Ignore merge commits for version calculation
-ignore:
-  sha: []
-
 # Branch configuration for Continuous Delivery
 branches:
   # Main/Master branch - production releases
   main:
     regex: '^(main|master)$'
     mode: ContinuousDelivery
-    tag: ''
+    label: ''
     increment: Patch
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    tracks-release-branches: false
-    is-release-branch: false
-    is-mainline: true
-    pre-release-weight: 55000
 
   # Develop branch - pre-release versions
   develop:
     regex: '^dev(elop)?(ment)?$'
     mode: ContinuousDelivery
-    tag: 'alpha'
+    label: 'alpha'
     increment: Minor
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: true
-    tracks-release-branches: true
-    is-release-branch: false
-    is-mainline: false
-    pre-release-weight: 0
 
   # Release branches - release candidates
   release:
     regex: '^releases?[/-]'
     mode: ContinuousDelivery
-    tag: 'beta'
+    label: 'beta'
     increment: None
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    tracks-release-branches: false
-    is-release-branch: true
-    is-mainline: false
-    pre-release-weight: 30000
 
   # Feature branches
   feature:
     regex: '^features?[/-]'
     mode: ContinuousDelivery
-    tag: 'feature'
+    label: 'feature'
     increment: Inherit
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: false
-    tracks-release-branches: false
-    is-release-branch: false
-    is-mainline: false
-    pre-release-weight: 30000
 
   # Pull request branches
   pull-request:
     regex: '^(pull|pull\-requests|pr)[/-]'
     mode: ContinuousDelivery
-    tag: 'pr'
+    label: 'pr'
     increment: Inherit
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: false
-    tracks-release-branches: false
-    is-release-branch: false
-    is-mainline: false
-    pre-release-weight: 30000
 
   # Hotfix branches
   hotfix:
     regex: '^hotfix(es)?[/-]'
     mode: ContinuousDelivery
-    tag: 'beta'
+    label: 'beta'
     increment: Patch
-    prevent-increment-of-merged-branch-version: false
-    track-merge-target: false
-    tracks-release-branches: false
-    is-release-branch: false
-    is-mainline: false
-    pre-release-weight: 30000
 
   # Support branches for maintenance
   support:
     regex: '^support[/-]'
     mode: ContinuousDelivery
-    tag: ''
+    label: ''
     increment: Patch
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: false
-    tracks-release-branches: false
-    is-release-branch: false
-    is-mainline: true
-    pre-release-weight: 55000
-
-# Commit message increment rules
-commit-message-incrementing: Enabled
-
-# Update build number in CI
-update-build-number: true
