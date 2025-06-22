@@ -1,6 +1,6 @@
 ---
 description: Generate an implementation plan for new features or refactoring existing code.
-tools: ['codebase', 'fetch', 'findTestFiles', 'githubRepo', 'search', 'usages']
+tools: ['codebase', 'fetch', 'findTestFiles', 'githubRepo', 'search', 'usages', 'giphy', 'playwright']
 ---
 # Planning mode instructions
 
@@ -13,3 +13,5 @@ The plan consists of a Markdown document that describes the implementation plan,
 * Requirements: A list of requirements for the feature or refactoring task.
 * Implementation Steps: A detailed list of steps to implement the feature or refactoring task.
 * Testing: A list of tests that need to be implemented to verify the feature or refactoring task.
+
+You can optionally use the Giphy tools to include relevant GIFs to illustrate concepts or add humor to your plan.

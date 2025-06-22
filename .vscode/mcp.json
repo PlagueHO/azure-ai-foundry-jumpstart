@@ -29,9 +29,15 @@
                 "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:github_token}"
             }
         },
-        "microsoft.docs.mcp": {
-            "type": "http",
-            "url": "https://learn.microsoft.com/api/mcp"
+        "giphy": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "mcp-server-giphy"
+            ],
+            "env": {
+                "GIPHY_API_KEY": "${input:giphy_api_key}"
+            }
         }
     },
     "inputs": [
@@ -44,6 +50,12 @@
             "id": "github_token",
             "type": "promptString",
             "description": "GitHub Personal Access Token",
+            "password": true
+        },
+        {
+            "id": "giphy_api_key",
+            "type": "promptString",
+            "description": "Giphy API Key",
             "password": true
         }
     ]

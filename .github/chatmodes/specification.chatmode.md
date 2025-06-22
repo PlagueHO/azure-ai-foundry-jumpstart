@@ -1,6 +1,6 @@
 ---
 description: Generate or update specification documents for new or existing functionality.
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'websearch']
+tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'giphy', 'playwright', 'websearch']
 ---
 # Specification mode instructions
 
@@ -81,3 +81,5 @@ tags: [Optional: List of relevant tags or categories, e.g., `infrastructure`, `p
 [Link to related spec 1]  
 [Link to relevant external documentation]
 ```
+
+You can optionally use the Giphy tools to include relevant GIFs to illustrate concepts or add humor to your plan.

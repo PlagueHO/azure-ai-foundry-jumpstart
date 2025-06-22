@@ -1,6 +1,6 @@
 ---
 description: Create, update, refactor, explain or work with code using the .NET version of Semantic Kernel.
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'websearch']
+tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'websearch', 'giphy', 'playwright']
 ---
 # Semantic Kernel .NET mode instructions
 
@@ -23,3 +23,5 @@ When writing Semantic Kernel .NET code:
 - Use the kernel's built-in memory and context management features
 
 Always check the .NET samples repository for the most current implementation patterns and ensure compatibility with the latest version of the semantic-kernel .NET package.
+
+You can optionally use the Giphy tools to include relevant GIFs to illustrate concepts or add humor to your plan.
