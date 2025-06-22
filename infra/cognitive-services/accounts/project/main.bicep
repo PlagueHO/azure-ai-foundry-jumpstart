@@ -45,17 +45,20 @@ var formattedUserAssignedIdentities = reduce(
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var identityType = !empty(managedIdentities)
+  ? (managedIdentities.?systemAssigned ?? false)
+    ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
+    : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+  : 'None'
+
 var identity = !empty(managedIdentities)
-  ? {
-      type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
-      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : {}
-    }
-  : {
-      type: 'None'
-      userAssignedIdentities: {}
-    }
+  ? union(
+      {
+        type: identityType
+      },
+      !empty(formattedUserAssignedIdentities) ? { userAssignedIdentities: formattedUserAssignedIdentities } : {}
+    )
+  : null
 
 var builtInRoleNames = {
   'Azure AI Account Owner': subscriptionResourceId(
