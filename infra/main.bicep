@@ -236,7 +236,7 @@ var projectCount = length(effectiveProjectList)
 
 // ---------- RESOURCE GROUP (BOTH HUB AND PROJECT MODE) ----------
 module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.1' = {
-  name: 'resource-group-deployment'
+  name: 'resource-group-deployment-${location}'
   params: {
     name: effectiveResourceGroupName
     location: location
@@ -246,7 +246,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.1' = {
 
 // ---------- MONITORING RESOURCES (BOTH HUB AND PROJECT MODE) ----------
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = {
-  name: 'logAnalyticsWorkspace'
+  name: 'logAnalytics-workspace-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
   params: {
@@ -257,7 +257,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
 }
 
 module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
-  name: 'applicationInsights'
+  name: 'application-insights-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
   params: {
@@ -485,7 +485,7 @@ module aiServicesAiDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = 
 
 // ---------- KEY VAULT (HUB DEPLOY ONLY) ----------
 module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (aiFoundryHubDeploy) {
-  name: 'keyVault'
+  name: 'key-vault-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
   params: {
@@ -520,7 +520,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (aiFoundryHubDep
 
 // ---------- STORAGE ACCOUNT (HUB DEPLOY ONLY) ----------
 module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = if (aiFoundryHubDeploy) {
-  name: 'storageAccount'
+  name: 'hub-storage-account-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
   params: {
@@ -783,7 +783,7 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.10.0' = if (az
     diagnosticSettings: [
       {
         metricCategories: [
-          {
+          { 
             category: 'AllMetrics'
           }
         ]
@@ -1023,6 +1023,36 @@ module aiFoundryRoleAssignments './core/security/role_aifoundry.bicep' = {
   }
 }
 
+// ---------- AI FOUNDRY PROJECT ROLE ASSIGNMENTS TO AI SEARCH ----------
+// Add any Search Index Reader and Search Service Contributor roles for each AI Foundry project
+// to the AI Search Account. This ensures Agents created within a project can access indexes in
+// the AI Search account.
+module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.bicep' = [
+  for (project,index) in aiFoundryServiceProjects : if (aiFoundryProjectDeploy && azureAiSearchDeploy) {
+    name: take('aifp-aisch-ra-${project.name}',64)
+    scope: az.resourceGroup(effectiveResourceGroupName)
+    params: {
+      azureAiSearchName: aiSearchServiceName
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Search Index Data Reader'
+          principalType: 'ServicePrincipal'
+          principalId: aiFoundryService.outputs.projects[index].?systemAssignedMIPrincipalId ?? ''
+        }
+        {
+          roleDefinitionIdOrName: 'Search Service Contributor'
+          principalType: 'ServicePrincipal'
+          principalId: aiFoundryService.outputs.projects[index].?systemAssignedMIPrincipalId ?? ''
+        }
+      ]
+    }
+  }
+]
+
+// ---------- AI FOUNDRY HUB (HUB DEPLOY ONLY) ----------
+// Deploy AI Foundry Hub (Machine Learning workspace) with connections (Stage 3)
+// Projects will be deployed separately as child resources when using Hub mode
+// Prepare connections for the AI Foundry Hub
 // Role assignments for the AI Foundry Hub
 var aiFoundryHubRoleAssignments = !empty(principalId) ? [
   {
@@ -1032,10 +1062,6 @@ var aiFoundryHubRoleAssignments = !empty(principalId) ? [
   }
 ] : []
 
-// ---------- AI FOUNDRY HUB (HUB DEPLOY ONLY) ----------
-// Deploy AI Foundry Hub (Machine Learning workspace) with connections (Stage 3)
-// Projects will be deployed separately as child resources when using Hub mode
-// Prepare connections for the AI Foundry Hub
 var aiFoundryHubConnections = concat([
   {
     // AIServices connection
@@ -1175,9 +1201,9 @@ module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspa
 // ---------- AI FOUNDRY PROJECTS ROLE ASSIGNMENTS TO AI SERVICES (HUB DEPLOY ONLY) ----------
 // Add any Azure AI Developer role for each AI Foundry project to the AI Services account
 // This ensures a developer with access to the AI Foundry project can also access the AI Services
-module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aifoundry.bicep' = [
+module aiFoundryHubProjectToAiServiceRoleAssignments './core/security/role_aifoundry.bicep' = [
   for (project,index) in aiFoundryHubProjectsList: if (aiFoundryHubDeploy && aiFoundryHubProjectDeploy) {
-  name: take('aifp-aisvc-ra-${project.name}',64)
+  name: take('aifhp-aisvc-ra-${project.name}',64)
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [
     aiFoundryHubProjects
@@ -1198,9 +1224,9 @@ module aiFoundryProjectToAiServiceRoleAssignments './core/security/role_aifoundr
 // Add any Search Index Reader and Search Service Contributor roles for each AI Foundry project
 // to the AI Search Account. This ensures Agents created within a project can access indexes in
 // the AI Search account.
-module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.bicep' = [
+module aiFoundryHubProjectToAiSearchRoleAssignments './core/security/role_aisearch.bicep' = [
   for (project,index) in aiFoundryHubProjectsList : if (aiFoundryHubDeploy && aiFoundryHubProjectDeploy && azureAiSearchDeploy) {
-    name: take('aifp-aisch-ra-${project.name}',64)
+    name: take('aifhp-aisch-ra-${project.name}',64)
     scope: az.resourceGroup(effectiveResourceGroupName)
     dependsOn: [
       aiFoundryHubProjects
@@ -1225,7 +1251,7 @@ module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.
 
 // ---------- AI FOUNDRY PROJECTS DATASTORES (HUB DEPLOY ONLY) ----------
 // One module instance per <project, container> when deploySampleData == true
-module projectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
+module aiFoundryHubProjectSampleDataStores 'core/ai/ai-foundry-project-datastore.bicep' = [
   for idx in range(0, (projectCount * sampleDataContainerCount)) : if (aiFoundryHubDeploy && aiFoundryHubProjectDeploy && deploySampleData && aiFoundryProjectDeploy) {
     // Make the module deployment name unique
     name: replace(toLower(take('datastore_${aiFoundryHubProjectsList[idx / sampleDataContainerCount].name}_${sampleDataContainersArray[idx % sampleDataContainerCount]}',64)),'-','_')
