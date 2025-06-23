@@ -18,6 +18,8 @@ param keyVaultEnablePurgeProtection = toLower(readEnvironmentVariable('AZURE_KEY
 // AI resources parameters
 param azureAiSearchSku = toLower(readEnvironmentVariable('AZURE_AI_SEARCH_SKU', 'standard'))
 param azureAiSearchDeploy = toLower(readEnvironmentVariable('AZURE_AI_SEARCH_DEPLOY', 'true')) == 'true'
+param azureAiSearchReplicaCount = int(readEnvironmentVariable('AZURE_AI_SEARCH_REPLICA_COUNT', '1'))
+param azureAiSearchPartitionCount = int(readEnvironmentVariable('AZURE_AI_SEARCH_PARTITION_COUNT', '1'))
 
 // Storage account override (use 'default' to keep the generated name)
 param azureStorageAccountName = readEnvironmentVariable('AZURE_STORAGE_ACCOUNT_NAME', '') == '' ? 'default' : readEnvironmentVariable('AZURE_STORAGE_ACCOUNT_NAME', '')

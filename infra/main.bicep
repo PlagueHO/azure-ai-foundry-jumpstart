@@ -51,6 +51,15 @@ param aiFoundryIpAllowList array = []
 ])
 param azureAiSearchSku string = 'standard'
 
+@sys.description('Number of replicas in the Azure AI Search service. Must be between 1 and 12. Defaults to 1.')
+@minValue(1)
+@maxValue(12)
+param azureAiSearchReplicaCount int = 1
+
+@sys.description('Number of partitions in the Azure AI Search service. Must be 1, 2, 3, 4, 6, or 12. Defaults to 1.')
+@allowed([1, 2, 3, 4, 6, 12])
+param azureAiSearchPartitionCount int = 1
+
 @sys.description('Id of the user or app to assign application roles.')
 param principalId string
 
@@ -769,6 +778,8 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.10.0' = if (az
     name: aiSearchServiceName
     location: location
     sku: azureAiSearchSku
+    replicaCount: azureAiSearchReplicaCount
+    partitionCount: azureAiSearchPartitionCount
     diagnosticSettings: [
       {
         metricCategories: [

@@ -261,6 +261,26 @@ Default: `true`.
 azd env set AZURE_AI_SEARCH_DEPLOY false
 ```
 
+### AZURE_AI_SEARCH_REPLICA_COUNT
+
+Number of replicas in the Azure AI Search service. Replicas provide high availability and increase query throughput.  
+Must be between 1 and 12.
+Default: `1`.
+
+```powershell
+azd env set AZURE_AI_SEARCH_REPLICA_COUNT 2
+```
+
+### AZURE_AI_SEARCH_PARTITION_COUNT
+
+Number of partitions in the Azure AI Search service. Partitions divide the search index to enable scaling and parallel processing.  
+Allowed: `1` | `2` | `3` | `4` | `6` | `12`.
+Default: `1`.
+
+```powershell
+azd env set AZURE_AI_SEARCH_PARTITION_COUNT 2
+```
+
 ## Identity & Access
 
 ### AZURE_PRINCIPAL_ID
