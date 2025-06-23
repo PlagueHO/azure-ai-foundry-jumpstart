@@ -10,7 +10,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "14152720368882735750"
+      "templateHash": "12234677394341439056"
     }
   },
   "parameters": {
@@ -94,6 +94,30 @@
       ],
       "metadata": {
         "description": "SKU for the Azure AI Search service. Defaults to standard."
+      }
+    },
+    "azureAiSearchReplicaCount": {
+      "type": "int",
+      "defaultValue": 1,
+      "minValue": 1,
+      "maxValue": 12,
+      "metadata": {
+        "description": "Number of replicas in the Azure AI Search service. Must be between 1 and 12. Defaults to 1."
+      }
+    },
+    "azureAiSearchPartitionCount": {
+      "type": "int",
+      "defaultValue": 1,
+      "allowedValues": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        12
+      ],
+      "metadata": {
+        "description": "Number of partitions in the Azure AI Search service. Must be 1, 2, 3, 4, 6, or 12. Defaults to 1."
       }
     },
     "principalId": {
@@ -634,7 +658,7 @@
     "resourceGroup": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "resource-group-deployment",
+      "name": "[format('resource-group-deployment-{0}', parameters('location'))]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1125,7 +1149,7 @@
     "logAnalyticsWorkspace": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "logAnalyticsWorkspace",
+      "name": "logAnalytics-workspace-deployment",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -4162,7 +4186,7 @@
     "applicationInsights": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "applicationInsights",
+      "name": "application-insights-deployment",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -35067,7 +35091,7 @@
       "condition": "[parameters('aiFoundryHubDeploy')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "keyVault",
+      "name": "key-vault-deployment",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -38405,7 +38429,7 @@
       "condition": "[parameters('aiFoundryHubDeploy')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "storageAccount",
+      "name": "hub-storage-account-deployment",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -53433,6 +53457,12 @@
           "sku": {
             "value": "[parameters('azureAiSearchSku')]"
           },
+          "replicaCount": {
+            "value": "[parameters('azureAiSearchReplicaCount')]"
+          },
+          "partitionCount": {
+            "value": "[parameters('azureAiSearchPartitionCount')]"
+          },
           "diagnosticSettings": {
             "value": [
               {
@@ -55795,7 +55825,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "7728750209719109723"
+              "templateHash": "12611287881224025971"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service account.\nThis is a temporary module for deploying Azure AI Foundry Cognitive Services accounts.\nIt is intended to be replaced by the Azure Verified Module (AVM) for Microsoft.CognitiveServices accounts\nonce it supports AI Foundry V2 (projects, connections etc)\nhttps://github.com/Azure/bicep-registry-modules/issues/5390\n"
@@ -58812,7 +58842,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.34.44.8038",
-                      "templateHash": "7930777196523657675"
+                      "templateHash": "17225536712102481235"
                     },
                     "name": "Cognitive Services Project",
                     "description": "This module deploys a Project within a Cognitive Services account.\nIt allows for the creation of a AI Foundry Project with optional managed identities and role assignments.\n"
@@ -59939,7 +59969,8 @@
                       }
                     ],
                     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-                    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), createObject())), createObject('type', 'None', 'userAssignedIdentities', createObject()))]",
+                    "identityType": "[if(not(empty(parameters('managedIdentities'))), if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'None')]",
+                    "identity": "[if(not(empty(parameters('managedIdentities'))), union(createObject('type', variables('identityType')), if(not(empty(variables('formattedUserAssignedIdentities'))), createObject('userAssignedIdentities', variables('formattedUserAssignedIdentities')), createObject())), null())]",
                     "builtInRoleNames": {
                       "Azure AI Account Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e47c6f54-e4a2-4754-9501-8e0985b135e1')]",
                       "Azure AI Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b78c5d69-af96-48a3-bf8d-a8b4d589de94')]",
@@ -61499,6 +61530,203 @@
         "aiSearchService",
         "azureMachineLearningServicePrincipal",
         "resourceGroup"
+      ]
+    },
+    "aiFoundryProjectToAiSearchRoleAssignments": {
+      "copy": {
+        "name": "aiFoundryProjectToAiSearchRoleAssignments",
+        "count": "[length(variables('aiFoundryServiceProjects'))]"
+      },
+      "condition": "[and(parameters('aiFoundryProjectDeploy'), parameters('azureAiSearchDeploy'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('aifp-aisch-ra-{0}', variables('aiFoundryServiceProjects')[copyIndex()].name), 64)]",
+      "resourceGroup": "[variables('effectiveResourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "azureAiSearchName": {
+            "value": "[variables('aiSearchServiceName')]"
+          },
+          "roleAssignments": {
+            "value": [
+              {
+                "roleDefinitionIdOrName": "Search Index Data Reader",
+                "principalType": "ServicePrincipal",
+                "principalId": "[coalesce(tryGet(reference('aiFoundryService').outputs.projects.value[copyIndex()], 'systemAssignedMIPrincipalId'), '')]"
+              },
+              {
+                "roleDefinitionIdOrName": "Search Service Contributor",
+                "principalType": "ServicePrincipal",
+                "principalId": "[coalesce(tryGet(reference('aiFoundryService').outputs.projects.value[copyIndex()], 'systemAssignedMIPrincipalId'), '')]"
+              }
+            ]
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.1-experimental",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "578277851210771986"
+            },
+            "description": "Creates role assignments on an Azure AI Search service."
+          },
+          "definitions": {
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "azureAiSearchName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Azure AI Search service to set the role assignments on."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "Search Index Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8ebe5a00-799e-43f5-93ac-243d3dce84a7')]",
+              "Search Index Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1407120a-92aa-4202-b7e9-c0e197c71c8f')]",
+              "Search Service Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7ca78c08-252a-4471-8644-bb5ff32d4ba0')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "azureAiSearch": {
+              "existing": true,
+              "type": "Microsoft.Search/searchServices",
+              "apiVersion": "2025-02-01-preview",
+              "name": "[parameters('azureAiSearchName')]"
+            },
+            "aiSearch_roleAssignments": {
+              "copy": {
+                "name": "aiSearch_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Search/searchServices/{0}', parameters('azureAiSearchName'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Search/searchServices', parameters('azureAiSearchName')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "aiFoundryService"
       ]
     },
     "aiFoundryHub": {
@@ -69925,15 +70153,15 @@
         "logAnalyticsWorkspace"
       ]
     },
-    "aiFoundryProjectToAiServiceRoleAssignments": {
+    "aiFoundryHubProjectToAiServiceRoleAssignments": {
       "copy": {
-        "name": "aiFoundryProjectToAiServiceRoleAssignments",
+        "name": "aiFoundryHubProjectToAiServiceRoleAssignments",
         "count": "[length(variables('aiFoundryHubProjectsList'))]"
       },
       "condition": "[and(parameters('aiFoundryHubDeploy'), parameters('aiFoundryHubProjectDeploy'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('aifp-aisvc-ra-{0}', variables('aiFoundryHubProjectsList')[copyIndex()].name), 64)]",
+      "name": "[take(format('aifhp-aisvc-ra-{0}', variables('aiFoundryHubProjectsList')[copyIndex()].name), 64)]",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -70138,15 +70366,15 @@
         "aiFoundryHubProjects"
       ]
     },
-    "aiFoundryProjectToAiSearchRoleAssignments": {
+    "aiFoundryHubProjectToAiSearchRoleAssignments": {
       "copy": {
-        "name": "aiFoundryProjectToAiSearchRoleAssignments",
+        "name": "aiFoundryHubProjectToAiSearchRoleAssignments",
         "count": "[length(variables('aiFoundryHubProjectsList'))]"
       },
       "condition": "[and(and(parameters('aiFoundryHubDeploy'), parameters('aiFoundryHubProjectDeploy')), parameters('azureAiSearchDeploy'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('aifp-aisch-ra-{0}', variables('aiFoundryHubProjectsList')[copyIndex()].name), 64)]",
+      "name": "[take(format('aifhp-aisch-ra-{0}', variables('aiFoundryHubProjectsList')[copyIndex()].name), 64)]",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -70335,9 +70563,9 @@
         "aiFoundryHubProjects"
       ]
     },
-    "projectSampleDataStores": {
+    "aiFoundryHubProjectSampleDataStores": {
       "copy": {
-        "name": "projectSampleDataStores",
+        "name": "aiFoundryHubProjectSampleDataStores",
         "count": "[length(range(0, mul(variables('projectCount'), variables('sampleDataContainerCount'))))]"
       },
       "condition": "[and(and(and(parameters('aiFoundryHubDeploy'), parameters('aiFoundryHubProjectDeploy')), parameters('deploySampleData')), parameters('aiFoundryProjectDeploy'))]",
