@@ -130,5 +130,17 @@
       "name": "GlobalStandard",
       "capacity": 150
     }
+  },
+  {
+    "model": {
+      "format": "OpenAI",
+      "name": "codex-mini",
+      "version": "2025-05-16"
+    },
+    "name": "codex-mini",
+    "sku": {
+      "name": "GlobalStandard",
+      "capacity": 150
+    }
   }
 ]
