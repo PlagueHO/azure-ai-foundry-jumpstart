@@ -10,7 +10,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "239275899334161393"
+      "templateHash": "1930137040473493224"
     }
   },
   "parameters": {
@@ -55808,7 +55808,7 @@
               "systemAssigned": true
             }
           },
-          "networkAcls": "[if(parameters('azureNetworkIsolation'), createObject('value', createObject('defaultAction', 'Deny', 'ipRules', variables('aiFoundryIpRules'), 'virtualNetworkRules', createArray())), createObject('value', null()))]",
+          "networkAcls": "[if(parameters('azureNetworkIsolation'), createObject('value', createObject('defaultAction', 'Deny', 'ipRules', variables('aiFoundryIpRules'), 'virtualNetworkRules', createArray())), createObject('value', createObject('defaultAction', 'Allow', 'ipRules', createArray(), 'virtualNetworkRules', createArray())))]",
           "privateEndpoints": "[if(parameters('azureNetworkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('aiServicesPrivateDnsZone').outputs.resourceId.value), createObject('privateDnsZoneResourceId', reference('aiServicesOpenAiDnsZone').outputs.resourceId.value), createObject('privateDnsZoneResourceId', reference('aiServicesAiDnsZone').outputs.resourceId.value))), 'service', 'account', 'subnetResourceId', reference('virtualNetwork').outputs.subnetResourceIds.value[1]))), createObject('value', createArray()))]",
           "restrictOutboundNetworkAccess": {
             "value": "[parameters('azureNetworkIsolation')]"
@@ -55840,7 +55840,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "12611287881224025971"
+              "templateHash": "7664723187671845317"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service account.\nThis is a temporary module for deploying Azure AI Foundry Cognitive Services accounts.\nIt is intended to be replaced by the Azure Verified Module (AVM) for Microsoft.CognitiveServices accounts\nonce it supports AI Foundry V2 (projects, connections etc)\nhttps://github.com/Azure/bicep-registry-modules/issues/5390\n"
@@ -58807,7 +58807,9 @@
             "cognitiveService_projects": {
               "copy": {
                 "name": "cognitiveService_projects",
-                "count": "[length(coalesce(parameters('projects'), createArray()))]"
+                "count": "[length(coalesce(parameters('projects'), createArray()))]",
+                "mode": "serial",
+                "batchSize": 1
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -58827,10 +58829,10 @@
                     "value": "[coalesce(tryGet(coalesce(parameters('projects'), createArray())[copyIndex()], 'name'), format('{0}-project-{1}', parameters('name'), copyIndex()))]"
                   },
                   "displayName": {
-                    "value": "[coalesce(coalesce(tryGet(coalesce(parameters('projects'), createArray())[copyIndex()], 'displayName'), tryGet(coalesce(parameters('projects'), createArray())[copyIndex()], 'name')), format('{0}-project-{1}', parameters('name'), copyIndex()))]"
+                    "value": "[coalesce(coalesce(tryGet(tryGet(coalesce(parameters('projects'), createArray())[copyIndex()], 'properties'), 'displayName'), tryGet(coalesce(parameters('projects'), createArray())[copyIndex()], 'name')), format('{0}-project-{1}', parameters('name'), copyIndex()))]"
                   },
                   "description": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('projects'), createArray())[copyIndex()], 'description'), '')]"
+                    "value": "[coalesce(tryGet(tryGet(coalesce(parameters('projects'), createArray())[copyIndex()], 'properties'), 'description'), '')]"
                   },
                   "location": {
                     "value": "[coalesce(tryGet(coalesce(parameters('projects'), createArray())[copyIndex()], 'location'), parameters('location'))]"

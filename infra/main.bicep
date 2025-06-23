@@ -944,7 +944,11 @@ module aiFoundryService './cognitive-services/accounts/main.bicep' = {
       defaultAction: 'Deny'
       ipRules: aiFoundryIpRules
       virtualNetworkRules: []
-    } : null
+    } : {
+      defaultAction: 'Allow'
+      ipRules: []
+      virtualNetworkRules: []
+    }
     privateEndpoints: azureNetworkIsolation ? [
       {
         privateDnsZoneGroup: {

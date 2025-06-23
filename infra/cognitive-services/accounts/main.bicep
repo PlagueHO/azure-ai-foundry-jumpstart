@@ -512,6 +512,7 @@ module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endp
   }
 ]
 
+@batchSize(1)
 module cognitiveService_projects './project/main.bicep' = [
   for (project, index) in (projects ?? []): {
     name: '${uniqueString(deployment().name, location)}-cognitiveService-project-${index}'
@@ -522,8 +523,8 @@ module cognitiveService_projects './project/main.bicep' = [
     params: {
       accountName: cognitiveService.name
       name: project.?name ?? '${name}-project-${index}'
-      displayName: project.?displayName ?? project.?name ?? '${name}-project-${index}'
-      description: project.?description ?? ''
+      displayName: project.?properties.?displayName ?? project.?name ?? '${name}-project-${index}'
+      description: project.?properties.?description ?? ''
       location: project.?location ?? location
       managedIdentities: project.?managedIdentities ?? managedIdentities
       roleAssignments: project.?roleAssignments ?? roleAssignments
