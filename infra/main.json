@@ -10,7 +10,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "12234677394341439056"
+      "templateHash": "239275899334161393"
     }
   },
   "parameters": {
@@ -555,6 +555,18 @@
           "version": "2025-05-19"
         },
         "name": "model-router",
+        "sku": {
+          "name": "GlobalStandard",
+          "capacity": 150
+        }
+      },
+      {
+        "model": {
+          "format": "OpenAI",
+          "name": "codex-mini",
+          "version": "2025-05-16"
+        },
+        "name": "codex-mini",
         "sku": {
           "name": "GlobalStandard",
           "capacity": 150
@@ -55798,6 +55810,9 @@
           },
           "networkAcls": "[if(parameters('azureNetworkIsolation'), createObject('value', createObject('defaultAction', 'Deny', 'ipRules', variables('aiFoundryIpRules'), 'virtualNetworkRules', createArray())), createObject('value', null()))]",
           "privateEndpoints": "[if(parameters('azureNetworkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('aiServicesPrivateDnsZone').outputs.resourceId.value), createObject('privateDnsZoneResourceId', reference('aiServicesOpenAiDnsZone').outputs.resourceId.value), createObject('privateDnsZoneResourceId', reference('aiServicesAiDnsZone').outputs.resourceId.value))), 'service', 'account', 'subnetResourceId', reference('virtualNetwork').outputs.subnetResourceIds.value[1]))), createObject('value', createArray()))]",
+          "restrictOutboundNetworkAccess": {
+            "value": "[parameters('azureNetworkIsolation')]"
+          },
           "publicNetworkAccess": "[if(parameters('azureNetworkIsolation'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "sku": {
             "value": "S0"
@@ -61535,7 +61550,9 @@
     "aiFoundryProjectToAiSearchRoleAssignments": {
       "copy": {
         "name": "aiFoundryProjectToAiSearchRoleAssignments",
-        "count": "[length(variables('aiFoundryServiceProjects'))]"
+        "count": "[length(variables('aiFoundryServiceProjects'))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "condition": "[and(parameters('aiFoundryProjectDeploy'), parameters('azureAiSearchDeploy'))]",
       "type": "Microsoft.Resources/deployments",
@@ -70156,7 +70173,9 @@
     "aiFoundryHubProjectToAiServiceRoleAssignments": {
       "copy": {
         "name": "aiFoundryHubProjectToAiServiceRoleAssignments",
-        "count": "[length(variables('aiFoundryHubProjectsList'))]"
+        "count": "[length(variables('aiFoundryHubProjectsList'))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "condition": "[and(parameters('aiFoundryHubDeploy'), parameters('aiFoundryHubProjectDeploy'))]",
       "type": "Microsoft.Resources/deployments",
@@ -70369,7 +70388,9 @@
     "aiFoundryHubProjectToAiSearchRoleAssignments": {
       "copy": {
         "name": "aiFoundryHubProjectToAiSearchRoleAssignments",
-        "count": "[length(variables('aiFoundryHubProjectsList'))]"
+        "count": "[length(variables('aiFoundryHubProjectsList'))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "condition": "[and(and(parameters('aiFoundryHubDeploy'), parameters('aiFoundryHubProjectDeploy')), parameters('azureAiSearchDeploy'))]",
       "type": "Microsoft.Resources/deployments",

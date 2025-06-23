@@ -945,7 +945,6 @@ module aiFoundryService './cognitive-services/accounts/main.bicep' = {
       ipRules: aiFoundryIpRules
       virtualNetworkRules: []
     } : null
-    restrictOutboundNetworkAccess: false
     privateEndpoints: azureNetworkIsolation ? [
       {
         privateDnsZoneGroup: {
@@ -965,6 +964,7 @@ module aiFoundryService './cognitive-services/accounts/main.bicep' = {
         subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1] // AiServices Subnet
       }
     ] : []
+    restrictOutboundNetworkAccess: azureNetworkIsolation
     publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
     sku: 'S0'
     deployments: deploySampleOpenAiModels ? openAiSampleModels : []
@@ -1028,6 +1028,7 @@ module aiFoundryRoleAssignments './core/security/role_aifoundry.bicep' = {
 // Add any Search Index Reader and Search Service Contributor roles for each AI Foundry project
 // to the AI Search Account. This ensures Agents created within a project can access indexes in
 // the AI Search account.
+@batchSize(1)
 module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.bicep' = [
   for (project,index) in aiFoundryServiceProjects : if (aiFoundryProjectDeploy && azureAiSearchDeploy) {
     name: take('aifp-aisch-ra-${project.name}',64)
@@ -1202,6 +1203,7 @@ module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspa
 // ---------- AI FOUNDRY PROJECTS ROLE ASSIGNMENTS TO AI SERVICES (HUB DEPLOY ONLY) ----------
 // Add any Azure AI Developer role for each AI Foundry project to the AI Services account
 // This ensures a developer with access to the AI Foundry project can also access the AI Services
+@batchSize(1)
 module aiFoundryHubProjectToAiServiceRoleAssignments './core/security/role_aifoundry.bicep' = [
   for (project,index) in aiFoundryHubProjectsList: if (aiFoundryHubDeploy && aiFoundryHubProjectDeploy) {
   name: take('aifhp-aisvc-ra-${project.name}',64)
@@ -1225,6 +1227,7 @@ module aiFoundryHubProjectToAiServiceRoleAssignments './core/security/role_aifou
 // Add any Search Index Reader and Search Service Contributor roles for each AI Foundry project
 // to the AI Search Account. This ensures Agents created within a project can access indexes in
 // the AI Search account.
+@batchSize(1)
 module aiFoundryHubProjectToAiSearchRoleAssignments './core/security/role_aisearch.bicep' = [
   for (project,index) in aiFoundryHubProjectsList : if (aiFoundryHubDeploy && aiFoundryHubProjectDeploy && azureAiSearchDeploy) {
     name: take('aifhp-aisch-ra-${project.name}',64)
