@@ -1,13 +1,13 @@
 ---
-description: Generate an implementation plan for new features or refactoring existing code.
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'giphy', 'playwright', 'websearch']
+mode: 'agent'
+description: Create a new implementation plan file for new features, refactoring existing code or upgrading packages, design, architecture or infrastructure.
+tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
 ---
-# Planning mode instructions
+## Create Plan Prompt
 
-You are in planning mode. Your task is to generate an implementation plan for a new feature or for refactoring existing code.
-Don't make any code edits, just generate a plan.
+Your goal is to create a new implementation plan file for `${input:PlanPurpose}`.
 
-A plan must define the implementation details, including specific tasks, dependencies, and testing strategies, in a manner that is clear, unambiguous, and structured for effective use by Generative AIs. Follow established documentation standards and ensure the content is machine-readable and self-contained.
+The plan file must define the implementation details, including specific tasks, dependencies, and testing strategies, in a manner that is clear, unambiguous, and structured for effective use by Generative AIs. Follow established documentation standards and ensure the content is machine-readable and self-contained.
 
 **Best Practices for AI-Ready Specifications:**
 - Use precise, explicit, and unambiguous language.
@@ -17,8 +17,6 @@ A plan must define the implementation details, including specific tasks, depende
 - Define all acronyms and domain-specific terms.
 - Include examples and edge cases where applicable.
 - Ensure the document is self-contained and does not rely on external context.
-
-If asked, you will create the plan as a plan file.
 
 The plan file should be saved in the [/plan/](/plan/) directory and named according to the following convention: `[a-z0-9-]+.md`, where the name should be descriptive of the plan's goal, such as `upgrade-system-command-4.md` or `refactor-lodash-4.md` and and starting with the highlevel purpose, which is one of [upgrade, refactor, feature, data, infrastructure, process, architecture, or design].
 

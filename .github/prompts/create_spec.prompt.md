@@ -1,12 +1,13 @@
 ---
 mode: 'agent'
-description: 'Create a new specification file for the Azure AI Foundry solution accelerator project.'
+description: Create a new specification file for the solution, optimized for Generative AI consumption.
 tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
 ---
-Your goal is to create a new specification file for `${input:SpecPurpose}` in the [/spec/](/spec/) directory of this repository.
+## Create Specification Prompt
+
+Your goal is to create a new specification file for `${input:SpecPurpose}`.
+
 The specification file must define the requirements, constraints, and interfaces for the solution components in a manner that is clear, unambiguous, and structured for effective use by Generative AIs. Follow established documentation standards and ensure the content is machine-readable and self-contained.
-The specification must be named according to the following convention: `[a-z0-9-]+.md`, where the name should be descriptive of the specification's content and starting with the highlevel purpose, which is one of [schema, tool, data, infrastructure, process, architecture, or design].
-The file should be formatted in well formed Markdown.
 
 **Best Practices for AI-Ready Specifications:**
 - Use precise, explicit, and unambiguous language.
@@ -17,8 +18,13 @@ The file should be formatted in well formed Markdown.
 - Include examples and edge cases where applicable.
 - Ensure the document is self-contained and does not rely on external context.
 
-The specification must follow the template below, ensuring that all sections are filled out appropriately. The front matter for the MD should be structured correctly as per the example following:
-```Markdown
+The specification should be saved in the [/spec/](/spec/) directory and named according to the following convention: `[a-z0-9-]+.md`, where the name should be descriptive of the specification's content and starting with the highlevel purpose, which is one of [schema, tool, data, infrastructure, process, architecture, or design].
+
+The specification file must be formatted in well formed Markdown.
+
+Specification files must follow the template below, ensuring that all sections are filled out appropriately. The front matter for the markdown should be structured correctly as per the example following:
+
+```md
 ---
 title: [Concise Title Describing the Specification's Focus]
 version: [Optional: e.g., 1.0, Date]  
