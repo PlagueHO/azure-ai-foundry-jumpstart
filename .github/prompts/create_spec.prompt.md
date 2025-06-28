@@ -61,21 +61,40 @@ tags: [Optional: List of relevant tags or categories, e.g., `infrastructure`, `p
 
 [Describe the interfaces, APIs, data contracts, or integration points. Use tables or code blocks for schemas and examples.]
 
-## 5. Rationale & Context
+## 5. Acceptance Criteria
+
+[Define clear, testable acceptance criteria for each requirement using Given-When-Then format where appropriate.]
+
+- **AC-001**: Given [context], When [action], Then [expected outcome]
+- **AC-002**: The system shall [specific behavior] when [condition]
+- **AC-003**: [Additional acceptance criteria as needed]
+
+## 6. Test Automation Strategy
+
+[Define the testing approach, frameworks, and automation requirements.]
+
+- **Test Levels**: Unit, Integration, End-to-End
+- **Frameworks**: MSTest, FluentAssertions, Moq (for .NET applications)
+- **Test Data Management**: [approach for test data creation and cleanup]
+- **CI/CD Integration**: [automated testing in GitHub Actions pipelines]
+- **Coverage Requirements**: [minimum code coverage thresholds]
+- **Performance Testing**: [approach for load and performance testing]
+
+## 7. Rationale & Context
 
 [Explain the reasoning behind the requirements, constraints, and guidelines. Provide context for design decisions.]
 
-## 6. Examples & Edge Cases
+## 8. Examples & Edge Cases
 
 ``````
 // Code snippet or data example demonstrating the correct application of the guidelines, including edge cases
 ``````
 
-## 7. Validation Criteria
+## 9. Validation Criteria
 
 [List the criteria or tests that must be satisfied for compliance with this specification.]
 
-## 8. Related Specifications / Further Reading
+## 10. Related Specifications / Further Reading
 
 [Link to related spec 1]  
 [Link to relevant external documentation]
