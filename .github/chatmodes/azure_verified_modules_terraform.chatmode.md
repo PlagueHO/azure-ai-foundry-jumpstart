@@ -1,6 +1,6 @@
 ---
 description: Create, update, or review Azure IaC in Terraform using Azure Verified Modules (AVM).
-tools: ['changes','codebase','editFiles','extensions','fetch','findTestFiles','githubRepo','new','openSimpleBrowser','problems','runCommands','runNotebooks','runTasks','search','searchResults','terminalLastCommand','terminalSelection','testFailure','usages','vscodeAPI','playwright','azure_get_deployment_best_practices','websearch','microsoft.docs.mcp']
+tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI',  'azure_get_deployment_best_practices', 'azure_get_schema_for_Bicep', 'microsoft.docs.mcp']
 ---
 # Azure AVM Terraform mode
 Use Azure Verified Modules for Terraform to enforce Azure best practices via pre-built modules.
@@ -32,4 +32,6 @@ Use Azure Verified Modules for Terraform to enforce Azure best practices via pre
 - Enable telemetry
 - Use AVM utility modules
 - Follow AzureRM provider requirements
+- Always run `terraform fmt` and `terraform validate` after making changes
+- Use `azure_get_deployment_best_practices` tool for deployment guidance
 - Use `microsoft.docs.mcp` tool to look up Azure service-specific guidance

@@ -1,21 +1,37 @@
 ---
-description: Create, update or review Azure infrastructure as code in Bicep syntax using Azure Verified Modules .
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'playwright', 'azure_get_deployment_best_practices', 'azure_get_schema_for_Bicep', 'websearch', 'microsoft.docs.mcp']
+description: Create, update, or review Azure IaC in Bicep using Azure Verified Modules (AVM).
+tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'azure_get_deployment_best_practices', 'azure_get_schema_for_Bicep', 'microsoft.docs.mcp']
 ---
-# Azure Verified Modules Bicep mode instructions
+# Azure AVM Bicep mode
+Use Azure Verified Modules for Bicep to enforce Azure best practices via pre-built modules.
 
-You are in Azure Verified Modules Bicep mode. Your task is to create, update, or review Azure infrastructure as code in Bicep syntax using Azure Verified Modules (AVM).
+## Discover modules
+- AVM Index: https://azure.github.io/Azure-Verified-Modules/indexes/bicep/bicep-resource-modules/
+- GitHub: https://github.com/Azure/bicep-registry-modules/tree/main/avm/
 
-When creating Bicep templates for Azure resources, you must always use Azure Verified Modules (AVM) to ensure best practices, security, and maintainability. Azure Verified Modules are pre-built, community-reviewed Bicep modules that encapsulate best practices for deploying Azure resources.
+## Usage
+- **Examples**: Copy from module documentation, update parameters, pin version
+- **Registry**: Reference `br/public:avm/res/{service}/{resource}:{version}`
 
-Always use Azure Verified Modules (AVM) for all resources, including networking, security, and compute resources - wherever possible. You must always refer to the [Azure Verified Modules documentation for Bicep](https://azure.github.io/Azure-Verified-Modules/indexes/bicep/bicep-resource-modules/) to ensure you are using the latest version of the module and that you are using the module correctly.
+## Versioning
+- MCR Endpoint: `https://mcr.microsoft.com/v2/bicep/avm/res/{service}/{resource}/tags/list`
+- Pin to specific version tag
 
-You can find use the `fetch` tool to get the latest version of an Azure Verified Module from Microsoft Container Registry. For example, for module `avm/res/compute/virtual-machine` fetch [https://mcr.microsoft.com/v2/bicep/avm/res/compute/virtual-machine/tags/list](https://mcr.microsoft.com/v2/bicep/avm/res/compute/virtual-machine/tags/list) and find the latest version tag.
+## Sources
+- GitHub: `https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/{service}/{resource}`
+- Registry: `br/public:avm/res/{service}/{resource}:{version}`
 
-You can find the documentation and example configurations for each Azure Verified Module resource in a folder based on the module name. For example, for module `avm/res/compute/virtual-machine` you will find the documentation in [https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/compute/virtual-machine](https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/compute/virtual-machine)
+## Naming conventions
+- Resource: avm/res/{service}/{resource}
+- Pattern: avm/ptn/{pattern}
+- Utility: avm/utl/{utility}
 
-You can search the Microsoft Learn documentation for Bicep resources using the `microsoft.docs.mcp` tool. For example, to search for Bicep resources related to virtual machines, you can use the query `bicep virtual machine`, but you should prioritize AVM documentation over generic Bicep documentation. But you should refer to the specifics of how an Azure service works and the best practices for deploying it using the Microsoft Learn documentation.
-
-When you are creating or updating Bicep files, you should always ensure that the Bicep file is valid and adheres to the latest standards for Azure Verified Modules. You can use the `azure_get_deployment_best_practices` tool to get the best practices for deploying Azure resources using Bicep.
-
-When you are creating or updating Bicep files, you should always ensure that the Bicep file is valid and adheres to the latest standards for Azure Verified Modules. You can use the `azure_get_schema_for_Bicep` tool to get the latest schema for Bicep files.
+## Best practices
+- Always use AVM modules where available
+- Pin module versions
+- Start with official examples
+- Review module parameters and outputs
+- Always run `bicep lint` after making changes
+- Use `azure_get_deployment_best_practices` tool for deployment guidance
+- Use `azure_get_schema_for_Bicep` tool for schema validation
+- Use `microsoft.docs.mcp` tool to look up Azure service-specific guidance

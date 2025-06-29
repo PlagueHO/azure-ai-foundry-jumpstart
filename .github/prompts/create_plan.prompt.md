@@ -18,7 +18,7 @@ The plan file must define the implementation details, including specific tasks, 
 - Include examples and edge cases where applicable.
 - Ensure the document is self-contained and does not rely on external context.
 
-The plan file should be saved in the [/plan/](/plan/) directory and named according to the following convention: `[a-z0-9-]+.md`, where the name should be descriptive of the plan's goal, such as `upgrade-system-command-4.md` or `refactor-lodash-4.md` and and starting with the highlevel purpose, which is one of [upgrade, refactor, feature, data, infrastructure, process, architecture, or design].
+The plan file should be saved in the [/plan/](/plan/) directory and named according to the following convention: `plan-[a-z0-9-]+.md`, where the name should be descriptive of the plan's goal, such as `plan-upgrade-system-command-4.md` or `plan-refactor-lodash-4.md` and and starting with the highlevel purpose, which is one of [upgrade, refactor, feature, data, infrastructure, process, architecture, or design].
 
 The plan file must be formatted in well formed Markdown.
 

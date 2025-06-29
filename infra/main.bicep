@@ -245,7 +245,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.1' = {
 }
 
 // ---------- MONITORING RESOURCES (BOTH HUB AND PROJECT MODE) ----------
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = {
   name: 'logAnalytics-workspace-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -519,7 +519,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (aiFoundryHubDep
 }
 
 // ---------- STORAGE ACCOUNT (HUB DEPLOY ONLY) ----------
-module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = if (aiFoundryHubDeploy) {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.23.0' = if (aiFoundryHubDeploy) {
   name: 'hub-storage-account-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -621,7 +621,7 @@ var effectiveContainerRegistryResourceId = containerRegistryDeploy
   : ''
 
 // ---------- STORAGE ACCOUNT SAMPLE DATA (OPTIONAL) ----------
-module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = if (deploySampleData) {
+module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.23.0' = if (deploySampleData) {
   name: 'sample-data-storage-account-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
