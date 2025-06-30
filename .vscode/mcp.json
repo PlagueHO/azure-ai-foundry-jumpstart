@@ -1,11 +1,6 @@
 {
     "inputs": [
         {
-            "id": "baseDirectory",
-            "type": "promptString",
-            "description": "Enter the base directory path for the server"
-        },
-        {
             "id": "giphy_api_key",
             "type": "promptString",
             "description": "Giphy API Key",
@@ -13,16 +8,6 @@
         }
     ],
     "servers": {
-        "filesystem": {
-            "command": "npx",
-            "args": [
-                "-y",
-                "@modelcontextprotocol/server-filesystem",
-                "${input:baseDirectory}"
-            ],
-            "type": "stdio",
-            "env": {}
-        },
         "playwright": {
             "command": "npx",
             "args": [
