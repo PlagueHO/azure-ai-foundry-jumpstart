@@ -5,7 +5,7 @@ tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'githubRepo',
 ---
 ## Update Plan Prompt
 
-Your goal is to update the existing implementation plan file for `${input:PlanPurpose}` based on new or updated requirements to provide new features, refactoring existing code or upgrading packages, design, architecture or infrastructure.
+Your goal is to update the existing implementation plan file `${file}` based on new or updated requirements to provide new features, refactoring existing code or upgrading packages, design, architecture or infrastructure.
 
 The plan file must define the implementation details, including specific tasks, dependencies, and testing strategies, in a manner that is clear, unambiguous, and structured for effective use by Generative AIs. Follow established documentation standards and ensure the content is machine-readable and self-contained.
 
