@@ -1,21 +1,21 @@
 ---
 mode: 'ask'
 ---
-Review the C#/.NET code in ${selection} for design pattern implementation and suggest improvements for the GenAI Database Explorer project (.NET 8, C# 12+).
+Review the C#/.NET code in ${selection} for design pattern implementation and suggest improvements for the solution/project.
 
 ## Required Design Patterns
 
 - **Command Pattern**: Generic base classes (`CommandHandler<TOptions>`), `ICommandHandler<TOptions>` interface, `CommandHandlerOptions` inheritance, static `SetupCommand(IHost host)` methods
-- **Factory Pattern**: Complex object creation (`SemanticKernelFactory`, `KernelMemoryFactory`), service provider integration
+- **Factory Pattern**: Complex object creation service provider integration
 - **Dependency Injection**: Primary constructor syntax, `ArgumentNullException` null checks, interface abstractions, proper service lifetimes
-- **Repository Pattern**: Async data access interfaces (`ISchemaRepository`), provider abstractions for connections
+- **Repository Pattern**: Async data access interfaces provider abstractions for connections
 - **Provider Pattern**: External service abstractions (database, AI), clear contracts, configuration handling
 - **Resource Pattern**: ResourceManager for localized messages, separate .resx files (LogMessages, ErrorMessages)
 
 ## Review Checklist
 
 - **Design Patterns**: Identify patterns used. Are Command Handler, Factory, Provider, and Repository patterns correctly implemented? Missing beneficial patterns?
-- **Architecture**: Follow namespace conventions (`GenAIDBExplorer.{Core|Console}.{Feature}`)? Proper separation between Core/Console projects? Modular and readable?
+- **Architecture**: Follow namespace conventions (`{Core|Console|App|Service}.{Feature}`)? Proper separation between Core/Console projects? Modular and readable?
 - **.NET Best Practices**: Primary constructors, async/await with Task returns, ResourceManager usage, structured logging, strongly-typed configuration?
 - **GoF Patterns**: Command, Factory, Template Method, Strategy patterns correctly implemented?
 - **SOLID Principles**: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion violations?
@@ -35,4 +35,4 @@ Review the C#/.NET code in ${selection} for design pattern implementation and su
 - **Configuration**: Data annotations, validation attributes, secure sensitive value handling
 - **AI/ML Integration**: Semantic Kernel patterns, structured output handling, model configuration
 
-Provide specific, actionable recommendations for improvements aligned with the GenAI Database Explorer project's architecture and .NET 8 best practices.
+Provide specific, actionable recommendations for improvements aligned with the project's architecture and .NET best practices.
