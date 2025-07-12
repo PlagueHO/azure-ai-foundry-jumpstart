@@ -934,7 +934,20 @@ module aiFoundryService './cognitive-services/accounts/main.bicep' = {
     allowProjectManagement: true // Even if a Hub is deployed we will still allow project management in the AI Services account
     diagnosticSettings: [
       {
+        name: 'send-to-log-analytics'
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+            enabled: true
+          }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+            enabled: true
+          }
+        ]
       }
     ]
     managedIdentities: {
