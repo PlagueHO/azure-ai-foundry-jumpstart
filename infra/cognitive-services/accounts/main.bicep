@@ -535,7 +535,7 @@ module cognitiveService_projects './project/main.bicep' = [
 
 module cognitiveServices_connections 'connection/main.bicep' = [
   for connection in connections: {
-    name: '${cognitiveService.name}-${connection.name}-connection'
+    name: concat(take('${cognitiveService.name}-${connection.name}', 60),'-con')
     params: {
       accountName: cognitiveService.name
       name: connection.name
