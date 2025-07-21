@@ -519,7 +519,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (aiFoundryHubDep
 }
 
 // ---------- STORAGE ACCOUNT (HUB DEPLOY ONLY) ----------
-module storageAccount 'br/public:avm/res/storage/storage-account:0.23.0' = if (aiFoundryHubDeploy) {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (aiFoundryHubDeploy) {
   name: 'hub-storage-account-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -621,7 +621,7 @@ var effectiveContainerRegistryResourceId = containerRegistryDeploy
   : ''
 
 // ---------- STORAGE ACCOUNT SAMPLE DATA (OPTIONAL) ----------
-module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.23.0' = if (deploySampleData) {
+module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (deploySampleData) {
   name: 'sample-data-storage-account-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -770,7 +770,7 @@ module sampleDataStorageAccountRoles './core/security/role_storageaccount.bicep'
 }
 
 // ---------- AI SEARCH (OPTIONAL) ----------
-module aiSearchService 'br/public:avm/res/search/search-service:0.10.0' = if (azureAiSearchDeploy) {
+module aiSearchService 'br/public:avm/res/search/search-service:0.11.0' = if (azureAiSearchDeploy) {
   name: 'ai-search-service-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -1290,7 +1290,7 @@ module aiFoundryHubProjectSampleDataStores 'core/ai/ai-foundry-project-datastore
 ]
 
 // ------------- BASTION HOST (OPTIONAL) -------------
-module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (bastionHostDeploy && azureNetworkIsolation) {
+module bastionHost 'br/public:avm/res/network/bastion-host:0.7.0' = if (bastionHostDeploy && azureNetworkIsolation) {
   name: 'bastion-host-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]

@@ -1,6 +1,6 @@
 ---
-description: Provide principal-level software engineering guidance with focus on engineering excellence, technical leadership, and pragmatic implementation.
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'updateUserPreferences', 'usages', 'vscodeAPI', 'github', 'add_issue_comment', 'create_issue', 'get_issue', 'list_issues', 'search_code', 'search_issues', 'update_issue', 'websearch']
+description: 'Provide principal-level software engineering guidance with focus on engineering excellence, technical leadership, and pragmatic implementation.'
+tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'microsoft.docs.mcp', 'github']
 ---
 # Principal software engineer mode instructions
 
@@ -26,6 +26,7 @@ You will provide guidance on:
 ## Technical Debt Management
 
 When technical debt is incurred or identified:
+
 - **MUST** offer to create GitHub Issues using the `create_issue` tool to track remediation
 - Clearly document consequences and remediation plans
 - Regularly recommend GitHub Issues for requirements gaps, quality issues, or design improvements
