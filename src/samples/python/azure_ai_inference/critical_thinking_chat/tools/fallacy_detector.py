@@ -155,7 +155,7 @@ def _check_straw_man(text: str, text_lower: str) -> Tuple[str, float, str]:
         "totally", "absolutely", "never", "always", "everyone", "no one"
     ]
 
-    straw_man_score = 0
+    straw_man_score = 0.0
     for indicator in straw_man_indicators:
         if indicator in text_lower:
             straw_man_score += 0.3
@@ -336,7 +336,7 @@ def _check_red_herring(text: str, text_lower: str) -> Tuple[str, float, str]:
         "that's another issue", "different topic"
     ]
 
-    distraction_score = 0
+    distraction_score = 0.0
     for phrase in distraction_phrases:
         if phrase in text_lower:
             distraction_score += 0.4
@@ -395,7 +395,7 @@ def _check_appeal_to_emotion(text: str, text_lower: str) -> Tuple[str, float, st
         "you should be (?:ashamed|angry|outraged|scared)"
     ]
 
-    emotion_score = 0
+    emotion_score = 0.0
     for word in emotional_words:
         if word in text_lower:
             emotion_score += 0.2
@@ -416,7 +416,7 @@ def _check_appeal_to_emotion(text: str, text_lower: str) -> Tuple[str, float, st
 
 def _generate_suggestions(fallacies_found: List[Dict[str, Any]]) -> List[str]:
     """Generate improvement suggestions based on detected fallacies."""
-    suggestions = []
+    suggestions: List[str] = []
     fallacy_types = [f["type"] for f in fallacies_found]
 
     suggestion_map = {

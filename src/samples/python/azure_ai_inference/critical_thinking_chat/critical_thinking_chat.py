@@ -114,7 +114,7 @@ def load_environment() -> None:
         logger.info("python-dotenv not available, using system environment variables")
 
 
-def initialize_client(endpoint: Optional[str] = None):
+def initialize_client(endpoint: Optional[str] = None) -> AzureOpenAI:
     """
     Initialize and test the Azure AI Projects client and get Azure OpenAI client.
 
@@ -215,7 +215,7 @@ Remember: Your goal is not to convince users of any particular viewpoint, but to
 
 
 
-def create_syllogism_tool() -> dict:
+def create_syllogism_tool() -> Dict[str, Any]:
     """
     Create the syllogism evaluation tool definition for the AI model.
 
@@ -249,7 +249,7 @@ def create_syllogism_tool() -> dict:
     }
 
 
-def create_fallacy_detector_tool() -> dict:
+def create_fallacy_detector_tool() -> Dict[str, Any]:
     """
     Create the fallacy detection tool definition for the AI model.
 
@@ -378,10 +378,10 @@ def get_ai_response(
         fallacy_detector_tool = create_fallacy_detector_tool()
 
         # Make the API call with standard parameters and tool support
-        response = client.chat.completions.create(  # type: ignore[arg-type]
-            messages=conversation,
+        response = client.chat.completions.create(
+            messages=conversation,  # type: ignore[arg-type]
             model=model_name,
-            tools=[syllogism_tool, fallacy_detector_tool],
+            tools=[syllogism_tool, fallacy_detector_tool],  # type: ignore[list-item]
             max_tokens=800,
             temperature=1.0,
             top_p=1.0,
@@ -395,7 +395,7 @@ def get_ai_response(
 
             # Add the assistant's tool call message to conversation
             if response.choices[0].message.tool_calls:
-                assistant_message = {
+                assistant_message: Dict[str, Any] = {
                     "role": "assistant",
                     "content": response.choices[0].message.content,
                     "tool_calls": [
@@ -410,7 +410,7 @@ def get_ai_response(
                         for tc in response.choices[0].message.tool_calls
                     ]
                 }
-                conversation.append(assistant_message)  # type: ignore[arg-type]
+                conversation.append(assistant_message)
 
                 # Process each tool call with user permission
                 for tool_call in response.choices[0].message.tool_calls:
@@ -555,10 +555,10 @@ def get_ai_response(
                             conversation.append(tool_message)
 
             # Get the final response with tool results incorporated
-            final_response = client.chat.completions.create(  # type: ignore[arg-type]
-                messages=conversation,
+            final_response = client.chat.completions.create(
+                messages=conversation,  # type: ignore[arg-type]
                 model=model_name,
-                tools=[syllogism_tool, fallacy_detector_tool],
+                tools=[syllogism_tool, fallacy_detector_tool],  # type: ignore[list-item]
                 max_tokens=800,
                 temperature=1.0,
                 top_p=1.0,

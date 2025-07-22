@@ -5,6 +5,7 @@ This module provides the evaluate_syllogism function and supporting helpers.
 """
 import json
 import logging
+from typing import Dict, Any
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ def evaluate_syllogism(major_premise: str, minor_premise: str, conclusion: str) 
         - errors: list of identified logical fallacies or errors
     """
     try:
-        analysis_result = {
+        analysis_result: Dict[str, Any] = {
             "major_premise": major_premise,
             "minor_premise": minor_premise,
             "conclusion": conclusion,
@@ -80,7 +81,8 @@ def evaluate_syllogism(major_premise: str, minor_premise: str, conclusion: str) 
                 "incomplete_premises": "One or more premises are missing or incomplete"
             }
             error_details = [error_descriptions.get(error, error) for error in analysis_result["errors"]]
-            analysis_result["analysis"] = f"This {analysis_result['form']} syllogism contains logical errors: {', '.join(error_details)}. The conclusion does not necessarily follow from the premises."
+            error_details_filtered = [detail for detail in error_details if detail is not None]
+            analysis_result["analysis"] = f"This {analysis_result['form']} syllogism contains logical errors: {', '.join(error_details_filtered)}. The conclusion does not necessarily follow from the premises."
         else:
             analysis_result["analysis"] = f"This {analysis_result['form']} syllogism requires further analysis to determine validity."
 
@@ -88,7 +90,7 @@ def evaluate_syllogism(major_premise: str, minor_premise: str, conclusion: str) 
 
     except Exception as e:
         logger.error("Error in evaluate_syllogism: %s", e)
-        error_result = {
+        error_result: Dict[str, Any] = {
             "major_premise": major_premise,
             "minor_premise": minor_premise,
             "conclusion": conclusion,
@@ -115,7 +117,7 @@ def _has_sufficient_evidence(premise: str) -> bool:
     return has_qualifiers or is_established_truth
 
 
-def _is_affirming_consequent(major: str, minor: str, conclusion: str) -> bool:
+def _is_affirming_consequent(major: str, minor: str, _conclusion: str) -> bool:
     if not ("if" in major.lower() and "then" in major.lower()):
         return False
     major_parts = major.lower().split("then")
@@ -126,7 +128,7 @@ def _is_affirming_consequent(major: str, minor: str, conclusion: str) -> bool:
     return any(word in minor_words for word in consequent_words if len(word) > 2)
 
 
-def _is_valid_modus_ponens(major: str, minor: str, conclusion: str) -> bool:
+def _is_valid_modus_ponens(major: str, minor: str, _conclusion: str) -> bool:
     if not ("if" in major.lower() and "then" in major.lower()):
         return False
     major_lower = major.lower()
@@ -140,7 +142,7 @@ def _is_valid_modus_ponens(major: str, minor: str, conclusion: str) -> bool:
     return any(word in minor_words for word in antecedent_words if len(word) > 2)
 
 
-def _has_undistributed_middle(major: str, minor: str, conclusion: str) -> bool:
+def _has_undistributed_middle(major: str, minor: str, _conclusion: str) -> bool:
     return ("some" in major.lower() and "some" in minor.lower() and
             not any(word in major.lower() for word in ["all", "every"]))
 
