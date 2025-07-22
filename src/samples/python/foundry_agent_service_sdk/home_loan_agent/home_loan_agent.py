@@ -1,14 +1,16 @@
-import os
 import argparse
-from azure.ai.projects import AIProjectClient
-from azure.ai.agents.models import (
-    FileSearchTool,
-    CodeInterpreterTool,
-    MessageAttachment,
-    FilePurpose,
-)
-from azure.identity import DefaultAzureCredential
+import os
 from pathlib import Path
+
+from azure.ai.agents.models import (
+    CodeInterpreterTool,
+    FilePurpose,
+    FileSearchTool,
+    MessageAttachment,
+)
+from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
+
 
 # Parse command-line arguments
 def parse_arguments():
@@ -98,46 +100,46 @@ def create_agent(project_client):
     agent = project_client.agents.create_agent(
         model=model_deployment_name,
         name="home-loan-guide",
-        instructions="""Home Loan Guide is your expert assistant with over 10 years of experience in mortgage lending and loan processing. I am here to simplify the mortgage application process and support borrowers in making informed decisions about their home financing. 
+        instructions="""Home Loan Guide is your expert assistant with over 10 years of experience in mortgage lending and loan processing. I am here to simplify the mortgage application process and support borrowers in making informed decisions about their home financing.
 
-My primary responsibilities include:   
+My primary responsibilities include:
 
-1. Guiding users through the mortgage application process step-by-step.   
-2. Providing information on different mortgage types and interest rates.   
-3. Assisting with the preparation of required documentation for application.   
-4. Evaluating loan options based on user preferences and financial situations.   
-5. Offering insights on credit score implications and how to improve them.   
-6. Answering questions regarding loan approvals and denials.   
-7. Explaining mortgage terms and payment structures in simple language.   
-8. Assisting clients in understanding the closing process and associated fees. 
+1. Guiding users through the mortgage application process step-by-step.
+2. Providing information on different mortgage types and interest rates.
+3. Assisting with the preparation of required documentation for application.
+4. Evaluating loan options based on user preferences and financial situations.
+5. Offering insights on credit score implications and how to improve them.
+6. Answering questions regarding loan approvals and denials.
+7. Explaining mortgage terms and payment structures in simple language.
+8. Assisting clients in understanding the closing process and associated fees.
 
-I combine financial logic and document awareness to provide smart, supportive advice through every phase of the mortgage journey. 
- 
-# Form Details 
-To effectively assist you, please provide answers to the following: 
+I combine financial logic and document awareness to provide smart, supportive advice through every phase of the mortgage journey.
 
-What type of mortgage are you interested in? (e.g., conventional, FHA, VA) 
+# Form Details
+To effectively assist you, please provide answers to the following:
 
-What is the purchase price of the property you are considering? 
+What type of mortgage are you interested in? (e.g., conventional, FHA, VA)
 
-What is your estimated down payment amount? 
+What is the purchase price of the property you are considering?
 
-Do you have a pre-approval letter or any existing mortgage offers? 
+What is your estimated down payment amount?
 
-What is your current credit score range, if known? 
+Do you have a pre-approval letter or any existing mortgage offers?
 
-Are there specific concerns or questions you have about the mortgage process or options? 
+What is your current credit score range, if known?
 
-# Manager Feedback 
-To enhance my capabilities as a Mortgage Loan Assistant, I follow these feedback insights: 
+Are there specific concerns or questions you have about the mortgage process or options?
 
-Provide real-time updates on application statuses to keep users informed. 
+# Manager Feedback
+To enhance my capabilities as a Mortgage Loan Assistant, I follow these feedback insights:
 
-Use clear, jargon-free language to simplify complex mortgage concepts. 
+Provide real-time updates on application statuses to keep users informed.
 
-Be proactive in offering mortgage rate comparisons and product suggestions. 
+Use clear, jargon-free language to simplify complex mortgage concepts.
 
-Maintain a supportive and patient demeanor throughout the application process. 
+Be proactive in offering mortgage rate comparisons and product suggestions.
+
+Maintain a supportive and patient demeanor throughout the application process.
 
 Follow up after application submissions to assist with documentation or next steps.""",
         tools=file_search_tool.definitions + code_interpreter.definitions,
@@ -170,7 +172,7 @@ def delete_thread(project_client, thread):
 # Function to cleanup agent and resources
 def cleanup_agent(project_client, agent, resources):
     print("\nCleaning up resources...")
-    
+
     # Cleanup resources
     project_client.agents.vector_stores.delete(resources['vector_store'].id)
     print("Deleted vector store")
@@ -189,9 +191,9 @@ def ask_question(project_client, agent, question, thread):
     # Get absolute paths for the files
     current_dir = Path(__file__).parent
     checklist_file_path = current_dir / 'Contoso_Loan_Documentation_Checklist.md'
-    
+
     print(f"Using thread, thread ID: {thread.id}")
-    
+
     # Upload the user provided file as a message attachment
     message_file = project_client.agents.files.upload_and_poll(file_path=str(checklist_file_path), purpose=FilePurpose.AGENTS)
     print(f"Uploaded file, file ID: {message_file.id}")
@@ -199,7 +201,7 @@ def ask_question(project_client, agent, question, thread):
     # Create a message with the file search attachment
     # Notice that vector store is created temporarily when using attachments with a default expiration policy of seven days.
     attachment = MessageAttachment(file_id=message_file.id, tools=FileSearchTool().definitions)
-    
+
     print(f"\nAsking question: {question}")
     message = project_client.agents.messages.create(
         thread_id=thread.id, role="user", content=question, attachments=[attachment]
@@ -213,11 +215,11 @@ def ask_question(project_client, agent, question, thread):
     # Get the conversation messages after the run is processed
     print("\n=== CONVERSATION MESSAGES ===")
     messages = project_client.agents.messages.list(thread_id=thread.id)
-    
+
     # Display messages in chronological order (reverse the list since they come newest first)
     message_list = list(messages)
     message_list.reverse()
-    
+
     for i, message in enumerate(message_list, 1):
         role = message.role.upper()
         content = ""
@@ -225,25 +227,25 @@ def ask_question(project_client, agent, question, thread):
         if hasattr(message, 'content') and message.content:
             for content_part in message.content:
                 if hasattr(content_part, 'text'):
-                    text_obj = getattr(content_part, 'text')
+                    text_obj = content_part.text
                     if hasattr(text_obj, 'value'):
-                        content += getattr(text_obj, 'value')
+                        content += text_obj.value
                     else:
                         content += str(text_obj)
                 else:
                     content += str(content_part)
-        
+
         print(f"\n--- Message {i} ({role}) ---")
         print(f"ID: {message.id}")
         print(f"Content: {content}")
-        
+
         # Show any file attachments
         if hasattr(message, 'attachments') and message.attachments:
             print(f"Attachments: {len(message.attachments)} file(s)")
             for attachment in message.attachments:
                 if hasattr(attachment, 'file_id'):
                     print(f"  - File ID: {attachment.file_id}")
-    
+
     print("\n=== END CONVERSATION ===\n")
 
     # Clean up only the message file for this question
@@ -255,11 +257,11 @@ def process_question(project_client, question):
     # Create agent and resources
     agent, resources = create_agent(project_client)
     thread = None
-    
+
     try:
         # Create thread for this question
         thread = create_thread(project_client)
-        
+
         # Ask the question using the created thread
         ask_question(project_client, agent, question, thread)
     finally:
@@ -273,26 +275,26 @@ def interactive_mode(project_client):
     print("\n=== INTERACTIVE MODE ===")
     print("Type 'quit', 'exit', or 'q' to stop.")
     print("Ask questions about home loans and mortgage documentation.\n")
-    
+
     # Create the agent once for the entire interactive session
     agent, resources = create_agent(project_client)
     thread = None
-    
+
     try:
         # Create a persistent thread for the interactive session
         thread = create_thread(project_client)
-        
+
         while True:
             try:
                 question = input("Your question: ").strip()
                 if question.lower() in ['quit', 'exit', 'q', '']:
                     print("Goodbye!")
                     break
-                
+
                 # Use the persistent thread for all questions in interactive mode
                 ask_question(project_client, agent, question, thread)
                 print("\n" + "="*50 + "\n")
-                
+
             except KeyboardInterrupt:
                 print("\nGoodbye!")
                 break
@@ -308,10 +310,10 @@ def interactive_mode(project_client):
 # Main execution
 def main():
     args = parse_arguments()
-    
+
     # Initialize the client
     project_client = initialize_client()
-    
+
     if args.interactive:
         interactive_mode(project_client)
     else:

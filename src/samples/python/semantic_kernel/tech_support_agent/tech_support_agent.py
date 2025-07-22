@@ -17,10 +17,11 @@ This script demonstrates a multiturn conversation loop using the recommended Azu
 """
 
 
-import os
 import asyncio
-from dotenv import load_dotenv
+import os
+
 from azure.identity.aio import DefaultAzureCredential
+from dotenv import load_dotenv
 from semantic_kernel.agents import AzureAIAgent, AzureAIAgentSettings
 
 # Load environment variables
@@ -29,7 +30,7 @@ load_dotenv()
 def get_env_var(name: str) -> str:
     value = os.getenv(name)
     if not value:
-        raise EnvironmentError(f"Please set {name} in your environment.")
+        raise OSError(f"Please set {name} in your environment.")
     return value
 
 
