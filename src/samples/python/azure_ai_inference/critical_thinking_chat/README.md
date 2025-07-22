@@ -1,6 +1,6 @@
 # Critical Thinking Chat Assistant
 
-A Python application that provides an interactive conversational assistant designed to challenge user assumptions, promote critical thinking, and facilitate deeper analysis of topics through structured questioning techniques with function tool calling capabilities.
+A Python application that provides an interactive conversational assistant designed to challenge user assumptions, promote critical thinking, and facilitate deeper analysis of topics through structured questioning techniques with function tool calling capabilities for logical analysis.
 
 ## Overview
 
@@ -11,7 +11,8 @@ This sample demonstrates how to use the Azure AI Projects SDK to create an intel
 - Facilitates deeper analysis of complex topics
 - Provides alternative perspectives on user statements
 - Guides users through structured problem-solving approaches
-- Uses function tool calling for syllogism evaluation with user permission requests
+- Uses function tool calling for logical analysis (syllogism evaluation and fallacy detection) with user permission requests
+- Employs modular tools architecture for easy extensibility
 
 ## Prerequisites
 
@@ -145,27 +146,48 @@ Consider this: What unique human capabilities might be difficult for AI to repli
 What timeframe are you thinking about for this complete replacement?
 ```
 
-### Tool Calling Example
+### Tool Calling Examples
 
-The assistant can use function tools for syllogism evaluation with user permission:
+The assistant can use function tools for logical analysis with user permission:
+
+#### Syllogism Evaluation
 
 ```text
-Your response or new statement: All politicians are corrupt. John is a politician. Therefore John is corrupt.
+Your response or new statement: All mammals are warm-blooded. Whales are mammals. Therefore whales are warm-blooded.
 
 🔧 Tool Call Request:
 Tool: evaluate_syllogism
 Purpose: Evaluate logical validity of syllogism
 Parameters:
-  - Major Premise: All politicians are corrupt
-  - Minor Premise: John is a politician
-  - Conclusion: Therefore John is corrupt
+  - Major Premise: All mammals are warm-blooded
+  - Minor Premise: Whales are mammals
+  - Conclusion: Therefore whales are warm-blooded
 
 Execute this tool? (y/n): y
 
 Critical Thinking Assistant:
-I've analyzed the logical structure of your argument. The analysis reveals this contains a hasty generalization fallacy - the major premise makes a sweeping claim about ALL politicians without sufficient evidence. 
+I've analyzed the logical structure of your argument. This is a valid categorical syllogism with proper logical structure. The premises support the conclusion effectively, and there are no logical fallacies present.
 
-What specific evidence supports the claim that every single politician is corrupt? Could there be exceptions? How do you define "corrupt" in this context?
+This is a good example of sound deductive reasoning. What made you choose this particular example?
+```
+
+#### Fallacy Detection
+
+```text
+Your response or new statement: Politicians are all corrupt because they take money from lobbyists.
+
+🔧 Tool Call Request:
+Tool: detect_fallacies
+Purpose: Identify logical fallacies in argumentative text
+Parameters:
+  - Text: Politicians are all corrupt because they take money from lobbyists.
+
+Execute this tool? (y/n): y
+
+Critical Thinking Assistant:
+I've analyzed your statement for logical fallacies. The analysis identified a hasty generalization fallacy - you're making a sweeping claim about ALL politicians without sufficient evidence or qualifying language.
+
+What specific evidence do you have that ALL politicians are corrupt? Are there any politicians who might be exceptions? How do you define "corrupt" in this context? Consider using more precise language like "many" or "some" rather than absolute terms.
 ```
 
 ## Critical Thinking Techniques
@@ -181,13 +203,48 @@ The assistant employs various techniques to promote deeper analysis:
 
 ## Features
 
-- **Tool Calling**: Function tool calling for syllogism evaluation with user permission requests
+- **Modular Tools Architecture**: Extensible tools structure with separate modules for different analytical functions
+- **Syllogism Evaluation**: Function tool calling for logical validity analysis of formal arguments
+- **Fallacy Detection**: Comprehensive identification of logical fallacies in argumentative text with confidence scoring
+- **User Permission System**: All tool calls require explicit user consent before execution
 - **Context Maintenance**: Conversation memory across multiple exchanges
 - **Graceful Exit**: Support for 'quit', 'exit', 'q', or Ctrl+C
 - **Error Handling**: Robust error handling with informative messages
 - **Configurable Logging**: Structured logging with verbosity control (DEBUG, INFO, WARNING, ERROR, CRITICAL)
 - **Type Safety**: Comprehensive type hints and validation
 - **Authentication**: Secure Azure authentication using best practices
+
+## Tools Architecture
+
+The application uses a modular tools architecture for extensibility:
+
+```text
+tools/
+├── __init__.py              # Python package initialization
+├── syllogism.py             # Syllogism evaluation logic
+└── fallacy_detector.py      # Fallacy detection logic
+```
+
+### Syllogism Tool
+
+Analyzes the logical validity of syllogisms with three components:
+
+- **Major Premise**: Universal statement
+- **Minor Premise**: Specific statement  
+- **Conclusion**: Derived statement
+
+Returns detailed analysis including validity, logical form (categorical/conditional/disjunctive), and identified errors.
+
+### Fallacy Detector Tool
+
+Identifies common logical fallacies in argumentative text:
+
+- Ad Hominem, Straw Man, False Dichotomy
+- Hasty Generalization, Appeal to Authority
+- Slippery Slope, Circular Reasoning
+- Red Herring, Bandwagon, Appeal to Emotion
+
+Returns detected fallacies, confidence scores, detailed analysis, and improvement suggestions.
 
 ## Code Quality
 
@@ -243,12 +300,14 @@ This implementation requires the following key dependencies:
 ## Implementation Notes
 
 - Uses Azure AI Projects SDK with AIProjectClient.inference.get_azure_openai_client()
-- Implements function tool calling for syllogism evaluation with user permission system
+- Implements modular tools architecture with separate modules for logical analysis functions
+- Implements function tool calling for syllogism evaluation and fallacy detection with user permission system
 - Implements conversation memory with token overflow protection
 - Follows Azure SDK security best practices
 - Compatible with tool-capable AI models (GPT-4, GPT-4o, etc.)
 - Supports Azure AI Foundry project deployments
 - Quiet-by-default logging (ERROR level) with configurable verbosity
+- Extensible design allows easy addition of new analytical tools
 
 ## License
 

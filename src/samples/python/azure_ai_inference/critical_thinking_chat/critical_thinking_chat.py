@@ -25,6 +25,9 @@ from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
 from openai import AzureOpenAI
 
+from tools.fallacy_detector import detect_fallacies
+from tools.syllogism import evaluate_syllogism
+
 # Configure logging for debugging and monitoring (default configuration)
 # This will be updated by configure_logging() function based on verbose setting
 logger = logging.getLogger(__name__)
@@ -210,200 +213,6 @@ def get_critical_thinking_system_prompt() -> str:
 Remember: Your goal is not to convince users of any particular viewpoint, but to help them think more critically and thoroughly about complex topics."""
 
 
-def evaluate_syllogism(major_premise: str, minor_premise: str, conclusion: str) -> str:
-    """
-    Evaluate the logical validity of a syllogism.
-
-    This function analyzes the logical structure of a syllogism consisting of
-    a major premise, minor premise, and conclusion to determine validity and
-    identify logical errors or fallacies.
-
-    Args:
-        major_premise: The major premise statement (universal statement)
-        minor_premise: The minor premise statement (specific statement)
-        conclusion: The conclusion statement (derived statement)
-
-    Returns:
-        JSON string containing detailed validity analysis including:
-        - valid: boolean indicating logical validity
-        - form: type of syllogism (categorical, conditional, disjunctive)
-        - analysis: detailed explanation of the logical structure
-        - errors: list of identified logical fallacies or errors
-    """
-    try:
-        # Analyze syllogism structure and validity
-        analysis_result = {
-            "major_premise": major_premise,
-            "minor_premise": minor_premise,
-            "conclusion": conclusion,
-            "valid": False,
-            "form": "categorical",  # Default to categorical
-            "analysis": "",
-            "errors": []
-        }
-
-        # Basic validation checks
-        if not all([major_premise.strip(), minor_premise.strip(), conclusion.strip()]):
-            analysis_result["errors"].append("incomplete_premises")
-            analysis_result["analysis"] = "One or more premises are empty or missing."
-            return json.dumps(analysis_result, indent=2)
-
-        # Identify syllogism type based on structure
-        if any(word in major_premise.lower() for word in ["if ", "then ", "implies"]):
-            analysis_result["form"] = "conditional"
-        elif any(word in major_premise.lower() for word in [" either ", " or ", " neither "]):
-            analysis_result["form"] = "disjunctive"
-        else:
-            analysis_result["form"] = "categorical"
-
-        # Check for common logical fallacies and patterns
-        major_lower = major_premise.lower()
-
-        # Check for overgeneralization (hasty generalization)
-        if any(word in major_lower for word in ["all", "every", "always", "never", "no one", "everyone"]):
-            if not _has_sufficient_evidence(major_premise):
-                analysis_result["errors"].append("hasty_generalization")
-
-        # Check for affirming the consequent (if conditional)
-        if analysis_result["form"] == "conditional":
-            if "if" in major_lower and "then" in major_lower:
-                # Basic check for affirming consequent pattern
-                if _is_affirming_consequent(major_premise, minor_premise, conclusion):
-                    analysis_result["errors"].append("affirming_consequent")
-                    analysis_result["valid"] = False
-                elif _is_valid_modus_ponens(major_premise, minor_premise, conclusion):
-                    analysis_result["valid"] = True
-
-        # Check for undistributed middle term (categorical syllogisms)
-        elif analysis_result["form"] == "categorical":
-            if _has_undistributed_middle(major_premise, minor_premise, conclusion):
-                analysis_result["errors"].append("undistributed_middle")
-                analysis_result["valid"] = False
-            elif _is_valid_categorical_syllogism(major_premise, minor_premise, conclusion):
-                analysis_result["valid"] = True
-
-        # Generate analysis text based on findings
-        if analysis_result["valid"] and not analysis_result["errors"]:
-            analysis_result["analysis"] = f"This is a valid {analysis_result['form']} syllogism. The logical structure is sound and the conclusion follows from the premises."
-        elif analysis_result["errors"]:
-            error_descriptions = {
-                "hasty_generalization": "The major premise makes a sweeping generalization without sufficient evidence",
-                "affirming_consequent": "This commits the fallacy of affirming the consequent in conditional reasoning",
-                "undistributed_middle": "The middle term is not properly distributed, making the conclusion invalid",
-                "incomplete_premises": "One or more premises are missing or incomplete"
-            }
-
-            error_details = [error_descriptions.get(error, error) for error in analysis_result["errors"]]
-            analysis_result["analysis"] = f"This {analysis_result['form']} syllogism contains logical errors: {', '.join(error_details)}. The conclusion does not necessarily follow from the premises."
-        else:
-            analysis_result["analysis"] = f"This {analysis_result['form']} syllogism requires further analysis to determine validity."
-
-        return json.dumps(analysis_result, indent=2)
-
-    except Exception as e:
-        logger.error("Error in evaluate_syllogism: %s", e)
-        error_result = {
-            "major_premise": major_premise,
-            "minor_premise": minor_premise,
-            "conclusion": conclusion,
-            "valid": False,
-            "form": "unknown",
-            "analysis": f"Error occurred during analysis: {str(e)}",
-            "errors": ["analysis_error"]
-        }
-        return json.dumps(error_result, indent=2)
-
-
-def _has_sufficient_evidence(premise: str) -> bool:
-    """Check if a universal statement has qualifying language that suggests sufficient evidence."""
-    premise_lower = premise.lower()
-
-    # Check for qualifying words that indicate careful consideration
-    qualifying_words = ["most", "many", "some", "typically", "generally", "usually", "often"]
-    has_qualifiers = any(word in premise_lower for word in qualifying_words)
-
-    # Check for well-established universal truths that don't require qualification
-    established_truths = [
-        "all humans are mortal",
-        "all living things die",
-        "all circles are round",
-        "all bachelors are unmarried",
-        "all mothers are female"
-    ]
-
-    is_established_truth = any(truth in premise_lower for truth in established_truths)
-
-    # A premise has sufficient evidence if it has qualifiers OR is an established truth
-    return has_qualifiers or is_established_truth
-
-
-def _is_affirming_consequent(major: str, minor: str, conclusion: str) -> bool:
-    """Basic check for affirming the consequent fallacy pattern."""
-    # Affirming consequent: If P then Q, Q, therefore P
-    # This is a very simplified check
-    if not ("if" in major.lower() and "then" in major.lower()):
-        return False
-
-    # Extract rough consequent from major premise (after "then")
-    major_parts = major.lower().split("then")
-    if len(major_parts) < 2:
-        return False
-
-    consequent_words = major_parts[1].strip().split()[:3]  # First few words
-    minor_words = minor.lower().split()
-
-    # Check if minor premise affirms the consequent rather than antecedent
-    return any(word in minor_words for word in consequent_words if len(word) > 2)
-
-
-def _is_valid_modus_ponens(major: str, minor: str, conclusion: str) -> bool:
-    """Check for valid modus ponens pattern (If P then Q, P, therefore Q)."""
-    if not ("if" in major.lower() and "then" in major.lower()):
-        return False
-
-    # Extract antecedent (between "if" and "then")
-    major_lower = major.lower()
-    if_pos = major_lower.find("if")
-    then_pos = major_lower.find("then")
-
-    if if_pos == -1 or then_pos == -1 or then_pos <= if_pos:
-        return False
-
-    antecedent = major_lower[if_pos + 2:then_pos].strip()
-    antecedent_words = antecedent.split()[:3]  # First few key words
-    minor_words = minor.lower().split()
-
-    # Check if minor premise affirms the antecedent
-    return any(word in minor_words for word in antecedent_words if len(word) > 2)
-
-
-def _has_undistributed_middle(major: str, minor: str, conclusion: str) -> bool:
-    """Check for undistributed middle term fallacy in categorical syllogisms."""
-    # Simplified check for common patterns like "Some A are B, Some B are C, therefore Some A are C"
-    return ("some" in major.lower() and "some" in minor.lower() and
-            not any(word in major.lower() for word in ["all", "every"]))
-
-
-def _is_valid_categorical_syllogism(major: str, minor: str, conclusion: str) -> bool:
-    """Check for valid categorical syllogism patterns."""
-    major_lower = major.lower()
-    minor_lower = minor.lower()
-    conclusion.lower()
-
-    # Pattern 1: "All A are B, X is A, therefore X is B" (Barbara syllogism)
-    if ("all" in major_lower or "every" in major_lower) and " is " in minor_lower:
-        return True
-
-    # Pattern 2: "All A are B, All B are C, therefore All A are C"
-    if (("all" in major_lower or "every" in major_lower) and
-        ("all" in minor_lower or "every" in minor_lower)):
-        return True
-
-    # Pattern 3: "No A are B, X is A, therefore X is not B"
-    if "no " in major_lower and " is " in minor_lower:
-        return True
-
-    return False
 
 
 def create_syllogism_tool() -> dict:
@@ -435,6 +244,32 @@ def create_syllogism_tool() -> dict:
                     }
                 },
                 "required": ["major_premise", "minor_premise", "conclusion"]
+            }
+        }
+    }
+
+
+def create_fallacy_detector_tool() -> dict:
+    """
+    Create the fallacy detection tool definition for the AI model.
+
+    Returns:
+        dict: Tool definition for fallacy detection in OpenAI format
+    """
+    return {
+        "type": "function",
+        "function": {
+            "name": "detect_fallacies",
+            "description": "Identifies logical fallacies in argumentative text. Returns detailed analysis including detected fallacies, confidence scores, and suggestions for improvement.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "Text containing argument to analyze for logical fallacies"
+                    }
+                },
+                "required": ["text"]
             }
         }
     }
@@ -538,14 +373,15 @@ def get_ai_response(
         RuntimeError: If the API call fails
     """
     try:
-        # Create the syllogism evaluation tool
+        # Create the logical analysis tools
         syllogism_tool = create_syllogism_tool()
+        fallacy_detector_tool = create_fallacy_detector_tool()
 
         # Make the API call with standard parameters and tool support
         response = client.chat.completions.create(  # type: ignore[arg-type]
             messages=conversation,
             model=model_name,
-            tools=[syllogism_tool],
+            tools=[syllogism_tool, fallacy_detector_tool],
             max_tokens=800,
             temperature=1.0,
             top_p=1.0,
@@ -648,11 +484,81 @@ def get_ai_response(
                             }
                             conversation.append(tool_message)
 
+                    elif tool_call.function.name == "detect_fallacies":
+                        logger.info("Processing fallacy detection tool call permission")
+
+                        try:
+                            # Parse tool arguments for display
+                            function_args = json.loads(tool_call.function.arguments)
+                            logger.debug("Tool arguments: %s", function_args)
+
+                            # Request user permission
+                            permission_granted = _request_tool_permission(
+                                tool_call.function.name,
+                                "Identify logical fallacies in argumentative text",
+                                function_args
+                            )
+
+                            if permission_granted:
+                                logger.info("User granted permission, executing fallacy detection tool")
+
+                                # Execute the fallacy detection function
+                                tool_result = detect_fallacies(**function_args)
+                                logger.debug("Tool result: %s", tool_result[:200] + "..." if len(tool_result) > 200 else tool_result)
+
+                                # Add tool response to conversation
+                                tool_message = {
+                                    "role": "tool",
+                                    "content": tool_result,
+                                    "tool_call_id": tool_call.id
+                                }
+                                conversation.append(tool_message)
+                            else:
+                                logger.info("User declined fallacy detection, continuing without fallacy analysis")
+
+                                # Add declined tool response to conversation
+                                declined_result = json.dumps({
+                                    "declined": True,
+                                    "message": "User declined fallacy detection",
+                                    "alternative": "Continuing analysis without formal fallacy identification"
+                                })
+                                tool_message = {
+                                    "role": "tool",
+                                    "content": declined_result,
+                                    "tool_call_id": tool_call.id
+                                }
+                                conversation.append(tool_message)
+
+                        except json.JSONDecodeError as e:
+                            logger.error("Failed to parse fallacy detection arguments: %s", e)
+                            error_result = json.dumps({
+                                "error": "Invalid tool arguments provided",
+                                "details": str(e)
+                            })
+                            tool_message = {
+                                "role": "tool",
+                                "content": error_result,
+                                "tool_call_id": tool_call.id
+                            }
+                            conversation.append(tool_message)
+
+                        except Exception as e:
+                            logger.error("Fallacy detection tool execution failed: %s", e)
+                            error_result = json.dumps({
+                                "error": f"Tool execution failed: {str(e)}"
+                            })
+                            tool_message = {
+                                "role": "tool",
+                                "content": error_result,
+                                "tool_call_id": tool_call.id
+                            }
+                            conversation.append(tool_message)
+
             # Get the final response with tool results incorporated
             final_response = client.chat.completions.create(  # type: ignore[arg-type]
                 messages=conversation,
                 model=model_name,
-                tools=[syllogism_tool],
+                tools=[syllogism_tool, fallacy_detector_tool],
                 max_tokens=800,
                 temperature=1.0,
                 top_p=1.0,
