@@ -1,3 +1,17 @@
+"""
+Critical Thinking Chat Assistant with Tool Calling and User Permission.
+
+The assistant uses the Azure AI Projects SDK to connect to Azure AI Foundry and
+implements function tool calling with the evaluate_syllogism tool for logical analysis.
+
+Features:
+- Requests user permission before executing any tool calls
+- Displays tool name and parameters to the user before execution
+- Provides option for users to decline tool execution
+- Handles user permission responses gracefully
+- Configurable logging levels for debugging and monitoring
+"""
+
 import argparse
 import json
 import logging
@@ -5,16 +19,14 @@ import os
 import sys
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, List, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
 from openai import AzureOpenAI
 
-# Configure logging for debugging and monitoring
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+# Configure logging for debugging and monitoring (default configuration)
+# This will be updated by configure_logging() function based on verbose setting
 logger = logging.getLogger(__name__)
 
 
@@ -26,6 +38,34 @@ class ConversationTurn:
     assistant_response: str
     timestamp: str
     thinking_techniques_used: List[str]
+
+
+def configure_logging(verbose_level: str = 'ERROR') -> None:
+    """
+    Configure application logging based on verbosity level.
+
+    Args:
+        verbose_level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+
+    Raises:
+        ValueError: If invalid logging level provided
+    """
+    valid_levels = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
+    if verbose_level.upper() not in valid_levels:
+        raise ValueError(f"Invalid logging level '{verbose_level}'. Valid options: {', '.join(valid_levels)}")
+
+    log_level = getattr(logging, verbose_level.upper())
+    logging.basicConfig(
+        level=log_level,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        force=True  # Override any existing configuration
+    )
+
+    # Set Azure SDK logging to WARNING to reduce noise unless DEBUG is selected
+    if verbose_level.upper() != 'DEBUG':
+        logging.getLogger('azure').setLevel(logging.WARNING)
+        logging.getLogger('openai').setLevel(logging.WARNING)
+        logging.getLogger('urllib3').setLevel(logging.WARNING)
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -48,6 +88,14 @@ def parse_arguments() -> argparse.Namespace:
     )
     parser.add_argument(
         "--model", type=str, help="Override MODEL_DEPLOYMENT_NAME environment variable"
+    )
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        type=str,
+        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+        default=None,
+        help="Set logging verbosity level (DEBUG, INFO, WARNING, ERROR, CRITICAL). Default: ERROR"
     )
     return parser.parse_args()
 
@@ -403,6 +451,48 @@ def create_conversation_memory() -> List[Dict[str, Any]]:
     return [{"role": "system", "content": system_prompt}]
 
 
+def _request_tool_permission(
+    tool_name: str, tool_purpose: str, tool_parameters: Dict[str, Any]
+) -> bool:
+    """
+    Request user permission before executing a tool call.
+
+    Args:
+        tool_name: The name of the tool to be executed
+        tool_purpose: A human-readable description of what the tool does
+        tool_parameters: The parameters that will be passed to the tool
+
+    Returns:
+        bool: True if user grants permission, False if declined
+    """
+    print("\n🔧 Tool Call Request:")
+    print(f"Tool: {tool_name}")
+    print(f"Purpose: {tool_purpose}")
+    print("Parameters:")
+
+    # Display parameters in a user-friendly format
+    for key, value in tool_parameters.items():
+        # Convert parameter names to more readable format
+        display_key = key.replace('_', ' ').title()
+        print(f"  - {display_key}: {value}")
+
+    while True:
+        try:
+            permission = input("\nExecute this tool? (y/n): ").strip().lower()
+
+            if permission in ['y', 'yes']:
+                return True
+            elif permission in ['n', 'no']:
+                print("Tool execution declined. Continuing without tool analysis.")
+                return False
+            else:
+                print("Please respond with 'y' (yes) or 'n' (no)")
+
+        except KeyboardInterrupt:
+            print("\nTool execution cancelled by user.")
+            return False
+
+
 def add_to_conversation(
     conversation: List[Dict[str, Any]], role: str, content: str
 ) -> None:
@@ -427,7 +517,14 @@ def get_ai_response(
 ) -> str:
     """
     Get a response from the AI model using the conversation history.
-    Handles tool calling for syllogism evaluation when requested by the model.
+    Handles tool calling for syllogism evaluation with user permission requests.
+
+    This function implements tool permission functionality:
+    - Requests user permission before executing any tool calls
+    - Displays tool name and parameters to the user
+    - Provides option to decline tool execution
+    - Handles user permission responses gracefully
+    - Continues conversation when tools are declined
 
     Args:
         client: The OpenAI client instance
@@ -445,7 +542,7 @@ def get_ai_response(
         syllogism_tool = create_syllogism_tool()
 
         # Make the API call with standard parameters and tool support
-        response = client.chat.completions.create(
+        response = client.chat.completions.create(  # type: ignore[arg-type]
             messages=conversation,
             model=model_name,
             tools=[syllogism_tool],
@@ -458,48 +555,73 @@ def get_ai_response(
 
         # Check if the model wants to use tools
         if response.choices[0].finish_reason == "tool_calls":
-            logger.info("Model requested tool calls, processing syllogism evaluation")
+            logger.info("Model requested tool calls, requesting user permission")
 
             # Add the assistant's tool call message to conversation
-            assistant_message = {
-                "role": "assistant",
-                "content": response.choices[0].message.content,
-                "tool_calls": [
-                    {
-                        "id": tc.id,
-                        "type": tc.type,
-                        "function": {
-                            "name": tc.function.name,
-                            "arguments": tc.function.arguments
+            if response.choices[0].message.tool_calls:
+                assistant_message = {
+                    "role": "assistant",
+                    "content": response.choices[0].message.content,
+                    "tool_calls": [
+                        {
+                            "id": tc.id,
+                            "type": tc.type,
+                            "function": {
+                                "name": tc.function.name,
+                                "arguments": tc.function.arguments
+                            }
                         }
-                    }
-                    for tc in response.choices[0].message.tool_calls
-                ]
-            }
-            conversation.append(assistant_message)
+                        for tc in response.choices[0].message.tool_calls
+                    ]
+                }
+                conversation.append(assistant_message)  # type: ignore[arg-type]
 
-            # Process each tool call
-            if response.choices[0].message.tool_calls is not None:
+                # Process each tool call with user permission
                 for tool_call in response.choices[0].message.tool_calls:
                     if tool_call.function.name == "evaluate_syllogism":
-                        logger.info("Executing syllogism evaluation tool")
+                        logger.info("Processing syllogism evaluation tool call permission")
 
                         try:
-                            # Parse tool arguments
+                            # Parse tool arguments for display
                             function_args = json.loads(tool_call.function.arguments)
                             logger.debug("Tool arguments: %s", function_args)
 
-                            # Execute the syllogism evaluation function
-                            tool_result = evaluate_syllogism(**function_args)
-                            logger.debug("Tool result: %s", tool_result[:200] + "..." if len(tool_result) > 200 else tool_result)
+                            # Request user permission
+                            permission_granted = _request_tool_permission(
+                                tool_call.function.name,
+                                "Evaluate logical validity of syllogism",
+                                function_args
+                            )
 
-                            # Add tool response to conversation
-                            tool_message = {
-                                "role": "tool",
-                                "content": tool_result,
-                                "tool_call_id": tool_call.id
-                            }
-                            conversation.append(tool_message)
+                            if permission_granted:
+                                logger.info("User granted permission, executing syllogism evaluation tool")
+
+                                # Execute the syllogism evaluation function
+                                tool_result = evaluate_syllogism(**function_args)
+                                logger.debug("Tool result: %s", tool_result[:200] + "..." if len(tool_result) > 200 else tool_result)
+
+                                # Add tool response to conversation
+                                tool_message = {
+                                    "role": "tool",
+                                    "content": tool_result,
+                                    "tool_call_id": tool_call.id
+                                }
+                                conversation.append(tool_message)
+                            else:
+                                logger.info("User declined tool execution, continuing without tool analysis")
+
+                                # Add declined tool response to conversation
+                                declined_result = json.dumps({
+                                    "declined": True,
+                                    "message": "User declined tool execution",
+                                    "alternative": "Continuing analysis without formal logical validation"
+                                })
+                                tool_message = {
+                                    "role": "tool",
+                                    "content": declined_result,
+                                    "tool_call_id": tool_call.id
+                                }
+                                conversation.append(tool_message)
 
                         except json.JSONDecodeError as e:
                             logger.error("Failed to parse tool arguments: %s", e)
@@ -527,7 +649,7 @@ def get_ai_response(
                             conversation.append(tool_message)
 
             # Get the final response with tool results incorporated
-            final_response = client.chat.completions.create(
+            final_response = client.chat.completions.create(  # type: ignore[arg-type]
                 messages=conversation,
                 model=model_name,
                 tools=[syllogism_tool],
@@ -581,7 +703,7 @@ def process_single_question(
         conversation = create_conversation_memory()
         add_to_conversation(conversation, "user", question)
 
-        # Get AI response
+        # Get AI response (with tool permission handling)
         response = get_ai_response(client, conversation, model_name)
 
         print("\nCritical Thinking Assistant:")
@@ -611,6 +733,8 @@ def interactive_mode(
     print("=" * 60)
     print("I'm here to help you think more deeply about complex topics.")
     print("I'll challenge your assumptions and guide you through critical analysis.")
+    print("\nWhen analyzing logical arguments, I may request permission to use")
+    print("analytical tools. You'll be asked to approve each tool before execution.")
     print("\nType 'quit', 'exit', or 'q' to end our conversation.")
     print("Press Ctrl+C at any time to exit cleanly.")
     print("=" * 60)
@@ -721,6 +845,19 @@ def main() -> None:
     try:
         # Parse command-line arguments
         args = parse_arguments()
+
+        # Configure logging based on verbose flag and environment variable
+        # Priority: command-line argument > environment variable > default (ERROR)
+        verbose_level = args.verbose
+        if verbose_level is None:
+            verbose_level = os.environ.get('VERBOSE_LOGGING', 'ERROR').upper()
+
+        try:
+            configure_logging(verbose_level)
+            logger.info("Logging configured at %s level", verbose_level)
+        except ValueError as e:
+            print(f"Error: {e}")
+            sys.exit(1)
 
         # Get model deployment name from environment or command line
         model_deployment_name = args.model or os.environ.get(

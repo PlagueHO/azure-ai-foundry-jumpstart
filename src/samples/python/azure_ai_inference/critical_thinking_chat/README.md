@@ -1,15 +1,17 @@
 # Critical Thinking Chat Assistant
 
-A Python application that provides an interactive conversational assistant designed to challenge user assumptions, promote critical thinking, and facilitate deeper analysis of topics through structured questioning techniques.
+A Python application that provides an interactive conversational assistant designed to challenge user assumptions, promote critical thinking, and facilitate deeper analysis of topics through structured questioning techniques with function tool calling capabilities.
 
 ## Overview
 
-This sample demonstrates how to use the Azure AI Inference SDK to create an intelligent conversational agent that:
+This sample demonstrates how to use the Azure AI Projects SDK to create an intelligent conversational agent that:
+
 - Challenges user assumptions through Socratic questioning
 - Promotes critical thinking by asking probing questions  
 - Facilitates deeper analysis of complex topics
 - Provides alternative perspectives on user statements
 - Guides users through structured problem-solving approaches
+- Uses function tool calling for syllogism evaluation with user permission requests
 
 ## Prerequisites
 
@@ -20,11 +22,13 @@ This sample demonstrates how to use the Azure AI Inference SDK to create an inte
 ## Installation
 
 1. Navigate to the critical thinking chat directory:
+
    ```bash
    cd src/samples/python/azure_ai_inference/critical_thinking_chat
    ```
 
-2. Install the required dependencies:
+1. Install the required dependencies:
+
    ```bash
    pip install -r requirements.txt
    ```
@@ -34,17 +38,21 @@ This sample demonstrates how to use the Azure AI Inference SDK to create an inte
 Set the following environment variables:
 
 - `PROJECT_ENDPOINT` (required): Your Azure AI Foundry project endpoint URL in the format `https://<project-name>.<region>.api.azureml.ms`
-- `MODEL_DEPLOYMENT_NAME` (optional): Name of your deployed language model (defaults to "gpt-4o-mini")
+- `MODEL_DEPLOYMENT_NAME` (optional): Name of your deployed language model (defaults to "gpt-4o")
+- `VERBOSE_LOGGING` (optional): Logging verbosity level (defaults to "ERROR")
 
 You can also create a `.env` file in this directory:
-```
+
+```env
 PROJECT_ENDPOINT=https://your-project.eastus.api.azureml.ms
-MODEL_DEPLOYMENT_NAME=gpt-4o-mini
+MODEL_DEPLOYMENT_NAME=gpt-4o
+VERBOSE_LOGGING=ERROR
 ```
 
 ## Authentication
 
 This application uses `DefaultAzureCredential` for Azure authentication, which automatically selects the most appropriate credential source:
+
 - Azure CLI login (`az login`)
 - Managed Identity (when running on Azure)
 - Visual Studio Code Azure Account extension
@@ -53,21 +61,35 @@ This application uses `DefaultAzureCredential` for Azure authentication, which a
 ## Usage
 
 ### Interactive Mode
+
 Start a conversation that maintains context across multiple exchanges:
+
 ```bash
 python critical_thinking_chat.py --interactive
 ```
 
 ### Single Question Mode
+
 Analyze a single statement or question:
+
 ```bash
 python critical_thinking_chat.py --question "I think social media is bad for society"
 ```
 
 ### Interactive Mode with Initial Question
+
 Start with a question and continue the conversation:
+
 ```bash
 python critical_thinking_chat.py --question "Remote work is always better" --interactive
+```
+
+### Verbose Logging
+
+Enable debug logging for troubleshooting:
+
+```bash
+python critical_thinking_chat.py --interactive --verbose DEBUG
 ```
 
 ### Command Line Options
@@ -76,12 +98,14 @@ python critical_thinking_chat.py --question "Remote work is always better" --int
 - `--interactive, -i`: Enable interactive mode for extended conversations
 - `--endpoint`: Override PROJECT_ENDPOINT environment variable
 - `--model`: Override MODEL_DEPLOYMENT_NAME environment variable
+- `--verbose, -v`: Set logging verbosity level (DEBUG, INFO, WARNING, ERROR, CRITICAL). Default: ERROR
 - `--help`: Show help message
 
 ## Example Conversations
 
 ### Single Question Analysis
-```
+
+```text
 > python critical_thinking_chat.py --question "All politicians are corrupt"
 
 === CRITICAL THINKING ANALYSIS ===
@@ -95,7 +119,8 @@ Also, how are you defining "corrupt" in this context? Sometimes people use this 
 ```
 
 ### Interactive Conversation
-```
+
+```text
 > python critical_thinking_chat.py --interactive
 
 ============================================================
@@ -120,6 +145,29 @@ Consider this: What unique human capabilities might be difficult for AI to repli
 What timeframe are you thinking about for this complete replacement?
 ```
 
+### Tool Calling Example
+
+The assistant can use function tools for syllogism evaluation with user permission:
+
+```text
+Your response or new statement: All politicians are corrupt. John is a politician. Therefore John is corrupt.
+
+🔧 Tool Call Request:
+Tool: evaluate_syllogism
+Purpose: Evaluate logical validity of syllogism
+Parameters:
+  - Major Premise: All politicians are corrupt
+  - Minor Premise: John is a politician
+  - Conclusion: Therefore John is corrupt
+
+Execute this tool? (y/n): y
+
+Critical Thinking Assistant:
+I've analyzed the logical structure of your argument. The analysis reveals this contains a hasty generalization fallacy - the major premise makes a sweeping claim about ALL politicians without sufficient evidence. 
+
+What specific evidence supports the claim that every single politician is corrupt? Could there be exceptions? How do you define "corrupt" in this context?
+```
+
 ## Critical Thinking Techniques
 
 The assistant employs various techniques to promote deeper analysis:
@@ -133,10 +181,11 @@ The assistant employs various techniques to promote deeper analysis:
 
 ## Features
 
+- **Tool Calling**: Function tool calling for syllogism evaluation with user permission requests
 - **Context Maintenance**: Conversation memory across multiple exchanges
 - **Graceful Exit**: Support for 'quit', 'exit', 'q', or Ctrl+C
 - **Error Handling**: Robust error handling with informative messages
-- **Logging**: Structured logging for debugging and monitoring
+- **Configurable Logging**: Structured logging with verbosity control (DEBUG, INFO, WARNING, ERROR, CRITICAL)
 - **Type Safety**: Comprehensive type hints and validation
 - **Authentication**: Secure Azure authentication using best practices
 
@@ -165,15 +214,41 @@ python -m ruff format critical_thinking_chat.py
 4. **Network Issues**: Ensure you have internet connectivity and can reach Azure endpoints
 
 ### Debug Logging
-To enable debug logging, set the logging level in the Python script or use environment variables.
+
+To enable debug logging, use the `--verbose` command-line option or set the `VERBOSE_LOGGING` environment variable:
+
+```bash
+# Command line option
+python critical_thinking_chat.py --interactive --verbose DEBUG
+
+# Environment variable
+export VERBOSE_LOGGING=DEBUG  # Linux/Mac
+$env:VERBOSE_LOGGING="DEBUG"  # Windows PowerShell
+```
+
+Valid logging levels: DEBUG, INFO, WARNING, ERROR, CRITICAL (default: ERROR)
+
+## Dependencies
+
+This implementation requires the following key dependencies:
+
+- **Python 3.8+**
+- **azure-ai-projects v1.0.0b12+** - Core Azure AI Foundry SDK
+- **azure-identity** - DefaultAzureCredential authentication
+- **openai** - Chat completions via Azure OpenAI client
+- **argparse** - Command line argument parsing
+- **json** - Tool response handling
+- **logging** - Configurable verbosity control
 
 ## Implementation Notes
 
-- Uses Azure AI Inference SDK for direct model interaction
+- Uses Azure AI Projects SDK with AIProjectClient.inference.get_azure_openai_client()
+- Implements function tool calling for syllogism evaluation with user permission system
 - Implements conversation memory with token overflow protection
 - Follows Azure SDK security best practices
-- Compatible with multiple AI model types (GPT-4, Claude, Llama, etc.)
-- Supports both Azure AI Foundry and Azure OpenAI deployments
+- Compatible with tool-capable AI models (GPT-4, GPT-4o, etc.)
+- Supports Azure AI Foundry project deployments
+- Quiet-by-default logging (ERROR level) with configurable verbosity
 
 ## License
 
