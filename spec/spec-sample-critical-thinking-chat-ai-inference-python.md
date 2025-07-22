@@ -1,19 +1,19 @@
 ---
-title: Critical Thinking Chat Assistant Python Sample with Tool Calling using Azure AI Inference SDK
+title: Critical Thinking Chat Assistant Python Sample with Tool Calling using Azure AI Projects SDK
 version: 2.0
 date_created: 2025-01-22
 last_updated: 2025-01-22
 owner: Azure AI Foundry Jumpstart Team
-tags: [sample, python, azure-ai-inference, critical-thinking, chat, interactive, tools, function-calling, syllogism]
+tags: [sample, python, azure-ai-projects, critical-thinking, chat, interactive, tools, function-calling, syllogism]
 ---
 
 # Critical Thinking Chat Assistant Python Sample with Tool Calling
 
-A Python sample that provides an interactive conversational assistant designed to challenge user assumptions, promote critical thinking, and facilitate deeper analysis of topics through structured questioning techniques, enhanced with function tool calling capabilities for logical reasoning and syllogism evaluation.
+A Python sample that provides an interactive conversational assistant designed to challenge user assumptions, promote critical thinking, and facilitate deeper analysis of topics through structured questioning techniques, enhanced with function tool calling capabilities for logical reasoning and syllogism evaluation using the Azure AI Projects SDK.
 
 ## 1. Purpose & Scope
 
-This specification defines the requirements for a Python sample application that creates an intelligent conversational agent using the Azure AI Inference SDK with function tool calling capabilities. The assistant is specifically designed to:
+This specification defines the requirements for a Python sample application that creates an intelligent conversational agent using the Azure AI Projects SDK with function tool calling capabilities. The assistant is specifically designed to:
 
 - Challenge user assumptions through Socratic questioning
 - Promote critical thinking by asking probing questions
@@ -23,13 +23,13 @@ This specification defines the requirements for a Python sample application that
 - **Evaluate logical reasoning using function tools including syllogism validation**
 - **Demonstrate tool calling patterns for critical thinking enhancement**
 
-**Intended Audience**: Developers learning to implement conversational AI applications with Azure AI Foundry, Azure AI Inference SDK, and function tool calling capabilities.
+**Intended Audience**: Developers learning to implement conversational AI applications with Azure AI Foundry, Azure AI Projects SDK, and function tool calling capabilities.
 
 **Assumptions**: Users have basic Python knowledge and access to Azure AI Foundry resources with deployed language models.
 
 ## 2. Definitions
 
-- **Azure AI Inference SDK**: The `azure-ai-inference` Python package that provides unified access to AI models deployed through Azure AI Foundry, Azure OpenAI, and GitHub Models
+- **Azure AI Projects SDK**: The `azure-ai-projects` Python package that provides unified access to Azure AI Foundry project operations including inference, model management, and tool calling capabilities
 - **Azure AI Foundry**: Microsoft's unified AI development platform for building, deploying, and managing AI applications
 - **Critical Thinking**: The objective analysis and evaluation of an issue to form a judgment, involving questioning assumptions and examining evidence
 - **Socratic Method**: A form of inquiry and discussion that involves asking probing questions to stimulate critical thinking
@@ -38,23 +38,23 @@ This specification defines the requirements for a Python sample application that
 - **Function Tools**: AI model capabilities that allow the model to call predefined functions to perform specific tasks or retrieve information
 - **Tool Calling**: The process by which AI models can invoke external functions during conversation to enhance responses with computed results
 - **Syllogism**: A form of logical reasoning consisting of a major premise, minor premise, and conclusion
-- **ChatCompletionsToolDefinition**: Azure AI Inference SDK class for defining function tools that models can call
-- **ToolMessage**: Message type used to return function execution results back to the AI model
+- **OpenAI Function Calling**: The standard format for defining and executing function calls in compatible AI models
 
 ## 3. Requirements, Constraints & Guidelines
 
 ### Core Requirements
 
-- **REQ-001**: The application SHALL use the `azure-ai-inference` Python SDK version 1.0.0b9 or later for AI model interactions
-- **REQ-002**: The application SHALL support both single-question and interactive conversation modes
-- **REQ-003**: The application SHALL authenticate using DefaultAzureCredential as the primary method
-- **REQ-004**: The application SHALL accept Azure AI Foundry project endpoint via environment variable or command-line argument
-- **REQ-005**: The application SHALL implement conversation memory to maintain context across multiple exchanges
-- **REQ-006**: The application SHALL provide structured critical thinking prompts and questioning techniques
-- **REQ-007**: The application SHALL implement function tool calling capabilities using ChatCompletionsToolDefinition
-- **REQ-008**: The application SHALL provide a syllogism evaluation tool that validates logical reasoning structures
-- **REQ-009**: The application SHALL handle tool call responses and integrate them into conversation flow
-- **REQ-010**: The application SHALL support models that have tool calling capabilities (e.g., GPT-4, GPT-4o)
+- **REQ-001**: The application SHALL use the `azure-ai-projects` Python SDK version 1.0.0b12 or later for AI project client operations
+- **REQ-002**: The application SHALL use the Azure OpenAI client obtained via AIProjectClient.inference.get_azure_openai_client() for AI model interactions
+- **REQ-003**: The application SHALL support both single-question and interactive conversation modes
+- **REQ-004**: The application SHALL authenticate using DefaultAzureCredential as the primary method
+- **REQ-005**: The application SHALL accept Azure AI Foundry project endpoint via environment variable or command-line argument
+- **REQ-006**: The application SHALL implement conversation memory to maintain context across multiple exchanges
+- **REQ-007**: The application SHALL provide structured critical thinking prompts and questioning techniques
+- **REQ-008**: The application SHALL implement function tool calling capabilities using OpenAI function calling patterns
+- **REQ-009**: The application SHALL provide a syllogism evaluation tool that validates logical reasoning structures
+- **REQ-010**: The application SHALL handle tool call responses and integrate them into conversation flow
+- **REQ-011**: The application SHALL support models that have tool calling capabilities (e.g., GPT-4, GPT-4o)
 
 ### Critical Thinking Requirements
 
@@ -68,11 +68,11 @@ This specification defines the requirements for a Python sample application that
 
 ### Tool Calling Requirements
 
-- **TOOL-001**: The application SHALL implement an evaluate_syllogism function tool
+- **TOOL-001**: The application SHALL implement an evaluate_syllogism function tool using OpenAI function calling patterns
 - **TOOL-002**: The syllogism tool SHALL accept major premise, minor premise, and conclusion parameters
 - **TOOL-003**: The syllogism tool SHALL validate logical structure and return detailed analysis
-- **TOOL-004**: The application SHALL handle CompletionsFinishReason.TOOL_CALLS responses appropriately
-- **TOOL-005**: The application SHALL append ToolMessage responses to conversation history
+- **TOOL-004**: The application SHALL handle function call responses appropriately
+- **TOOL-005**: The application SHALL append tool responses to conversation history
 - **TOOL-006**: The application SHALL support multiple tool calls within a single conversation
 - **TOOL-007**: Tool definitions SHALL include comprehensive parameter descriptions and validation
 - **TOOL-008**: The application SHALL gracefully handle tool execution errors and timeouts
@@ -134,62 +134,62 @@ def parse_arguments() -> argparse.Namespace:
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `PROJECT_ENDPOINT` | Yes | None | Azure AI Foundry project endpoint URL |
-| `MODEL_DEPLOYMENT_NAME` | No | "gpt-4o-mini" | Name of the deployed language model (must support tool calling) |
+| `MODEL_DEPLOYMENT_NAME` | No | "gpt-4o" | Name of the deployed language model (must support tool calling) |
 
-### Azure AI Inference Client Configuration
+### Azure AI Projects Client Configuration
 
 ```python
-from azure.ai.inference import ChatCompletionsClient
+from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
 
-client = ChatCompletionsClient(
-    endpoint=project_endpoint,
-    credential=DefaultAzureCredential(),
-    credential_scopes=["https://cognitiveservices.azure.com/.default"]
-)
+async with DefaultAzureCredential() as credential:
+    async with AIProjectClient(endpoint=project_endpoint, credential=credential) as project_client:
+        # Get Azure OpenAI client for inference operations
+        async with await project_client.inference.get_azure_openai_client(
+            api_version="2024-10-21"
+        ) as client:
+            # Use the client for chat completions with tool calling
+            response = await client.chat.completions.create(...)
 ```
 
 ### Tool Calling Implementation
 
 ```python
-from azure.ai.inference.models import (
-    ChatCompletionsToolDefinition,
-    FunctionDefinition,
-    CompletionsFinishReason,
-    ToolMessage
-)
-
-# Define syllogism evaluation tool
-syllogism_tool = ChatCompletionsToolDefinition(
-    function=FunctionDefinition(
-        name="evaluate_syllogism",
-        description="Evaluates the logical validity of a syllogism consisting of major premise, minor premise, and conclusion",
-        parameters={
-            "type": "object",
-            "properties": {
-                "major_premise": {
-                    "type": "string",
-                    "description": "The major premise of the syllogism"
+# Define syllogism evaluation tool using OpenAI function calling format
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "evaluate_syllogism",
+            "description": "Evaluates the logical validity of a syllogism consisting of major premise, minor premise, and conclusion",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "major_premise": {
+                        "type": "string",
+                        "description": "The major premise of the syllogism"
+                    },
+                    "minor_premise": {
+                        "type": "string", 
+                        "description": "The minor premise of the syllogism"
+                    },
+                    "conclusion": {
+                        "type": "string",
+                        "description": "The conclusion of the syllogism"
+                    }
                 },
-                "minor_premise": {
-                    "type": "string", 
-                    "description": "The minor premise of the syllogism"
-                },
-                "conclusion": {
-                    "type": "string",
-                    "description": "The conclusion of the syllogism"
-                }
-            },
-            "required": ["major_premise", "minor_premise", "conclusion"]
+                "required": ["major_premise", "minor_premise", "conclusion"]
+            }
         }
-    )
-)
+    }
+]
 
 # Make completion with tools
-response = client.complete(
+response = await client.chat.completions.create(
+    model=model_deployment_name,
     messages=conversation,
-    tools=[syllogism_tool],
-    model=model_name
+    tools=tools,
+    tool_choice="auto"
 )
 ```
 
@@ -220,19 +220,17 @@ def evaluate_syllogism(major_premise: str, minor_premise: str, conclusion: str) 
 ### Message Structure
 
 ```python
-from azure.ai.inference.models import SystemMessage, UserMessage, AssistantMessage, ToolMessage
-
-# System prompt for critical thinking behavior with tool usage
-system_message = SystemMessage(content="Critical thinking assistant with logical reasoning tools...")
+# System message for critical thinking behavior with tool usage
+system_message = {"role": "system", "content": "Critical thinking assistant with logical reasoning tools..."}
 
 # User input
-user_message = UserMessage(content="User's statement or question...")
+user_message = {"role": "user", "content": "User's statement or question..."}
 
 # Assistant response with tool calls
-assistant_message = AssistantMessage(tool_calls=[...])
+assistant_message = {"role": "assistant", "tool_calls": [...]}
 
 # Tool response
-tool_message = ToolMessage(content=function_result, tool_call_id=tool_call.id)
+tool_message = {"role": "tool", "content": function_result, "tool_call_id": tool_call.id}
 ```
 
 ### Conversation Memory Schema
@@ -323,7 +321,7 @@ The interactive mode design encourages extended engagement, allowing users to ex
 ### Third-Party Services
 
 - **SVC-001**: Azure Active Directory - Provides authentication and authorization services
-- **SVC-002**: Azure AI Model Inference API - REST API for model completions with tool calling support
+- **SVC-002**: Azure AI Project API - REST API for project operations and model inference with tool calling support
 - **SVC-003**: Function Tool Runtime - Local execution environment for syllogism evaluation functions
 
 ### Infrastructure Dependencies
@@ -336,10 +334,11 @@ The interactive mode design encourages extended engagement, allowing users to ex
 ### Technology Platform Dependencies
 
 - **PLT-001**: Python Runtime - Version 3.8 or later with pip package manager
-- **PLT-002**: Azure AI Inference SDK - Version 1.0.0b9 or compatible with tool calling support
+- **PLT-002**: Azure AI Projects SDK - Version 1.0.0b12 or compatible with OpenAI client support
 - **PLT-003**: Azure Identity SDK - For DefaultAzureCredential support
-- **PLT-004**: JSON Processing - Built-in json module for tool argument parsing and response formatting
-- **PLT-005**: Type Hinting - typing-extensions for enhanced type safety with tool definitions
+- **PLT-004**: OpenAI Python SDK - For chat completions with function calling support
+- **PLT-005**: JSON Processing - Built-in json module for tool argument parsing and response formatting
+- **PLT-006**: Type Hinting - typing-extensions for enhanced type safety with tool definitions
 
 ### Compliance Dependencies
 
@@ -392,9 +391,12 @@ evaluate_syllogism("Some cats are black", "Fluffy is a cat", "Fluffy is black")
 
 ```python
 # Check if model wants to use tools
-if response.choices[0].finish_reason == CompletionsFinishReason.TOOL_CALLS:
+if response.choices[0].finish_reason == "tool_calls":
     # Process each tool call
-    messages.append(AssistantMessage(tool_calls=response.choices[0].message.tool_calls))
+    messages.append({
+        "role": "assistant", 
+        "tool_calls": response.choices[0].message.tool_calls
+    })
     
     for tool_call in response.choices[0].message.tool_calls:
         if tool_call.function.name == "evaluate_syllogism":
@@ -403,10 +405,18 @@ if response.choices[0].finish_reason == CompletionsFinishReason.TOOL_CALLS:
             result = evaluate_syllogism(**function_args)
             
             # Add tool response to conversation
-            messages.append(ToolMessage(content=result, tool_call_id=tool_call.id))
+            messages.append({
+                "role": "tool",
+                "content": result,
+                "tool_call_id": tool_call.id
+            })
     
     # Get final response incorporating tool results
-    final_response = client.complete(messages=messages, tools=[syllogism_tool])
+    final_response = await client.chat.completions.create(
+        model=model_deployment_name,
+        messages=messages,
+        tools=tools
+    )
 ```
 
 ### Edge Cases
@@ -430,10 +440,17 @@ if len(response.choices[0].message.tool_calls) > 1:
 
 # Model without tool support
 try:
-    response = client.complete(messages=conversation, tools=[syllogism_tool])
+    response = await client.chat.completions.create(
+        model=model_deployment_name,
+        messages=conversation,
+        tools=tools
+    )
 except Exception as e:
     # Fall back to non-tool mode
-    response = client.complete(messages=conversation)
+    response = await client.chat.completions.create(
+        model=model_deployment_name,
+        messages=conversation
+    )
     print("Note: Tool calling not supported by this model")
 
 # Malformed tool arguments
@@ -445,7 +462,7 @@ except json.JSONDecodeError:
 
 ## 10. Validation Criteria
 
-- **VAL-001**: The application successfully connects to Azure AI Foundry endpoint with tool-capable model
+- **VAL-001**: The application successfully connects to Azure AI Foundry endpoint via AIProjectClient and obtains Azure OpenAI client
 - **VAL-002**: Critical thinking prompts generate meaningful follow-up questions
 - **VAL-003**: Interactive mode maintains conversation context across multiple turns including tool calls
 - **VAL-004**: Authentication works with DefaultAzureCredential in various Azure environments
@@ -453,23 +470,23 @@ except json.JSONDecodeError:
 - **VAL-006**: Command-line interface is intuitive and well-documented
 - **VAL-007**: Application follows Python best practices and coding standards
 - **VAL-008**: Resource cleanup prevents memory leaks in long-running sessions
-- **VAL-009**: Tool calling functionality integrates seamlessly with conversational flow
+- **VAL-009**: Tool calling functionality integrates seamlessly with conversational flow using OpenAI patterns
 - **VAL-010**: Syllogism evaluation tool provides accurate logical analysis
-- **VAL-011**: Tool definitions follow Azure AI Inference SDK specifications
+- **VAL-011**: Tool definitions follow OpenAI function calling specifications
 - **VAL-012**: Multiple tool calls in single conversation are handled correctly
 - **VAL-013**: Tool execution errors are gracefully handled and reported
 - **VAL-014**: Tool responses enhance critical thinking guidance effectively
 
 ## 11. Related Specifications / Further Reading
 
-- [Azure AI Inference SDK Documentation](https://pypi.org/project/azure-ai-inference/)
-- [Azure AI Inference SDK Tool Calling Sample](https://github.com/Azure/azure-sdk-for-python/blob/main/sdk/ai/azure-ai-inference/samples/sample_chat_completions_with_tools.py)
+- [Azure AI Projects SDK Documentation](https://pypi.org/project/azure-ai-projects/)
+- [Azure AI Projects SDK Chat Completions Sample](https://github.com/Azure/azure-sdk-for-python/blob/main/sdk/ai/azure-ai-projects/samples/inference/async_samples/sample_chat_completions_with_azure_openai_client_async.py)
 - [Azure AI Foundry Project Documentation](https://learn.microsoft.com/azure/ai-studio/)
-- [Azure AI Model Inference API Tool Calling Reference](https://learn.microsoft.com/azure/ai-foundry/reference/reference-model-inference-chat-completions)
+- [OpenAI Function Calling Documentation](https://platform.openai.com/docs/guides/function-calling)
 - [Critical Thinking Framework Reference](https://www.criticalthinking.org/pages/defining-critical-thinking/766)
 - [Socratic Method Implementation Guide](https://plato.stanford.edu/entries/socrates/)
 - [Syllogistic Logic and Validity](https://plato.stanford.edu/entries/logic-ancient/#Syl)
 - [Python Argument Parsing Best Practices](https://docs.python.org/3/library/argparse.html)
 - [Azure SDK for Python Authentication](https://learn.microsoft.com/python/api/overview/azure/identity-readme)
-- [Function Tool Definition Best Practices](https://learn.microsoft.com/azure/ai-services/openai/how-to/function-calling)
+- [OpenAI Python SDK Documentation](https://github.com/openai/openai-python)
 - [JSON Schema Validation for Tool Parameters](https://json-schema.org/understanding-json-schema/)

@@ -5,19 +5,11 @@ import os
 import sys
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, List, Optional
+from typing import Any, List, Dict, Optional
 
-from azure.ai.inference import ChatCompletionsClient
-from azure.ai.inference.models import (
-    AssistantMessage,
-    ChatCompletionsToolDefinition,
-    CompletionsFinishReason,
-    FunctionDefinition,
-    SystemMessage,
-    ToolMessage,
-    UserMessage,
-)
+from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
+from openai import AzureOpenAI
 
 # Configure logging for debugging and monitoring
 logging.basicConfig(
@@ -71,15 +63,15 @@ def load_environment() -> None:
         logger.info("python-dotenv not available, using system environment variables")
 
 
-def initialize_client(endpoint: Optional[str] = None) -> ChatCompletionsClient:
+def initialize_client(endpoint: Optional[str] = None):
     """
-    Initialize and test the Azure AI Inference client.
+    Initialize and test the Azure AI Projects client and get Azure OpenAI client.
 
     Args:
         endpoint: Optional override for PROJECT_ENDPOINT
 
     Returns:
-        ChatCompletionsClient: Configured client for AI inference
+        Azure OpenAI client from AI Projects SDK
 
     Raises:
         SystemExit: If connection fails or required environment variables are missing
@@ -101,20 +93,20 @@ def initialize_client(endpoint: Optional[str] = None) -> ChatCompletionsClient:
     credential = DefaultAzureCredential()
 
     try:
-        # Create the Azure AI Inference client with proper credential scopes
-        # For Azure AI Foundry projects, use the ai.azure.com scope
-        # Let the SDK use the default/latest supported API version
-        client = ChatCompletionsClient(
+        # Create the Azure AI Projects client
+        project_client = AIProjectClient(
             endpoint=project_endpoint,
-            credential=credential,
-            credential_scopes=["https://ai.azure.com/.default"]
+            credential=credential
         )
 
-        logger.info("Created ChatCompletionsClient for endpoint: %s", project_endpoint)
+        # Get Azure OpenAI client for inference operations
+        client = project_client.inference.get_azure_openai_client(
+            api_version="2024-10-21"
+        )
+
+        logger.info("Created Azure OpenAI client via AIProjectClient for endpoint: %s", project_endpoint)
         print(f"Connected to Azure AI Foundry project: {project_endpoint}")
 
-        # Test the connection by attempting a simple validation
-        # Note: We'll test the actual inference capability when making the first request
         return client
 
     except Exception as e:
@@ -366,18 +358,19 @@ def _is_valid_categorical_syllogism(major: str, minor: str, conclusion: str) -> 
     return False
 
 
-def create_syllogism_tool() -> ChatCompletionsToolDefinition:
+def create_syllogism_tool() -> dict:
     """
     Create the syllogism evaluation tool definition for the AI model.
 
     Returns:
-        ChatCompletionsToolDefinition: Tool definition for syllogism evaluation
+        dict: Tool definition for syllogism evaluation in OpenAI format
     """
-    return ChatCompletionsToolDefinition(
-        function=FunctionDefinition(
-            name="evaluate_syllogism",
-            description="Evaluates the logical validity of a syllogism consisting of major premise, minor premise, and conclusion. Returns detailed analysis including validity, logical form, and identification of any logical fallacies or errors.",
-            parameters={
+    return {
+        "type": "function",
+        "function": {
+            "name": "evaluate_syllogism",
+            "description": "Evaluates the logical validity of a syllogism consisting of major premise, minor premise, and conclusion. Returns detailed analysis including validity, logical form, and identification of any logical fallacies or errors.",
+            "parameters": {
                 "type": "object",
                 "properties": {
                     "major_premise": {
@@ -395,23 +388,23 @@ def create_syllogism_tool() -> ChatCompletionsToolDefinition:
                 },
                 "required": ["major_premise", "minor_premise", "conclusion"]
             }
-        )
-    )
+        }
+    }
 
 
-def create_conversation_memory() -> List[Any]:
+def create_conversation_memory() -> List[Dict[str, Any]]:
     """
     Create initial conversation memory with system prompt.
 
     Returns:
-        List[Any]: Initial conversation history with system message
+        List[Dict[str, Any]]: Initial conversation history with system message
     """
     system_prompt = get_critical_thinking_system_prompt()
-    return [SystemMessage(content=system_prompt)]
+    return [{"role": "system", "content": system_prompt}]
 
 
 def add_to_conversation(
-    conversation: List[Any], role: str, content: str
+    conversation: List[Dict[str, Any]], role: str, content: str
 ) -> None:
     """
     Add a message to the conversation history.
@@ -421,10 +414,8 @@ def add_to_conversation(
         role: The role of the message sender ('user' or 'assistant')
         content: The message content
     """
-    if role == "user":
-        conversation.append(UserMessage(content=content))
-    elif role == "assistant":
-        conversation.append(AssistantMessage(content=content))
+    if role in ("user", "assistant"):
+        conversation.append({"role": role, "content": content})
     else:
         raise ValueError(f"Invalid role: {role}. Must be 'user' or 'assistant'.")
 
@@ -432,14 +423,14 @@ def add_to_conversation(
 
 
 def get_ai_response(
-    client: ChatCompletionsClient, conversation: List[Any], model_name: str
+    client: AzureOpenAI, conversation: List[Dict[str, Any]], model_name: str
 ) -> str:
     """
     Get a response from the AI model using the conversation history.
     Handles tool calling for syllogism evaluation when requested by the model.
 
     Args:
-        client: The ChatCompletionsClient instance
+        client: The OpenAI client instance
         conversation: The conversation history
         model_name: The model deployment name
 
@@ -454,7 +445,7 @@ def get_ai_response(
         syllogism_tool = create_syllogism_tool()
 
         # Make the API call with standard parameters and tool support
-        response = client.complete(
+        response = client.chat.completions.create(
             messages=conversation,
             model=model_name,
             tools=[syllogism_tool],
@@ -466,11 +457,26 @@ def get_ai_response(
         )
 
         # Check if the model wants to use tools
-        if response.choices[0].finish_reason == CompletionsFinishReason.TOOL_CALLS:
+        if response.choices[0].finish_reason == "tool_calls":
             logger.info("Model requested tool calls, processing syllogism evaluation")
 
             # Add the assistant's tool call message to conversation
-            conversation.append(AssistantMessage(tool_calls=response.choices[0].message.tool_calls))
+            assistant_message = {
+                "role": "assistant",
+                "content": response.choices[0].message.content,
+                "tool_calls": [
+                    {
+                        "id": tc.id,
+                        "type": tc.type,
+                        "function": {
+                            "name": tc.function.name,
+                            "arguments": tc.function.arguments
+                        }
+                    }
+                    for tc in response.choices[0].message.tool_calls
+                ]
+            }
+            conversation.append(assistant_message)
 
             # Process each tool call
             if response.choices[0].message.tool_calls is not None:
@@ -488,7 +494,12 @@ def get_ai_response(
                             logger.debug("Tool result: %s", tool_result[:200] + "..." if len(tool_result) > 200 else tool_result)
 
                             # Add tool response to conversation
-                            conversation.append(ToolMessage(content=tool_result, tool_call_id=tool_call.id))
+                            tool_message = {
+                                "role": "tool",
+                                "content": tool_result,
+                                "tool_call_id": tool_call.id
+                            }
+                            conversation.append(tool_message)
 
                         except json.JSONDecodeError as e:
                             logger.error("Failed to parse tool arguments: %s", e)
@@ -496,17 +507,27 @@ def get_ai_response(
                                 "error": "Invalid tool arguments provided",
                                 "details": str(e)
                             })
-                            conversation.append(ToolMessage(content=error_result, tool_call_id=tool_call.id))
+                            tool_message = {
+                                "role": "tool",
+                                "content": error_result,
+                                "tool_call_id": tool_call.id
+                            }
+                            conversation.append(tool_message)
 
                         except Exception as e:
                             logger.error("Tool execution failed: %s", e)
                             error_result = json.dumps({
                                 "error": f"Tool execution failed: {str(e)}"
                             })
-                            conversation.append(ToolMessage(content=error_result, tool_call_id=tool_call.id))
+                            tool_message = {
+                                "role": "tool",
+                                "content": error_result,
+                                "tool_call_id": tool_call.id
+                            }
+                            conversation.append(tool_message)
 
             # Get the final response with tool results incorporated
-            final_response = client.complete(
+            final_response = client.chat.completions.create(
                 messages=conversation,
                 model=model_name,
                 tools=[syllogism_tool],
@@ -519,23 +540,19 @@ def get_ai_response(
 
             # Extract and return final response content
             if (
-                hasattr(final_response, "choices")
-                and final_response.choices
+                final_response.choices
                 and len(final_response.choices) > 0
+                and final_response.choices[0].message.content
             ):
-                choice = final_response.choices[0]
-                if hasattr(choice, "message") and hasattr(choice.message, "content"):
-                    return choice.message.content
+                return final_response.choices[0].message.content
         else:
             # Standard response without tool calls
             if (
-                hasattr(response, "choices")
-                and response.choices
+                response.choices
                 and len(response.choices) > 0
+                and response.choices[0].message.content
             ):
-                choice = response.choices[0]
-                if hasattr(choice, "message") and hasattr(choice.message, "content"):
-                    return choice.message.content
+                return response.choices[0].message.content
 
         raise RuntimeError("No response received from the model")
 
@@ -545,13 +562,13 @@ def get_ai_response(
 
 
 def process_single_question(
-    client: ChatCompletionsClient, question: str, model_name: str
+    client: AzureOpenAI, question: str, model_name: str
 ) -> None:
     """
     Process a single question in non-interactive mode.
 
     Args:
-        client: The ChatCompletionsClient instance
+        client: The AzureOpenAI instance
         question: The user's question or statement
         model_name: The model deployment name
     """
@@ -577,7 +594,7 @@ def process_single_question(
 
 
 def interactive_mode(
-    client: ChatCompletionsClient,
+    client: AzureOpenAI,
     model_name: str,
     initial_question: Optional[str] = None,
 ) -> None:
@@ -585,7 +602,7 @@ def interactive_mode(
     Run the assistant in interactive mode for extended conversations.
 
     Args:
-        client: The ChatCompletionsClient instance
+        client: The AzureOpenAI instance
         model_name: The model deployment name
         initial_question: Optional initial question to start the conversation
     """
