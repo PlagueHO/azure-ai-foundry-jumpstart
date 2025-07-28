@@ -308,7 +308,3 @@ This implementation requires the following key dependencies:
 - Supports Azure AI Foundry project deployments
 - Quiet-by-default logging (ERROR level) with configurable verbosity
 - Extensible design allows easy addition of new analytical tools
-
-## License
-
-This sample is provided as-is under the same license as the containing repository.
