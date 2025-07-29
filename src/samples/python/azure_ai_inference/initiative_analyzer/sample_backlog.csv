@@ -1,4 +1,4 @@
-category,initiative,title,goal,stream,25 H1,25 H2,26 H1,26 H2,27 H1,27 H2,28+
+category,initiative,title,goal,stream,25H1,25H2,26H1,26H2,27H1,27H2,28
 "User Experience","","Simplify onboarding process","Reduce time to onboard new users","Product Team",1,1,0,0,0,0,0
 "Developer Excellence","","Improve developer onboarding","Streamline new developer setup","Engineering Team",1,0,0,0,0,0,0
 "Performance Optimization","","Optimize database queries","Improve application response time","Backend Team",0,1,1,0,0,0,0

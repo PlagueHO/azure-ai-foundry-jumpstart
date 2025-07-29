@@ -7,11 +7,11 @@ A Python application that takes a CSV list of backlog items and analyzes them us
 This sample demonstrates how to use the Azure AI Projects SDK to create an intelligent initiative analysis agent that:
 
 - Analyzes each backlog item individually using a language model
-- Associates backlog items with existing initiatives using semantic analysis and goal alignment
+- Associates backlog items with existing initiatives using advanced semantic analysis and goal alignment
 - Applies confidence thresholds to determine which associations to include
 - Provides deep impact analysis of how backlog items will affect associated initiatives
 - Generates comprehensive markdown reports organized by initiative
-- Uses function tool calling to perform sophisticated initiative matching and impact assessment
+- Uses direct AI analysis for sophisticated initiative matching and impact assessment
 
 ## Prerequisites
 
@@ -266,7 +266,7 @@ This implementation requires the following key dependencies:
 - **azure-identity** - DefaultAzureCredential authentication
 - **openai** - Chat completions via Azure OpenAI client
 - **argparse** - Command line argument parsing
-- **json** - Tool response handling
+- **json** - Structured AI response handling
 - **logging** - Configurable verbosity control
 
 ## Initiative Analysis Workflow Detail
@@ -400,12 +400,12 @@ This workflow ensures that every backlog item is systematically evaluated agains
 ## Implementation Notes
 
 - Uses Azure AI Projects SDK with AIProjectClient.inference.get_azure_openai_client()
-- Implements modular initiative association architecture with separate modules for semantic analysis
-- Implements function tool calling for sophisticated initiative matching and impact assessment
+- Implements direct AI analysis for sophisticated initiative matching and impact assessment
+- Uses structured JSON responses for consistent and reliable analysis results
 - Applies configurable confidence thresholds to control association quality
 - Generates comprehensive initiative-centric reports with collective impact analysis
 - Follows Azure SDK security best practices
-- Compatible with tool-capable AI models (GPT-4, GPT-4o, etc.)
+- Compatible with modern AI models (GPT-4, GPT-4o, etc.) supporting structured outputs
 - Supports Azure AI Foundry project deployments
 - Quiet-by-default logging (ERROR level) with configurable verbosity
-- Extensible design allows easy addition of new analytical tools and report formats
+- Extensible design allows easy addition of new analytical capabilities and report formats
