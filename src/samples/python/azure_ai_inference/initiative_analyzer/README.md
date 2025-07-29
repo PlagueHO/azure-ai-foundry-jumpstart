@@ -67,6 +67,61 @@ The initiative analyzer uses an AI-driven workflow to systematically evaluate ea
 
 ## Usage
 
+### Initiative Analysis
+
+Analyze backlog items and associate them with initiatives, generating detailed impact reports:
+
+```bash
+python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output initiative_reports/
+```
+
+#### Confidence Threshold Control
+
+You can control which associations are included in the final reports by setting a confidence threshold:
+
+```bash
+# Only include associations with 70% or higher confidence
+python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output initiative_reports/ --confidence-threshold 70
+
+# Include more associations with lower threshold (50% or higher)
+python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output initiative_reports/ --confidence-threshold 50
+```
+
+#### Filtering Backlog Items by Title
+
+You can filter which backlog items to process using a regex pattern with the `--filter-title` parameter:
+
+```bash
+# Process only items with "onboard" in the title (case-insensitive)
+python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output initiative_reports/ --filter-title ".*onboard.*"
+
+# Process only items starting with "Mobile"
+python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output initiative_reports/ --filter-title "^Mobile.*"
+
+# Process items ending with "security"
+python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output initiative_reports/ --filter-title ".*security$"
+
+# Combine with confidence threshold
+python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output initiative_reports/ --filter-title "(API|integration)" --confidence-threshold 60
+```
+
+**Filter Examples:**
+
+- `.*onboard.*` - Matches any backlog item title containing "onboard" (case-insensitive)
+- `^Mobile.*` - Matches backlog item titles starting with "Mobile"
+- `.*security$` - Matches backlog item titles ending with "security"
+- `(API|integration)` - Matches backlog item titles containing either "API" or "integration"
+- `Setup.*automation` - Matches backlog item titles starting with "Setup" and containing "automation"
+
+The filter uses Python's `re` module with case-insensitive matching. Invalid regex patterns will show a clear error message.
+
+**Confidence Threshold Guidelines:**
+
+- `80-100%` - High confidence associations; very strong semantic alignment and goal matching
+- `60-79%` - Medium confidence associations; good alignment with some uncertainty
+- `40-59%` - Lower confidence associations; potential matches that may need review
+- `Below 40%` - Weak associations; typically excluded from reports unless threshold is explicitly lowered
+
 ## Input
 
 ### Backlog CSV Format
@@ -162,61 +217,6 @@ The following backlog items have been associated with this initiative based on s
 - **File naming**: Initiative files are named using the initiative title (sanitized for filesystem compatibility)
 - **No associations**: Initiatives without any qualifying backlog associations are not included in the output
 - **Summary statistics**: Each report includes metadata about the number of associated items and confidence threshold used
-
-### Initiative Analysis
-
-Analyze backlog items and associate them with initiatives, generating detailed impact reports:
-
-```bash
-python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output initiative_reports/
-```
-
-#### Confidence Threshold Control
-
-You can control which associations are included in the final reports by setting a confidence threshold:
-
-```bash
-# Only include associations with 70% or higher confidence
-python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output initiative_reports/ --confidence-threshold 70
-
-# Include more associations with lower threshold (50% or higher)
-python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output initiative_reports/ --confidence-threshold 50
-```
-
-#### Filtering Backlog Items by Title
-
-You can filter which backlog items to process using a regex pattern with the `--filter-title` parameter:
-
-```bash
-# Process only items with "onboard" in the title (case-insensitive)
-python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output initiative_reports/ --filter-title ".*onboard.*"
-
-# Process only items starting with "Mobile"
-python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output initiative_reports/ --filter-title "^Mobile.*"
-
-# Process items ending with "security"
-python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output initiative_reports/ --filter-title ".*security$"
-
-# Combine with confidence threshold
-python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output initiative_reports/ --filter-title "(API|integration)" --confidence-threshold 60
-```
-
-**Filter Examples:**
-
-- `.*onboard.*` - Matches any backlog item title containing "onboard" (case-insensitive)
-- `^Mobile.*` - Matches backlog item titles starting with "Mobile"
-- `.*security$` - Matches backlog item titles ending with "security"
-- `(API|integration)` - Matches backlog item titles containing either "API" or "integration"
-- `Setup.*automation` - Matches backlog item titles starting with "Setup" and containing "automation"
-
-The filter uses Python's `re` module with case-insensitive matching. Invalid regex patterns will show a clear error message.
-
-**Confidence Threshold Guidelines:**
-
-- `80-100%` - High confidence associations; very strong semantic alignment and goal matching
-- `60-79%` - Medium confidence associations; good alignment with some uncertainty
-- `40-59%` - Lower confidence associations; potential matches that may need review
-- `Below 40%` - Weak associations; typically excluded from reports unless threshold is explicitly lowered
 
 ## Code Quality
 
