@@ -1,16 +1,17 @@
 """
-Backlog Analyzer - AI-powered backlog item analysis and initiative association.
+Initiative Analyzer - AI-powered backlog item analysis and initiative association.
 
 This application analyzes CSV backlog items against organizational initiatives
-using Azure AI Foundry's language models to provide enriched insights,
-categorization, and strategic alignment recommendations.
+using Azure AI Foundry's language models to generate comprehensive markdown reports
+organized by initiative.
 
 Features:
 - CSV-based backlog and initiative processing
 - AI-powered semantic analysis and initiative matching
-- Confidence scoring for category and initiative associations
+- Confidence threshold filtering for high-quality associations
+- Initiative-centric markdown report generation
 - Detailed impact analysis and strategic recommendations
-- Function tool calling for initiative association analysis
+- Function tool calling for sophisticated initiative matching
 - Configurable logging levels for debugging and monitoring
 """
 
@@ -22,6 +23,7 @@ import os
 import re
 import sys
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from azure.ai.projects import AIProjectClient
@@ -85,6 +87,41 @@ class Initiative:
 
 
 @dataclass
+class BacklogItemAssociation:
+    """Represents a backlog item associated with an initiative."""
+    
+    backlog_item: BacklogItem
+    confidence: int
+    impact_analysis: str
+    
+    def get_timeline_summary(self) -> str:
+        """Get a summary of the timeline for this backlog item."""
+        active_periods = []
+        for period, value in self.backlog_item.timeline_data.items():
+            if value == '1' or value == 1:
+                active_periods.append(period)
+        
+        if not active_periods:
+            return "No specific timeline"
+        elif len(active_periods) == 1:
+            return active_periods[0]
+        else:
+            return f"{active_periods[0]}-{active_periods[-1]}"
+
+
+@dataclass
+class InitiativeReport:
+    """Represents a complete initiative report with associated backlog items."""
+    
+    initiative: Initiative
+    associated_items: List[BacklogItemAssociation]
+    confidence_threshold: int
+    collective_impact: str
+    strategic_recommendations: str
+    timeline_considerations: str
+
+
+@dataclass 
 class EnrichedBacklogItem:
     """Represents a backlog item enriched with AI analysis."""
     
@@ -145,15 +182,10 @@ def configure_logging(verbose_level: str = 'ERROR') -> None:
 
 
 def parse_arguments() -> argparse.Namespace:
-    """Parse command-line arguments for the backlog analyzer."""
+    """Parse command-line arguments for the initiative analyzer."""
     parser = argparse.ArgumentParser(
-        description="Backlog Analyzer - Analyze backlog items against organizational initiatives using AI",
-        epilog="Example: python backlog_analyzer.py --enrich --backlog backlog.csv --initiatives initiatives.csv --output enriched_backlog.csv",
-    )
-    parser.add_argument(
-        "--enrich",
-        action="store_true",
-        help="Enrich backlog items with AI analysis and initiative matching"
+        description="Initiative Analyzer - Analyze backlog items against organizational initiatives using AI",
+        epilog="Example: python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output initiative_reports/",
     )
     parser.add_argument(
         "--backlog", 
@@ -171,7 +203,13 @@ def parse_arguments() -> argparse.Namespace:
         "--output", 
         type=str, 
         required=True,
-        help="Path for output CSV file with enriched analysis"
+        help="Output directory for initiative markdown reports"
+    )
+    parser.add_argument(
+        "--confidence-threshold",
+        type=int,
+        default=60,
+        help="Minimum confidence threshold for including backlog-initiative associations (default: 60)"
     )
     parser.add_argument(
         "--endpoint", 
@@ -395,6 +433,403 @@ def load_initiatives(file_path: str) -> List[Initiative]:
     
     logger.info("Loaded %d initiatives from %s", len(initiatives), file_path)
     return initiatives
+
+
+def sanitize_filename(filename: str) -> str:
+    """
+    Sanitize a string to be used as a filename.
+    
+    Args:
+        filename: The string to sanitize
+        
+    Returns:
+        str: A sanitized filename
+    """
+    # Remove or replace invalid characters
+    sanitized = re.sub(r'[<>:"/\\|?*]', '_', filename)
+    # Remove leading/trailing whitespace and dots
+    sanitized = sanitized.strip('. ')
+    # Limit length to avoid filesystem issues
+    if len(sanitized) > 100:
+        sanitized = sanitized[:100]
+    return sanitized
+
+
+def generate_initiative_markdown_report(initiative_report: InitiativeReport) -> str:
+    """
+    Generate a markdown report for a single initiative.
+    
+    Args:
+        initiative_report: The initiative report data
+        
+    Returns:
+        str: The markdown content for the report
+    """
+    initiative = initiative_report.initiative
+    items = initiative_report.associated_items
+    
+    # Generate frontmatter
+    markdown = f"""---
+area: {initiative.area}
+title: {initiative.title}
+confidence_threshold: {initiative_report.confidence_threshold}
+total_associated_items: {len(items)}
+---
+
+# {initiative.title}
+
+## Initiative Overview
+
+**Area:** {initiative.area}
+**Current Status:** {initiative.current_state}
+
+{initiative.details}
+
+{initiative.description}
+
+## Key Performance Indicators
+
+{initiative.kpi}
+
+## Proposed Solutions
+
+{initiative.solutions}
+
+## Associated Backlog Items
+
+The following backlog items have been associated with this initiative based on semantic analysis and goal alignment:
+
+| Title | Goal | Category | Stream | Timeline | Confidence | Impact Analysis |
+|-------|------|----------|--------|----------|------------|-----------------|
+"""
+
+    # Add table rows for each associated backlog item
+    for association in items:
+        item = association.backlog_item
+        timeline = association.get_timeline_summary()
+        markdown += f"| {item.title} | {item.goal} | {item.category} | {item.stream} | {timeline} | {association.confidence}% | {association.impact_analysis} |\n"
+
+    # Add collective impact assessment
+    markdown += f"""
+## Collective Impact Assessment
+
+{initiative_report.collective_impact}
+
+## Strategic Recommendations
+
+{initiative_report.strategic_recommendations}
+
+## Timeline and Resource Considerations
+
+{initiative_report.timeline_considerations}
+"""
+
+    return markdown
+
+
+def organize_backlog_by_initiative(
+    enriched_items: List[EnrichedBacklogItem], 
+    initiatives: List[Initiative],
+    confidence_threshold: int
+) -> List[InitiativeReport]:
+    """
+    Organize enriched backlog items by initiative and generate reports.
+    
+    Args:
+        enriched_items: List of enriched backlog items
+        initiatives: List of all initiatives
+        confidence_threshold: Minimum confidence for including associations
+        
+    Returns:
+        List[InitiativeReport]: Reports for initiatives with associated items
+    """
+    # Create a mapping of initiative titles to initiative objects
+    initiative_map = {init.title: init for init in initiatives}
+    
+    # Group backlog items by their matched initiatives
+    initiative_associations: Dict[str, List[BacklogItemAssociation]] = {}
+    
+    for enriched_item in enriched_items:
+        # Only include items that meet the confidence threshold
+        if (enriched_item.matched_initiative and 
+            enriched_item.initiative_confidence >= confidence_threshold):
+            
+            initiative_title = enriched_item.matched_initiative
+            
+            if initiative_title not in initiative_associations:
+                initiative_associations[initiative_title] = []
+            
+            association = BacklogItemAssociation(
+                backlog_item=enriched_item.original_item,
+                confidence=enriched_item.initiative_confidence,
+                impact_analysis=enriched_item.impact_analysis
+            )
+            
+            initiative_associations[initiative_title].append(association)
+    
+    # Generate reports for initiatives with associated items
+    reports = []
+    
+    for initiative_title, associations in initiative_associations.items():
+        if initiative_title in initiative_map:
+            initiative = initiative_map[initiative_title]
+            
+            # Generate collective impact and recommendations using AI
+            collective_impact = _generate_collective_impact_analysis(initiative, associations)
+            strategic_recommendations = _generate_strategic_recommendations(initiative, associations)
+            timeline_considerations = _generate_timeline_considerations(associations)
+            
+            report = InitiativeReport(
+                initiative=initiative,
+                associated_items=associations,
+                confidence_threshold=confidence_threshold,
+                collective_impact=collective_impact,
+                strategic_recommendations=strategic_recommendations,
+                timeline_considerations=timeline_considerations
+            )
+            
+            reports.append(report)
+    
+    return reports
+
+
+def _generate_collective_impact_analysis(
+    initiative: Initiative, 
+    associations: List[BacklogItemAssociation]
+) -> str:
+    """Generate collective impact analysis for multiple backlog items on an initiative."""
+    if not associations:
+        return "No associated backlog items meet the confidence threshold."
+    
+    # Basic analysis based on the number and types of items
+    impact_text = (
+        f"The {len(associations)} associated backlog items will collectively advance "
+        f"this initiative through complementary approaches. "
+    )
+    
+    # Analyze item categories
+    categories = {assoc.backlog_item.category for assoc in associations}
+    if len(categories) > 1:
+        impact_text += (
+            f"These items span {len(categories)} different categories "
+            f"({', '.join(categories)}), providing a comprehensive approach to initiative advancement. "
+        )
+    
+    # Analyze confidence levels
+    avg_confidence = sum(assoc.confidence for assoc in associations) / len(associations)
+    if avg_confidence > 75:
+        impact_text += "The high confidence scores indicate strong strategic alignment across all items."
+    elif avg_confidence > 60:
+        impact_text += "The moderate to high confidence scores suggest good strategic fit for most items."
+    else:
+        impact_text += "The confidence scores suggest these items provide some strategic value but may need closer review."
+    
+    return impact_text
+
+
+def _generate_strategic_recommendations(
+    initiative: Initiative, 
+    associations: List[BacklogItemAssociation]
+) -> str:
+    """Generate strategic recommendations for implementing associated backlog items."""
+    if not associations:
+        return "Consider identifying backlog items that could support this initiative."
+    
+    recommendations = (
+        f"To maximize the success of the '{initiative.title}' initiative:\n\n"
+        f"1. **Prioritize high-confidence items**: Focus on items with confidence scores above 70% for immediate impact.\n"
+        f"2. **Coordinate implementation**: Ensure the {len(associations)} associated backlog items are implemented in a coordinated manner.\n"
+        f"3. **Track KPI alignment**: Monitor progress against the initiative's KPIs: {initiative.kpi}\n"
+    )
+    
+    # Add timeline-specific recommendations
+    near_term_items = [
+        assoc for assoc in associations 
+        if any(assoc.backlog_item.timeline_data.get(period) in ['1', 1] 
+               for period in ['25 H1', '25 H2'])
+    ]
+    
+    if near_term_items:
+        recommendations += f"4. **Near-term focus**: {len(near_term_items)} items are planned for the next year - ensure adequate resource allocation.\n"
+    
+    return recommendations
+
+
+def _generate_timeline_considerations(associations: List[BacklogItemAssociation]) -> str:
+    """Generate timeline and resource considerations for associated backlog items."""
+    if not associations:
+        return "No timeline considerations with current associations."
+    
+    # Analyze timeline distribution
+    timeline_periods = ['25 H1', '25 H2', '26 H1', '26 H2', '27 H1', '27 H2', '28+']
+    period_counts = {period: 0 for period in timeline_periods}
+    
+    for assoc in associations:
+        for period in timeline_periods:
+            if assoc.backlog_item.timeline_data.get(period) in ['1', 1]:
+                period_counts[period] += 1
+    
+    # Find peak periods
+    max_count = max(period_counts.values())
+    peak_periods = [period for period, count in period_counts.items() if count == max_count and count > 0]
+    
+    if peak_periods:
+        considerations = (
+            f"Timeline analysis shows peak activity in {', '.join(peak_periods)} "
+            f"with {max_count} concurrent items. "
+        )
+    else:
+        considerations = "No specific timeline patterns identified across associated items. "
+    
+    # Analyze teams involved
+    teams = {assoc.backlog_item.stream for assoc in associations}
+    considerations += (
+        f"Implementation will involve {len(teams)} team(s): {', '.join(teams)}. "
+        f"Coordination across teams will be essential for initiative success."
+    )
+    
+    return considerations
+
+
+def save_initiative_reports(reports: List[InitiativeReport], output_dir: str) -> None:
+    """
+    Save initiative reports as markdown files.
+    
+    Args:
+        reports: List of initiative reports to save
+        output_dir: Directory to save the reports
+        
+    Raises:
+        IOError: If unable to create directory or save files
+    """
+    if not reports:
+        print("No initiative reports to save.")
+        return
+    
+    # Create output directory if it doesn't exist
+    output_path = Path(output_dir)
+    output_path.mkdir(parents=True, exist_ok=True)
+    
+    saved_count = 0
+    
+    for report in reports:
+        try:
+            # Generate filename from initiative title
+            filename = sanitize_filename(f"{report.initiative.title}.md")
+            file_path = output_path / filename
+            
+            # Generate markdown content
+            markdown_content = generate_initiative_markdown_report(report)
+            
+            # Save to file
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(markdown_content)
+            
+            saved_count += 1
+            logger.info("Saved initiative report: %s", file_path)
+            
+        except Exception as e:
+            logger.error("Failed to save report for initiative '%s': %s", 
+                        report.initiative.title, e)
+            continue
+    
+    print(f"✅ Saved {saved_count} initiative reports to {output_dir}")
+    if saved_count < len(reports):
+        print(f"⚠️  Failed to save {len(reports) - saved_count} reports")
+
+
+def analyze_initiative_associations(
+    backlog_file: str,
+    initiatives_file: str,
+    output_dir: str,
+    client: AzureOpenAI,
+    model_name: str,
+    confidence_threshold: int = 60,
+    title_filter: Optional[str] = None
+) -> None:
+    """
+    Analyze backlog items against initiatives and generate initiative reports.
+    
+    Args:
+        backlog_file: Path to backlog CSV file
+        initiatives_file: Path to initiatives CSV file
+        output_dir: Directory for output markdown reports
+        client: Azure OpenAI client
+        model_name: Model deployment name
+        confidence_threshold: Minimum confidence for including associations
+        title_filter: Optional regex pattern to filter backlog items by title
+    """
+    try:
+        # Load data
+        print("Loading backlog items...")
+        backlog_items = load_backlog_items(backlog_file, title_filter)
+        
+        print("Loading initiatives...")
+        initiatives = load_initiatives(initiatives_file)
+        
+        if not backlog_items:
+            print("No backlog items found. Please check your backlog CSV file.")
+            return
+        
+        if not initiatives:
+            print("No initiatives found. Please check your initiatives CSV file.")
+            return
+        
+        print(f"Analyzing {len(backlog_items)} backlog items against {len(initiatives)} initiatives...")
+        print(f"Using confidence threshold: {confidence_threshold}%")
+        
+        # Process each backlog item
+        enriched_items = []
+        qualifying_items = 0
+        
+        for i, item in enumerate(backlog_items, 1):
+            print(f"Analyzing item {i}/{len(backlog_items)}: {item.title}")
+            
+            try:
+                enriched_item = analyze_backlog_item(client, item, initiatives, model_name)
+                enriched_items.append(enriched_item)
+                
+                # Check if item qualifies for inclusion
+                if (enriched_item.matched_initiative and 
+                    enriched_item.initiative_confidence >= confidence_threshold):
+                    qualifying_items += 1
+                    print(f"  ✅ Matched: {enriched_item.matched_initiative} (confidence: {enriched_item.initiative_confidence}%)")
+                else:
+                    confidence = enriched_item.initiative_confidence
+                    print(f"  ❌ No qualifying match (confidence: {confidence}% < {confidence_threshold}%)")
+                
+            except Exception as e:
+                logger.error("Failed to analyze item '%s': %s", item.title, e)
+                print(f"  ⚠️  Error analyzing item: {e}")
+                continue
+        
+        print(f"\n📊 Analysis Summary:")
+        print(f"   • Total items analyzed: {len(enriched_items)}")
+        print(f"   • Items meeting threshold: {qualifying_items}")
+        print(f"   • Confidence threshold: {confidence_threshold}%")
+        
+        # Generate initiative reports
+        if enriched_items:
+            print("\n📝 Generating initiative reports...")
+            reports = organize_backlog_by_initiative(enriched_items, initiatives, confidence_threshold)
+            
+            if reports:
+                print(f"Generated {len(reports)} initiative reports")
+                save_initiative_reports(reports, output_dir)
+                
+                # Print summary of generated reports
+                print(f"\n📋 Generated Reports:")
+                for report in reports:
+                    print(f"   • {report.initiative.title}: {len(report.associated_items)} items")
+            else:
+                print("❌ No initiative reports generated. Try lowering the confidence threshold.")
+        else:
+            print("❌ No items were successfully analyzed.")
+            
+    except Exception as e:
+        logger.error("Error in initiative analysis: %s", e)
+        print(f"Error processing analysis: {e}")
+        sys.exit(1)
 
 
 def create_initiative_association_tool() -> Dict[str, Any]:
@@ -653,112 +1088,9 @@ def analyze_backlog_item(
         raise RuntimeError(f"Unable to analyze backlog item: {e}") from e
 
 
-def save_enriched_backlog(enriched_items: List[EnrichedBacklogItem], output_path: str) -> None:
-    """
-    Save enriched backlog items to CSV file.
-    
-    Args:
-        enriched_items: List of enriched backlog items
-        output_path: Path for the output CSV file
-        
-    Raises:
-        IOError: If unable to write to the output file
-    """
-    if not enriched_items:
-        raise ValueError("No enriched items to save")
-    
-    # Get all possible fieldnames from the first item
-    fieldnames = list(enriched_items[0].to_dict().keys())
-    
-    try:
-        with open(output_path, 'w', newline='', encoding='utf-8') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
-            
-            for item in enriched_items:
-                writer.writerow(item.to_dict())
-        
-        logger.info("Saved %d enriched backlog items to %s", len(enriched_items), output_path)
-        print(f"Enriched backlog saved to: {output_path}")
-        
-    except Exception as e:
-        logger.error("Failed to save enriched backlog: %s", e)
-        raise IOError(f"Unable to save to {output_path}: {e}") from e
-
-
-def enrich_backlog(
-    backlog_file: str,
-    initiatives_file: str,
-    output_file: str,
-    client: AzureOpenAI,
-    model_name: str,
-    title_filter: Optional[str] = None
-) -> None:
-    """
-    Process and enrich backlog items with AI analysis.
-    
-    Args:
-        backlog_file: Path to backlog CSV file
-        initiatives_file: Path to initiatives CSV file
-        output_file: Path for output CSV file
-        client: Azure OpenAI client
-        model_name: Model deployment name
-        title_filter: Optional regex pattern to filter backlog items by title
-    """
-    try:
-        # Load data
-        print("Loading backlog items...")
-        backlog_items = load_backlog_items(backlog_file, title_filter)
-        
-        print("Loading initiatives...")
-        initiatives = load_initiatives(initiatives_file)
-        
-        if not backlog_items:
-            print("No backlog items found. Please check your backlog CSV file.")
-            return
-        
-        if not initiatives:
-            print("No initiatives found. Please check your initiatives CSV file.")
-            return
-        
-        print(f"Analyzing {len(backlog_items)} backlog items against {len(initiatives)} initiatives...")
-        
-        # Process each backlog item
-        enriched_items = []
-        for i, item in enumerate(backlog_items, 1):
-            print(f"Analyzing item {i}/{len(backlog_items)}: {item.title}")
-            
-            try:
-                enriched_item = analyze_backlog_item(client, item, initiatives, model_name)
-                enriched_items.append(enriched_item)
-                
-                # Log progress
-                confidence = enriched_item.initiative_confidence
-                matched = enriched_item.matched_initiative or "None"
-                print(f"  → Matched: {matched} (confidence: {confidence}%)")
-                
-            except Exception as e:
-                logger.error("Failed to analyze item '%s': %s", item.title, e)
-                print(f"  → Error analyzing item: {e}")
-                continue
-        
-        # Save results
-        if enriched_items:
-            print(f"\nSaving {len(enriched_items)} enriched items...")
-            save_enriched_backlog(enriched_items, output_file)
-            print("✅ Analysis complete!")
-        else:
-            print("❌ No items were successfully analyzed.")
-            
-    except Exception as e:
-        logger.error("Error in backlog enrichment: %s", e)
-        print(f"Error processing backlog: {e}")
-        sys.exit(1)
-
-
 def main() -> None:
     """
-    Main entry point for the Backlog Analyzer.
+    Main entry point for the Initiative Analyzer.
     """
     try:
         # Parse command-line arguments
@@ -784,19 +1116,16 @@ def main() -> None:
         # Initialize the client
         client = initialize_client(endpoint=args.endpoint)
 
-        # Process backlog enrichment
-        if args.enrich:
-            enrich_backlog(
-                args.backlog,
-                args.initiatives,
-                args.output,
-                client,
-                model_deployment_name,
-                getattr(args, 'filter_title', None)
-            )
-        else:
-            print("No action specified. Use --enrich to analyze backlog items.")
-            print("Use --help for usage information.")
+        # Perform initiative analysis and generate reports
+        analyze_initiative_associations(
+            args.backlog,
+            args.initiatives,
+            args.output,
+            client,
+            model_deployment_name,
+            getattr(args, 'confidence_threshold', 60),
+            getattr(args, 'filter_title', None)
+        )
 
     except KeyboardInterrupt:
         print("\nProgram interrupted by user. Goodbye!")

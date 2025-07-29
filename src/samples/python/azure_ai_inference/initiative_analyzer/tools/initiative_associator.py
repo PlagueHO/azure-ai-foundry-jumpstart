@@ -65,7 +65,7 @@ def associate_backlog_with_initiatives(
             raise ValueError(f"Initiative {i} missing required fields: {missing_fields}")
     
     # Initialize analysis result structure
-    analysis_result = {
+    analysis_result: Dict[str, Any] = {
         "primary_initiative": None,
         "secondary_initiatives": [],
         "category_confidence": 0,
@@ -83,7 +83,7 @@ def associate_backlog_with_initiatives(
     backlog_goal = str(backlog_item.get('goal', '')).lower()
     
     # Perform semantic analysis against each initiative
-    initiative_scores = []
+    initiative_scores: List[Dict[str, Any]] = []
     
     for initiative in initiatives:
         # Extract initiative information
@@ -122,7 +122,9 @@ def associate_backlog_with_initiatives(
         })
     
     # Sort initiatives by score
-    initiative_scores.sort(key=lambda x: x['score'], reverse=True)
+    def get_score(item: Dict[str, Any]) -> float:
+        return item['score']
+    initiative_scores.sort(key=get_score, reverse=True)
     
     # Determine primary and secondary initiatives
     if initiative_scores and initiative_scores[0]['score'] > 30:  # Minimum threshold
@@ -131,7 +133,7 @@ def associate_backlog_with_initiatives(
         analysis_result['initiative_confidence'] = int(primary['score'])
         
         # Add secondary initiatives (score > 20 and not primary)
-        secondary = []
+        secondary: List[str] = []
         for item in initiative_scores[1:4]:  # Top 3 secondary
             if item['score'] > 20:
                 secondary.append(item['initiative']['title'])
@@ -141,7 +143,7 @@ def associate_backlog_with_initiatives(
     category_confidence = 0
     if initiative_scores:
         # Average of top 3 area-category scores
-        top_area_scores = []
+        top_area_scores: List[float] = []
         for item in initiative_scores[:3]:
             top_area_scores.append(item['area_category_score'])
         
