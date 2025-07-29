@@ -5,7 +5,8 @@ This tests the complete workflow without requiring Azure SDK dependencies.
 """
 
 import json
-from typing import Dict, Any
+from typing import Any, Dict
+
 
 def mock_associate_backlog_with_initiatives(backlog_item: Dict[str, Any], initiatives: list) -> str:
     """
@@ -15,17 +16,17 @@ def mock_associate_backlog_with_initiatives(backlog_item: Dict[str, Any], initia
     # Simulate AI analysis based on backlog item content
     backlog_title = backlog_item.get('title', '').lower()
     backlog_category = backlog_item.get('category', '').lower()
-    
+
     # Find best matching initiative
     best_match = None
     best_confidence = 0
-    
+
     for initiative in initiatives:
         initiative_title = initiative.get('title', '').lower()
         initiative_area = initiative.get('area', '').lower()
-        
+
         confidence = 30  # Base confidence
-        
+
         # Check for keyword matches
         if 'onboard' in backlog_title and 'onboard' in initiative_title:
             confidence += 40
@@ -35,7 +36,7 @@ def mock_associate_backlog_with_initiatives(backlog_item: Dict[str, Any], initia
             confidence += 40
         if 'auth' in backlog_title and ('auth' in initiative_title or 'mfa' in initiative_title):
             confidence += 40
-        
+
         # Category matching
         if 'user experience' in backlog_category and 'user experience' in initiative_area:
             confidence += 20
@@ -45,11 +46,11 @@ def mock_associate_backlog_with_initiatives(backlog_item: Dict[str, Any], initia
             confidence += 20
         if 'security' in backlog_category and 'security' in initiative_area:
             confidence += 20
-        
+
         if confidence > best_confidence:
             best_confidence = confidence
             best_match = initiative['title']
-    
+
     # Generate mock analysis result
     result = {
         "primary_initiative": best_match if best_confidence >= 60 else None,
@@ -63,16 +64,16 @@ def mock_associate_backlog_with_initiatives(backlog_item: Dict[str, Any], initia
         "recommendations": [
             "High priority based on strategic alignment",
             "Consider for next planning cycle",
-            f"Track progress against initiative KPIs"
+            "Track progress against initiative KPIs"
         ]
     }
-    
+
     return json.dumps(result, indent=2)
 
 def main():
     """Test the mock analysis function."""
     print("🧪 Testing Mock Initiative Analysis\n")
-    
+
     # Sample backlog item
     backlog_item = {
         "category": "Developer Excellence",
@@ -80,7 +81,7 @@ def main():
         "goal": "Streamline new developer setup",
         "stream": "Engineering Team"
     }
-    
+
     # Sample initiatives
     initiatives = [
         {
@@ -102,24 +103,24 @@ def main():
             "solutions": "Responsive design implementation, mobile usability testing"
         }
     ]
-    
+
     # Run mock analysis
     print(f"Analyzing: {backlog_item['title']}")
     print(f"Category: {backlog_item['category']}")
     print(f"Goal: {backlog_item['goal']}")
     print()
-    
+
     result = mock_associate_backlog_with_initiatives(backlog_item, initiatives)
     print("Analysis Result:")
     print(result)
-    
+
     # Parse and display key metrics
     result_data = json.loads(result)
-    print(f"\n📊 Key Metrics:")
+    print("\n📊 Key Metrics:")
     print(f"   Primary Initiative: {result_data['primary_initiative']}")
     print(f"   Initiative Confidence: {result_data['initiative_confidence']}%")
     print(f"   Category Confidence: {result_data['category_confidence']}%")
-    
+
     if result_data['initiative_confidence'] >= 60:
         print("   ✅ Meets confidence threshold (≥60%)")
     else:

@@ -8,13 +8,14 @@ import csv
 import sys
 from pathlib import Path
 
+
 def test_csv_loading():
     """Test loading CSV files."""
     print("Testing CSV file loading...")
-    
+
     # Test backlog loading
     try:
-        with open('sample_backlog.csv', 'r', encoding='utf-8') as f:
+        with open('sample_backlog.csv', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             backlog_items = list(reader)
             print(f"✅ Loaded {len(backlog_items)} backlog items")
@@ -23,10 +24,10 @@ def test_csv_loading():
     except Exception as e:
         print(f"❌ Error loading backlog: {e}")
         return False
-    
+
     # Test initiatives loading
     try:
-        with open('sample_initiatives.csv', 'r', encoding='utf-8') as f:
+        with open('sample_initiatives.csv', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             initiatives = list(reader)
             print(f"✅ Loaded {len(initiatives)} initiatives")
@@ -35,13 +36,13 @@ def test_csv_loading():
     except Exception as e:
         print(f"❌ Error loading initiatives: {e}")
         return False
-    
+
     return True
 
 def test_file_structure():
     """Test that required files and directories exist."""
     print("\nTesting file structure...")
-    
+
     required_files = [
         'sample_backlog.csv',
         'sample_initiatives.csv',
@@ -49,7 +50,7 @@ def test_file_structure():
         'tools/initiative_associator.py',
         'tools/__init__.py'
     ]
-    
+
     all_exist = True
     for file_path in required_files:
         if Path(file_path).exists():
@@ -57,13 +58,13 @@ def test_file_structure():
         else:
             print(f"❌ {file_path} missing")
             all_exist = False
-    
+
     return all_exist
 
 def test_output_directory_creation():
     """Test creating output directory."""
     print("\nTesting output directory creation...")
-    
+
     try:
         output_dir = Path("test_output")
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -76,13 +77,13 @@ def test_output_directory_creation():
 def main():
     """Run all tests."""
     print("🧪 Running Initiative Analyzer Core Functionality Tests\n")
-    
+
     tests = [
         ("File Structure", test_file_structure),
         ("CSV Loading", test_csv_loading),
         ("Output Directory Creation", test_output_directory_creation)
     ]
-    
+
     results = []
     for test_name, test_func in tests:
         try:
@@ -91,7 +92,7 @@ def main():
         except Exception as e:
             print(f"❌ {test_name} failed with exception: {e}")
             results.append((test_name, False))
-    
+
     print("\n" + "="*50)
     print("TEST RESULTS:")
     all_passed = True
@@ -100,13 +101,13 @@ def main():
         print(f"{status} {test_name}")
         if not passed:
             all_passed = False
-    
+
     if all_passed:
         print("\n🎉 All core functionality tests passed!")
         print("The CSV files and basic structure are ready for the initiative analyzer.")
     else:
         print("\n⚠️  Some tests failed. Please check the issues above.")
-    
+
     return 0 if all_passed else 1
 
 if __name__ == "__main__":

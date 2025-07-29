@@ -302,14 +302,14 @@ def initialize_client(endpoint: Optional[str] = None) -> AzureOpenAI:
 def load_backlog_items(file_path: str, title_filter: Optional[str] = None) -> List[BacklogItem]:
     """
     Load backlog items from CSV file.
-    
+
     Args:
         file_path: Path to the backlog CSV file
         title_filter: Optional regex pattern to filter backlog items by title
-        
+
     Returns:
         List of BacklogItem objects (filtered by title if pattern provided)
-        
+
     Raises:
         FileNotFoundError: If the file doesn't exist
         ValueError: If required columns are missing or regex pattern is invalid
@@ -385,13 +385,13 @@ def load_backlog_items(file_path: str, title_filter: Optional[str] = None) -> Li
 def load_initiatives(file_path: str) -> List[Initiative]:
     """
     Load initiatives from CSV file.
-    
+
     Args:
         file_path: Path to the initiatives CSV file
-        
+
     Returns:
         List of Initiative objects
-        
+
     Raises:
         FileNotFoundError: If the file doesn't exist
         ValueError: If required columns are missing
@@ -436,10 +436,10 @@ def load_initiatives(file_path: str) -> List[Initiative]:
 def sanitize_filename(filename: str) -> str:
     """
     Sanitize a string to be used as a filename.
-    
+
     Args:
         filename: The string to sanitize
-        
+
     Returns:
         str: A sanitized filename
     """
@@ -456,10 +456,10 @@ def sanitize_filename(filename: str) -> str:
 def generate_initiative_markdown_report(initiative_report: InitiativeReport) -> str:
     """
     Generate a markdown report for a single initiative.
-    
+
     Args:
         initiative_report: The initiative report data
-        
+
     Returns:
         str: The markdown content for the report
     """
@@ -532,12 +532,12 @@ def organize_backlog_by_initiative(
 ) -> List[InitiativeReport]:
     """
     Organize enriched backlog items by initiative and generate reports.
-    
+
     Args:
         enriched_items: List of enriched backlog items
         initiatives: List of all initiatives
         confidence_threshold: Minimum confidence for including associations
-        
+
     Returns:
         List[InitiativeReport]: Reports for initiatives with associated items
     """
@@ -692,11 +692,11 @@ def _generate_timeline_considerations(associations: List[BacklogItemAssociation]
 def save_initiative_reports(reports: List[InitiativeReport], output_dir: str) -> None:
     """
     Save initiative reports as markdown files.
-    
+
     Args:
         reports: List of initiative reports to save
         output_dir: Directory to save the reports
-        
+
     Raises:
         IOError: If unable to create directory or save files
     """
@@ -747,7 +747,7 @@ def analyze_initiative_associations(
 ) -> None:
     """
     Analyze backlog items against initiatives and generate initiative reports.
-    
+
     Args:
         backlog_file: Path to backlog CSV file
         initiatives_file: Path to initiatives CSV file
@@ -875,16 +875,16 @@ def analyze_backlog_item(
 ) -> EnrichedBacklogItem:
     """
     Analyze a single backlog item against available initiatives using AI.
-    
+
     Args:
         client: The Azure OpenAI client
         backlog_item: The backlog item to analyze
         initiatives: List of available initiatives
         model_name: The model deployment name
-        
+
     Returns:
         EnrichedBacklogItem with AI analysis results
-        
+
     Raises:
         RuntimeError: If the AI analysis fails
     """
