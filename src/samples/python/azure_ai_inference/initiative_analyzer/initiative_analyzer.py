@@ -11,7 +11,6 @@ Features:
 - Confidence threshold filtering for high-quality associations
 - Initiative-centric markdown report generation
 - Detailed impact analysis and strategic recommendations
-- Function tool calling for sophisticated initiative matching
 - Configurable logging levels for debugging and monitoring
 """
 
@@ -44,19 +43,16 @@ class BacklogItem:
     title: str
     goal: str
     stream: str
-    timeline_data: Dict[str, str]
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert backlog item to dictionary format."""
-        result = {
+        return {
             'category': self.category,
             'initiative': self.initiative,
             'title': self.title,
             'goal': self.goal,
             'stream': self.stream
         }
-        result.update(self.timeline_data)
-        return result
 
 
 @dataclass
@@ -92,20 +88,6 @@ class BacklogItemAssociation:
     confidence: int
     impact_analysis: str
 
-    def get_timeline_summary(self) -> str:
-        """Get a summary of the timeline for this backlog item."""
-        active_periods = []
-        for period, value in self.backlog_item.timeline_data.items():
-            if value == '1' or value == 1:
-                active_periods.append(period)
-
-        if not active_periods:
-            return "No specific timeline"
-        elif len(active_periods) == 1:
-            return active_periods[0]
-        else:
-            return f"{active_periods[0]}-{active_periods[-1]}"
-
 
 @dataclass
 class InitiativeReport:
@@ -116,7 +98,6 @@ class InitiativeReport:
     confidence_threshold: int
     collective_impact: str
     strategic_recommendations: str
-    timeline_considerations: str
 
 
 @dataclass
@@ -130,7 +111,6 @@ class EnrichedBacklogItem:
     initiative_confidence: int
     impact_analysis: str
     detailed_analysis: str
-    timeline_alignment: str
     resource_implications: str
     recommendations: List[str]
 
@@ -144,7 +124,6 @@ class EnrichedBacklogItem:
             'category_confidence': self.category_confidence,
             'initiative_confidence': self.initiative_confidence,
             'initiative_details': self.matched_initiative or '',
-            'timeline_alignment': self.timeline_alignment,
             'resource_implications': self.resource_implications,
             'recommendations': '; '.join(self.recommendations)
         })
@@ -327,7 +306,6 @@ def load_backlog_items(file_path: str, title_filter: Optional[str] = None) -> Li
             raise ValueError(f"Invalid regex pattern '{title_filter}': {e}") from e
 
     required_columns = ['category', 'title', 'goal', 'stream']
-    timeline_columns = ['25 H1', '25 H2', '26 H1', '26 H2', '27 H1', '27 H2', '28+']
 
     backlog_items = []
     filtered_count = 0
@@ -349,20 +327,13 @@ def load_backlog_items(file_path: str, title_filter: Optional[str] = None) -> Li
                     filtered_count += 1
                     continue
 
-                # Extract timeline data
-                timeline_data = {}
-                for col in timeline_columns:
-                    if col in reader.fieldnames:
-                        timeline_data[col] = row.get(col, '0')
-
                 # Create backlog item
                 item = BacklogItem(
                     category=row['category'].strip(),
                     initiative=row.get('initiative', '').strip(),
                     title=title,
                     goal=row['goal'].strip(),
-                    stream=row['stream'].strip(),
-                    timeline_data=timeline_data
+                    stream=row['stream'].strip()
                 )
 
                 backlog_items.append(item)
@@ -497,15 +468,14 @@ total_associated_items: {len(items)}
 
 The following backlog items have been associated with this initiative based on semantic analysis and goal alignment:
 
-| Title | Goal | Category | Stream | Timeline | Confidence | Impact Analysis |
-|-------|------|----------|--------|----------|------------|-----------------|
+| Title | Goal | Category | Stream | Confidence | Impact Analysis |
+|-------|------|----------|--------|------------|-----------------|
 """
 
     # Add table rows for each associated backlog item
     for association in items:
         item = association.backlog_item
-        timeline = association.get_timeline_summary()
-        markdown += f"| {item.title} | {item.goal} | {item.category} | {item.stream} | {timeline} | {association.confidence}% | {association.impact_analysis} |\n"
+        markdown += f"| {item.title} | {item.goal} | {item.category} | {item.stream} | {association.confidence}% | {association.impact_analysis} |\n"
 
     # Add collective impact assessment
     markdown += f"""
@@ -516,10 +486,6 @@ The following backlog items have been associated with this initiative based on s
 ## Strategic Recommendations
 
 {initiative_report.strategic_recommendations}
-
-## Timeline and Resource Considerations
-
-{initiative_report.timeline_considerations}
 """
 
     return markdown
@@ -575,15 +541,13 @@ def organize_backlog_by_initiative(
             # Generate collective impact and recommendations using AI
             collective_impact = _generate_collective_impact_analysis(initiative, associations)
             strategic_recommendations = _generate_strategic_recommendations(initiative, associations)
-            timeline_considerations = _generate_timeline_considerations(associations)
 
             report = InitiativeReport(
                 initiative=initiative,
                 associated_items=associations,
                 confidence_threshold=confidence_threshold,
                 collective_impact=collective_impact,
-                strategic_recommendations=strategic_recommendations,
-                timeline_considerations=timeline_considerations
+                strategic_recommendations=strategic_recommendations
             )
 
             reports.append(report)
@@ -638,55 +602,10 @@ def _generate_strategic_recommendations(
         f"1. **Prioritize high-confidence items**: Focus on items with confidence scores above 70% for immediate impact.\n"
         f"2. **Coordinate implementation**: Ensure the {len(associations)} associated backlog items are implemented in a coordinated manner.\n"
         f"3. **Track KPI alignment**: Monitor progress against the initiative's KPIs: {initiative.kpi}\n"
+        f"4. **Resource allocation**: Ensure adequate resources are allocated across the {len(associations)} associated items.\n"
     )
-
-    # Add timeline-specific recommendations
-    near_term_items = [
-        assoc for assoc in associations
-        if any(assoc.backlog_item.timeline_data.get(period) in ['1', 1]
-               for period in ['25 H1', '25 H2'])
-    ]
-
-    if near_term_items:
-        recommendations += f"4. **Near-term focus**: {len(near_term_items)} items are planned for the next year - ensure adequate resource allocation.\n"
 
     return recommendations
-
-
-def _generate_timeline_considerations(associations: List[BacklogItemAssociation]) -> str:
-    """Generate timeline and resource considerations for associated backlog items."""
-    if not associations:
-        return "No timeline considerations with current associations."
-
-    # Analyze timeline distribution
-    timeline_periods = ['25 H1', '25 H2', '26 H1', '26 H2', '27 H1', '27 H2', '28+']
-    period_counts = dict.fromkeys(timeline_periods, 0)
-
-    for assoc in associations:
-        for period in timeline_periods:
-            if assoc.backlog_item.timeline_data.get(period) in ['1', 1]:
-                period_counts[period] += 1
-
-    # Find peak periods
-    max_count = max(period_counts.values())
-    peak_periods = [period for period, count in period_counts.items() if count == max_count and count > 0]
-
-    if peak_periods:
-        considerations = (
-            f"Timeline analysis shows peak activity in {', '.join(peak_periods)} "
-            f"with {max_count} concurrent items. "
-        )
-    else:
-        considerations = "No specific timeline patterns identified across associated items. "
-
-    # Analyze teams involved
-    teams = {assoc.backlog_item.stream for assoc in associations}
-    considerations += (
-        f"Implementation will involve {len(teams)} team(s): {', '.join(teams)}. "
-        f"Coordination across teams will be essential for initiative success."
-    )
-
-    return considerations
 
 
 def save_initiative_reports(reports: List[InitiativeReport], output_dir: str) -> None:
@@ -915,7 +834,6 @@ BACKLOG ITEM:
 - Title: {backlog_item.title}
 - Goal: {backlog_item.goal}
 - Stream: {backlog_item.stream}
-- Timeline: {backlog_item.timeline_data}
 
 AVAILABLE INITIATIVES:
 {initiatives_text}
@@ -928,7 +846,6 @@ Please provide a detailed analysis and return your response as a JSON object wit
     "initiative_confidence": 90,
     "impact_analysis": "Detailed analysis of how completing this backlog item would impact the primary initiative",
     "detailed_analysis": "Comprehensive analysis of the backlog item and its strategic alignment",
-    "timeline_alignment": "Analysis of timeline compatibility",
     "resource_implications": "Analysis of resource requirements and implications",
     "recommendations": ["List of strategic recommendations"]
 }}
@@ -937,7 +854,7 @@ Focus on semantic alignment between the backlog item's goal and the initiative o
 1. How well the backlog goal aligns with initiative details and solutions
 2. Category compatibility between backlog item and initiative area
 3. Strategic impact and value creation
-4. Timeline and resource considerations
+4. Resource considerations and implementation requirements
 
 Provide confidence scores:
 - category_confidence: 0-100 (how well the category aligns with initiative areas)
@@ -977,7 +894,6 @@ Only suggest a primary_initiative if confidence is above 40. Use null if no good
                 "initiative_confidence": 0,
                 "impact_analysis": "Analysis failed due to JSON parsing error",
                 "detailed_analysis": response_content,
-                "timeline_alignment": "Unable to analyze timeline",
                 "resource_implications": "Unable to analyze resources",
                 "recommendations": ["Review analysis manually"]
             }
@@ -991,7 +907,6 @@ Only suggest a primary_initiative if confidence is above 40. Use null if no good
             initiative_confidence=int(analysis_result.get("initiative_confidence", 0)),
             impact_analysis=analysis_result.get("impact_analysis", ""),
             detailed_analysis=analysis_result.get("detailed_analysis", ""),
-            timeline_alignment=analysis_result.get("timeline_alignment", ""),
             resource_implications=analysis_result.get("resource_implications", ""),
             recommendations=analysis_result.get("recommendations", [])
         )
