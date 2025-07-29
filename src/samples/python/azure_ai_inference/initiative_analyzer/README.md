@@ -62,129 +62,8 @@ This application uses `DefaultAzureCredential` for Azure authentication, which a
 
 The initiative analyzer uses an AI-driven workflow to systematically evaluate each backlog item against available initiatives and provide comprehensive impact analysis. The process focuses on building strong associations between backlog items and initiatives, then generating detailed reports on how the completion of backlog items will advance organizational initiatives.
 
-### Process Flow Diagram
-
-```mermaid
-flowchart TD
-    A[Start Initiative Analyzer] --> B[Parse Command Line Arguments]
-    B --> C[Configure Logging & Authentication]
-    C --> D[Initialize Azure AI Client]
-    D --> E[Load Backlog Items CSV]
-    E --> F[Load Initiatives CSV]
-    F --> G{Apply Title Filter?}
-    G -->|Yes| H[Filter Backlog Items by Regex]
-    G -->|No| I[Process All Backlog Items]
-    H --> I
-    I --> J[Begin Individual Item Analysis]
-    
-    J --> K[For Each Backlog Item]
-    K --> L[AI Semantic Analysis]
-    L --> M[Goal Alignment Scoring]
-    M --> N[Category Compatibility Check]
-    N --> O[Stream Expertise Assessment]
-    O --> P[Generate Confidence Scores]
-    P --> Q{Confidence >= Threshold?}
-    
-    Q -->|Yes| R[Include in Qualified Items]
-    Q -->|No| S[Skip Item - Below Threshold]
-    R --> T[Generate Impact Analysis]
-    S --> U{More Items?}
-    T --> U
-    
-    U -->|Yes| K
-    U -->|No| V[Group Items by Initiative]
-    
-    V --> W[Create Initiative Reports]
-    W --> X[Generate Collective Impact Analysis]
-    X --> Y[Create Strategic Recommendations]
-    Y --> Z[Add Timeline Considerations]
-    Z --> AA[Generate Markdown Reports]
-    AA --> BB[Save Reports to Output Directory]
-    BB --> CC[Display Summary Statistics]
-    CC --> DD[End]
-    
-    style A fill:#e1f5fe
-    style D fill:#f3e5f5
-    style L fill:#fff3e0
-    style Q fill:#ffebee
-    style AA fill:#e8f5e8
-    style DD fill:#e1f5fe
-```
-
-Here's the detailed process:
-
-### 1. Individual Backlog Item Processing
-
-For each backlog item in the CSV file, the analyzer performs:
-
-#### 1.1 Initiative Association Analysis
-
-- **Semantic Matching**: Compare the backlog item's title, goal, and category with initiative areas, descriptions, and solutions
-- **Goal Alignment Scoring**: Evaluate how well the backlog item's stated goal aligns with each initiative's objectives
-- **Category Compatibility**: Assess if the backlog item's category semantically matches the initiative's area
-- **Stream Expertise**: Consider if the responsible stream has the capacity and expertise for the initiative
-
-#### 1.2 Confidence Threshold Application
-
-- **Association Scoring**: Generate confidence scores (0-100) for each potential initiative match
-- **Threshold Filtering**: Only include associations that meet or exceed the specified confidence threshold
-- **Primary/Secondary Ranking**: Rank qualifying associations by confidence level to identify primary and secondary initiatives
-
-### 2. Impact Analysis Generation
-
-For each backlog item that successfully associates with one or more initiatives:
-
-#### 2.1 Strategic Impact Assessment
-
-- **Direct Advancement**: Analyze how completing the backlog item will directly advance the associated initiative
-- **KPI Impact**: Evaluate the potential effect on the initiative's Key Performance Indicators
-- **Timeline Synergy**: Assess how the backlog item's planned timeline aligns with initiative goals
-- **Resource Optimization**: Identify opportunities for resource sharing and efficiency gains
-
-#### 2.2 Detailed Impact Modeling
-
-- **Quantitative Analysis**: Where possible, provide measurable impact predictions
-- **Qualitative Insights**: Generate narrative analysis of strategic benefits and considerations
-- **Risk Assessment**: Identify potential risks, dependencies, or blockers
-- **Implementation Recommendations**: Suggest optimal approaches for maximizing initiative advancement
-
-### 3. Report Generation by Initiative
-
-After processing all backlog items, the analyzer generates comprehensive reports:
-
-#### 3.1 Initiative-Centric Organization
-
-- **One Report Per Initiative**: Create individual markdown files for each initiative that has associated backlog items
-- **Associated Backlog Summary**: List all backlog items linked to each initiative with their confidence scores
-- **Consolidated Impact View**: Provide a unified view of how multiple backlog items will collectively advance the initiative
-
-#### 3.2 Comprehensive Initiative Reports
-
-Each initiative report includes:
-
-- **Initiative Overview**: Full context including area, description, KPIs, and current state
-- **Associated Backlog Items**: Detailed table of linked backlog items with impact analysis
-- **Collective Impact Assessment**: Analysis of how all associated backlog items will work together
-- **Strategic Recommendations**: AI-generated insights for maximizing initiative success
-- **Timeline and Resource Planning**: Integrated view of when and how backlog items support the initiative
-
-### 4. Quality Assurance and Validation
-
-- **Confidence Validation**: Ensure all included associations meet the specified threshold
-- **Consistency Checks**: Verify that impact analysis aligns with association confidence scores
-- **Completeness Verification**: Confirm all qualifying backlog items are properly linked and analyzed
-- **Output Quality**: Ensure all generated markdown reports are well-formatted and comprehensive
-
-### 5. Organizational Intelligence
-
-The final output provides:
-
-- **Strategic Alignment View**: Clear picture of how backlog work supports organizational initiatives
-- **Priority Guidance**: Data-driven insights for backlog prioritization based on initiative impact
-- **Resource Planning**: Understanding of how backlog completion advances strategic goals
-- **Gap Analysis**: Identification of initiatives that lack supporting backlog items
-
-This workflow ensures that every backlog item is systematically evaluated against the strategic context, with only high-confidence associations included in the final analysis, resulting in reliable, actionable insights for initiative advancement and backlog prioritization.
+> [!NOTE]
+> There is a detailed description of the initiative analysis workflow in the [Initiative Analysis Workflow Detail](#initiative-analysis-workflow-detail) section.
 
 ## Usage
 
@@ -390,6 +269,134 @@ This implementation requires the following key dependencies:
 - **json** - Tool response handling
 - **logging** - Configurable verbosity control
 
+## Initiative Analysis Workflow Detail
+
+This section contains a detailed view of the initiative analysis workflow.
+
+### Process Flow Diagram
+
+```mermaid
+flowchart TD
+    A[Start Initiative Analyzer] --> B[Parse Command Line Arguments]
+    B --> C[Configure Logging & Authentication]
+    C --> D[Initialize Azure AI Client]
+    D --> E[Load Backlog Items CSV]
+    E --> F[Load Initiatives CSV]
+    F --> G{Apply Title Filter?}
+    G -->|Yes| H[Filter Backlog Items by Regex]
+    G -->|No| I[Process All Backlog Items]
+    H --> I
+    I --> J[Begin Individual Item Analysis]
+    
+    J --> K[For Each Backlog Item]
+    K --> L[AI Semantic Analysis]
+    L --> M[Goal Alignment Scoring]
+    M --> N[Category Compatibility Check]
+    N --> O[Stream Expertise Assessment]
+    O --> P[Generate Confidence Scores]
+    P --> Q{Confidence >= Threshold?}
+    
+    Q -->|Yes| R[Include in Qualified Items]
+    Q -->|No| S[Skip Item - Below Threshold]
+    R --> T[Generate Impact Analysis]
+    S --> U{More Items?}
+    T --> U
+    
+    U -->|Yes| K
+    U -->|No| V[Group Items by Initiative]
+    
+    V --> W[Create Initiative Reports]
+    W --> X[Generate Collective Impact Analysis]
+    X --> Y[Create Strategic Recommendations]
+    Y --> Z[Add Timeline Considerations]
+    Z --> AA[Generate Markdown Reports]
+    AA --> BB[Save Reports to Output Directory]
+    BB --> CC[Display Summary Statistics]
+    CC --> DD[End]
+    
+    style A fill:#e1f5fe
+    style D fill:#f3e5f5
+    style L fill:#fff3e0
+    style Q fill:#ffebee
+    style AA fill:#e8f5e8
+    style DD fill:#e1f5fe
+```
+
+Here's the detailed process:
+
+### 1. Individual Backlog Item Processing
+
+For each backlog item in the CSV file, the analyzer performs:
+
+#### 1.1 Initiative Association Analysis
+
+- **Semantic Matching**: Compare the backlog item's title, goal, and category with initiative areas, descriptions, and solutions
+- **Goal Alignment Scoring**: Evaluate how well the backlog item's stated goal aligns with each initiative's objectives
+- **Category Compatibility**: Assess if the backlog item's category semantically matches the initiative's area
+- **Stream Expertise**: Consider if the responsible stream has the capacity and expertise for the initiative
+
+#### 1.2 Confidence Threshold Application
+
+- **Association Scoring**: Generate confidence scores (0-100) for each potential initiative match
+- **Threshold Filtering**: Only include associations that meet or exceed the specified confidence threshold
+- **Primary/Secondary Ranking**: Rank qualifying associations by confidence level to identify primary and secondary initiatives
+
+### 2. Impact Analysis Generation
+
+For each backlog item that successfully associates with one or more initiatives:
+
+#### 2.1 Strategic Impact Assessment
+
+- **Direct Advancement**: Analyze how completing the backlog item will directly advance the associated initiative
+- **KPI Impact**: Evaluate the potential effect on the initiative's Key Performance Indicators
+- **Timeline Synergy**: Assess how the backlog item's planned timeline aligns with initiative goals
+- **Resource Optimization**: Identify opportunities for resource sharing and efficiency gains
+
+#### 2.2 Detailed Impact Modeling
+
+- **Quantitative Analysis**: Where possible, provide measurable impact predictions
+- **Qualitative Insights**: Generate narrative analysis of strategic benefits and considerations
+- **Risk Assessment**: Identify potential risks, dependencies, or blockers
+- **Implementation Recommendations**: Suggest optimal approaches for maximizing initiative advancement
+
+### 3. Report Generation by Initiative
+
+After processing all backlog items, the analyzer generates comprehensive reports:
+
+#### 3.1 Initiative-Centric Organization
+
+- **One Report Per Initiative**: Create individual markdown files for each initiative that has associated backlog items
+- **Associated Backlog Summary**: List all backlog items linked to each initiative with their confidence scores
+- **Consolidated Impact View**: Provide a unified view of how multiple backlog items will collectively advance the initiative
+
+#### 3.2 Comprehensive Initiative Reports
+
+Each initiative report includes:
+
+- **Initiative Overview**: Full context including area, description, KPIs, and current state
+- **Associated Backlog Items**: Detailed table of linked backlog items with impact analysis
+- **Collective Impact Assessment**: Analysis of how all associated backlog items will work together
+- **Strategic Recommendations**: AI-generated insights for maximizing initiative success
+- **Timeline and Resource Planning**: Integrated view of when and how backlog items support the initiative
+
+### 4. Quality Assurance and Validation
+
+- **Confidence Validation**: Ensure all included associations meet the specified threshold
+- **Consistency Checks**: Verify that impact analysis aligns with association confidence scores
+- **Completeness Verification**: Confirm all qualifying backlog items are properly linked and analyzed
+- **Output Quality**: Ensure all generated markdown reports are well-formatted and comprehensive
+
+### 5. Organizational Intelligence
+
+The final output provides:
+
+- **Strategic Alignment View**: Clear picture of how backlog work supports organizational initiatives
+- **Priority Guidance**: Data-driven insights for backlog prioritization based on initiative impact
+- **Resource Planning**: Understanding of how backlog completion advances strategic goals
+- **Gap Analysis**: Identification of initiatives that lack supporting backlog items
+
+This workflow ensures that every backlog item is systematically evaluated against the strategic context, with only high-confidence associations included in the final analysis, resulting in reliable, actionable insights for initiative advancement and backlog prioritization.
+
 ## Implementation Notes
 
 - Uses Azure AI Projects SDK with AIProjectClient.inference.get_azure_openai_client()
@@ -402,7 +409,3 @@ This implementation requires the following key dependencies:
 - Supports Azure AI Foundry project deployments
 - Quiet-by-default logging (ERROR level) with configurable verbosity
 - Extensible design allows easy addition of new analytical tools and report formats
-
-## License
-
-This sample is provided as-is under the same license as the containing repository.
