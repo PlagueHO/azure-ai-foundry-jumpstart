@@ -238,8 +238,6 @@ def initialize_client(endpoint: Optional[str] = None) -> AzureOpenAI:
     Raises:
         SystemExit: If connection fails or required environment variables are missing
     """
-    load_environment()
-
     # Get project endpoint from argument or environment
     project_endpoint = endpoint or os.environ.get("PROJECT_ENDPOINT")
     if not project_endpoint:
@@ -862,6 +860,7 @@ Provide confidence scores:
 
 Only suggest a primary_initiative if confidence is above 40. Use null if no good match exists.
 """
+        logger.info("Calling ChatCompletions using model: %s", model_name)
 
         # Make the API call
         response = client.chat.completions.create(
@@ -923,10 +922,14 @@ def main() -> None:
     Main entry point for the Initiative Analyzer.
     """
     try:
+        # Load environment variables from .env file first
+        load_environment()
+
         # Parse command-line arguments
         args = parse_arguments()
 
         # Configure logging based on verbose flag and environment variable
+        # Priority: command-line argument > environment variable > default (ERROR)
         verbose_level = args.verbose
         if verbose_level is None:
             verbose_level = os.environ.get('VERBOSE_LOGGING', 'ERROR').upper()
@@ -942,6 +945,8 @@ def main() -> None:
         model_deployment_name = args.model or os.environ.get(
             "MODEL_DEPLOYMENT_NAME", "gpt-4o"
         )
+
+        print(f"Using model deployment: {model_deployment_name}")
 
         # Initialize the client
         client = initialize_client(endpoint=args.endpoint)
