@@ -166,6 +166,7 @@ class InitiativeBacklogAssociation:
     """Represents the result of analyzing backlog items for a specific initiative."""
     
     backlog_item_title: str
+    initiative_title: str  # Add initiative title to track which initiative this association belongs to
     relevance_score: int
     impact_analysis: str
     strategic_value: str
@@ -601,19 +602,52 @@ def organize_backlog_by_initiative(
     """
     # Create a mapping of initiative titles to initiative objects
     initiative_map = {init.title: init for init in initiatives}
+    
+    # Create a case-insensitive mapping for fuzzy matching
+    initiative_map_lower = {init.title.lower().strip(): init for init in initiatives}
+    
+    logger.info("Created initiative map with %d initiatives: %s", 
+               len(initiative_map), list(initiative_map.keys()))
 
     # Group backlog items by their matched initiatives
     initiative_associations: Dict[str, List[BacklogItemAssociation]] = {}
 
+    logger.info("Processing %d enriched items with confidence threshold %d", 
+               len(enriched_items), confidence_threshold)
+
     for enriched_item in enriched_items:
+        logger.debug("Processing enriched item: title='%s', matched_initiative='%s', confidence=%d", 
+                    enriched_item.original_item.title, enriched_item.matched_initiative, enriched_item.initiative_confidence)
+        
         # Only include items that meet the confidence threshold
         if (enriched_item.matched_initiative and
             enriched_item.initiative_confidence >= confidence_threshold):
 
             initiative_title = enriched_item.matched_initiative
+            logger.debug("Item '%s' meets threshold - matched to initiative: '%s'", 
+                        enriched_item.original_item.title, initiative_title)
 
-            if initiative_title not in initiative_associations:
-                initiative_associations[initiative_title] = []
+            # Try exact match first
+            matched_initiative = None
+            if initiative_title in initiative_map:
+                matched_initiative = initiative_map[initiative_title]
+                logger.debug("EXACT match found for initiative: '%s'", initiative_title)
+            else:
+                # Try case-insensitive match
+                title_lower = initiative_title.lower().strip()
+                if title_lower in initiative_map_lower:
+                    matched_initiative = initiative_map_lower[title_lower]
+                    logger.info("FUZZY match found: '%s' -> '%s'", initiative_title, matched_initiative.title)
+                else:
+                    logger.warning("NO match found for initiative: '%s'. Available: %s", 
+                                 initiative_title, list(initiative_map.keys()))
+                    continue
+
+            # Use the canonical initiative title from the matched initiative
+            canonical_title = matched_initiative.title
+            
+            if canonical_title not in initiative_associations:
+                initiative_associations[canonical_title] = []
 
             association = BacklogItemAssociation(
                 backlog_item=enriched_item.original_item,
@@ -621,29 +655,41 @@ def organize_backlog_by_initiative(
                 impact_analysis=enriched_item.impact_analysis
             )
 
-            initiative_associations[initiative_title].append(association)
+            initiative_associations[canonical_title].append(association)
+            logger.debug("Added association for initiative '%s' (total: %d)", 
+                        canonical_title, len(initiative_associations[canonical_title]))
+        else:
+            logger.debug("Item '%s' does not meet threshold: matched='%s', confidence=%d, threshold=%d", 
+                        enriched_item.original_item.title, enriched_item.matched_initiative, 
+                        enriched_item.initiative_confidence, confidence_threshold)
+
+    logger.info("Grouped items into %d initiatives: %s", 
+               len(initiative_associations), list(initiative_associations.keys()))
 
     # Generate reports for initiatives with associated items
     reports = []
 
     for initiative_title, associations in initiative_associations.items():
-        if initiative_title in initiative_map:
-            initiative = initiative_map[initiative_title]
+        logger.info("Processing initiative '%s' with %d associations", initiative_title, len(associations))
+        
+        initiative = initiative_map[initiative_title]  # We know this exists now
 
-            # Generate collective impact and recommendations using AI
-            collective_impact = _generate_collective_impact_analysis(initiative, associations)
-            strategic_recommendations = _generate_strategic_recommendations(initiative, associations)
+        # Generate collective impact and recommendations using AI
+        collective_impact = _generate_collective_impact_analysis(initiative, associations)
+        strategic_recommendations = _generate_strategic_recommendations(initiative, associations)
 
-            report = InitiativeReport(
-                initiative=initiative,
-                associated_items=associations,
-                confidence_threshold=confidence_threshold,
-                collective_impact=collective_impact,
-                strategic_recommendations=strategic_recommendations
-            )
+        report = InitiativeReport(
+            initiative=initiative,
+            associated_items=associations,
+            confidence_threshold=confidence_threshold,
+            collective_impact=collective_impact,
+            strategic_recommendations=strategic_recommendations
+        )
 
-            reports.append(report)
+        reports.append(report)
+        logger.info("Generated report for initiative '%s' with %d items", initiative_title, len(associations))
 
+    logger.info("Generated %d total reports", len(reports))
     return reports
 
 
@@ -878,13 +924,19 @@ def _analyze_item_centric(
 
 def _convert_associations_to_enriched_items(
     all_associations: List[InitiativeBacklogAssociation],
-    confidence_threshold: int
+    confidence_threshold: int,
+    initiatives: List[Initiative],
+    backlog_items: List[BacklogItem]
 ) -> List[EnrichedBacklogItem]:
     """
     Convert InitiativeBacklogAssociation objects to EnrichedBacklogItem objects.
     
     For items with multiple associations, keeps the highest relevance score match.
     """
+    # Create lookup maps
+    initiative_lookup = {init.title: init for init in initiatives}
+    backlog_lookup = {item.title: item for item in backlog_items}
+    
     # Group associations by backlog item title
     item_associations: Dict[str, List[InitiativeBacklogAssociation]] = {}
     
@@ -898,31 +950,33 @@ def _convert_associations_to_enriched_items(
     # Convert to EnrichedBacklogItem objects
     enriched_items: List[EnrichedBacklogItem] = []
     
+    logger.info("Converting %d unique backlog items with associations above threshold %d", 
+               len(item_associations), confidence_threshold)
+    
     for item_title, associations in item_associations.items():
         # Sort by relevance score and take the highest
         associations.sort(key=lambda x: x.relevance_score, reverse=True)
         best_association = associations[0]
         
+        # Find the actual backlog item
+        backlog_item = backlog_lookup.get(item_title)
+        if not backlog_item:
+            logger.warning("Could not find backlog item '%s' in original data", item_title)
+            continue
+            
+        # We have the initiative title from the association
+        matched_initiative_title = best_association.initiative_title
+        
         # Collect secondary initiatives from other high-confidence matches
         secondary_initiatives = []
         for assoc in associations[1:]:
             if assoc.relevance_score >= confidence_threshold * 0.8:  # 80% of threshold
-                secondary_initiatives.append(f"Initiative (score: {assoc.relevance_score})")
+                secondary_initiatives.append(assoc.initiative_title)
         
-        # We need to find the actual BacklogItem object for this title
-        # For now, create a placeholder - this will need to be fixed in integration
-        placeholder_item = BacklogItem(
-            category="Unknown",
-            initiative="Unknown", 
-            title=item_title,
-            goal="Unknown",
-            stream="Unknown"
-        )
-        
-        # Create enriched item
+        # Create enriched item with proper initiative title
         enriched_item = EnrichedBacklogItem(
-            original_item=placeholder_item,
-            matched_initiative=f"Initiative (score: {best_association.relevance_score})",
+            original_item=backlog_item,
+            matched_initiative=matched_initiative_title,
             secondary_initiatives=secondary_initiatives,
             category_confidence=best_association.relevance_score,
             initiative_confidence=best_association.relevance_score,
@@ -933,6 +987,15 @@ def _convert_associations_to_enriched_items(
         )
         
         enriched_items.append(enriched_item)
+        logger.debug("Created enriched item for '%s' -> '%s' (confidence: %d)", 
+                    item_title, matched_initiative_title, best_association.relevance_score)
+        
+        # Additional debug logging to trace the issue
+        if matched_initiative_title:
+            logger.info("ENRICHED ITEM DEBUG: Item '%s' matched to initiative '%s' with confidence %d", 
+                       item_title, matched_initiative_title, best_association.relevance_score)
+        else:
+            logger.warning("ENRICHED ITEM DEBUG: Item '%s' has NO matched initiative", item_title)
     
     logger.info("Converted %d associations to %d enriched items", len(all_associations), len(enriched_items))
     return enriched_items
@@ -972,6 +1035,7 @@ def _analyze_initiative_centric(
                 chunk_associations = process_initiative_chunk(client, initiative, chunk, model_name)
                 all_associations.extend(chunk_associations)
                 logger.info("Found %d relevant items in chunk %d", len(chunk_associations), chunk_idx)
+
             except Exception as e:
                 logger.error("Error processing chunk %d for initiative '%s': %s", 
                            chunk_idx, initiative.title, e)
@@ -979,7 +1043,7 @@ def _analyze_initiative_centric(
     
     # Aggregate and deduplicate associations
     logger.info("Aggregating %d total associations", len(all_associations))
-    enriched_items = _convert_associations_to_enriched_items(all_associations, confidence_threshold)
+    enriched_items = _convert_associations_to_enriched_items(all_associations, confidence_threshold, initiatives, backlog_items)
     
     logger.info("Completed initiative-centric analysis: %d enriched items", len(enriched_items))
     return enriched_items
@@ -1047,10 +1111,26 @@ def analyze_initiative_associations(
             enriched_items = _analyze_initiative_centric(backlog_items, initiatives, client, model_name, chunk_size, confidence_threshold)
         
         qualifying_items = 0
+        qualifying_items_debug = []  # Track which items qualify for debugging
         for item in enriched_items:
             if (item.matched_initiative and
                 item.initiative_confidence >= confidence_threshold):
                 qualifying_items += 1
+                qualifying_items_debug.append({
+                    'title': item.original_item.title,
+                    'matched_initiative': item.matched_initiative,
+                    'confidence': item.initiative_confidence
+                })
+        
+        # Debug logging to show what items qualify and their initiative titles
+        logger.info("DEBUG: Qualifying items summary (showing first 5):")
+        unique_initiatives = set()
+        for debug_item in qualifying_items_debug[:5]:  # Show first 5 for debugging
+            logger.info("  - Item '%s' -> Initiative '%s' (confidence: %d)", 
+                       debug_item['title'], debug_item['matched_initiative'], debug_item['confidence'])
+            unique_initiatives.add(debug_item['matched_initiative'])
+        
+        logger.info("DEBUG: Unique AI-generated initiative titles: %s", list(unique_initiatives))
 
         print("\n📊 Analysis Summary:")
         print(f"   • Total items analyzed: {len(enriched_items)}")
@@ -1277,6 +1357,7 @@ Focus on:
             try:
                 association = InitiativeBacklogAssociation(
                     backlog_item_title=item_analysis.get("backlog_item_title", ""),
+                    initiative_title=initiative.title,  # Add the initiative title
                     relevance_score=int(item_analysis.get("relevance_score", 0)),
                     impact_analysis=item_analysis.get("impact_analysis", ""),
                     strategic_value=item_analysis.get("strategic_value", ""),
