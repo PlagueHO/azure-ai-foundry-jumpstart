@@ -16,7 +16,6 @@ Features:
 
 import argparse
 import csv
-import json
 import logging
 import os
 import re
@@ -194,6 +193,21 @@ class BacklogAnalysisResult(BaseModel):
     detailed_analysis: str
     resource_implications: str
     recommendations: List[str]
+
+
+class InitiativeRelevanceItem(BaseModel):
+    """Model for a single relevant backlog item in initiative analysis."""
+    backlog_item_title: str
+    relevance_score: int
+    impact_analysis: str
+    strategic_value: str
+    implementation_synergies: str
+    confidence_reasoning: str
+
+
+class InitiativeRelevanceResult(BaseModel):
+    """Structured output model for initiative relevance analysis."""
+    relevant_items: List[InitiativeRelevanceItem]
 
 
 def configure_logging(verbose_level: str = 'ERROR') -> None:
@@ -1278,7 +1292,7 @@ def analyze_initiative_relevance(
     model_name: str
 ) -> List[InitiativeBacklogAssociation]:
     """
-    Analyze a chunk of backlog items for relevance to a specific initiative.
+    Analyze a chunk of backlog items for relevance to a specific initiative using structured outputs.
     
     Args:
         client: Azure OpenAI client
@@ -1325,20 +1339,6 @@ BACKLOG ITEMS TO ANALYZE:
 
 For each backlog item, determine its relevance to this specific initiative. Only include items with relevance scores of 40 or higher.
 
-Return your analysis as a JSON object with this exact structure:
-{{
-    "relevant_items": [
-        {{
-            "backlog_item_title": "Exact title from the backlog item",
-            "relevance_score": 85,
-            "impact_analysis": "Detailed analysis of how this item advances the initiative",
-            "strategic_value": "Strategic value and alignment with initiative goals",
-            "implementation_synergies": "How this item works with other initiative efforts",
-            "confidence_reasoning": "Explanation for the relevance score"
-        }}
-    ]
-}}
-
 Focus on:
 1. Direct alignment between backlog item goals and initiative objectives
 2. How completion of the backlog item advances the initiative's KPIs
@@ -1346,48 +1346,41 @@ Focus on:
 4. Implementation timing and resource synergies
 """
         
-        logger.info("Analyzing %d backlog items for initiative '%s' using model: %s", 
+        logger.info("Analyzing %d backlog items for initiative '%s' using model: %s with structured outputs", 
                    len(backlog_items), initiative.title, model_name)
         
-        # Make the API call
-        response = client.chat.completions.create(
+        # Use structured outputs with Pydantic model
+        completion = client.beta.chat.completions.parse(
+            model=model_name,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
             ],
-            model=model_name,
-            response_format={"type": "json_object"},
-            max_tokens=2000,
+            response_format=InitiativeRelevanceResult,
             temperature=0.1,
-            top_p=1.0,
-            frequency_penalty=0.0,
-            presence_penalty=0.0
+            max_tokens=2000
         )
         
-        # Parse the JSON response
-        response_content = response.choices[0].message.content or "{}"
+        # Extract the parsed result
+        analysis_result = completion.choices[0].message.parsed
         
-        try:
-            analysis_result = json.loads(response_content)
-        except json.JSONDecodeError as e:
-            logger.error("Failed to parse JSON response for initiative '%s': %s", initiative.title, e)
-            logger.error("Response content: %s", response_content)
+        if analysis_result is None:
+            logger.error("Failed to parse structured output for initiative '%s'", initiative.title)
             return []
         
         # Convert to InitiativeBacklogAssociation objects
         associations = []
-        relevant_items = analysis_result.get("relevant_items", [])
         
-        for item_analysis in relevant_items:
+        for item_analysis in analysis_result.relevant_items:
             try:
                 association = InitiativeBacklogAssociation(
-                    backlog_item_title=item_analysis.get("backlog_item_title", ""),
-                    initiative_title=initiative.title,  # Add the initiative title
-                    relevance_score=int(item_analysis.get("relevance_score", 0)),
-                    impact_analysis=item_analysis.get("impact_analysis", ""),
-                    strategic_value=item_analysis.get("strategic_value", ""),
-                    implementation_synergies=item_analysis.get("implementation_synergies", ""),
-                    confidence_reasoning=item_analysis.get("confidence_reasoning", "")
+                    backlog_item_title=item_analysis.backlog_item_title,
+                    initiative_title=initiative.title,
+                    relevance_score=item_analysis.relevance_score,
+                    impact_analysis=item_analysis.impact_analysis,
+                    strategic_value=item_analysis.strategic_value,
+                    implementation_synergies=item_analysis.implementation_synergies,
+                    confidence_reasoning=item_analysis.confidence_reasoning
                 )
                 associations.append(association)
             except (ValueError, TypeError) as e:
@@ -1495,16 +1488,18 @@ def analyze_backlog_item(
     client: AzureOpenAI,
     backlog_item: BacklogItem,
     initiatives: List[Initiative],
-    model_name: str
+    model_name: str,
+    additional_instructions: Optional[str] = None
 ) -> EnrichedBacklogItem:
     """
-    Analyze a single backlog item against available initiatives using AI.
+    Analyze a single backlog item against available initiatives using AI with structured outputs.
 
     Args:
         client: The Azure OpenAI client
         backlog_item: The backlog item to analyze
         initiatives: List of available initiatives
         model_name: The model deployment name
+        additional_instructions: Optional additional instructions to include in the prompt
 
     Returns:
         EnrichedBacklogItem with AI analysis results
@@ -1513,8 +1508,12 @@ def analyze_backlog_item(
         RuntimeError: If the AI analysis fails
     """
     try:
-        # Create system prompt
+        # Create enhanced system prompt with additional instructions
         system_prompt = get_backlog_analysis_system_prompt()
+        
+        # Add additional instructions if provided
+        if additional_instructions:
+            system_prompt += f"\n\nADDITIONAL INSTRUCTIONS:\n{additional_instructions}"
 
         # Format initiatives for analysis
         initiatives_text = ""
@@ -1543,18 +1542,6 @@ BACKLOG ITEM:
 AVAILABLE INITIATIVES:
 {initiatives_text}
 
-Please provide a detailed analysis and return your response as a JSON object with exactly this structure:
-{{
-    "primary_initiative": "Best matching initiative title (or null if no good match)",
-    "secondary_initiatives": ["List of other relevant initiative titles"],
-    "category_confidence": 85,
-    "initiative_confidence": 90,
-    "impact_analysis": "Detailed analysis of how completing this backlog item would impact the primary initiative",
-    "detailed_analysis": "Comprehensive analysis of the backlog item and its strategic alignment",
-    "resource_implications": "Analysis of resource requirements and implications",
-    "recommendations": ["List of strategic recommendations"]
-}}
-
 Focus on semantic alignment between the backlog item's goal and the initiative objectives. Consider:
 1. How well the backlog goal aligns with initiative details and solutions
 2. Category compatibility between backlog item and initiative area
@@ -1567,54 +1554,48 @@ Provide confidence scores:
 
 Only suggest a primary_initiative if confidence is above 40. Use null if no good match exists.
 """
-        logger.info("Calling ChatCompletions using model: %s", model_name)
+        logger.info("Analyzing backlog item '%s' using model: %s with structured outputs", backlog_item.title, model_name)
 
-        # Make the API call
-        response = client.chat.completions.create(
+        # Use structured outputs with Pydantic model
+        completion = client.beta.chat.completions.parse(
+            model=model_name,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
             ],
-            model=model_name,
-            response_format={"type": "json_object"},
-            max_tokens=1500,
-            temperature=0.1,  # Low temperature for consistent analysis
-            top_p=1.0,
-            frequency_penalty=0.0,
-            presence_penalty=0.0
+            response_format=BacklogAnalysisResult,
+            temperature=0.1,
+            max_tokens=1500
         )
 
-        # Parse the JSON response
-        response_content = response.choices[0].message.content or "{}"
-
-        try:
-            analysis_result = json.loads(response_content)
-        except json.JSONDecodeError as e:
-            logger.error("Failed to parse JSON response: %s", e)
-            logger.error("Response content: %s", response_content)
-            # Create a fallback response
-            analysis_result = {
-                "primary_initiative": None,
-                "secondary_initiatives": [],
-                "category_confidence": 0,
-                "initiative_confidence": 0,
-                "impact_analysis": "Analysis failed due to JSON parsing error",
-                "detailed_analysis": response_content,
-                "resource_implications": "Unable to analyze resources",
-                "recommendations": ["Review analysis manually"]
-            }
+        # Extract the parsed result
+        analysis_result = completion.choices[0].message.parsed
+        
+        if analysis_result is None:
+            logger.error("Failed to parse structured output for backlog item '%s'", backlog_item.title)
+            # Create a default analysis
+            analysis_result = BacklogAnalysisResult(
+                primary_initiative=None,
+                secondary_initiatives=[],
+                category_confidence=0,
+                initiative_confidence=0,
+                impact_analysis="Failed to analyze due to parsing error",
+                detailed_analysis="Structured output parsing failed",
+                resource_implications="Not analyzed due to error",
+                recommendations=[]
+            )
 
         # Create enriched backlog item
         enriched_item = EnrichedBacklogItem(
             original_item=backlog_item,
-            matched_initiative=analysis_result.get("primary_initiative"),
-            secondary_initiatives=analysis_result.get("secondary_initiatives", []),
-            category_confidence=int(analysis_result.get("category_confidence", 0)),
-            initiative_confidence=int(analysis_result.get("initiative_confidence", 0)),
-            impact_analysis=analysis_result.get("impact_analysis", ""),
-            detailed_analysis=analysis_result.get("detailed_analysis", ""),
-            resource_implications=analysis_result.get("resource_implications", ""),
-            recommendations=analysis_result.get("recommendations", [])
+            matched_initiative=analysis_result.primary_initiative,
+            secondary_initiatives=analysis_result.secondary_initiatives,
+            category_confidence=analysis_result.category_confidence,
+            initiative_confidence=analysis_result.initiative_confidence,
+            impact_analysis=analysis_result.impact_analysis,
+            detailed_analysis=analysis_result.detailed_analysis,
+            resource_implications=analysis_result.resource_implications,
+            recommendations=analysis_result.recommendations
         )
 
         return enriched_item
