@@ -28,6 +28,7 @@ from typing import Any, Dict, List, Optional
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
 from openai import AzureOpenAI
+from pydantic import BaseModel
 
 # Configure logging for debugging and monitoring (default configuration)
 # This will be updated by configure_logging() function based on verbose setting
@@ -182,6 +183,19 @@ class InitiativeBacklogAssociation:
         )
 
 
+# Pydantic models for structured outputs
+class BacklogAnalysisResult(BaseModel):
+    """Structured output model for backlog item analysis."""
+    primary_initiative: Optional[str]
+    secondary_initiatives: List[str]
+    category_confidence: int
+    initiative_confidence: int
+    impact_analysis: str
+    detailed_analysis: str
+    resource_implications: str
+    recommendations: List[str]
+
+
 def configure_logging(verbose_level: str = 'ERROR') -> None:
     """
     Configure application logging based on verbosity level.
@@ -237,8 +251,8 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--confidence-threshold",
         type=int,
-        default=60,
-        help="Minimum confidence threshold for including backlog-initiative associations (default: 60)"
+        default=80,
+        help="Minimum confidence threshold for including backlog-initiative associations (default: 80)"
     )
     parser.add_argument(
         "--endpoint",
@@ -283,6 +297,12 @@ def parse_arguments() -> argparse.Namespace:
         - item-centric: Legacy mode that analyzes each backlog item individually (less efficient)
         - initiative-centric: Recommended mode that analyzes batches of items per initiative (80%% fewer API calls)
         Default: initiative-centric"""
+    )
+    parser.add_argument(
+        "--additional-instructions",
+        type=str,
+        help="""Additional instructions to include in the AI analysis prompt. 
+        Example: 'Exclude backlog items that would require very detailed and specific engineering understanding of the code base to implement'"""
     )
     return parser.parse_args()
 
@@ -798,12 +818,17 @@ def _analyze_item_centric(
     initiatives: List[Initiative],
     client: AzureOpenAI,
     model_name: str,
-    confidence_threshold: int = 60
+    confidence_threshold: int = 60,
+    additional_instructions: Optional[str] = None
 ) -> List[EnrichedBacklogItem]:
     """
     Legacy item-centric processing mode - analyze each backlog item individually.
     
     This approach is less efficient for large datasets but maintained for compatibility.
+    Now uses structured outputs for more reliable parsing.
+    
+    Args:
+        additional_instructions: Optional additional instructions to include in the prompt
     """
     logger.info("Starting legacy item-centric analysis for %d items using model: %s", len(backlog_items), model_name)
     
@@ -819,81 +844,80 @@ def _analyze_item_centric(
         try:
             logger.info("Analyzing item %d/%d: %s", i, len(backlog_items), item.title)
 
-            # Create the prompt for the LLM
-            system_prompt = f"""
-            You are an expert business analyst tasked with categorizing software project backlog items into business initiatives.
+            # Create the enhanced system prompt with additional instructions
+            system_prompt = f"""You are an expert business analyst tasked with categorizing software project backlog items into business initiatives.
 
-            AVAILABLE INITIATIVES:
-            {initiative_context}
+AVAILABLE INITIATIVES:
+{initiative_context}
 
-            Your task is to analyze the given backlog item and determine:
-            1. Which initiative it best aligns with (primary_initiative)
-            2. Any secondary initiatives it might support (secondary_initiatives)
-            3. Your confidence level for the category match (1-100)
-            4. Your confidence level for the initiative match (1-100)
-            5. A brief analysis of the expected impact
+Your task is to analyze the given backlog item and determine:
+1. Which initiative it best aligns with (primary_initiative) - use exact initiative title or null
+2. Any secondary initiatives it might support (secondary_initiatives) - list of exact initiative titles
+3. Your confidence level for the category match (0-100)
+4. Your confidence level for the initiative match (0-100)
+5. A brief analysis of the expected impact
+6. Detailed analysis of strategic alignment and value
+7. Resource implications and implementation considerations
+8. Strategic recommendations for prioritization
 
-            Respond ONLY with valid JSON in this exact format:
-            {{
-                "primary_initiative": "initiative_title_or_null",
-                "secondary_initiatives": ["initiative1", "initiative2"],
-                "category_confidence": 85,
-                "initiative_confidence": 92,
-                "impact_analysis": "Brief explanation of expected impact and rationale"
-            }}
+ANALYSIS GUIDELINES:
+- Base analysis on semantic alignment between backlog goals and initiative objectives
+- Consider both direct and indirect impacts on strategic goals
+- Evaluate category compatibility and resource requirements
+- If no initiative fits well, set primary_initiative to null and confidence scores below 50"""
 
-            If no initiative fits well, set primary_initiative to null and confidence scores below 50.
-            """
+            # Add additional instructions if provided
+            if additional_instructions:
+                system_prompt += f"\n\nADDITIONAL INSTRUCTIONS:\n{additional_instructions}"
 
-            user_prompt = f"""
-            BACKLOG ITEM TO ANALYZE:
-            Title: {item.title}
-            Goal: {item.goal}
-            Category: {item.category}
-            Stream: {item.stream}
-            """
+            system_prompt += "\n\nProvide your analysis in the structured format specified."
 
-            # Call the LLM
-            response = client.chat.completions.create(
+            user_prompt = f"""BACKLOG ITEM TO ANALYZE:
+Title: {item.title}
+Goal: {item.goal}
+Category: {item.category}
+Stream: {item.stream}"""
+
+            # Use structured outputs with Pydantic model
+            completion = client.beta.chat.completions.parse(
                 model=model_name,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
                 ],
+                response_format=BacklogAnalysisResult,
                 temperature=0.1,
-                max_tokens=500
+                max_tokens=1000
             )
 
-            # Parse the response
-            response_content = response.choices[0].message.content.strip()
-            logger.debug("LLM response for item '%s': %s", item.title, response_content)
-
-            # Try to parse as JSON
-            try:
-                analysis_result = json.loads(response_content)
-            except json.JSONDecodeError as e:
-                logger.error("Failed to parse JSON response for item '%s': %s", item.title, e)
-                logger.error("Raw response: %s", response_content)
+            # Extract the parsed result
+            analysis_result = completion.choices[0].message.parsed
+            
+            if analysis_result is None:
+                logger.error("Failed to parse structured output for item '%s'", item.title)
                 # Create a default analysis
-                analysis_result = {
-                    "primary_initiative": None,
-                    "secondary_initiatives": [],
-                    "category_confidence": 0,
-                    "initiative_confidence": 0,
-                    "impact_analysis": "Failed to analyze due to invalid LLM response"
-                }
+                analysis_result = BacklogAnalysisResult(
+                    primary_initiative=None,
+                    secondary_initiatives=[],
+                    category_confidence=0,
+                    initiative_confidence=0,
+                    impact_analysis="Failed to analyze due to parsing error",
+                    detailed_analysis="Structured output parsing failed",
+                    resource_implications="Not analyzed due to error",
+                    recommendations=[]
+                )
 
             # Create enriched backlog item
             enriched_item = EnrichedBacklogItem(
                 original_item=item,
-                matched_initiative=analysis_result.get("primary_initiative"),
-                secondary_initiatives=analysis_result.get("secondary_initiatives", []),
-                category_confidence=int(analysis_result.get("category_confidence", 0)),
-                initiative_confidence=int(analysis_result.get("initiative_confidence", 0)),
-                impact_analysis=analysis_result.get("impact_analysis", ""),
-                detailed_analysis="Legacy item-centric analysis",
-                resource_implications="Not analyzed in legacy mode",
-                recommendations=[]
+                matched_initiative=analysis_result.primary_initiative,
+                secondary_initiatives=analysis_result.secondary_initiatives,
+                category_confidence=analysis_result.category_confidence,
+                initiative_confidence=analysis_result.initiative_confidence,
+                impact_analysis=analysis_result.impact_analysis,
+                detailed_analysis=analysis_result.detailed_analysis,
+                resource_implications=analysis_result.resource_implications,
+                recommendations=analysis_result.recommendations
             )
 
             enriched_items.append(enriched_item)
@@ -1007,7 +1031,7 @@ def _analyze_initiative_centric(
     client: AzureOpenAI,
     model_name: str,
     chunk_size: int,
-    confidence_threshold: int = 60
+    confidence_threshold: int = 80
 ) -> List[EnrichedBacklogItem]:
     """
     Initiative-centric processing mode - analyze batches of items for each initiative.
@@ -1102,7 +1126,8 @@ def analyze_initiative_associations(
         # Process items based on mode
         if processing_mode == 'item-centric':
             print("⚠️  Using legacy item-centric mode - less efficient for large datasets")
-            enriched_items = _analyze_item_centric(backlog_items, initiatives, client, model_name, confidence_threshold)
+            additional_instructions = getattr(args, 'additional_instructions', None) if args else None
+            enriched_items = _analyze_item_centric(backlog_items, initiatives, client, model_name, confidence_threshold, additional_instructions)
         else:
             chunk_size = 20  # Default
             if args and hasattr(args, 'chunk_size'):
@@ -1640,7 +1665,7 @@ def main() -> None:
             args.output,
             client,
             model_deployment_name,
-            getattr(args, 'confidence_threshold', 60),
+            getattr(args, 'confidence_threshold', 80),
             getattr(args, 'filter_backlog_title', None),
             getattr(args, 'filter_initiatives_title', None),
             args

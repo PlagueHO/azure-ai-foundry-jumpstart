@@ -42,6 +42,7 @@ python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.cs
 - `--filter-initiatives-title "pattern"` - Filter initiatives by regex pattern
 - `--processing-mode initiative-centric` - Processing approach (item-centric/initiative-centric, default: initiative-centric)
 - `--chunk-size 20` - Batch size for initiative-centric processing (default: 20)
+- `--additional-instructions "text"` - Additional instructions to include in AI analysis prompts
 - `--verbose DEBUG` - Enable debug logging
 
 ### Filtering Examples
@@ -57,6 +58,15 @@ python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.cs
 python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output reports/ \
   --filter-backlog-title "user.*" \
   --filter-initiatives-title "excellence.*"
+
+# Add custom instructions to AI analysis
+python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output reports/ \
+  --additional-instructions "Exclude backlog items that would require very detailed and specific engineering understanding of the code base to implement"
+
+# Combine filtering with additional instructions
+python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output reports/ \
+  --filter-backlog-title "user.*" \
+  --additional-instructions "Focus on items that provide immediate business value"
 ```
 
 ## Input Format

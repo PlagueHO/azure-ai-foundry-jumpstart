@@ -126,7 +126,7 @@ Required Arguments:
   --output PATH              Output directory for reports
 
 Optional Arguments:
-  --confidence-threshold INT  Minimum confidence (0-100, default: 60)
+  --confidence-threshold INT  Minimum confidence (0-100, default: 80)
   --filter-backlog-title STR  Regex pattern for backlog filtering
   --filter-initiatives-title STR  Regex pattern for initiative filtering
   --processing-mode {item-centric,initiative-centric}  Processing approach
