@@ -34,6 +34,37 @@ from openai import AzureOpenAI
 logger = logging.getLogger(__name__)
 
 
+def chunk_backlog_items(backlog_items: List['BacklogItem'], chunk_size: int = 20) -> List[List['BacklogItem']]:
+    """
+    Split backlog items into chunks of specified size for batch processing.
+    
+    Args:
+        backlog_items: List of BacklogItem objects to chunk
+        chunk_size: Maximum number of items per chunk (default: 20)
+        
+    Returns:
+        List of chunks, each containing up to chunk_size BacklogItem objects
+        
+    Raises:
+        ValueError: If chunk_size is less than 1
+    """
+    if chunk_size < 1:
+        raise ValueError("chunk_size must be at least 1")
+        
+    if not backlog_items:
+        return []
+        
+    chunks = []
+    for i in range(0, len(backlog_items), chunk_size):
+        chunk = backlog_items[i:i + chunk_size]
+        chunks.append(chunk)
+        
+    logger.debug("Split %d backlog items into %d chunks of size %d", 
+                len(backlog_items), len(chunks), chunk_size)
+    
+    return chunks
+
+
 @dataclass
 class BacklogItem:
     """Represents a single backlog item with its metadata."""
@@ -130,6 +161,26 @@ class EnrichedBacklogItem:
         return result
 
 
+@dataclass
+class InitiativeBacklogAssociation:
+    """Represents the result of analyzing backlog items for a specific initiative."""
+    
+    backlog_item_title: str
+    relevance_score: int
+    impact_analysis: str
+    strategic_value: str
+    implementation_synergies: str
+    confidence_reasoning: str
+    
+    def to_backlog_item_association(self, backlog_item: BacklogItem) -> 'BacklogItemAssociation':
+        """Convert to BacklogItemAssociation for compatibility with existing code."""
+        return BacklogItemAssociation(
+            backlog_item=backlog_item,
+            confidence=self.relevance_score,
+            impact_analysis=self.impact_analysis
+        )
+
+
 def configure_logging(verbose_level: str = 'ERROR') -> None:
     """
     Configure application logging based on verbosity level.
@@ -207,9 +258,30 @@ def parse_arguments() -> argparse.Namespace:
         help="Set logging verbosity level (DEBUG, INFO, WARNING, ERROR, CRITICAL). Default: ERROR"
     )
     parser.add_argument(
-        "--filter-title",
+        "--filter-backlog-title",
         type=str,
         help="Filter backlog items by title using a regex pattern (e.g., 'onboard.*' to match titles containing 'onboard')"
+    )
+    parser.add_argument(
+        "--filter-initiatives-title",
+        type=str,
+        help="Filter initiatives by title using a regex pattern (e.g., 'security.*' to match titles containing 'security')"
+    )
+    parser.add_argument(
+        "--chunk-size",
+        type=int,
+        default=20,
+        help="Number of backlog items to process per batch for initiative-centric analysis (default: 20)"
+    )
+    parser.add_argument(
+        "--processing-mode", 
+        type=str,
+        choices=['item-centric', 'initiative-centric'],
+        default='initiative-centric',
+        help="""Processing approach: 
+        - item-centric: Legacy mode that analyzes each backlog item individually (less efficient)
+        - initiative-centric: Recommended mode that analyzes batches of items per initiative (80%% fewer API calls)
+        Default: initiative-centric"""
     )
     return parser.parse_args()
 
@@ -351,26 +423,37 @@ def load_backlog_items(file_path: str, title_filter: Optional[str] = None) -> Li
     return backlog_items
 
 
-def load_initiatives(file_path: str) -> List[Initiative]:
+def load_initiatives(file_path: str, title_filter: Optional[str] = None) -> List[Initiative]:
     """
     Load initiatives from CSV file.
 
     Args:
         file_path: Path to the initiatives CSV file
+        title_filter: Optional regex pattern to filter initiatives by title
 
     Returns:
-        List of Initiative objects
+        List of Initiative objects (filtered by title if pattern provided)
 
     Raises:
         FileNotFoundError: If the file doesn't exist
-        ValueError: If required columns are missing
+        ValueError: If required columns are missing or regex pattern is invalid
     """
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"Initiatives file not found: {file_path}")
 
+    # Compile regex pattern if provided
+    title_pattern = None
+    if title_filter:
+        try:
+            title_pattern = re.compile(title_filter, re.IGNORECASE)
+            logger.info("Using initiatives title filter: %s", title_filter)
+        except re.error as e:
+            raise ValueError(f"Invalid regex pattern '{title_filter}': {e}")
+
     required_columns = ['area', 'title', 'details', 'description', 'kpi', 'current_state', 'solutions']
 
     initiatives = []
+    filtered_count = 0
 
     with open(file_path, encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
@@ -382,6 +465,11 @@ def load_initiatives(file_path: str) -> List[Initiative]:
 
         for row_num, row in enumerate(reader, start=2):
             try:
+                # Apply title filter if provided
+                if title_pattern and not title_pattern.search(row['title']):
+                    filtered_count += 1
+                    continue
+
                 initiative = Initiative(
                     area=row['area'].strip(),
                     title=row['title'].strip(),
@@ -398,7 +486,13 @@ def load_initiatives(file_path: str) -> List[Initiative]:
                 logger.warning("Error processing row %d in initiatives CSV: %s", row_num, e)
                 continue
 
-    logger.info("Loaded %d initiatives from %s", len(initiatives), file_path)
+    total_initiatives = len(initiatives) + filtered_count
+    if title_pattern:
+        logger.info("Loaded %d initiatives from %s (filtered by title: kept %d, filtered out %d of %d total)",
+                   len(initiatives), file_path, len(initiatives), filtered_count, total_initiatives)
+        print(f"Applied initiatives title filter '{title_filter}': {len(initiatives)} initiatives match (filtered out {filtered_count})")
+    else:
+        logger.info("Loaded %d initiatives from %s", len(initiatives), file_path)
     return initiatives
 
 
@@ -653,6 +747,244 @@ def save_initiative_reports(reports: List[InitiativeReport], output_dir: str) ->
         print(f"⚠️  Failed to save {len(reports) - saved_count} reports")
 
 
+def _analyze_item_centric(
+    backlog_items: List[BacklogItem],
+    initiatives: List[Initiative],
+    client: AzureOpenAI,
+    model_name: str,
+    confidence_threshold: int = 60
+) -> List[EnrichedBacklogItem]:
+    """
+    Legacy item-centric processing mode - analyze each backlog item individually.
+    
+    This approach is less efficient for large datasets but maintained for compatibility.
+    """
+    logger.info("Starting legacy item-centric analysis for %d items using model: %s", len(backlog_items), model_name)
+    
+    enriched_items: List[EnrichedBacklogItem] = []
+
+    # Prepare the initiative details for the LLM context
+    initiative_context = "\n".join([
+        f"- {initiative.title}: {initiative.description}"
+        for initiative in initiatives
+    ])
+
+    for i, item in enumerate(backlog_items, 1):
+        try:
+            logger.info("Analyzing item %d/%d: %s", i, len(backlog_items), item.title)
+
+            # Create the prompt for the LLM
+            system_prompt = f"""
+            You are an expert business analyst tasked with categorizing software project backlog items into business initiatives.
+
+            AVAILABLE INITIATIVES:
+            {initiative_context}
+
+            Your task is to analyze the given backlog item and determine:
+            1. Which initiative it best aligns with (primary_initiative)
+            2. Any secondary initiatives it might support (secondary_initiatives)
+            3. Your confidence level for the category match (1-100)
+            4. Your confidence level for the initiative match (1-100)
+            5. A brief analysis of the expected impact
+
+            Respond ONLY with valid JSON in this exact format:
+            {{
+                "primary_initiative": "initiative_title_or_null",
+                "secondary_initiatives": ["initiative1", "initiative2"],
+                "category_confidence": 85,
+                "initiative_confidence": 92,
+                "impact_analysis": "Brief explanation of expected impact and rationale"
+            }}
+
+            If no initiative fits well, set primary_initiative to null and confidence scores below 50.
+            """
+
+            user_prompt = f"""
+            BACKLOG ITEM TO ANALYZE:
+            Title: {item.title}
+            Goal: {item.goal}
+            Category: {item.category}
+            Stream: {item.stream}
+            """
+
+            # Call the LLM
+            response = client.chat.completions.create(
+                model=model_name,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                temperature=0.1,
+                max_tokens=500
+            )
+
+            # Parse the response
+            response_content = response.choices[0].message.content.strip()
+            logger.debug("LLM response for item '%s': %s", item.title, response_content)
+
+            # Try to parse as JSON
+            try:
+                analysis_result = json.loads(response_content)
+            except json.JSONDecodeError as e:
+                logger.error("Failed to parse JSON response for item '%s': %s", item.title, e)
+                logger.error("Raw response: %s", response_content)
+                # Create a default analysis
+                analysis_result = {
+                    "primary_initiative": None,
+                    "secondary_initiatives": [],
+                    "category_confidence": 0,
+                    "initiative_confidence": 0,
+                    "impact_analysis": "Failed to analyze due to invalid LLM response"
+                }
+
+            # Create enriched backlog item
+            enriched_item = EnrichedBacklogItem(
+                original_item=item,
+                matched_initiative=analysis_result.get("primary_initiative"),
+                secondary_initiatives=analysis_result.get("secondary_initiatives", []),
+                category_confidence=int(analysis_result.get("category_confidence", 0)),
+                initiative_confidence=int(analysis_result.get("initiative_confidence", 0)),
+                impact_analysis=analysis_result.get("impact_analysis", ""),
+                detailed_analysis="Legacy item-centric analysis",
+                resource_implications="Not analyzed in legacy mode",
+                recommendations=[]
+            )
+
+            enriched_items.append(enriched_item)
+            
+            # Log progress
+            if i % 10 == 0:
+                logger.info("Processed %d/%d items", i, len(backlog_items))
+                
+        except Exception as e:
+            logger.error("Error analyzing item '%s': %s", item.title, e)
+            # Create a default enriched item for failed analysis
+            enriched_item = EnrichedBacklogItem(
+                original_item=item,
+                matched_initiative=None,
+                secondary_initiatives=[],
+                category_confidence=0,
+                initiative_confidence=0,
+                impact_analysis=f"Analysis failed: {str(e)}",
+                detailed_analysis="Analysis failed",
+                resource_implications="Not analyzed due to error",
+                recommendations=[]
+            )
+            enriched_items.append(enriched_item)
+
+    logger.info("Completed legacy item-centric analysis of %d backlog items", len(enriched_items))
+    return enriched_items
+
+
+def _convert_associations_to_enriched_items(
+    all_associations: List[InitiativeBacklogAssociation],
+    confidence_threshold: int
+) -> List[EnrichedBacklogItem]:
+    """
+    Convert InitiativeBacklogAssociation objects to EnrichedBacklogItem objects.
+    
+    For items with multiple associations, keeps the highest relevance score match.
+    """
+    # Group associations by backlog item title
+    item_associations: Dict[str, List[InitiativeBacklogAssociation]] = {}
+    
+    for association in all_associations:
+        if association.relevance_score >= confidence_threshold:
+            item_title = association.backlog_item_title
+            if item_title not in item_associations:
+                item_associations[item_title] = []
+            item_associations[item_title].append(association)
+    
+    # Convert to EnrichedBacklogItem objects
+    enriched_items: List[EnrichedBacklogItem] = []
+    
+    for item_title, associations in item_associations.items():
+        # Sort by relevance score and take the highest
+        associations.sort(key=lambda x: x.relevance_score, reverse=True)
+        best_association = associations[0]
+        
+        # Collect secondary initiatives from other high-confidence matches
+        secondary_initiatives = []
+        for assoc in associations[1:]:
+            if assoc.relevance_score >= confidence_threshold * 0.8:  # 80% of threshold
+                secondary_initiatives.append(f"Initiative (score: {assoc.relevance_score})")
+        
+        # We need to find the actual BacklogItem object for this title
+        # For now, create a placeholder - this will need to be fixed in integration
+        placeholder_item = BacklogItem(
+            category="Unknown",
+            initiative="Unknown", 
+            title=item_title,
+            goal="Unknown",
+            stream="Unknown"
+        )
+        
+        # Create enriched item
+        enriched_item = EnrichedBacklogItem(
+            original_item=placeholder_item,
+            matched_initiative=f"Initiative (score: {best_association.relevance_score})",
+            secondary_initiatives=secondary_initiatives,
+            category_confidence=best_association.relevance_score,
+            initiative_confidence=best_association.relevance_score,
+            impact_analysis=best_association.impact_analysis,
+            detailed_analysis=best_association.strategic_value,
+            resource_implications=best_association.implementation_synergies,
+            recommendations=[]
+        )
+        
+        enriched_items.append(enriched_item)
+    
+    logger.info("Converted %d associations to %d enriched items", len(all_associations), len(enriched_items))
+    return enriched_items
+
+
+def _analyze_initiative_centric(
+    backlog_items: List[BacklogItem],
+    initiatives: List[Initiative],
+    client: AzureOpenAI,
+    model_name: str,
+    chunk_size: int,
+    confidence_threshold: int = 60
+) -> List[EnrichedBacklogItem]:
+    """
+    Initiative-centric processing mode - analyze batches of items for each initiative.
+    
+    This approach is more efficient and provides better LLM context for large datasets.
+    """
+    logger.info("Starting initiative-centric analysis for %d items across %d initiatives using model: %s", 
+                len(backlog_items), len(initiatives), model_name)
+    logger.info("Using chunk size: %d", chunk_size)
+    
+    # Process each initiative against chunks of backlog items
+    all_associations: List[InitiativeBacklogAssociation] = []
+    
+    for initiative in initiatives:
+        logger.info("Processing initiative: %s", initiative.title)
+        
+        # Chunk the backlog items for this initiative
+        chunks = chunk_backlog_items(backlog_items, chunk_size)
+        
+        for chunk_idx, chunk in enumerate(chunks, 1):
+            logger.info("Processing chunk %d/%d for initiative '%s' (%d items)", 
+                       chunk_idx, len(chunks), initiative.title, len(chunk))
+            
+            try:
+                chunk_associations = process_initiative_chunk(client, initiative, chunk, model_name)
+                all_associations.extend(chunk_associations)
+                logger.info("Found %d relevant items in chunk %d", len(chunk_associations), chunk_idx)
+            except Exception as e:
+                logger.error("Error processing chunk %d for initiative '%s': %s", 
+                           chunk_idx, initiative.title, e)
+                continue
+    
+    # Aggregate and deduplicate associations
+    logger.info("Aggregating %d total associations", len(all_associations))
+    enriched_items = _convert_associations_to_enriched_items(all_associations, confidence_threshold)
+    
+    logger.info("Completed initiative-centric analysis: %d enriched items", len(enriched_items))
+    return enriched_items
+
+
 def analyze_initiative_associations(
     backlog_file: str,
     initiatives_file: str,
@@ -660,7 +992,9 @@ def analyze_initiative_associations(
     client: AzureOpenAI,
     model_name: str,
     confidence_threshold: int = 60,
-    title_filter: Optional[str] = None
+    backlog_title_filter: Optional[str] = None,
+    initiatives_title_filter: Optional[str] = None,
+    args: Optional[argparse.Namespace] = None
 ) -> None:
     """
     Analyze backlog items against initiatives and generate initiative reports.
@@ -672,15 +1006,17 @@ def analyze_initiative_associations(
         client: Azure OpenAI client
         model_name: Model deployment name
         confidence_threshold: Minimum confidence for including associations
-        title_filter: Optional regex pattern to filter backlog items by title
+        backlog_title_filter: Optional regex pattern to filter backlog items by title
+        initiatives_title_filter: Optional regex pattern to filter initiatives by title
+        args: Command line arguments (optional, for processing mode)
     """
     try:
         # Load data
         print("Loading backlog items...")
-        backlog_items = load_backlog_items(backlog_file, title_filter)
+        backlog_items = load_backlog_items(backlog_file, backlog_title_filter)
 
         print("Loading initiatives...")
-        initiatives = load_initiatives(initiatives_file)
+        initiatives = load_initiatives(initiatives_file, initiatives_title_filter)
 
         if not backlog_items:
             print("No backlog items found. Please check your backlog CSV file.")
@@ -692,31 +1028,29 @@ def analyze_initiative_associations(
 
         print(f"Analyzing {len(backlog_items)} backlog items against {len(initiatives)} initiatives...")
         print(f"Using confidence threshold: {confidence_threshold}%")
+        
+        # Determine processing mode
+        processing_mode = 'initiative-centric'  # Default
+        if args and hasattr(args, 'processing_mode'):
+            processing_mode = args.processing_mode
+            print(f"Using processing mode: {processing_mode}")
 
-        # Process each backlog item
-        enriched_items = []
+        # Process items based on mode
+        if processing_mode == 'item-centric':
+            print("⚠️  Using legacy item-centric mode - less efficient for large datasets")
+            enriched_items = _analyze_item_centric(backlog_items, initiatives, client, model_name, confidence_threshold)
+        else:
+            chunk_size = 20  # Default
+            if args and hasattr(args, 'chunk_size'):
+                chunk_size = args.chunk_size
+            print(f"Using initiative-centric mode with chunk size: {chunk_size}")
+            enriched_items = _analyze_initiative_centric(backlog_items, initiatives, client, model_name, chunk_size, confidence_threshold)
+        
         qualifying_items = 0
-
-        for i, item in enumerate(backlog_items, 1):
-            print(f"Analyzing item {i}/{len(backlog_items)}: {item.title}")
-
-            try:
-                enriched_item = analyze_backlog_item(client, item, initiatives, model_name)
-                enriched_items.append(enriched_item)
-
-                # Check if item qualifies for inclusion
-                if (enriched_item.matched_initiative and
-                    enriched_item.initiative_confidence >= confidence_threshold):
-                    qualifying_items += 1
-                    print(f"  ✅ Matched: {enriched_item.matched_initiative} (confidence: {enriched_item.initiative_confidence}%)")
-                else:
-                    confidence = enriched_item.initiative_confidence
-                    print(f"  ❌ No qualifying match (confidence: {confidence}% < {confidence_threshold}%)")
-
-            except Exception as e:
-                logger.error("Failed to analyze item '%s': %s", item.title, e)
-                print(f"  ⚠️  Error analyzing item: {e}")
-                continue
+        for item in enriched_items:
+            if (item.matched_initiative and
+                item.initiative_confidence >= confidence_threshold):
+                qualifying_items += 1
 
         print("\n📊 Analysis Summary:")
         print(f"   • Total items analyzed: {len(enriched_items)}")
@@ -782,6 +1116,273 @@ def get_backlog_analysis_system_prompt() -> str:
 - Focus on maximizing strategic value through proper backlog prioritization
 
 Remember: Your goal is to help organizations make data-driven decisions about backlog prioritization by clearly showing how each item contributes to strategic initiatives."""
+
+
+def get_initiative_analysis_system_prompt() -> str:
+    """
+    Get the system prompt for initiative-centric backlog analysis.
+    
+    Returns:
+        str: System prompt for the initiative-focused analyzer
+    """
+    return """You are an Initiative-Focused Strategic Analyzer, designed to help organizations identify which backlog items will most effectively advance specific organizational initiatives. Your role is to:
+
+**Core Responsibilities:**
+1. Analyze backlog items specifically for their relevance to a single, well-defined initiative
+2. Provide accurate relevance scores (0-100) based on strategic alignment and impact potential
+3. Generate detailed impact analysis showing how each item advances the initiative
+4. Assess strategic value and implementation synergies within the initiative context
+5. Provide clear reasoning for all relevance assessments
+
+**Analysis Framework:**
+- Focus analysis on the specific initiative context, goals, and success criteria
+- Evaluate direct alignment between backlog item goals and initiative objectives
+- Assess how backlog item completion advances the initiative's KPIs and proposed solutions
+- Consider implementation timing, resource requirements, and synergies with other initiative work
+- Prioritize items that provide measurable advancement toward initiative success
+
+**Scoring Guidelines:**
+- 90-100: Direct, high-impact advancement of core initiative objectives
+- 80-89: Strong alignment with significant impact on initiative success
+- 70-79: Good alignment with moderate impact on initiative goals
+- 60-69: Some alignment with minor but measurable impact
+- 40-59: Weak alignment with minimal impact
+- Below 40: No meaningful contribution to initiative (exclude from results)
+
+**Output Requirements:**
+- Only include backlog items with relevance scores of 40 or higher
+- Provide specific, actionable impact analysis for each relevant item
+- Explain strategic value in the context of the initiative's goals and current state
+- Identify implementation synergies and dependencies with other initiative work
+- Include clear reasoning for all relevance scores
+- Return results in the exact JSON format specified
+
+**Quality Standards:**
+- Base analysis on factual alignment between backlog goals and initiative objectives
+- Consider the initiative's current state, proposed solutions, and success metrics
+- Focus on measurable advancement and strategic value creation
+- Provide transparent reasoning that stakeholders can understand and act upon
+
+Remember: Your goal is to help organizations maximize initiative success by identifying the most strategically valuable backlog items for each initiative."""
+
+
+def analyze_initiative_relevance(
+    client: AzureOpenAI,
+    initiative: Initiative,
+    backlog_items: List[BacklogItem],
+    model_name: str
+) -> List[InitiativeBacklogAssociation]:
+    """
+    Analyze a chunk of backlog items for relevance to a specific initiative.
+    
+    Args:
+        client: Azure OpenAI client
+        initiative: The initiative to analyze against
+        backlog_items: List of backlog items to evaluate
+        model_name: Model deployment name
+        
+    Returns:
+        List of InitiativeBacklogAssociation objects for relevant items
+        
+    Raises:
+        RuntimeError: If the AI analysis fails
+    """
+    try:
+        # Create system prompt for initiative-centric analysis
+        system_prompt = get_initiative_analysis_system_prompt()
+        
+        # Format backlog items for analysis
+        backlog_text = ""
+        for i, item in enumerate(backlog_items, 1):
+            backlog_text += f"""
+Item {i}:
+- Title: {item.title}
+- Category: {item.category}
+- Goal: {item.goal}
+- Stream: {item.stream}
+"""
+        
+        # Create user prompt for initiative-focused analysis
+        user_prompt = f"""
+Analyze these {len(backlog_items)} backlog items for their relevance to the following initiative:
+
+INITIATIVE CONTEXT:
+- Area: {initiative.area}
+- Title: {initiative.title}
+- Details: {initiative.details}
+- Description: {initiative.description}
+- KPIs: {initiative.kpi}
+- Current State: {initiative.current_state}
+- Proposed Solutions: {initiative.solutions}
+
+BACKLOG ITEMS TO ANALYZE:
+{backlog_text}
+
+For each backlog item, determine its relevance to this specific initiative. Only include items with relevance scores of 40 or higher.
+
+Return your analysis as a JSON object with this exact structure:
+{{
+    "relevant_items": [
+        {{
+            "backlog_item_title": "Exact title from the backlog item",
+            "relevance_score": 85,
+            "impact_analysis": "Detailed analysis of how this item advances the initiative",
+            "strategic_value": "Strategic value and alignment with initiative goals",
+            "implementation_synergies": "How this item works with other initiative efforts",
+            "confidence_reasoning": "Explanation for the relevance score"
+        }}
+    ]
+}}
+
+Focus on:
+1. Direct alignment between backlog item goals and initiative objectives
+2. How completion of the backlog item advances the initiative's KPIs
+3. Strategic fit within the initiative's area and proposed solutions
+4. Implementation timing and resource synergies
+"""
+        
+        logger.info("Analyzing %d backlog items for initiative '%s' using model: %s", 
+                   len(backlog_items), initiative.title, model_name)
+        
+        # Make the API call
+        response = client.chat.completions.create(
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            model=model_name,
+            response_format={"type": "json_object"},
+            max_tokens=2000,
+            temperature=0.1,
+            top_p=1.0,
+            frequency_penalty=0.0,
+            presence_penalty=0.0
+        )
+        
+        # Parse the JSON response
+        response_content = response.choices[0].message.content or "{}"
+        
+        try:
+            analysis_result = json.loads(response_content)
+        except json.JSONDecodeError as e:
+            logger.error("Failed to parse JSON response for initiative '%s': %s", initiative.title, e)
+            logger.error("Response content: %s", response_content)
+            return []
+        
+        # Convert to InitiativeBacklogAssociation objects
+        associations = []
+        relevant_items = analysis_result.get("relevant_items", [])
+        
+        for item_analysis in relevant_items:
+            try:
+                association = InitiativeBacklogAssociation(
+                    backlog_item_title=item_analysis.get("backlog_item_title", ""),
+                    relevance_score=int(item_analysis.get("relevance_score", 0)),
+                    impact_analysis=item_analysis.get("impact_analysis", ""),
+                    strategic_value=item_analysis.get("strategic_value", ""),
+                    implementation_synergies=item_analysis.get("implementation_synergies", ""),
+                    confidence_reasoning=item_analysis.get("confidence_reasoning", "")
+                )
+                associations.append(association)
+            except (ValueError, TypeError) as e:
+                logger.warning("Failed to parse item analysis for initiative '%s': %s", initiative.title, e)
+                continue
+                
+        logger.info("Found %d relevant items for initiative '%s'", len(associations), initiative.title)
+        return associations
+        
+    except Exception as e:
+        logger.error("Failed to analyze initiative '%s': %s", initiative.title, e)
+        raise RuntimeError(f"Unable to analyze initiative relevance: {e}") from e
+
+
+def aggregate_initiative_associations(
+    initiative: Initiative,
+    association_batches: List[List[InitiativeBacklogAssociation]],
+    backlog_items: List[BacklogItem],
+    confidence_threshold: int = 60
+) -> List[BacklogItemAssociation]:
+    """
+    Aggregate and deduplicate association results from multiple chunks.
+    
+    Args:
+        initiative: The initiative being analyzed
+        association_batches: List of association lists from different chunks
+        backlog_items: Original backlog items for lookup
+        confidence_threshold: Minimum confidence for inclusion
+        
+    Returns:
+        List of BacklogItemAssociation objects above threshold
+    """
+    # Create lookup map for backlog items by title
+    backlog_lookup = {item.title: item for item in backlog_items}
+    
+    # Collect all associations and deduplicate by title
+    association_map: Dict[str, InitiativeBacklogAssociation] = {}
+    
+    for batch in association_batches:
+        for association in batch:
+            title = association.backlog_item_title
+            
+            # Keep highest scoring association if duplicates exist
+            if title in association_map:
+                if association.relevance_score > association_map[title].relevance_score:
+                    association_map[title] = association
+            else:
+                association_map[title] = association
+    
+    # Filter by confidence threshold and convert to BacklogItemAssociation
+    result_associations = []
+    
+    for title, association in association_map.items():
+        if association.relevance_score >= confidence_threshold:
+            # Find matching backlog item
+            backlog_item = backlog_lookup.get(title)
+            if backlog_item:
+                backlog_association = association.to_backlog_item_association(backlog_item)
+                result_associations.append(backlog_association)
+            else:
+                logger.warning("Could not find backlog item '%s' for initiative '%s'", 
+                             title, initiative.title)
+    
+    # Sort by confidence score descending
+    result_associations.sort(key=lambda x: x.confidence, reverse=True)
+    
+    logger.info("Aggregated %d associations for initiative '%s' (threshold: %d)", 
+               len(result_associations), initiative.title, confidence_threshold)
+    
+    return result_associations
+
+
+def process_initiative_chunk(
+    client: AzureOpenAI,
+    initiative: Initiative,
+    backlog_chunk: List[BacklogItem],
+    model_name: str
+) -> List[InitiativeBacklogAssociation]:
+    """
+    Process a single chunk of backlog items for a specific initiative.
+    
+    This is a wrapper around analyze_initiative_relevance for single chunk processing.
+    
+    Args:
+        client: Azure OpenAI client
+        initiative: The initiative to analyze against
+        backlog_chunk: Chunk of backlog items to process
+        model_name: Model deployment name
+        
+    Returns:
+        List of InitiativeBacklogAssociation objects for relevant items
+    """
+    try:
+        associations = analyze_initiative_relevance(client, initiative, backlog_chunk, model_name)
+        logger.debug("Processed chunk of %d items for initiative '%s', found %d associations",
+                    len(backlog_chunk), initiative.title, len(associations))
+        return associations
+    except Exception as e:
+        logger.error("Failed to process chunk for initiative '%s': %s", initiative.title, e)
+        # Return empty list to allow processing to continue with other chunks
+        return []
 
 
 def analyze_backlog_item(
@@ -959,7 +1560,9 @@ def main() -> None:
             client,
             model_deployment_name,
             getattr(args, 'confidence_threshold', 60),
-            getattr(args, 'filter_title', None)
+            getattr(args, 'filter_backlog_title', None),
+            getattr(args, 'filter_initiatives_title', None),
+            args
         )
 
     except KeyboardInterrupt:

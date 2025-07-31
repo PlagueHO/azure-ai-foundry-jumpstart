@@ -38,8 +38,26 @@ python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.cs
 ### Options
 
 - `--confidence-threshold 70` - Minimum confidence for associations (default: 60)
-- `--filter-title "pattern"` - Filter backlog items by regex pattern
+- `--filter-backlog-title "pattern"` - Filter backlog items by regex pattern
+- `--filter-initiatives-title "pattern"` - Filter initiatives by regex pattern
+- `--processing-mode initiative-centric` - Processing approach (item-centric/initiative-centric, default: initiative-centric)
+- `--chunk-size 20` - Batch size for initiative-centric processing (default: 20)
 - `--verbose DEBUG` - Enable debug logging
+
+### Filtering Examples
+
+```bash
+# Filter backlog items containing "onboard" in the title
+python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output reports/ --filter-backlog-title "onboard.*"
+
+# Filter initiatives containing "security" in the title
+python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output reports/ --filter-initiatives-title "security.*"
+
+# Use both filters together
+python initiative_analyzer.py --backlog backlog.csv --initiatives initiatives.csv --output reports/ \
+  --filter-backlog-title "user.*" \
+  --filter-initiatives-title "excellence.*"
+```
 
 ## Input Format
 
