@@ -2,6 +2,42 @@
   {
     "model": {
       "format": "OpenAI",
+      "name": "gpt-5-chat",
+      "version": "2025-08-07"
+    },
+    "name": "gpt-5-chat",
+    "sku": {
+      "name": "GlobalStandard",
+      "capacity": 50
+    }
+  },
+  {
+    "model": {
+      "format": "OpenAI",
+      "name": "gpt-5-mini",
+      "version": "2025-08-07"
+    },
+    "name": "gpt-5-mini",
+    "sku": {
+      "name": "GlobalStandard",
+      "capacity": 50
+    }
+  },
+  {
+    "model": {
+      "format": "OpenAI",
+      "name": "gpt-5-nano",
+      "version": "2025-08-07"
+    },
+    "name": "gpt-5-nano",
+    "sku": {
+      "name": "GlobalStandard",
+      "capacity": 50
+    }
+  },
+  {
+    "model": {
+      "format": "OpenAI",
       "name": "gpt-4.1",
       "version": "2025-04-14"
     },
