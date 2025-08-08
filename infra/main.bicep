@@ -484,7 +484,7 @@ module aiServicesAiDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = 
 }
 
 // ---------- KEY VAULT (HUB DEPLOY ONLY) ----------
-module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (aiFoundryHubDeploy) {
+module keyVault 'br/public:avm/res/key-vault/vault:0.13.1' = if (aiFoundryHubDeploy) {
   name: 'key-vault-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -519,7 +519,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.0' = if (aiFoundryHubDep
 }
 
 // ---------- STORAGE ACCOUNT (HUB DEPLOY ONLY) ----------
-module storageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (aiFoundryHubDeploy) {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.26.0' = if (aiFoundryHubDeploy) {
   name: 'hub-storage-account-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -621,7 +621,7 @@ var effectiveContainerRegistryResourceId = containerRegistryDeploy
   : ''
 
 // ---------- STORAGE ACCOUNT SAMPLE DATA (OPTIONAL) ----------
-module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.25.1' = if (deploySampleData) {
+module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.26.0' = if (deploySampleData) {
   name: 'sample-data-storage-account-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
