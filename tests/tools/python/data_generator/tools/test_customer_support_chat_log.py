@@ -3,13 +3,10 @@ Unit tests for the data_generator.tools.customer_support_chat_log module.
 """
 
 import argparse
-import json
 import uuid
-from datetime import datetime, timezone
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
-import yaml
 
 # Import the module we want to test
 from data_generator.tools.customer_support_chat_log import CustomerSupportChatLogTool
@@ -25,8 +22,8 @@ def customer_support_tool():
 def customer_support_custom():
     """Return a CustomerSupportChatLogTool instance with custom parameters."""
     return CustomerSupportChatLogTool(
-        industry="telecom", 
-        avg_turns=12, 
+        industry="telecom",
+        avg_turns=12,
         languages="en,es"
     )
 
@@ -47,8 +44,8 @@ class TestCustomerSupportChatLogTool:
     def test_init_custom_parameters(self):
         """Test initialization with custom parameters."""
         tool = CustomerSupportChatLogTool(
-            industry="banking", 
-            avg_turns=15, 
+            industry="banking",
+            avg_turns=15,
             languages="en,fr,de"
         )
         assert tool.industry == "banking"
@@ -69,21 +66,21 @@ class TestCustomerSupportChatLogTool:
         args = customer_support_tool.cli_arguments()
         assert isinstance(args, list)
         assert len(args) == 3
-        
+
         # Check industry argument
         industry_arg = next((arg for arg in args if "--industry" in arg["flags"]), None)
         assert industry_arg is not None
         assert not industry_arg["kwargs"]["required"]
         assert industry_arg["kwargs"]["default"] == "general"
-        
+
         # Check avg-turns argument
         avg_turns_arg = next(
             (arg for arg in args if "--avg-turns" in arg["flags"]), None
         )
         assert avg_turns_arg is not None
-        assert avg_turns_arg["kwargs"]["type"] == int
+        assert avg_turns_arg["kwargs"]["type"] is int
         assert avg_turns_arg["kwargs"]["default"] == 8
-        
+
         # Check languages argument
         languages_arg = next(
             (arg for arg in args if "--languages" in arg["flags"]), None
@@ -117,17 +114,17 @@ class TestCustomerSupportChatLogTool:
     def test_validate_args_clamping(self):
         """Test validate_args clamps avg_turns to valid range."""
         tool = CustomerSupportChatLogTool()
-        
+
         # Test lower bound
         ns = argparse.Namespace(avg_turns=1)
         tool.validate_args(ns)
         assert tool.avg_turns == 2
-        
+
         # Test upper bound
         ns = argparse.Namespace(avg_turns=100)
         tool.validate_args(ns)
         assert tool.avg_turns == 50
-        
+
         # Test valid range
         ns = argparse.Namespace(avg_turns=25)
         tool.validate_args(ns)
@@ -136,12 +133,12 @@ class TestCustomerSupportChatLogTool:
     def test_validate_args_invalid_avg_turns(self):
         """Test validate_args handles invalid avg_turns gracefully."""
         tool = CustomerSupportChatLogTool()
-        
+
         # Test string that can't be converted
         ns = argparse.Namespace(avg_turns="invalid")
         tool.validate_args(ns)
         assert tool.avg_turns == 8  # Should default to 8
-        
+
         # Test None
         ns = argparse.Namespace(avg_turns=None)
         tool.validate_args(ns)
@@ -206,11 +203,9 @@ class TestCustomerSupportChatLogTool:
         """Test _prompt_common returns correctly formatted string."""
         # Configure mocks
         mock_uuid.return_value = uuid.UUID("12345678-1234-5678-1234-567812345678")
-        mock_dt = MagicMock()
-        mock_dt.now.return_value.isoformat.return_value = (
-            "2023-01-01T12:00:00+00:00"
-        )
-        mock_datetime.now.return_value = mock_dt
+        mock_dt_instance = MagicMock()
+        mock_dt_instance.isoformat.return_value = "2023-01-01T12:00:00+00:00"
+        mock_datetime.now.return_value = mock_dt_instance
 
         # Test without unique_id
         result = customer_support_tool._prompt_common()
@@ -222,7 +217,7 @@ class TestCustomerSupportChatLogTool:
         assert "Industry: general" in result
         assert "Language: en" in result
         assert "Average Turns Hint: 8" in result
-        
+
         # Test with unique_id
         result = customer_support_tool._prompt_common(unique_id="test-conv-123")
         assert "Conversation ID (immutable): test-conv-123" in result
@@ -324,7 +319,7 @@ class TestCustomerSupportChatLogTool:
         text = "This is plain text conversation log"
         result = customer_support_tool.post_process(text, "text")
         assert result == text
-        
+
         # Also test with "txt" format alias
         result = customer_support_tool.post_process(text, "txt")
         assert result == text
@@ -351,7 +346,7 @@ class TestCustomerSupportChatLogTool:
     def test_get_system_description_multiple_languages(self):
         """Test get_system_description formats multiple languages correctly."""
         tool = CustomerSupportChatLogTool(
-            industry="banking", 
+            industry="banking",
             languages="en,fr,de,es"
         )
         result = tool.get_system_description()

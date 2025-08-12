@@ -37,9 +37,9 @@ class CustomerSupportChatLogTool(DataGeneratorTool):
     # CLI contract                                                       #
     # ------------------------------------------------------------------ #
     def __init__(
-        self, 
-        *, 
-        industry: str | None = None, 
+        self,
+        *,
+        industry: str | None = None,
         avg_turns: int | None = None,
         languages: str | None = None
     ) -> None:
@@ -96,7 +96,7 @@ class CustomerSupportChatLogTool(DataGeneratorTool):
         # Store validated arguments
         self.industry = getattr(ns, "industry", None) or "general"
         self.languages = getattr(ns, "languages", None) or "en"
-        
+
         # Validate and clamp avg_turns
         avg_turns = getattr(ns, "avg_turns", None) or 8
         if not isinstance(avg_turns, int):
@@ -104,7 +104,6 @@ class CustomerSupportChatLogTool(DataGeneratorTool):
                 avg_turns = int(avg_turns)
             except (ValueError, TypeError):
                 avg_turns = 8
-        
         # Clamp to valid range [2, 50]
         self.avg_turns = max(2, min(50, avg_turns))
 
@@ -274,7 +273,7 @@ class CustomerSupportChatLogTool(DataGeneratorTool):
     def post_process(self, raw: str, output_format: str) -> Any:  # noqa: ANN401
         """Deserialize based on output_format; fallback to raw string on failure."""
         fmt = output_format.lower()
-        
+
         if fmt == "json":
             try:
                 parsed_data = json.loads(raw)
@@ -289,7 +288,7 @@ class CustomerSupportChatLogTool(DataGeneratorTool):
                     "Failed to parse JSON; returning raw string", exc_info=True
                 )
                 return raw
-        
+
         if fmt == "yaml":
             try:
                 parsed_data = yaml.safe_load(raw)
@@ -304,11 +303,11 @@ class CustomerSupportChatLogTool(DataGeneratorTool):
                     "Failed to parse YAML; returning raw string", exc_info=True
                 )
                 return raw
-        
+
         # Handle both 'txt' (from CLI) and 'text' (from tool's supported_output_formats)
         if fmt in ("txt", "text"):
             return raw
-        
+
         # Unknown format
         _logger.warning(
             "Unknown output format '%s'; returning raw string", output_format
