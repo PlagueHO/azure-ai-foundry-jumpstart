@@ -27,4 +27,4 @@ jobs:
     uses: ./.github/workflows/lint-and-test-python-apps.yml
     with:
       # List all app names (folders) in /src and /tests that should be tested
-      app_names: '["tools/data_generator","tools/create_ai_search_index"]'
+      app_names: '["tools/python/data_generator","tools/python/create_ai_search_index"]'

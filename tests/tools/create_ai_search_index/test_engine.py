@@ -42,19 +42,19 @@ def sample_config_with_connstr() -> CreateAISearchIndexConfig:
 
 
 @pytest.fixture(name="engine")
-def engine_fixture(sample_cfg: CreateAISearchIndexConfig) -> CreateAISearchIndex:
-    return CreateAISearchIndex(sample_cfg)
+def engine_fixture(sample_config: CreateAISearchIndexConfig) -> CreateAISearchIndex:
+    return CreateAISearchIndex(sample_config)
 
 
 
 
-def test_config_properties(sample_cfg: CreateAISearchIndexConfig) -> None:
+def test_config_properties(sample_config: CreateAISearchIndexConfig) -> None:
     """Test CreateAISearchIndexConfig properties."""
-    assert sample_cfg.search_endpoint == "https://testsearch.search.windows.net"
-    assert sample_cfg.embedding_dimension == 1536
-    assert sample_cfg.embedding_model == "text-embedding-ada-002"
-    assert sample_cfg.storage_account_key == "testkey"
-    assert sample_cfg.storage_account_connection_string is None
+    assert sample_config.search_endpoint == "https://testsearch.search.windows.net"
+    assert sample_config.embedding_dimension == 1536
+    assert sample_config.embedding_model == "text-embedding-ada-002"
+    assert sample_config.storage_account_key == "testkey"
+    assert sample_config.storage_account_connection_string is None
 
 def test_engine_init(engine: CreateAISearchIndex) -> None:
     """Test CreateAISearchIndex initialization."""
@@ -86,17 +86,17 @@ def test_engine_methods_stub(
     monkeypatch.setattr(engine, method_name, lambda: None)
     getattr(engine, method_name)()
 
-def test_config_repr(sample_cfg: CreateAISearchIndexConfig) -> None:
+def test_config_repr(sample_config: CreateAISearchIndexConfig) -> None:
     """Test the __repr__ of the config for coverage."""
-    assert "testindex" in repr(sample_cfg)
+    assert "testindex" in repr(sample_config)
 
 from typing import Any
 
 def test_data_source_connection_string(
-    monkeypatch: MonkeyPatch, sample_cfg_connstr: CreateAISearchIndexConfig
+    monkeypatch: MonkeyPatch, sample_config_with_connstr: CreateAISearchIndexConfig
 ) -> None:
     """Test that _ensure_data_source uses the connection string if provided."""
-    engine = CreateAISearchIndex(sample_cfg_connstr)
+    engine = CreateAISearchIndex(sample_config_with_connstr)
     called: dict[str, str | None] = {}
     def fake_create_or_update_data_source_connection(ds: Any) -> None:
         value = getattr(ds, 'connection_string', None)
@@ -106,14 +106,14 @@ def test_data_source_connection_string(
     engine._ensure_data_source()  # type: ignore[attr-defined]  # noqa: SLF001
     assert called['conn_str'] == "connstr"
 
-def test_get_storage_account_connection_string_with_connstr(sample_cfg_connstr: CreateAISearchIndexConfig) -> None:
+def test_get_storage_account_connection_string_with_connstr(sample_config_with_connstr: CreateAISearchIndexConfig) -> None:
     """Test _get_storage_account_connection_string returns the connection string if provided."""
-    engine = CreateAISearchIndex(sample_cfg_connstr)
+    engine = CreateAISearchIndex(sample_config_with_connstr)
     assert engine._get_storage_account_connection_string() == "connstr"  # type: ignore[attr-defined]  # noqa: SLF001
 
-def test_get_storage_account_connection_string_with_account_key(sample_cfg: CreateAISearchIndexConfig) -> None:
+def test_get_storage_account_connection_string_with_account_key(sample_config: CreateAISearchIndexConfig) -> None:
     """Test _get_storage_account_connection_string assembles string from account/key."""
-    engine = CreateAISearchIndex(sample_cfg)
+    engine = CreateAISearchIndex(sample_config)
     expected = (
         "DefaultEndpointsProtocol=https;AccountName=teststorage;"
         "AccountKey=testkey;EndpointSuffix=core.windows.net"

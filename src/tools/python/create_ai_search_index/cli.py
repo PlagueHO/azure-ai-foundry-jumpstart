@@ -66,7 +66,7 @@ def main(argv: list[str] | None = None):
     )
     parser.add_argument(
         "--azure-openai-endpoint",
-        required=True,
+    required=False,
         help="Azure OpenAI endpoint URL."
     )
     parser.add_argument(
@@ -106,6 +106,11 @@ def main(argv: list[str] | None = None):
                 "--storage-account or --storage-account-key"
             )
     else:
+        if not args.storage_account:
+            parser.error(
+                "--storage-account is required unless "
+                "--storage-account-connection-string is provided"
+            )
         if not args.storage_account_key:
             parser.error(
                 "--storage-account-key is required unless "

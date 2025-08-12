@@ -2,9 +2,13 @@
 Configure pytest environment.
 """
 
-import os
 import sys
 from pathlib import Path
 
 # Add the src directory to the Python path
-sys.path.append(str(Path(__file__).parent.parent.parent / "src"))
+repo_root = Path(__file__).parent.parent.parent
+# Allow `from src...` style imports by adding repo root (PEP 420 namespace package)
+sys.path.insert(0, str(repo_root))
+# Ensure both `src` and nested Python tools path are available for imports
+sys.path.append(str(repo_root / "src"))
+sys.path.append(str(repo_root / "src" / "tools" / "python"))

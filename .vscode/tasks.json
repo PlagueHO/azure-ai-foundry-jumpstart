@@ -1,70 +1,90 @@
 {
     "version": "2.0.0",
     "tasks": [
+        // Build/Lint tasks
         {
             "label": "Run Ruff Check",
             "type": "shell",
-            "command": "python -m ruff check src/",
-            "group": "test",
-            "presentation": {
-                "reveal": "always"
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "ruff", "check", "src/"],
+            "windows": {
+                "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+                "args": ["-m", "ruff", "check", "src/"]
             },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "icon": { "id": "check" },
+            "presentation": { "reveal": "always" },
             "problemMatcher": []
+        },
+        {
+            "label": "Run Flake8 Linting",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "flake8", "src/"],
+            "windows": {
+                "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+                "args": ["-m", "flake8", "src/"]
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "icon": { "id": "check" },
+            "problemMatcher": ["$python"],
+            "presentation": { "reveal": "always" }
         },
         {
             "label": "Run Python Linting",
             "type": "shell",
-            "command": "pylint",
-            "args": [
-                "src/"
-            ],
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pylint", "src/"],
+            "windows": {
+                "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+                "args": ["-m", "pylint", "src/"]
+            },
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": ["$python"]
-        },
-        {
-            "label": "Run Unit Tests",
-            "type": "shell",
-            "command": "pytest",
-            "args": [
-                "tests/"
-            ],
-            "group": {
-                "kind": "test",
-                "isDefault": true
-            },
+            "icon": { "id": "tools" },
             "problemMatcher": ["$python"]
         },
         {
             "label": "Run Mypy Type Checks",
             "type": "shell",
-            "command": "mypy",
-            "args": [
-                "src/"
-            ],
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "mypy", "src/"],
+            "windows": {
+                "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+                "args": ["-m", "mypy", "src/"]
+            },
             "group": {
                 "kind": "build",
                 "isDefault": false
             },
+            "icon": { "id": "check" },
             "problemMatcher": ["$python"]
         },
+
+        // Test tasks
         {
-            "label": "Run Flake8 Linting",
+            "label": "Run Unit Tests",
             "type": "shell",
-            "command": "flake8",
-            "args": [
-                "src/"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": false
+            "command": "${command:python.interpreterPath}",
+            "args": ["-m", "pytest", "tests/"],
+            "windows": {
+                "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+                "args": ["-m", "pytest", "tests/"]
             },
-            "problemMatcher": ["$python"],
-            "presentation": {
-                "reveal": "always"
-            }
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "icon": { "id": "beaker" },
+            "problemMatcher": ["$python"]
         }
     ]
 }

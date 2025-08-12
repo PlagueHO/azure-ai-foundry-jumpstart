@@ -6,7 +6,7 @@ on:
       app_names:
         description: 'List of python app names (folders in /src and /tests) to test'
         type: string
-        default: '["tools/data_generator"]'
+        default: '["tools/python/data_generator"]'
   pull_request:
     branches:
       - main
@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        app: ${{ fromJSON(inputs.app_names || '["tools/data_generator"]') }}
+        app: ${{ fromJSON(inputs.app_names || '["tools/python/data_generator"]') }}
       fail-fast: false
 
     name: Test ${{ matrix.app }}
