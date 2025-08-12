@@ -150,10 +150,13 @@ def initialize_client(endpoint: Optional[str] = None) -> AzureOpenAI:
             credential=credential
         )
 
-        # Get Azure OpenAI client for inference operations
-        client = project_client.inference.get_azure_openai_client(
-            api_version="2024-10-21"
-        )
+        # Get Azure OpenAI client for inference operations (handle dynamic attribute for type checkers)
+        inference_attr = getattr(project_client, "inference", None)
+        if inference_attr is None:
+            raise RuntimeError(
+                "AIProjectClient does not expose 'inference' operations. Ensure the 'azure-ai-projects' package version supports inference."
+            )
+        client = inference_attr.get_azure_openai_client(api_version="2024-10-21")
 
         logger.info("Created Azure OpenAI client via AIProjectClient for endpoint: %s", project_endpoint)
         print(f"Connected to Azure AI Foundry project: {project_endpoint}")
