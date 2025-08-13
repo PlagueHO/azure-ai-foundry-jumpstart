@@ -9,10 +9,10 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    environment: copilot
+    environment: Copilot
     steps:
       - name: Azure login
-        uses: azure/login@a457da9ea143d694b1b9c7c869ebb04ebe844ef5
+        uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}

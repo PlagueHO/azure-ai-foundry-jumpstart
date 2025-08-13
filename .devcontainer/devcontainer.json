@@ -44,7 +44,10 @@
                 "ms-python.black-formatter",
                 "ms-playwright.playwright",
                 "ms-dotnettools.csharp",
-                "ms-dotnettools.csdevkit"
+                "ms-dotnettools.csdevkit",
+                "ms-dotnettools.vscode-dotnet-runtime",
+                "ms-toolsai.prompty",
+                "ms-semantic-kernel.semantic-kernel"
             ]
         }
     },
