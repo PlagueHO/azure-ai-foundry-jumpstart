@@ -1,3 +1,11 @@
+"""
+Financial Transaction Data Generator.
+
+This module provides a tool to generate synthetic financial transaction data
+for testing and development purposes. Supports various output formats including
+JSON, YAML, and text.
+"""
+
 from __future__ import annotations
 
 import argparse

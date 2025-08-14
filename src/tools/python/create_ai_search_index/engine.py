@@ -1,3 +1,10 @@
+"""
+Azure AI Search Index Creation Engine.
+
+This module provides functionality to create and manage Azure AI Search indexes,
+including document processing, embedding generation, and search index management.
+"""
+
 from __future__ import annotations
 
 import logging

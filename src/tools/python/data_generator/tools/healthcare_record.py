@@ -1,3 +1,11 @@
+"""
+Healthcare Record Data Generator.
+
+This module provides a tool to generate synthetic healthcare record data
+for testing and development purposes. Supports various output formats including
+JSON, YAML, and text.
+"""
+
 from __future__ import annotations
 
 import argparse

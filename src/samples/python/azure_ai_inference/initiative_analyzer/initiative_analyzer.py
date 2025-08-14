@@ -307,7 +307,7 @@ def parse_arguments() -> argparse.Namespace:
         type=str,
         choices=['item-centric', 'initiative-centric'],
         default='initiative-centric',
-        help="""Processing approach: 
+        help="""Processing approach:
         - item-centric: Legacy mode that analyzes each backlog item individually (less efficient)
         - initiative-centric: Recommended mode that analyzes batches of items per initiative (80%% fewer API calls)
         Default: initiative-centric"""
@@ -315,7 +315,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--additional-instructions",
         type=str,
-        help="""Additional instructions to include in the AI analysis prompt. 
+        help="""Additional instructions to include in the AI analysis prompt.
         Example: 'Exclude backlog items that would require very detailed and specific engineering understanding of the code base to implement'"""
     )
     return parser.parse_args()

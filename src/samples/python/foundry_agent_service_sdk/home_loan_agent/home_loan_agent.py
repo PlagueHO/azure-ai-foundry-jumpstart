@@ -1,3 +1,11 @@
+"""
+Home Loan Agent - A conversational AI agent to assist with mortgage loan inquiries.
+
+This module provides a home loan guide agent that can answer questions about mortgage
+loans, documentation requirements, and loan processes using Azure AI Project Client
+and agent services.
+"""
+
 import argparse
 import os
 from pathlib import Path
@@ -14,6 +22,12 @@ from azure.identity import DefaultAzureCredential
 
 # Parse command-line arguments
 def parse_arguments():
+    """
+    Parse command-line arguments for the home loan agent.
+    
+    Returns:
+        argparse.Namespace: Parsed command-line arguments containing question and interactive mode settings.
+    """
     parser = argparse.ArgumentParser(
         description="Home Loan Guide Agent - Ask questions about mortgage loans and documentation",
         epilog="Example: python home_loan_agent.py --question 'What documents do I need for a conventional loan?'"
@@ -33,6 +47,15 @@ def parse_arguments():
 
 # Function to initialize and test the project client
 def initialize_client():
+    """
+    Initialize and test the Azure AI Project client.
+    
+    Returns:
+        AIProjectClient: Initialized Azure AI Project client ready for use.
+        
+    Raises:
+        SystemExit: If connection fails or required environment variables are missing.
+    """
     # Load environment variables from .env file if it exists
     try:
         from dotenv import load_dotenv
@@ -66,6 +89,15 @@ def initialize_client():
 
 # Function to create and setup the agent with files
 def create_agent(project_client):
+    """
+    Create and setup the home loan agent with required files and tools.
+    
+    Args:
+        project_client: Azure AI Project client instance.
+        
+    Returns:
+        The created agent instance with file search and code interpreter tools.
+    """
     # Get the model deployment name from environment
     model_deployment_name = os.environ.get("MODEL_DEPLOYMENT_NAME", "gpt-4o-mini")
 
@@ -156,12 +188,28 @@ Follow up after application submissions to assist with documentation or next ste
 
 # Function to create a conversation thread
 def create_thread(project_client):
+    """
+    Create a new conversation thread for agent interactions.
+    
+    Args:
+        project_client: Azure AI Project client instance.
+        
+    Returns:
+        The created thread instance.
+    """
     thread = project_client.agents.threads.create()
     print(f"Created thread, thread ID: {thread.id}")
     return thread
 
 # Function to delete a conversation thread
 def delete_thread(project_client, thread):
+    """
+    Delete a conversation thread and clean up resources.
+    
+    Args:
+        project_client: Azure AI Project client instance.
+        thread: The thread instance to delete.
+    """
     if thread:
         try:
             project_client.agents.threads.delete(thread.id)
@@ -171,6 +219,14 @@ def delete_thread(project_client, thread):
 
 # Function to cleanup agent and resources
 def cleanup_agent(project_client, agent, resources):
+    """
+    Clean up agent and associated resources like vector stores and files.
+    
+    Args:
+        project_client: Azure AI Project client instance.
+        agent: The agent instance to delete.
+        resources: Dictionary containing resources to clean up (vector_store, files, etc.).
+    """
     print("\nCleaning up resources...")
 
     # Cleanup resources
@@ -188,6 +244,15 @@ def cleanup_agent(project_client, agent, resources):
 
 # Function to ask a single question using a provided thread
 def ask_question(project_client, agent, question, thread):
+    """
+    Ask a question to the agent using a specific thread.
+    
+    Args:
+        project_client: Azure AI Project client instance.
+        agent: The agent instance to query.
+        question: The question string to ask.
+        thread: The thread instance to use for the conversation.
+    """
     # Get absolute paths for the files
     current_dir = Path(__file__).parent
     checklist_file_path = current_dir / 'Contoso_Loan_Documentation_Checklist.md'
@@ -254,6 +319,13 @@ def ask_question(project_client, agent, question, thread):
 
 # Function to process a single question with complete lifecycle management
 def process_question(project_client, question):
+    """
+    Process a single question with complete agent lifecycle management.
+    
+    Args:
+        project_client: Azure AI Project client instance.
+        question: The question string to process.
+    """
     # Create agent and resources
     agent, resources = create_agent(project_client)
     thread = None
@@ -272,6 +344,12 @@ def process_question(project_client, question):
 
 # Interactive mode function
 def interactive_mode(project_client):
+    """
+    Run the agent in interactive mode for multiple questions.
+    
+    Args:
+        project_client: Azure AI Project client instance.
+    """
     print("\n=== INTERACTIVE MODE ===")
     print("Type 'quit', 'exit', or 'q' to stop.")
     print("Ask questions about home loans and mortgage documentation.\n")
@@ -309,6 +387,11 @@ def interactive_mode(project_client):
 
 # Main execution
 def main():
+    """
+    Main entry point for the home loan agent application.
+    
+    Parses command-line arguments and runs either interactive mode or processes a single question.
+    """
     args = parse_arguments()
 
     # Initialize the client

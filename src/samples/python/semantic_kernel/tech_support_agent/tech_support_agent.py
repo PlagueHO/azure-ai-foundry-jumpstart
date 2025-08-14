@@ -28,6 +28,18 @@ from semantic_kernel.agents import AzureAIAgent, AzureAIAgentSettings
 load_dotenv()
 
 def get_env_var(name: str) -> str:
+    """
+    Get an environment variable value with validation.
+    
+    Args:
+        name: The name of the environment variable to retrieve.
+        
+    Returns:
+        The value of the environment variable.
+        
+    Raises:
+        OSError: If the environment variable is not set.
+    """
     value = os.getenv(name)
     if not value:
         raise OSError(f"Please set {name} in your environment.")
@@ -43,6 +55,12 @@ AGENT_ID = get_env_var("AZURE_AI_AGENT_ID")
 
 
 async def main():
+    """
+    Main function to run the tech support agent with interactive chat.
+    
+    Creates an Azure AI Agent client, retrieves an existing agent, and runs
+    an interactive chat loop for tech support conversations.
+    """
 
     ai_agent_settings = AzureAIAgentSettings(
         project_connection_string=PROJECT_CONN_STR,

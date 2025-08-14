@@ -1,3 +1,10 @@
+"""
+Data Generator Tool Base Classes.
+
+This module provides abstract base classes and utilities for creating data generation
+tools that can produce synthetic data in various formats (JSON, YAML, text).
+"""
+
 from __future__ import annotations
 
 import argparse

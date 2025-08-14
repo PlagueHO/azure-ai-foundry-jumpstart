@@ -1,3 +1,11 @@
+"""
+Data Generator Tools Package.
+
+This package contains various specialized data generation tools for creating
+synthetic data for different domains including financial, healthcare, retail,
+and support interactions.
+"""
+
 from .customer_support_chat_log import CustomerSupportChatLogTool
 from .financial_transaction import FinancialTransactionTool
 from .healthcare_record import HealthcareRecordTool
