@@ -7,6 +7,7 @@ and support interactions.
 """
 
 from .customer_support_chat_log import CustomerSupportChatLogTool
+from .ecommerce_order_history import EcommerceOrderHistoryTool
 from .financial_transaction import FinancialTransactionTool
 from .healthcare_record import HealthcareRecordTool
 from .insurance_claim import InsuranceClaimTool
@@ -16,6 +17,7 @@ from .tech_support import TechSupportTool
 
 __all__ = [
     "CustomerSupportChatLogTool",
+    "EcommerceOrderHistoryTool",
     "TechSupportTool",
     "RetailProductTool",
     "HealthcareRecordTool",
