@@ -523,7 +523,7 @@ class TestCliHelpAndErrors(unittest.TestCase):
         mock_parser_class.return_value = mock_parser
         with self.assertRaises(SystemExit):
             # Simulate missing --scenario
-            from src.data_generator import cli
+            from data_generator import cli
             cli.main(["--out-dir", "/tmp/output"])  # no --scenario
 
     @patch('argparse.ArgumentParser')
@@ -539,13 +539,13 @@ class TestCliHelpAndErrors(unittest.TestCase):
         mock_parser.parse_args.side_effect = SystemExit(2)
         mock_parser_class.side_effect = [mock_phase1, mock_parser]
         # Patch DataGeneratorTool
-        with patch("src.data_generator.cli.DataGeneratorTool") as mock_tool_class:
+        with patch("data_generator.cli.DataGeneratorTool") as mock_tool_class:
             mock_tool = MagicMock()
             mock_tool.examples.return_value = ["Example 1"]
             mock_tool.cli_arguments.return_value = []
             mock_tool_class.from_name.return_value = mock_tool
             with self.assertRaises(SystemExit):
-                from src.data_generator import cli
+                from data_generator import cli
                 cli.main([
                     "--scenario", "test-scenario",
                     "--out-dir", "/tmp/output",
@@ -572,8 +572,8 @@ class TestCliHelpAndErrors(unittest.TestCase):
         mock_parser.parse_args.return_value = mock_args
         mock_parser_class.side_effect = [mock_phase1, mock_parser]
         # Patch DataGeneratorTool and DataGenerator
-        with patch("src.data_generator.cli.DataGeneratorTool") as mock_tool_class, \
-             patch("src.data_generator.cli.DataGenerator") as mock_generator_class:
+        with patch("data_generator.cli.DataGeneratorTool") as mock_tool_class, \
+             patch("data_generator.cli.DataGenerator") as mock_generator_class:
             mock_tool = MagicMock()
             mock_tool.examples.return_value = ["Example 1"]
             mock_tool.cli_arguments.return_value = []
@@ -581,7 +581,7 @@ class TestCliHelpAndErrors(unittest.TestCase):
             mock_tool_class.from_name.return_value = mock_tool
             mock_generator = MagicMock()
             mock_generator_class.return_value = mock_generator
-            from src.data_generator import cli
+            from data_generator import cli
             cli.main([
                 "--scenario", "test-scenario",
                 "--out-dir", "/tmp/output"
@@ -595,7 +595,7 @@ class TestCliHelpAndErrors(unittest.TestCase):
         mock_parser.parse_known_intermixed_args.side_effect = SystemExit(0)
         mock_parser_class.return_value = mock_parser
         with self.assertRaises(SystemExit):
-            from src.data_generator import cli
+            from data_generator import cli
             cli.main(["-h"])
 
 
