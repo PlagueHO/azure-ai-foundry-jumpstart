@@ -16,6 +16,12 @@ jobs:
         run: |
           bicep lint ./infra/main.bicep
 
+      - name: Spellcheck Bicep files
+        uses: streetsidesoftware/cspell-action@v6
+        with:
+          files: "**/*.bicep"
+          config: ".cspell.json"
+
       - name: Publish Bicep as Workflow Artifact
         uses: actions/upload-artifact@v4
         with:

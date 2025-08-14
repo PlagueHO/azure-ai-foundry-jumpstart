@@ -268,7 +268,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
   }
 }
 
-// ---------- VIRTUAL NETWORK (REQUIRED FOR NETOWRK ISOLATION) ----------
+// ---------- VIRTUAL NETWORK (REQUIRED FOR NETWORK ISOLATION) ----------
 // Update subnet definitions to match architecture doc
 var subnets = [
   {
@@ -324,7 +324,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if (az
   }
 }
 
-// ---------- PRIVTE DNS ZONES (REQUIRED FOR NETOWRK ISOLATION) ----------
+// ---------- PRIVATE DNS ZONES (REQUIRED FOR NETWORK ISOLATION) ----------
 module storageBlobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if ((aiFoundryHubDeploy || deploySampleData) && azureNetworkIsolation) {
   name: 'storage-blobservice-private-dns-zone'
   scope: az.resourceGroup(effectiveResourceGroupName)
@@ -1289,7 +1289,7 @@ module aiFoundryHubProjectSampleDataStores 'core/ai/ai-foundry-project-datastore
   }
 ]
 
-// ------------- BASTION HOST (OPTIONAL) -------------
+// ---------- BASTION HOST (OPTIONAL) ----------
 module bastionHost 'br/public:avm/res/network/bastion-host:0.7.0' = if (bastionHostDeploy && azureNetworkIsolation) {
   name: 'bastion-host-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
