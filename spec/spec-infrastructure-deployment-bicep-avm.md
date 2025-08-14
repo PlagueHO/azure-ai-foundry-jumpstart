@@ -40,6 +40,10 @@ The purpose of this specification is to standardize infrastructure deployment fo
 - **CON-001**: Only Microsoft-verified AVM modules from https://aka.ms/avm may be used for core resources.
 - **GUD-001**: Use parameterization and outputs to maximize reusability and composability.
 - **GUD-002**: All Bicep files must pass `az bicep lint` validation with no errors or warnings to ensure code quality and adherence to best practices.
+- **GUD-003**: All comments must follow consistent formatting standards and pass spellcheck validation to maintain professional code quality:
+  - Section headers: `// ---------- [SECTION NAME] ([OPTIONAL CONTEXT]) ----------`
+  - Use proper spelling and grammar in all comments
+  - Maintain consistent spacing after `//` in comments
 - **PAT-001**: Follow the folder and file naming conventions: `infra/main.bicep`, `infra/main.bicepparam`, and `infra/modules/` for custom modules if needed.
 
 ## 4. Interfaces & Data Contracts
