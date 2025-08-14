@@ -561,7 +561,7 @@ resource cognitiveService_roleAssignments 'Microsoft.Authorization/roleAssignmen
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condition is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: cognitiveService
@@ -625,7 +625,7 @@ output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
   ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
   : {}
 
-@description('The private endpoints of the congitive services account.')
+@description('The private endpoints of the cognitive services account.')
 output privateEndpoints privateEndpointOutputType[] = [
   for (pe, index) in (privateEndpoints ?? []): {
     name: cognitiveService_privateEndpoints[index].outputs.name
