@@ -4,8 +4,9 @@ Unit tests for the create_ai_search_index.engine module.
 
 
 import pytest
-from pytest import MonkeyPatch
 from create_ai_search_index.engine import CreateAISearchIndex, CreateAISearchIndexConfig
+from pytest import MonkeyPatch
+
 
 @pytest.fixture
 def sample_config() -> CreateAISearchIndexConfig:
@@ -91,6 +92,7 @@ def test_config_repr(sample_config: CreateAISearchIndexConfig) -> None:
     assert "testindex" in repr(sample_config)
 
 from typing import Any
+
 
 def test_data_source_connection_string(
     monkeypatch: MonkeyPatch, sample_config_with_connstr: CreateAISearchIndexConfig

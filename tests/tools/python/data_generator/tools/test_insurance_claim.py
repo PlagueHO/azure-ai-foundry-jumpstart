@@ -6,11 +6,10 @@ import argparse
 import json
 import unittest
 from datetime import date
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 import yaml
-
 from data_generator.tools.insurance_claim import InsuranceClaimTool
 
 
