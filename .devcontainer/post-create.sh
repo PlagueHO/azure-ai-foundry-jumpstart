@@ -33,4 +33,26 @@ echo "  NPX version: $(npx --version 2>/dev/null || echo 'Not found')"
 echo "  NPX location: $(which npx 2>/dev/null || echo 'Not found')"
 echo "  Python version: $(python3 --version 2>/dev/null || echo 'Not found')"
 
+# Configure GitHub Copilot in the CLI alias (ghcs) for bash
+echo "🤖 Configuring GitHub Copilot CLI alias..."
+if command -v gh >/dev/null 2>&1; then
+    # Ensure ~/.bashrc exists
+    touch ~/.bashrc
+    # Add alias if not already present
+    if ! grep -q 'gh copilot alias -- bash' ~/.bashrc; then
+        echo 'eval "$(gh copilot alias -- bash)"' >> ~/.bashrc
+        echo "  Added ghcs alias to ~/.bashrc"
+    else
+        echo "  ghcs alias already present in ~/.bashrc"
+    fi
+    # Source it for current session (if we're in bash)
+    if [ -n "$BASH_VERSION" ]; then
+        # shellcheck source=/dev/null
+        . ~/.bashrc
+    fi
+    echo "  gh version: $(gh --version | head -n 1)"
+else
+    echo "  Warning: GitHub CLI (gh) not found; skipping ghcs alias setup."
+fi
+
 echo "🎉 Post-create setup completed successfully!"
