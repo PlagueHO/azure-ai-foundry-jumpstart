@@ -3,7 +3,8 @@ Unit tests for the cli.py module in create_ai_search_index package.
 """
 
 import sys
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 import pytest
 
 # Patch sys.argv and dependencies for CLI tests

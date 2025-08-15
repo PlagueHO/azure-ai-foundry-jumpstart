@@ -12,6 +12,7 @@ from .financial_transaction import FinancialTransactionTool
 from .healthcare_record import HealthcareRecordTool
 from .insurance_claim import InsuranceClaimTool
 from .legal_contract import LegalContractTool  # noqa: F401
+from .manufacturing_maintenance_log import ManufacturingMaintenanceLogTool
 from .retail_product import RetailProductTool
 from .tech_support import TechSupportTool
 from .travel_booking import TravelBookingTool
@@ -25,5 +26,6 @@ __all__ = [
     "FinancialTransactionTool",
     "InsuranceClaimTool",
     "LegalContractTool",
+    "ManufacturingMaintenanceLogTool",
     "TravelBookingTool",
 ]
