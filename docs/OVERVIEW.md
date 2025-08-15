@@ -42,7 +42,7 @@ The accelerator includes sample data sets to facilitate testing, demonstrating a
 | Customer Support Chat Logs     | Multi-turn chat transcripts for various industries (e.g., telecom, utilities).                   | [tools/customer_support_chat_log.py](../src/tools/python/data_generator/tools/customer_support_chat_log.py) |
 | IT Service Desk Tickets        | Incident, change, and request tickets with resolution notes.                                     | *(not yet available)*                                                                 |
 | HR Employee Records            | Onboarding documents, performance reviews, and leave requests.                                   | *(not yet available)*                                                                 |
-| Manufacturing Maintenance Logs | Equipment maintenance records, sensor readings, and failure reports.                             | *(not yet available)*                                                                 |
+| Manufacturing Maintenance Logs | Equipment maintenance records, sensor readings, and failure reports.                             | [tools/manufacturing_maintenance_log.py](../src/tools/python/data_generator/tools/manufacturing_maintenance_log.py) |
 | Travel Bookings                | Itineraries, booking confirmations, and customer feedback for flights/hotels.                    | [tools/travel_booking.py](../src/tools/python/data_generator/tools/travel_booking.py) |
 | E-commerce Order Histories     | Orders, returns, product reviews, and customer service interactions.                             | [tools/ecommerce_order_history.py](../src/tools/python/data_generator/tools/ecommerce_order_history.py) |
 
