@@ -2,6 +2,7 @@
 Unit tests for the create_ai_search_index.engine module.
 """
 
+from typing import Any
 
 import pytest
 from create_ai_search_index.engine import CreateAISearchIndex, CreateAISearchIndexConfig
@@ -90,8 +91,6 @@ def test_engine_methods_stub(
 def test_config_repr(sample_config: CreateAISearchIndexConfig) -> None:
     """Test the __repr__ of the config for coverage."""
     assert "testindex" in repr(sample_config)
-
-from typing import Any
 
 
 def test_data_source_connection_string(
