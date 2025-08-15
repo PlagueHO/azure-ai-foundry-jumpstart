@@ -5,7 +5,7 @@ Unit tests for the data_generator.tools.tech_support module.
 import argparse
 import uuid
 from datetime import datetime, timezone
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
