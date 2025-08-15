@@ -10,6 +10,7 @@ from .customer_support_chat_log import CustomerSupportChatLogTool
 from .ecommerce_order_history import EcommerceOrderHistoryTool
 from .financial_transaction import FinancialTransactionTool
 from .healthcare_record import HealthcareRecordTool
+from .hr_employee_record import HREmployeeRecordTool
 from .insurance_claim import InsuranceClaimTool
 from .legal_contract import LegalContractTool  # noqa: F401
 from .manufacturing_maintenance_log import ManufacturingMaintenanceLogTool
@@ -23,6 +24,7 @@ __all__ = [
     "TechSupportTool",
     "RetailProductTool",
     "HealthcareRecordTool",
+    "HREmployeeRecordTool",
     "FinancialTransactionTool",
     "InsuranceClaimTool",
     "LegalContractTool",
