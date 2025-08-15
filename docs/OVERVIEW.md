@@ -43,7 +43,7 @@ The accelerator includes sample data sets to facilitate testing, demonstrating a
 | IT Service Desk Tickets        | Incident, change, and request tickets with resolution notes.                                     | *(not yet available)*                                                                 |
 | HR Employee Records            | Onboarding documents, performance reviews, and leave requests.                                   | *(not yet available)*                                                                 |
 | Manufacturing Maintenance Logs | Equipment maintenance records, sensor readings, and failure reports.                             | *(not yet available)*                                                                 |
-| Travel Bookings                | Itineraries, booking confirmations, and customer feedback for flights/hotels.                    | *(not yet available)*                                                                 |
+| Travel Bookings                | Itineraries, booking confirmations, and customer feedback for flights/hotels.                    | [tools/travel_booking.py](../src/tools/python/data_generator/tools/travel_booking.py) |
 | E-commerce Order Histories     | Orders, returns, product reviews, and customer service interactions.                             | [tools/ecommerce_order_history.py](../src/tools/python/data_generator/tools/ecommerce_order_history.py) |
 
 These data sets enable comprehensive evaluation of LLM and agent capabilities across document understanding, summarization, Q&A, classification, and workflow automation tasks.

@@ -14,6 +14,7 @@ from .insurance_claim import InsuranceClaimTool
 from .legal_contract import LegalContractTool  # noqa: F401
 from .retail_product import RetailProductTool
 from .tech_support import TechSupportTool
+from .travel_booking import TravelBookingTool
 
 __all__ = [
     "CustomerSupportChatLogTool",
@@ -24,4 +25,5 @@ __all__ = [
     "FinancialTransactionTool",
     "InsuranceClaimTool",
     "LegalContractTool",
+    "TravelBookingTool",
 ]
