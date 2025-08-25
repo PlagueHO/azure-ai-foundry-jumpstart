@@ -484,7 +484,7 @@ module aiServicesAiDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = 
 }
 
 // ---------- KEY VAULT (HUB DEPLOY ONLY) ----------
-module keyVault 'br/public:avm/res/key-vault/vault:0.13.1' = if (aiFoundryHubDeploy) {
+module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = if (aiFoundryHubDeploy) {
   name: 'key-vault-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -518,8 +518,8 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.1' = if (aiFoundryHubDep
   }
 }
 
-// ---------- STORAGE ACCOUNT (HUB DEPLOY ONLY) ----------
-module storageAccount 'br/public:avm/res/storage/storage-account:0.26.0' = if (aiFoundryHubDeploy) {
+// ---------- STORAGE (HUB DEPLOY ONLY) ----------
+module storageAccount 'br/public:avm/res/storage/storage-account:0.26.2' = if (aiFoundryHubDeploy) {
   name: 'hub-storage-account-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -577,7 +577,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.26.0' = if (a
 }
 
 // ---------- CONTAINER REGISTRY (HUB DEPLOY ONLY) ----------
-module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = if (aiFoundryHubDeploy && containerRegistryDeploy && empty(containerRegistryResourceId)) {
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.3' = if (aiFoundryHubDeploy && containerRegistryDeploy && empty(containerRegistryResourceId)) {
   name: 'container-registry-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -621,7 +621,7 @@ var effectiveContainerRegistryResourceId = containerRegistryDeploy
   : ''
 
 // ---------- STORAGE ACCOUNT SAMPLE DATA (OPTIONAL) ----------
-module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.26.0' = if (deploySampleData) {
+module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.26.2' = if (deploySampleData) {
   name: 'sample-data-storage-account-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -770,7 +770,7 @@ module sampleDataStorageAccountRoles './core/security/role_storageaccount.bicep'
 }
 
 // ---------- AI SEARCH (OPTIONAL) ----------
-module aiSearchService 'br/public:avm/res/search/search-service:0.11.0' = if (azureAiSearchDeploy) {
+module aiSearchService 'br/public:avm/res/search/search-service:0.11.1' = if (azureAiSearchDeploy) {
   name: 'ai-search-service-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -1122,7 +1122,7 @@ var aiFoundryHubConnections = concat([
   }
 ] : [])
 
-module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' = if (aiFoundryHubDeploy) {
+module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.13.0' = if (aiFoundryHubDeploy) {
   name: 'ai-foundry-hub-workspace-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   params: {
@@ -1186,7 +1186,7 @@ module aiFoundryHub 'br/public:avm/res/machine-learning-services/workspace:0.12.
 // ---------- AI FOUNDRY PROJECTS (HUB DEPLOY ONLY) ----------
 // Deploy AI Foundry projects as separate Machine Learning workspace resources (Stage 3)
 // These are only deployed when using Hub mode (aiFoundryHubDeploy && aiFoundryHubProjectDeploy)
-module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspace:0.12.1' = [for project in aiFoundryHubProjectsList: if (aiFoundryHubDeploy && aiFoundryHubProjectDeploy) {
+module aiFoundryHubProjects 'br/public:avm/res/machine-learning-services/workspace:0.13.0' = [for project in aiFoundryHubProjectsList: if (aiFoundryHubDeploy && aiFoundryHubProjectDeploy) {
   name: take('aifp-${project.name}',64)
   scope: az.resourceGroup(effectiveResourceGroupName)
   params: {

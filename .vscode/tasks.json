@@ -85,6 +85,25 @@
             },
             "icon": { "id": "beaker" },
             "problemMatcher": ["$python"]
+        },
+
+        // Bicep tasks
+        {
+            "label": "Build Bicep",
+            "type": "shell",
+            "command": "pwsh",
+            "args": [
+                "-NoProfile",
+                "-Command",
+                "bicep build .\\infra\\main.bicep; Get-ChildItem -Path .\\infra -Filter 'main.bicep' -Recurse | ForEach-Object { if ($_.FullName -ne (Resolve-Path '.\\infra\\main.bicep').Path) { bicep build $_.FullName } }"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "presentation": { "reveal": "always" },
+            "icon": { "id": "azure" },
+            "problemMatcher": []
         }
     ]
 }

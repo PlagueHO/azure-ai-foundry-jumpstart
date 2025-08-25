@@ -1,12 +1,16 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "2.0",
+  "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
+    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+    "_EXPERIMENTAL_FEATURES_ENABLED": [
+      "Extensibility"
+    ],
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "2334667495829516071"
+      "version": "0.34.44.8038",
+      "templateHash": "9940039322222733312"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service account.\nThis is a temporary module for deploying Azure AI Foundry Cognitive Services accounts.\nIt is intended to be replaced by the Azure Verified Module (AVM) for Microsoft.CognitiveServices accounts\nonce it supports AI Foundry V2 (projects, connections etc)\nhttps://github.com/Azure/bicep-registry-modules/issues/5390\n"
@@ -326,7 +330,36 @@
         "description": "Defines the nested properties for an Azure AI Foundry Project, corresponding to the \"properties\" object of the Microsoft.CognitiveServices/accounts/projects resource."
       }
     },
-    "_1.privateEndpointCustomDnsConfigType": {
+    "_1.secretSetOutputType": {
+      "type": "object",
+      "properties": {
+        "secretResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resourceId of the exported secret."
+          }
+        },
+        "secretUri": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI of the exported secret."
+          }
+        },
+        "secretUriWithVersion": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI with version of the exported secret."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+        }
+      }
+    },
+    "_2.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
         "fqdn": {
@@ -348,11 +381,11 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
-    "_1.privateEndpointIpConfigurationType": {
+    "_2.privateEndpointIpConfigurationType": {
       "type": "object",
       "properties": {
         "name": {
@@ -390,11 +423,11 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
-    "_1.privateEndpointPrivateDnsZoneGroupType": {
+    "_2.privateEndpointPrivateDnsZoneGroupType": {
       "type": "object",
       "properties": {
         "name": {
@@ -431,40 +464,11 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
-    "_1.secretSetOutputType": {
-      "type": "object",
-      "properties": {
-        "secretResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "The resourceId of the exported secret."
-          }
-        },
-        "secretUri": {
-          "type": "string",
-          "metadata": {
-            "description": "The secret URI of the exported secret."
-          }
-        },
-        "secretUriWithVersion": {
-          "type": "string",
-          "metadata": {
-            "description": "The secret URI with version of the exported secret."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
-        }
-      }
-    },
-    "_2.aadAuthTypeWorkspaceConnectionPropertyType": {
+    "_3.aadAuthTypeWorkspaceConnectionPropertyType": {
       "type": "object",
       "properties": {
         "authType": {
@@ -484,7 +488,7 @@
         }
       }
     },
-    "_2.accessKeyAuthTypeWorkspaceConnectionPropertyType": {
+    "_3.accessKeyAuthTypeWorkspaceConnectionPropertyType": {
       "type": "object",
       "properties": {
         "authType": {
@@ -497,7 +501,7 @@
           }
         },
         "credentials": {
-          "$ref": "#/definitions/_2.workspaceConnectionAccessKeyType",
+          "$ref": "#/definitions/_3.workspaceConnectionAccessKeyType",
           "metadata": {
             "description": "Required. The credentials for the connection."
           }
@@ -510,7 +514,7 @@
         }
       }
     },
-    "_2.accountKeyAuthTypeWorkspaceConnectionPropertyType": {
+    "_3.accountKeyAuthTypeWorkspaceConnectionPropertyType": {
       "type": "object",
       "properties": {
         "authType": {
@@ -523,7 +527,7 @@
           }
         },
         "credentials": {
-          "$ref": "#/definitions/_2.workspaceConnectionAccountKeyType",
+          "$ref": "#/definitions/_3.workspaceConnectionAccountKeyType",
           "metadata": {
             "description": "Required. The credentials for the connection."
           }
@@ -536,7 +540,7 @@
         }
       }
     },
-    "_2.apiKeyAuthWorkspaceConnectionPropertyType": {
+    "_3.apiKeyAuthWorkspaceConnectionPropertyType": {
       "type": "object",
       "properties": {
         "authType": {
@@ -549,7 +553,7 @@
           }
         },
         "credentials": {
-          "$ref": "#/definitions/_2.workspaceConnectionApiKeyType",
+          "$ref": "#/definitions/_3.workspaceConnectionApiKeyType",
           "metadata": {
             "description": "Required. The credentials for the connection."
           }
@@ -562,7 +566,7 @@
         }
       }
     },
-    "_2.categoryType": {
+    "_3.categoryType": {
       "type": "string",
       "allowedValues": [
         "ADLSGen2",
@@ -678,46 +682,46 @@
         }
       }
     },
-    "_2.connectionPropertyType": {
+    "_3.connectionPropertyType": {
       "type": "secureObject",
       "discriminator": {
         "propertyName": "authType",
         "mapping": {
           "AAD": {
-            "$ref": "#/definitions/_2.aadAuthTypeWorkspaceConnectionPropertyType"
+            "$ref": "#/definitions/_3.aadAuthTypeWorkspaceConnectionPropertyType"
           },
           "AccessKey": {
-            "$ref": "#/definitions/_2.accessKeyAuthTypeWorkspaceConnectionPropertyType"
+            "$ref": "#/definitions/_3.accessKeyAuthTypeWorkspaceConnectionPropertyType"
           },
           "AccountKey": {
-            "$ref": "#/definitions/_2.accountKeyAuthTypeWorkspaceConnectionPropertyType"
+            "$ref": "#/definitions/_3.accountKeyAuthTypeWorkspaceConnectionPropertyType"
           },
           "ApiKey": {
-            "$ref": "#/definitions/_2.apiKeyAuthWorkspaceConnectionPropertyType"
+            "$ref": "#/definitions/_3.apiKeyAuthWorkspaceConnectionPropertyType"
           },
           "CustomKeys": {
-            "$ref": "#/definitions/_2.customKeysWorkspaceConnectionPropertyType"
+            "$ref": "#/definitions/_3.customKeysWorkspaceConnectionPropertyType"
           },
           "ManagedIdentity": {
-            "$ref": "#/definitions/_2.managedIdentityAuthTypeWorkspaceConnectionPropertyType"
+            "$ref": "#/definitions/_3.managedIdentityAuthTypeWorkspaceConnectionPropertyType"
           },
           "None": {
-            "$ref": "#/definitions/_2.noneAuthTypeWorkspaceConnectionPropertyType"
+            "$ref": "#/definitions/_3.noneAuthTypeWorkspaceConnectionPropertyType"
           },
           "OAuth2": {
-            "$ref": "#/definitions/_2.oauth2AuthTypeWorkspaceConnectionPropertyType"
+            "$ref": "#/definitions/_3.oauth2AuthTypeWorkspaceConnectionPropertyType"
           },
           "PAT": {
-            "$ref": "#/definitions/_2.patAuthTypeWorkspaceConnectionPropertyType"
+            "$ref": "#/definitions/_3.patAuthTypeWorkspaceConnectionPropertyType"
           },
           "SAS": {
-            "$ref": "#/definitions/_2.sasAuthTypeWorkspaceConnectionPropertyType"
+            "$ref": "#/definitions/_3.sasAuthTypeWorkspaceConnectionPropertyType"
           },
           "ServicePrincipal": {
-            "$ref": "#/definitions/_2.servicePrincipalAuthTypeWorkspaceConnectionPropertyType"
+            "$ref": "#/definitions/_3.servicePrincipalAuthTypeWorkspaceConnectionPropertyType"
           },
           "UsernamePassword": {
-            "$ref": "#/definitions/_2.usernamePasswordAuthTypeWorkspaceConnectionPropertyType"
+            "$ref": "#/definitions/_3.usernamePasswordAuthTypeWorkspaceConnectionPropertyType"
           }
         }
       },
@@ -728,7 +732,7 @@
         }
       }
     },
-    "_2.customKeysType": {
+    "_3.customKeysType": {
       "type": "object",
       "properties": {
         "keys": {
@@ -752,7 +756,7 @@
         }
       }
     },
-    "_2.customKeysWorkspaceConnectionPropertyType": {
+    "_3.customKeysWorkspaceConnectionPropertyType": {
       "type": "object",
       "properties": {
         "authType": {
@@ -765,7 +769,7 @@
           }
         },
         "credentials": {
-          "$ref": "#/definitions/_2.customKeysType",
+          "$ref": "#/definitions/_3.customKeysType",
           "metadata": {
             "description": "Required. The credentials for the connection."
           }
@@ -778,7 +782,7 @@
         }
       }
     },
-    "_2.managedIdentityAuthTypeWorkspaceConnectionPropertyType": {
+    "_3.managedIdentityAuthTypeWorkspaceConnectionPropertyType": {
       "type": "object",
       "properties": {
         "authType": {
@@ -791,7 +795,7 @@
           }
         },
         "credentials": {
-          "$ref": "#/definitions/_2.workspaceConnectionManagedIdentityType",
+          "$ref": "#/definitions/_3.workspaceConnectionManagedIdentityType",
           "metadata": {
             "description": "Required. The credentials for the connection."
           }
@@ -804,7 +808,7 @@
         }
       }
     },
-    "_2.noneAuthTypeWorkspaceConnectionPropertyType": {
+    "_3.noneAuthTypeWorkspaceConnectionPropertyType": {
       "type": "object",
       "properties": {
         "authType": {
@@ -824,7 +828,7 @@
         }
       }
     },
-    "_2.oauth2AuthTypeWorkspaceConnectionPropertyType": {
+    "_3.oauth2AuthTypeWorkspaceConnectionPropertyType": {
       "type": "object",
       "properties": {
         "authType": {
@@ -837,7 +841,7 @@
           }
         },
         "credentials": {
-          "$ref": "#/definitions/_2.workspaceConnectionOAuth2Type",
+          "$ref": "#/definitions/_3.workspaceConnectionOAuth2Type",
           "metadata": {
             "description": "Required. The credentials for the connection."
           }
@@ -850,7 +854,7 @@
         }
       }
     },
-    "_2.patAuthTypeWorkspaceConnectionPropertyType": {
+    "_3.patAuthTypeWorkspaceConnectionPropertyType": {
       "type": "object",
       "properties": {
         "authType": {
@@ -863,7 +867,7 @@
           }
         },
         "credentials": {
-          "$ref": "#/definitions/_2.workspaceConnectionPersonalAccessTokenType",
+          "$ref": "#/definitions/_3.workspaceConnectionPersonalAccessTokenType",
           "metadata": {
             "description": "Required. The credentials for the connection."
           }
@@ -876,7 +880,7 @@
         }
       }
     },
-    "_2.sasAuthTypeWorkspaceConnectionPropertyType": {
+    "_3.sasAuthTypeWorkspaceConnectionPropertyType": {
       "type": "object",
       "properties": {
         "authType": {
@@ -889,7 +893,7 @@
           }
         },
         "credentials": {
-          "$ref": "#/definitions/_2.workspaceConnectionSharedAccessSignatureType",
+          "$ref": "#/definitions/_3.workspaceConnectionSharedAccessSignatureType",
           "metadata": {
             "description": "Required. The credentials for the connection."
           }
@@ -902,7 +906,7 @@
         }
       }
     },
-    "_2.servicePrincipalAuthTypeWorkspaceConnectionPropertyType": {
+    "_3.servicePrincipalAuthTypeWorkspaceConnectionPropertyType": {
       "type": "object",
       "properties": {
         "authType": {
@@ -915,7 +919,7 @@
           }
         },
         "credentials": {
-          "$ref": "#/definitions/_2.workspaceConnectionServicePrincipalType",
+          "$ref": "#/definitions/_3.workspaceConnectionServicePrincipalType",
           "metadata": {
             "description": "Required. The credentials for the connection."
           }
@@ -928,7 +932,7 @@
         }
       }
     },
-    "_2.usernamePasswordAuthTypeWorkspaceConnectionPropertyType": {
+    "_3.usernamePasswordAuthTypeWorkspaceConnectionPropertyType": {
       "type": "object",
       "properties": {
         "authType": {
@@ -941,7 +945,7 @@
           }
         },
         "credentials": {
-          "$ref": "#/definitions/_2.workspaceConnectionUsernamePasswordType",
+          "$ref": "#/definitions/_3.workspaceConnectionUsernamePasswordType",
           "metadata": {
             "description": "Required. The credentials for the connection."
           }
@@ -954,7 +958,7 @@
         }
       }
     },
-    "_2.workspaceConnectionAccessKeyType": {
+    "_3.workspaceConnectionAccessKeyType": {
       "type": "object",
       "properties": {
         "accessKeyId": {
@@ -977,7 +981,7 @@
         }
       }
     },
-    "_2.workspaceConnectionAccountKeyType": {
+    "_3.workspaceConnectionAccountKeyType": {
       "type": "object",
       "properties": {
         "key": {
@@ -994,7 +998,7 @@
         }
       }
     },
-    "_2.workspaceConnectionApiKeyType": {
+    "_3.workspaceConnectionApiKeyType": {
       "type": "object",
       "properties": {
         "key": {
@@ -1011,7 +1015,7 @@
         }
       }
     },
-    "_2.workspaceConnectionManagedIdentityType": {
+    "_3.workspaceConnectionManagedIdentityType": {
       "type": "object",
       "properties": {
         "clientId": {
@@ -1034,7 +1038,7 @@
         }
       }
     },
-    "_2.workspaceConnectionOAuth2Type": {
+    "_3.workspaceConnectionOAuth2Type": {
       "type": "object",
       "properties": {
         "authUrl": {
@@ -1100,7 +1104,7 @@
         }
       }
     },
-    "_2.workspaceConnectionPersonalAccessTokenType": {
+    "_3.workspaceConnectionPersonalAccessTokenType": {
       "type": "object",
       "properties": {
         "pat": {
@@ -1117,7 +1121,7 @@
         }
       }
     },
-    "_2.workspaceConnectionServicePrincipalType": {
+    "_3.workspaceConnectionServicePrincipalType": {
       "type": "object",
       "properties": {
         "clientId": {
@@ -1146,7 +1150,7 @@
         }
       }
     },
-    "_2.workspaceConnectionSharedAccessSignatureType": {
+    "_3.workspaceConnectionSharedAccessSignatureType": {
       "type": "object",
       "properties": {
         "sas": {
@@ -1163,7 +1167,7 @@
         }
       }
     },
-    "_2.workspaceConnectionUsernamePasswordType": {
+    "_3.workspaceConnectionUsernamePasswordType": {
       "type": "object",
       "properties": {
         "password": {
@@ -1203,7 +1207,7 @@
           }
         },
         "category": {
-          "$ref": "#/definitions/_2.categoryType",
+          "$ref": "#/definitions/_3.categoryType",
           "metadata": {
             "description": "Required. Category of the connection."
           }
@@ -1260,7 +1264,7 @@
           }
         },
         "connectionProperties": {
-          "$ref": "#/definitions/_2.connectionPropertyType",
+          "$ref": "#/definitions/_3.connectionPropertyType",
           "metadata": {
             "description": "Required. The properties of the connection, specific to the auth type."
           }
@@ -1428,7 +1432,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1465,7 +1469,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1542,7 +1546,7 @@
           }
         },
         "privateDnsZoneGroup": {
-          "$ref": "#/definitions/_1.privateEndpointPrivateDnsZoneGroupType",
+          "$ref": "#/definitions/_2.privateEndpointPrivateDnsZoneGroupType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The private DNS Zone Group to configure for the Private Endpoint."
@@ -1566,7 +1570,7 @@
         "customDnsConfigs": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_1.privateEndpointCustomDnsConfigType"
+            "$ref": "#/definitions/_2.privateEndpointCustomDnsConfigType"
           },
           "nullable": true,
           "metadata": {
@@ -1576,7 +1580,7 @@
         "ipConfigurations": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_1.privateEndpointIpConfigurationType"
+            "$ref": "#/definitions/_2.privateEndpointIpConfigurationType"
           },
           "nullable": true,
           "metadata": {
@@ -1621,6 +1625,9 @@
           "type": "object",
           "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+            },
             "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
           }
         },
@@ -1635,7 +1642,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -1710,7 +1717,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
         }
       }
     },
@@ -3022,13 +3029,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "919308951586664351"
+              "version": "0.34.44.8038",
+              "templateHash": "11465885867999178999"
             },
             "name": "Cognitive Services Project",
             "description": "This module deploys a Project within a Cognitive Services account.\nIt allows for the creation of a AI Foundry Project with optional managed identities and role assignments.\n"
@@ -3961,7 +3972,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -3989,7 +4000,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -4375,13 +4386,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "10805797814087098439"
+              "version": "0.34.44.8038",
+              "templateHash": "18319371933629896379"
             },
             "name": "Machine Learning Services Workspaces Connections",
             "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -5266,18 +5281,22 @@
             "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys('cognitiveService', '2025-04-01-preview').key1)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys('cognitiveService', '2025-04-01-preview').key2)), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '2025-04-01-preview').key1)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '2025-04-01-preview').key2)), createArray()))]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "1334838354126337006"
+              "version": "0.34.44.8038",
+              "templateHash": "5771271412797233990"
             }
           },
           "definitions": {
@@ -5338,7 +5357,7 @@
             "keyVaultName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the Key Vault to set the ecrets in."
+                "description": "Required. The name of the Key Vault to set the secrets in."
               }
             },
             "secretsToSet": {
@@ -5461,7 +5480,7 @@
         "$ref": "#/definitions/privateEndpointOutputType"
       },
       "metadata": {
-        "description": "The private endpoints of the congitive services account."
+        "description": "The private endpoints of the cognitive services account."
       },
       "copy": {
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
