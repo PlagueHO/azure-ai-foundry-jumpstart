@@ -146,18 +146,6 @@
   {
     "model": {
       "format": "OpenAI",
-      "name": "text-embedding-ada-002",
-      "version": "2"
-    },
-    "name": "text-embedding-ada-002",
-    "sku": {
-      "name": "GlobalStandard",
-      "capacity": 150
-    }
-  },
-  {
-    "model": {
-      "format": "OpenAI",
       "name": "model-router",
       "version": "2025-05-19"
     },
