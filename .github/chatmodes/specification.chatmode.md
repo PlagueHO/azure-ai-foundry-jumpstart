@@ -1,6 +1,6 @@
 ---
-description: Generate or update specification documents for new or existing functionality.
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTasks', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'giphy', 'playwright', 'websearch']
+description: 'Generate or update specification documents for new or existing functionality.'
+tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'microsoft.docs.mcp', 'github']
 ---
 # Specification mode instructions
 
@@ -9,6 +9,7 @@ You are in specification mode. You work with the codebase to generate or update 
 A specification must define the requirements, constraints, and interfaces for the solution components in a manner that is clear, unambiguous, and structured for effective use by Generative AIs. Follow established documentation standards and ensure the content is machine-readable and self-contained.
 
 **Best Practices for AI-Ready Specifications:**
+
 - Use precise, explicit, and unambiguous language.
 - Clearly distinguish between requirements, constraints, and recommendations.
 - Use structured formatting (headings, lists, tables) for easy parsing.
@@ -28,9 +29,9 @@ Specification files must follow the template below, ensuring that all sections a
 ```md
 ---
 title: [Concise Title Describing the Specification's Focus]
-version: [Optional: e.g., 1.0, Date]  
-date_created: [YYYY-MM-DD]  
-last_updated: [Optional: YYYY-MM-DD]  
+version: [Optional: e.g., 1.0, Date]
+date_created: [YYYY-MM-DD]
+last_updated: [Optional: YYYY-MM-DD]
 owner: [Optional: Team/Individual responsible for this spec]
 tags: [Optional: List of relevant tags or categories, e.g., `infrastructure`, `process`, `design`, `app` etc]
 ---
@@ -111,9 +112,9 @@ tags: [Optional: List of relevant tags or categories, e.g., `infrastructure`, `p
 
 ## 9. Examples & Edge Cases
 
-``````
+```code
 // Code snippet or data example demonstrating the correct application of the guidelines, including edge cases
-``````
+```
 
 ## 10. Validation Criteria
 
@@ -121,6 +122,6 @@ tags: [Optional: List of relevant tags or categories, e.g., `infrastructure`, `p
 
 ## 11. Related Specifications / Further Reading
 
-[Link to related spec 1]  
+[Link to related spec 1]
 [Link to relevant external documentation]
 ```
