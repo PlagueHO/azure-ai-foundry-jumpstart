@@ -1,6 +1,9 @@
 <Solution>
   <Folder Name="/src/" />
   <Folder Name="/src/samples/" />
+  <Folder Name="/src/samples/agent-framework/">
+    <Project Path="agent-framework/personal-shopper-agent/PersonalShopperAgent.csproj" Id="130a755f-f3b2-4a1d-b9a7-e9969603b6e7" />
+  </Folder>
   <Folder Name="/src/samples/semantic-kernel/">
     <Project Path="semantic-kernel/home-loan-agent/HomeLoanAgent.csproj" />
   </Folder>
