@@ -42,3 +42,21 @@ updates:
       gh-actions:
         patterns:
           - "*"
+
+  # .NET (NuGet) dependencies
+  - package-ecosystem: "nuget"
+    directory: "/src/samples/dotnet/semantic-kernel/home-loan-agent"
+    schedule:
+      interval: "weekly"
+      time: "06:00"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+    labels:
+      - "dependencies"
+      - "nuget"
+    rebase-strategy: "auto"
+    groups:
+      nuget-dependencies:
+        patterns:
+          - "*"

@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/samples/" />
+  <Folder Name="/src/samples/semantic-kernel/">
+    <Project Path="semantic-kernel/home-loan-agent/HomeLoanAgent.csproj" />
+  </Folder>
+</Solution>
