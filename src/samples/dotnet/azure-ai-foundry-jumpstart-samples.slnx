@@ -2,7 +2,13 @@
   <Folder Name="/src/" />
   <Folder Name="/src/samples/" />
   <Folder Name="/src/samples/agent-framework/">
-    <Project Path="agent-framework/personal-shopper-agent/PersonalShopperAgent.csproj" Id="130a755f-f3b2-4a1d-b9a7-e9969603b6e7" />
+    <Project Path="agent-framework/AzureArchitect/AzureArchitect_Step01_Simple/AzureArchitect_Step01_Simple.csproj" />
+    <Project Path="agent-framework/AzureArchitect/AzureArchitect_Step02_Foundry_AgentService/AzureArchitect_Step02_Foundry_AgentService.csproj" />
+    <Project Path="agent-framework/AzureArchitect/AzureArchitect_Step03_UsingFunctionTools/AzureArchitect_Step03_UsingFunctionTools.csproj" />
+    <Project Path="agent-framework/AzureArchitect/AzureArchitect_Step04_UsingFunctionToolsWithApprovals/AzureArchitect_Step04_UsingFunctionToolsWithApprovals.csproj" />
+    <Project Path="agent-framework/AzureArchitect/AzureArchitect_Step05_MCPServer/AzureArchitect_Step05_MCPServer.csproj" />
+    <Project Path="agent-framework/AzureArchitect/AzureArchitect_Step06_UsingImages/AzureArchitect_Step06_UsingImages.csproj" />
+    <Project Path="agent-framework/AzureArchitect/AzureArchitect_Step07_Workflows/AzureArchitect_Step07_WorkflowConcurrent.csproj" />
   </Folder>
   <Folder Name="/src/samples/semantic-kernel/">
     <Project Path="semantic-kernel/home-loan-agent/HomeLoanAgent.csproj" />
