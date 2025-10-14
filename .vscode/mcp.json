@@ -21,6 +21,10 @@
 			],
 			"type": "stdio",
 			"env": {}
-		}
+		},
+        "agent-framework Docs": {
+            "url": "https://gitmcp.io/microsoft/agent-framework",
+            "type": "sse"
+        }
 	}
 }
