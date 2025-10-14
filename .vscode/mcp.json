@@ -22,9 +22,13 @@
 			"type": "stdio",
 			"env": {}
 		},
-        "agent-framework Docs": {
+        "Agent Framework Docs": {
             "url": "https://gitmcp.io/microsoft/agent-framework",
             "type": "sse"
-        }
+        },
+		"Azure Verified Module Bicep Docs": {
+			"type": "sse",
+			"url": "https://gitmcp.io/Azure/bicep-registry-modules"
+		}
 	}
 }
