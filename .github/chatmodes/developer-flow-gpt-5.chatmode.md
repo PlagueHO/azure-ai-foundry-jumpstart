@@ -1,7 +1,7 @@
 ---
 description: 'Developer Flow for GPT-5'
 model: GPT-5
-tools: ['edit', 'search', 'new', 'runCommands', 'runTasks', 'usages', 'think', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'Microsoft Docs', 'context7', 'github']
+tools: ['edit', 'runNotebooks', 'search', 'new', 'runCommands', 'runTasks', 'Microsoft Docs/*', 'Azure MCP/search', 'context7/*', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
 ---
 
 # Developer Flow for GPT-5: Autonomous Coding Agent

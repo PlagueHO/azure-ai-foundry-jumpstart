@@ -1,7 +1,7 @@
 ---
 description: 'Developer Flow for Claude Sonnet 4'
 model: Claude Sonnet 4
-tools: ['edit', 'search', 'new', 'runCommands', 'runTasks', 'usages', 'think', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'Microsoft Docs', 'context7', 'github']
+tools: ['edit', 'runNotebooks', 'search', 'new', 'runCommands', 'runTasks', 'Microsoft Docs/*', 'context7/*', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
 ---
 
 # Developer Flow for Claude Sonnet 4: Autonomous Coding Agent
