@@ -1,4 +1,5 @@
 ---
+name: 'Universal Janitor'
 description: Perform janitorial tasks on any codebase including cleanup, simplification, and tech debt remediation.
 tools: ['edit', 'runNotebooks', 'search', 'new', 'runCommands', 'runTasks', 'Microsoft Docs/*', 'context7/*', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
 ---

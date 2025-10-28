@@ -1,4 +1,5 @@
 ---
+name: 'Critical Thinker'
 description: 'Challenge assumptions and encourage critical thinking to ensure the best possible solution and outcomes.'
 tools: ['edit', 'runNotebooks', 'search', 'new', 'runCommands', 'runTasks', 'Microsoft Docs/*', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'extensions', 'todos', 'runTests']
 ---
