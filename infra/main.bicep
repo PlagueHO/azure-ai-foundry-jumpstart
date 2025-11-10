@@ -235,7 +235,7 @@ var aiFoundryServiceProjects = [for project in aiFoundryServiceProjectsArray: {
 var projectCount = length(effectiveProjectList)
 
 // ---------- RESOURCE GROUP (BOTH HUB AND PROJECT MODE) ----------
-module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.1' = {
+module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.2' = {
   name: 'resource-group-deployment-${location}'
   params: {
     name: effectiveResourceGroupName
@@ -256,7 +256,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
   }
 }
 
-module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
+module applicationInsights 'br/public:avm/res/insights/component:0.7.0' = {
   name: 'application-insights-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -308,7 +308,7 @@ var subnets = [
   }
 ]
 
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if (azureNetworkIsolation) {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.1' = if (azureNetworkIsolation) {
   name: 'virtualNetwork'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -325,7 +325,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if (az
 }
 
 // ---------- PRIVATE DNS ZONES (REQUIRED FOR NETWORK ISOLATION) ----------
-module storageBlobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if ((aiFoundryHubDeploy || deploySampleData) && azureNetworkIsolation) {
+module storageBlobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if ((aiFoundryHubDeploy || deploySampleData) && azureNetworkIsolation) {
   name: 'storage-blobservice-private-dns-zone'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -343,7 +343,7 @@ module storageBlobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7
 }
 
 // Private DNS zones for AI Search
-module aiSearchPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation && azureAiSearchDeploy) {
+module aiSearchPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if (azureNetworkIsolation && azureAiSearchDeploy) {
   name: 'ai-search-private-dns-zone'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -361,7 +361,7 @@ module aiSearchPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1'
 }
 
 // Private DNS zones for AI Foundry Hub
-module aiHubApiMlPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (aiFoundryHubDeploy && azureNetworkIsolation) {
+module aiHubApiMlPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if (aiFoundryHubDeploy && azureNetworkIsolation) {
   name: 'ai-hub-apiml-private-dns-zone'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -378,7 +378,7 @@ module aiHubApiMlPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.
   }
 }
 
-module aiHubNotebooksPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (aiFoundryHubDeploy && azureNetworkIsolation) {
+module aiHubNotebooksPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if (aiFoundryHubDeploy && azureNetworkIsolation) {
   name: 'ai-hub-notebooks-private-dns-zone'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -396,7 +396,7 @@ module aiHubNotebooksPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:
 }
 
 // Private DNS zones for AI Foundry Hub dependencies
-module keyVaultPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (aiFoundryHubDeploy && azureNetworkIsolation) {
+module keyVaultPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if (aiFoundryHubDeploy && azureNetworkIsolation) {
   name: 'keyvault-private-dns-zone'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -414,7 +414,7 @@ module keyVaultPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1'
 }
 
 
-module containerRegistryPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (aiFoundryHubDeploy && azureNetworkIsolation) {
+module containerRegistryPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if (aiFoundryHubDeploy && azureNetworkIsolation) {
   name: 'container-registry-private-dns-zone'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -432,7 +432,7 @@ module containerRegistryPrivateDnsZone 'br/public:avm/res/network/private-dns-zo
 }
 
 // Private DNS zones for AI Services
-module aiServicesPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
+module aiServicesPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if (azureNetworkIsolation) {
   name: 'ai-services-private-dns-zone'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -449,7 +449,7 @@ module aiServicesPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.
   }
 }
 
-module aiServicesOpenAiDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
+module aiServicesOpenAiDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if (azureNetworkIsolation) {
   name: 'ai-services-openai-dns-zone'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -466,7 +466,7 @@ module aiServicesOpenAiDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1
   }
 }
 
-module aiServicesAiDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (azureNetworkIsolation) {
+module aiServicesAiDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if (azureNetworkIsolation) {
   name: 'ai-services-ai-dns-zone'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -519,7 +519,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = if (aiFoundryHubDep
 }
 
 // ---------- STORAGE (HUB DEPLOY ONLY) ----------
-module storageAccount 'br/public:avm/res/storage/storage-account:0.26.2' = if (aiFoundryHubDeploy) {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.29.0' = if (aiFoundryHubDeploy) {
   name: 'hub-storage-account-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -621,7 +621,7 @@ var effectiveContainerRegistryResourceId = containerRegistryDeploy
   : ''
 
 // ---------- STORAGE ACCOUNT SAMPLE DATA (OPTIONAL) ----------
-module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.26.2' = if (deploySampleData) {
+module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.29.0' = if (deploySampleData) {
   name: 'sample-data-storage-account-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -1290,7 +1290,7 @@ module aiFoundryHubProjectSampleDataStores 'core/ai/ai-foundry-project-datastore
 ]
 
 // ---------- BASTION HOST (OPTIONAL) ----------
-module bastionHost 'br/public:avm/res/network/bastion-host:0.7.0' = if (bastionHostDeploy && azureNetworkIsolation) {
+module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (bastionHostDeploy && azureNetworkIsolation) {
   name: 'bastion-host-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
