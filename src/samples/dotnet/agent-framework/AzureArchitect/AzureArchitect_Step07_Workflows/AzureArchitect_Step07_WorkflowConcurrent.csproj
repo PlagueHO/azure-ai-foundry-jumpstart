@@ -9,15 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.AI.Agents.Persistent" Version="1.2.0-beta.5" />
-	  <PackageReference Include="Azure.Identity" Version="1.16.0" />
-	  <PackageReference Include="Microsoft.Agents.AI.OpenAI" Version="1.0.0-preview.251002.1" />
-	  <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.9.1-preview.1.25474.6" />
-	  <PackageReference Include="Azure.AI.OpenAI" Version="2.3.0-beta.2" />
-	  <PackageReference Include="ModelContextProtocol" Version="0.4.0-preview.1" />
-	  <PackageReference Include="System.Net.ServerSentEvents" VersionOverride="10.0.0-preview.4.25258.110" Version="10.0.0-rc.1.25451.107" />
-	  <PackageReference Include="Microsoft.Agents.AI.AzureAI" Version="1.0.0-preview.251002.1" />
-	  <PackageReference Include="Microsoft.Agents.AI.Workflows" Version="1.0.0-preview.251002.1" />
-	  <PackageReference Include="Microsoft.Agents.AI" Version="1.0.0-preview.251002.1" />
+    <PackageReference Include="Azure.AI.Agents.Persistent" Version="1.2.0-beta.7" />
+    <PackageReference Include="Azure.Identity" Version="1.17.0" />
+    <PackageReference Include="Microsoft.Agents.AI.OpenAI" Version="1.0.0-preview.251110.2" />
+    <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.0.0-preview.1.25560.10" />
+    <PackageReference Include="Azure.AI.OpenAI" Version="2.5.0-beta.1" />
+    <PackageReference Include="ModelContextProtocol" Version="0.4.0-preview.3" />
+    <PackageReference Include="System.Net.ServerSentEvents" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Agents.AI.AzureAI" Version="1.0.0-preview.251104.1" />
+    <PackageReference Include="Microsoft.Agents.AI.Workflows" Version="1.0.0-preview.251110.2" />
+    <PackageReference Include="Microsoft.Agents.AI" Version="1.0.0-preview.251110.2" />
   </ItemGroup>
 </Project>
