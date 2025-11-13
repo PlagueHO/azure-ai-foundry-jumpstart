@@ -47,7 +47,9 @@ AIAgent agent = new AzureOpenAIClient(
      .CreateAIAgent(
         instructions: ArchitectInstructions,
         name: ArchitectName,
+#pragma warning disable MEAI001 // ApprovalRequiredAIFunction is experimental
         tools: [new ApprovalRequiredAIFunction(AIFunctionFactory.Create(CalculateCompositeSlo))]);
+#pragma warning restore MEAI001
 
 // Call the agent and check if there are any user input requests to handle.
 AgentThread thread = agent.GetNewThread();
@@ -65,6 +67,7 @@ while (userInputRequests.Count > 0)
 {
     // Ask the user to approve each function call request.
     // For simplicity, we are assuming here that only function approval requests are being made.
+#pragma warning disable MEAI001 // FunctionApprovalRequestContent is experimental
     var userInputResponses = userInputRequests
         .OfType<FunctionApprovalRequestContent>()
         .Select(functionApprovalRequest =>
@@ -73,6 +76,7 @@ while (userInputRequests.Count > 0)
             return new ChatMessage(ChatRole.User, [functionApprovalRequest.CreateResponse(Console.ReadLine()?.Equals("Y", StringComparison.OrdinalIgnoreCase) ?? false)]);
         })
         .ToList();
+#pragma warning restore MEAI001
 
     // Pass the user input responses back to the agent for further processing.
     response = await agent.RunAsync(userInputResponses, thread);
