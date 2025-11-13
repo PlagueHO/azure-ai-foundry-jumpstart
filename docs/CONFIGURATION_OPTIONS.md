@@ -26,17 +26,21 @@ This will deploy the following models into the Azure OpenAI Service. If the mode
 
 | Model Name             | Version    | Deployment Type | TPM  |
 | ---------------------- | ---------- | --------------- | ---- |
+| model-router           | 2025-05-19 | Global Standard | 150K |
+| gpt-5-mini             | 2025-08-07 | Global Standard | 20K  |
+| gpt-5-nano             | 2025-08-07 | Global Standard | 50K  |
+| gpt-5-chat             | 2025-08-07 | Global Standard | 50K  |
 | gpt-4.1                | 2025-04-14 | Global Standard | 50K  |
 | gpt-4.1-mini           | 2025-04-14 | Global Standard | 100K |
-| gpt-4.1-nano           | 2025-04-14 | Global Standard | 100K |
+| gpt-4.1-nano           | 2025-04-14 | Global Standard | 200K |
 | gpt-4o                 | 2024-11-20 | Global Standard | 50K  |
 | gpt-4o-transcribe      | 2025-03-20 | Global Standard | 100K |
 | gpt-4o-mini            | 2024-07-18 | Global Standard | 100K |
-| gpt-4o-transcribe      | 2025-03-20 | Global Standard | 100K |
 | gpt-4o-mini-transcribe | 2025-03-20 | Global Standard | 100K |
-| o4-mini                | 2025-04-16 | Global Standard | 50K  |
+| o4-mini                | 2025-04-16 | Global Standard | 20K  |
+| gpt-realtime           | 2025-08-28 | Global Standard | 100K |
+| gpt-realtime-mini      | 2025-08-28 | Global Standard | 100K |
 | text-embedding-3-large | 1          | Global Standard | 150K |
-| model-router           | 2025-05-19 | Global Standard | 150K |
 
 The list of models, versions, quota and TPM are defined in the [infra/sample-openai-models.json](../infra/sample-openai-models.json) file. If you wish to define an alternate models, you can edit this file or alternatively set the [AZURE_OPENAI_MODELS](#azure-openai-models) environment variable.
 

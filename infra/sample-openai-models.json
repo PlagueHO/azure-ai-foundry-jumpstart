@@ -2,13 +2,13 @@
   {
     "model": {
       "format": "OpenAI",
-      "name": "gpt-5-chat",
-      "version": "2025-08-07"
+      "name": "model-router",
+      "version": "2025-05-19"
     },
-    "name": "gpt-5-chat",
+    "name": "model-router",
     "sku": {
       "name": "GlobalStandard",
-      "capacity": 50
+      "capacity": 150
     }
   },
   {
@@ -30,6 +30,18 @@
       "version": "2025-08-07"
     },
     "name": "gpt-5-nano",
+    "sku": {
+      "name": "GlobalStandard",
+      "capacity": 50
+    }
+  },
+  {
+    "model": {
+      "format": "OpenAI",
+      "name": "gpt-5-chat",
+      "version": "2025-08-07"
+    },
+    "name": "gpt-5-chat",
     "sku": {
       "name": "GlobalStandard",
       "capacity": 50
@@ -86,10 +98,10 @@
   {
     "model": {
       "format": "OpenAI",
-      "name": "gpt-4o-mini",
-      "version": "2024-07-18"
+      "name": "gpt-4o-transcribe",
+      "version": "2025-03-20"
     },
-    "name": "gpt-4o-mini",
+    "name": "gpt-4o-transcribe",
     "sku": {
       "name": "GlobalStandard",
       "capacity": 100
@@ -98,10 +110,10 @@
   {
     "model": {
       "format": "OpenAI",
-      "name": "gpt-4o-transcribe",
-      "version": "2025-03-20"
+      "name": "gpt-4o-mini",
+      "version": "2024-07-18"
     },
-    "name": "gpt-4o-transcribe",
+    "name": "gpt-4o-mini",
     "sku": {
       "name": "GlobalStandard",
       "capacity": 100
@@ -134,22 +146,34 @@
   {
     "model": {
       "format": "OpenAI",
-      "name": "text-embedding-3-large",
-      "version": "1"
+      "name": "gpt-realtime",
+      "version": "2025-08-28"
     },
-    "name": "text-embedding-3-large",
+    "name": "gpt-realtime",
     "sku": {
       "name": "GlobalStandard",
-      "capacity": 150
+      "capacity": 100
     }
   },
   {
     "model": {
       "format": "OpenAI",
-      "name": "model-router",
-      "version": "2025-05-19"
+      "name": "gpt-realtime-mini",
+      "version": "2025-08-28"
     },
-    "name": "model-router",
+    "name": "gpt-realtime-mini",
+    "sku": {
+      "name": "GlobalStandard",
+      "capacity": 100
+    }
+  },
+  {
+    "model": {
+      "format": "OpenAI",
+      "name": "text-embedding-3-large",
+      "version": "1"
+    },
+    "name": "text-embedding-3-large",
     "sku": {
       "name": "GlobalStandard",
       "capacity": 150
