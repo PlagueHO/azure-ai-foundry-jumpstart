@@ -245,7 +245,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.2' = {
 }
 
 // ---------- MONITORING RESOURCES (BOTH HUB AND PROJECT MODE) ----------
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.13.0' = {
   name: 'logAnalytics-workspace-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
