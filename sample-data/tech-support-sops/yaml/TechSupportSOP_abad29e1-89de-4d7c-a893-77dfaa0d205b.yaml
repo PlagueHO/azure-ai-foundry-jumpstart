@@ -1,0 +1,236 @@
+sop_id: abad29e1-89de-4d7c-a893-77dfaa0d205b
+version: 1.9
+created_at: 2025-11-28 02:13:56.149578+00:00
+last_updated: 2025-11-28 02:30:00+00:00
+title: Recover Azure App Service Web App from intermittent 502/503 or startup failures
+  after deployment
+problem_category: general
+complexity: medium
+system_context: Azure App Service Web App
+severity: high
+status: published
+approval_level: team_lead
+author:
+  name: Elena Marquez
+  email: elena.marquez@acme-infra.internal
+approver:
+  name: Rajiv Patel
+  email: rajiv.patel@acme-infra.internal
+  approved_at: 2025-11-28 02:25:00+00:00
+problem_description: 'Intermittent 502 Bad Gateway, 503 Service Unavailable, or HTTP
+  500 errors reported for an Azure App Service Web App immediately after deployment
+  or during traffic spikes. Root causes commonly include crashed worker processes,
+  misconfigured startup commands, disabled ''Always On'' for non-consumption plans,
+  long cold starts for language runtimes, incorrect Run-From-Package settings, file-locking
+  issues on Windows containers, or upstream load balancer/proxy timeouts. This SOP
+  guides tech support through diagnostics and remediation steps to restore service
+  quickly and reduce recurrence.
+
+  '
+symptoms:
+- Users receive intermittent 502/503 or 500 responses from the web app.
+- App shows 'Stopped' or 'Running (0 workers)' in portal metrics, or rapid worker
+  process restarts.
+- Application Insights shows failed requests spike at deployment time.
+- Kudu/SCM site logs show startup exceptions or process exit codes.
+- Deployment slot swap results in immediate 502 errors on the production slot.
+prerequisites:
+- Confirm access to the Azure subscription and resource group where the Web App resides.
+- Ensure you have contributor or higher role on the App Service for live remediation.
+- Have the app's deployment pipeline owner or release engineer on-call for coordination.
+required_tools:
+- Access to Azure Portal (portal.azure.com) with appropriate role.
+- Azure CLI (az) v2.50+ or Cloud Shell.
+- Kudu/SCM site access for the App Service.
+- Application Insights read permissions.
+- SSH/Console access for Linux containers or Remote Debug/Process Explorer for Windows
+  apps.
+- Access to deployment logs (CI/CD system) and release notes.
+estimated_resolution_time: 30-60 minutes
+resolution_steps:
+- step_number: 1
+  action: Confirm incident and scope
+  details: 'Validate that the reported error is reproducible. Use curl or a browser
+    to request the app URL and capture HTTP status codes and response headers. Note
+    the time window of failures and whether all endpoints are affected or only specific
+    paths (health check, API endpoints, static content).
+
+    '
+  warnings: Keep user-facing messages concise; do not disclose internal diagnostics
+    publicly.
+- step_number: 2
+  action: Check Azure Portal resource health and metrics
+  details: 'In the Azure Portal, open the App Service -> Overview and check ''Resource
+    Health'' and ''Diagnose and solve problems''. Review ''Metrics'' for CPU, Memory,
+    Worker Count, and HTTP 5xx counts over the incident window. Confirm if platform
+    shows any outage or maintenance events.
+
+    '
+- step_number: 3
+  action: Review Application Insights and Live Metrics
+  details: 'Open Application Insights linked to the app. Correlate failed requests,
+    exceptions, and dependency failures. Use Live Metrics to watch request rate and
+    server response codes in real time. Filter by operation name to identify failing
+    endpoints.
+
+    '
+- step_number: 4
+  action: Inspect App Service logs (Kudu/SCM)
+  details: 'Browse https://<appname>.scm.azurewebsites.net/DebugConsole and check
+    LogFiles/Application, LogFiles/Process, and LogFiles/http/RawLogs. Download recent
+    stdout/stderr logs from the startup process. On Linux container apps, check docker
+    logs via the Console or SSH into container.
+
+    '
+  warnings: Log files may contain sensitive tokens; redact before sharing.
+- step_number: 5
+  action: Check worker process status and crash details
+  details: 'Use Process Explorer (Windows) or ps/top (Linux) from Kudu Console to
+    confirm the w3wp or dotnet/node process is running. If processes are crashing,
+    capture the exit code and review Event Viewer style logs in LogFiles/EventLog.xml
+    (Windows) or core dump entries in LogFiles.
+
+    '
+- step_number: 6
+  action: Validate common app settings and startup configuration
+  details: 'Verify App Settings: WEBSITE_RUN_FROM_PACKAGE, SCM_TYPE, WEBSITE_NODE_DEFAULT_VERSION,
+    DOTNET_STARTUP_HOOK, and any custom startup command. If Run From Package is enabled,
+    ensure the deployment package is valid and your app does not attempt writes to
+    the site root (Read-only when Run From Package=true).
+
+    '
+  warnings: "Changing app settings may trigger an app restart \u2014 schedule with\
+    \ stakeholders if high traffic."
+- step_number: 7
+  action: Enable/disable 'Always On' as appropriate
+  details: 'For non-consumption tiers (Basic and above) ensure ''Always On'' is enabled
+    to avoid cold start issues for background services. For Linux containers it helps
+    prevent idle scaling; for containers using custom start-up scripts, confirm the
+    start-up completes.
+
+    '
+- step_number: 8
+  action: Restart the App Service and warm-up
+  details: 'From Azure Portal, perform a restart of the Web App. If using slots, restart
+    the target slot and then do a warm-up by invoking the app''s health endpoint repeatedly
+    until it returns 200 consistently before swapping.
+
+    '
+  warnings: Restart affects all users; perform outside peak windows if possible and
+    notify stakeholders.
+- step_number: 9
+  action: Re-deploy or roll back the recent deployment
+  details: 'If logs indicate the latest artifact is faulty, roll back to the previous
+    known-good release in your CI/CD system. For slot swaps, use a staged swap with
+    pre-swap validation and slot-specific app settings checked.
+
+    '
+- step_number: 10
+  action: Adjust scaling or timeout settings if traffic spike is root cause
+  details: 'Temporarily scale up to a higher SKU or increase instance count if CPU/memory
+    is saturated. For front-door/application-gateway, check backend health probe path
+    and increase probe timeout if short probes causing 502.
+
+    '
+- step_number: 11
+  action: Collect artifacts for root-cause analysis
+  details: 'Save App Service logs, Application Insights snapshots, Kudu dumps, and
+    deployment logs to a secure storage container. Note timestamps and correlation
+    ids to attach to ticketing system and for escalation if needed.
+
+    '
+- step_number: 12
+  action: Notify stakeholders and close incident
+  details: 'Once verified healthy, update incident ticket with actions taken, root
+    cause (if known), and mitigation steps. Schedule a post-mortem if required for
+    recurring incidents.
+
+    '
+verification_steps:
+- step: Confirm the web app returns HTTP 200 for the primary endpoints from multiple
+    regions (use curl and Application Gateway if applicable).
+- step: Verify Application Insights shows 5xx error rate dropped to baseline and failed
+    request count is stable.
+- step: Confirm App Service metrics show stable worker count, CPU and memory within
+    expected thresholds.
+- step: Confirm Kudu process explorer shows stable worker processes with no rapid
+    restarts.
+- step: Validate a successful deployment or swap with zero or acceptable error rate
+    for at least 30 minutes.
+troubleshooting:
+- issue: Rapid worker process restarts (crashes after startup)
+  solution: 'Collect process stdout/stderr from Kudu, check for unhandled exceptions
+    in application code, confirm runtime version compatibility (e.g., Node/NetCore
+    mismatch). If native crash, capture dump (using Kudu DebugDump) and escalate to
+    platform engineering with dump.
+
+    '
+- issue: 502 errors only via Application Gateway or Front Door
+  solution: 'Validate backend pool health probes and timeouts. Ensure probe path returns
+    200 and probe timeout is > 5s for apps with long startup. Check TLS protocol settings
+    and SNI configuration between gateway and App Service.
+
+    '
+- issue: Deployment swap causes production to 502 immediately
+  solution: 'Use warm-up path and slot-specific app settings (swap settings). If using
+    Run From Package, ensure warm-up script is included; consider performing cold
+    swap with manual warm-up.
+
+    '
+- issue: AppService shows 'Memory limit reached' or 'Out of file handles'
+  solution: 'Scale up to a larger SKU, implement connection pooling, fix memory leaks,
+    and set platform feature ''WEBSITE_DYNAMIC_CACHE'' cautiously.
+
+    '
+- issue: Logs not available in Kudu
+  solution: 'Ensure ''Application Logging'' and ''Web Server Logging'' are enabled
+    in Diagnostic settings, and that retention and storage account permissions are
+    correctly configured.
+
+    '
+escalation:
+  condition: 'After following all resolution steps, the app remains unavailable or
+    there are repeating crashes, or you have identified a suspected platform-side
+    outage (Azure Resource Health indicates a regional platform issue) or there is
+    a security incident.
+
+    '
+  contact: 'Contact Platform Engineering on-call (platform-oncall@acme-infra.internal)
+    and open an Azure Support ticket (severity A / production outage).
+
+    '
+  escalation_path: "1) Notify Platform Engineering on-call and attach collected artifacts\
+    \ (logs, dumps, AI traces). 2) If Platform Engineering cannot remediate within\
+    \ 30 minutes, request Platform Lead and open an Azure Support \"Standard\" ->\
+    \ \"Production outage\"\n   ticket with correlation ids and timestamped evidence.\n\
+    3) Inform Product Owner and Incident Manager; post status to incident channel\
+    \ and provide ETA for next update.\n"
+related_documentation:
+- title: App Service Diagnostics checklist (internal)
+  url: https://intranet.acme-infra.internal/docs/app-service/diagnostics-checklist
+- title: Run From Package implications for deployment
+  url: https://intranet.acme-infra.internal/docs/app-service/run-from-package
+- title: Warm-up and slot swap best practices
+  url: https://intranet.acme-infra.internal/docs/app-service/slot-swap-warmup
+- title: Kudu and process dump collection guide
+  url: https://intranet.acme-infra.internal/docs/app-service/kudu-dumps
+tags:
+- azure
+- app-service
+- production-outage
+- diagnostics
+- deployment
+version_history:
+- version: 1.0
+  date: 2024-09-12 10:00:00+00:00
+  author: Tomas Liu
+  changes: Initial draft covering basic 502/503 remediation.
+- version: 1.5
+  date: 2025-04-03 15:20:00+00:00
+  author: Priya Nair
+  changes: Added Application Insights verification and Kudu dump collection steps.
+- version: 1.9
+  date: 2025-11-28 02:13:56.149578+00:00
+  author: Elena Marquez
+  changes: Expanded troubleshooting scenarios, added slot warm-up and escalation path,
+    updated contacts and verification steps.

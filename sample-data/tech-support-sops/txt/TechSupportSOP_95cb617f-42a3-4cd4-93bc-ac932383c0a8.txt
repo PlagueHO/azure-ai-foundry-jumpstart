@@ -1,0 +1,139 @@
+SOP ID: 95cb617f-42a3-4cd4-93bc-ac932383c0a8
+Version: 1.0
+Created At: 2025-11-28T02:48:35.547299+00:00
+Last Updated: 2025-11-28T02:48:35.547299+00:00
+Title: Resolve Stalled or Failing Windows Update Service (wuauserv) on Windows Server
+Problem Category: general
+Complexity: medium
+System Context: Windows Server
+Severity: low
+Status: published
+Approval Level: manager
+Author: Jordan Kepler <jordan.kepler@techfictional.example.com>
+Approver: Marisol Nguyen <marisol.nguyen@techfictional.example.com>
+Approved At: 2025-11-28T03:00:00+00:00
+
+PROBLEM DESCRIPTION:
+Windows Update (wuauserv) on a Windows Server may become unresponsive, report "waiting for download", hang during scans, or fail to apply updates. This SOP describes a safe, repeatable process to reset Windows Update client components, clear temporary update caches, and validate update functionality. This applies to standalone Windows Server and servers that use WSUS as a client.
+
+SYMPTOMS:
+- Windows Update control panel shows "Checking for updates" indefinitely or "last checked" is stale.
+- Server fails to download or install updates and shows error codes such as 0x8024a005, 0x80070422, or generic "service not running".
+- Automatic Update client (wuauserv) process not responding or service restarts repeatedly.
+- WSUS clients show as "Not reporting" despite network connectivity.
+- Event Viewer contains repeated WindowsUpdateClient warnings/errors.
+
+PREREQUISITES:
+- Confirm service window or maintenance window approved (if server is production).
+- On domain controllers or critical systems, ensure AD replication health and that you have authorization to restart services.
+- Confirm recent system backups or VM snapshots available (recommended before any file/directory renames).
+
+REQUIRED TOOLS:
+- Domain or local Administrator account with UAC elevated PowerShell / command prompt access.
+- RDP or console access to the server.
+- Access to WSUS server admin console (if WSUS is in use).
+- Basic knowledge of PowerShell and Event Viewer.
+- Optional: file share or USB for temporary file staging if needed.
+
+ESTIMATED RESOLUTION TIME: 15-45 minutes (may increase if large SoftwareDistribution re-sync is required)
+
+RESOLUTION STEPS:
+1. Action: Document current state and create a restore point/snapshot
+   Details: Record Windows Update-related service statuses and event log timestamps. If server is a VM, create a snapshot. Note last successful update date from Control Panel or Settings > Update & Security.
+   Warnings: Do not proceed on domain controllers without confirmation of replication and backups.
+
+2. Action: Check service and process status
+   Details: Open an elevated PowerShell prompt and run:
+     Get-Service wuauserv, bits, cryptsvc, msiserver | Format-Table Name,Status
+     Get-Process -Name wuauclt,*windowsupdate* -ErrorAction SilentlyContinue
+   Warnings: Do not kill non-Windows-Update related processes; only stop services in the next step.
+
+3. Action: Stop Windows Update services
+   Details: In elevated PowerShell or CMD:
+     Stop-Service -Name wuauserv, bits, cryptsvc, msiserver -Force -ErrorAction SilentlyContinue
+     (Wait 10-15 seconds to ensure services are stopped.)
+   Warnings: Stopping these services will pause update activities; verify maintenance window for production servers.
+
+4. Action: Rename SoftwareDistribution and Catroot2 folders
+   Details: These cached folders are commonly rebuilt. From elevated PowerShell:
+     Rename-Item -Path C:\Windows\SoftwareDistribution -NewName SoftwareDistribution.old -ErrorAction SilentlyContinue
+     Rename-Item -Path C:\Windows\System32\catroot2 -NewName catroot2.old -ErrorAction SilentlyContinue
+     If rename fails due to file locks, ensure services in step 3 are stopped and retry.
+   Warnings: Renaming SoftwareDistribution will remove update history shown in Windows Update UI (not installed updates). Keep the .old folders as a backup for at least 24 hours.
+
+5. Action: Re-register Windows Update DLLs (optional, for corrupted client DLLs)
+   Details: Run the following commands (PowerShell with Start-Process to run regsvr32 elevated) or use CMD:
+     regsvr32 /s wuapi.dll
+     regsvr32 /s wuaueng.dll
+     regsvr32 /s wucltux.dll
+     regsvr32 /s wups2.dll
+     regsvr32 /s wups.dll
+   Warnings: These commands are generally safe but may be unnecessary on modern Server versions; skip if using Server Core where DLLs differ.
+
+6. Action: Reset Windows Update components via PowerShell script
+   Details: Run a compact reset sequence:
+     sc.exe config wuauserv start= auto
+     sc.exe config bits start= delayed-auto
+     sc.exe config cryptsvc start= auto
+     Start-Service -Name wuauserv, bits, cryptsvc, msiserver
+   Then trigger a scan:
+     UsoClient.exe StartScan
+     (If UsoClient.exe is unavailable, use: wuauclt.exe /detectnow)
+   Warnings: UsoClient.exe exists on newer OS builds; wuauclt may be deprecated but still functional.
+
+7. Action: Monitor Event Viewer and WindowsUpdate logs
+   Details: Open Event Viewer -> Applications and Services Logs -> Microsoft -> Windows -> WindowsUpdateClient -> Operational. Also run:
+     Get-WindowsUpdateLog -LogPath C:\Temp\WindowsUpdate.log
+     (If Get-WindowsUpdateLog fails, inspect logs under %windir%\SoftwareDistribution\ReportingEvents.log)
+   Warnings: Large log exports can take time; filter by recent timestamps.
+
+8. Action: If WSUS-managed, verify client targeting and server connectivity
+   Details: Check registry keys:
+     HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\WUServer
+     HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\WUStatusServer
+     Run:
+     wuauclt /reportnow
+     wuauclt /detectnow
+     Ensure server can reach WSUS on TCP 8530/8531 or configured ports (telnet or Test-NetConnection).
+   Warnings: Do not modify group policy settings on domain-joined servers unless change is approved.
+
+VERIFICATION STEPS:
+- Confirm services are running: Get-Service wuauserv, bits, cryptsvc -> Status should be Running.
+- Confirm Windows Update UI shows a recent "Last checked" timestamp (within 15 minutes) after triggering StartScan/DetectNow.
+- Check Event Viewer: No repeated WindowsUpdateClient error entries in the last 30 minutes.
+- Confirm updates can be downloaded: either observe download progress, or check SoftwareDistribution\Download for new files being created.
+- If WSUS: confirm the client appears in WSUS console with an updated Last Contact or Last Reported status within 30 minutes.
+
+TROUBLESHOOTING:
+Issue: Services fail to start with access denied or dependency error.
+Solution: Verify the service account and dependencies. Check Local Security Policy or GPO for altered service permissions. Run SFC scan: sfc /scannow and inspect CBS logs at C:\Windows\Logs\CBS\CBS.log.
+
+Issue: SoftwareDistribution folder cannot be renamed due to locked files.
+Solution: Ensure all Windows Update-related services are stopped. Use Process Explorer to find handles locking files, or perform rename from WinRE / offline mount if required.
+
+Issue: Server cannot reach WSUS or Windows Update endpoints.
+Solution: Verify network rules, proxy settings, and TLS inspection devices. Test TCP connectivity to WSUS / Microsoft update endpoints (e.g., Test-NetConnection wsus-server:8530). If a proxy is used, verify WinHTTP proxy: netsh winhttp show proxy.
+
+Issue: Update Client shows repeated 0x8024xxxx errors.
+Solution: Review Windows Update log for specific subcodes. If Volume Shadow Copy or BITS is failing, restart BITS and check for storage pressure on C: drive.
+
+ESCALATION:
+Condition: After completing steps above and verifying, if Windows Update remains non-functional, or if critical errors (e.g., repeated service crashes, corruption in %windir%) persist.
+Contact: Tier 2 Server Engineering — escalation-team@techfictional.example.com, Pager: +1-555-0102 (fictional)
+Escalation Path:
+- Contact Tier 2 via email/pager with subject "ESCALATION: SOP 95cb617f - Windows Update failure on <servername>".
+- Include collected artifacts: PowerShell outputs (service list, error codes), exported WindowsUpdate.log, relevant Event Viewer export (XML), and VM snapshot ID or backup reference.
+- If Tier 2 cannot resolve within 2 business hours during a maintenance window, escalate to Platform Architect (marisol.nguyen@techfictional.example.com) with full ticket and snapshot details.
+
+RELATED DOCUMENTATION:
+- Title: Internal KB - Reset Windows Update Client on Servers
+  URL: https://kb.internal.techfictional.example.com/kb/WS-ResetWU-001
+- Title: WSUS Client Troubleshooting Guide (Internal)
+  URL: https://kb.internal.techfictional.example.com/kb/WSUS-Client-Troubleshoot
+- Title: Microsoft Update Endpoints & Ports (summary, internal mirror)
+  URL: https://intranet.techfictional.example.com/docs/update-endpoints
+
+TAGS: windows-server, windows-update, wsus
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2025-11-28T02:48:35.547299+00:00 | Author: Jordan Kepler | Changes: Initial published SOP covering reset and verification steps for stalled Windows Update service on Windows Server.

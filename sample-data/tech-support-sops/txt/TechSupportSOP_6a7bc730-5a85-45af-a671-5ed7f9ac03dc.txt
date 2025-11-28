@@ -1,0 +1,149 @@
+SOP ID: 6a7bc730-5a85-45af-a671-5ed7f9ac03dc
+Version: 1.4
+Created At: 2025-11-28T02:56:44.626621+00:00
+Last Updated: 2025-11-28T03:05:00.000000+00:00
+Title: Resolve intermittent user authentication failures in Microsoft Entra ID (stale sessions / refresh tokens / Conditional Access)
+Problem Category: authentication
+Complexity: medium
+System Context: Microsoft Entra ID
+Severity: low
+Status: approved
+Approval Level: manager
+Author: Jordan Blake <jordan.blake@examplecorp.internal>
+Approver: Maya Patel <maya.patel@examplecorp.internal>
+Approved At: 2025-11-28T03:00:00.000000+00:00
+
+PROBLEM DESCRIPTION:
+Users intermittently experience authentication failures when accessing Microsoft 365 or other Entra-integrated applications. Symptoms often appear after a password reset, device compliance changes, or Conditional Access policy updates. Root causes commonly include stale refresh tokens, noncompliant devices being blocked by Conditional Access, legacy authentication usage, or misconfigured Conditional Access policy scopes.
+
+SYMPTOMS:
+- User reports "Incorrect password" or continuous sign-in prompts despite correct credentials.
+- MFA prompt does not appear or is repeatedly requested in a loop.
+- Single Sign-On (SSO) to Microsoft 365 apps fails while web portal login succeeds.
+- Sign-in log entries show failure reason referencing "token" or "inactive session" or "conditional access block".
+- User is able to sign in on some devices but not others.
+
+PREREQUISITES:
+- Global Administrator, Identity Administrator, or appropriate delegated Identity role for required operations.
+- Access to Microsoft Entra admin center and sign-in logs.
+- Access to Microsoft Graph / AzureAD / Microsoft Graph PowerShell modules as needed.
+- Tenant ID and affected user's objectId/UPN.
+
+REQUIRED TOOLS:
+- Web browser with access to https://entra.microsoft.com (Microsoft Entra admin center).
+- PowerShell (recommended PowerShell 7+) with Microsoft.Graph module or AzureAD module installed.
+- Access to Intune (Endpoint Manager) portal if device compliance is relevant.
+- Internal ticketing system to record actions (ticket ID).
+- Local instructions for end-users to clear credential caches (Windows Credential Manager, Outlook cache, mobile app account removal).
+
+ESTIMATED RESOLUTION TIME: 15-45 minutes (per affected user), up to several hours if escalation needed.
+
+RESOLUTION STEPS:
+1. Action: Gather initial information
+   Details:
+   - Record the user's UPN (e.g., <user@tenant.onmicrosoft.com>), objectId, tenant ID, approximate sign-in timestamp, application name, and correlation ID from the user or sign-in failure message.
+   - Open a support ticket and note the collected metadata.
+   Warnings: Do not request or store user passwords in the ticket.
+
+2. Action: Inspect Entra sign-in logs
+   Details:
+   - In Entra admin center (Monitoring > Sign-ins), filter by user and timeframe.
+   - Review "Status", "Conditional Access", "Sign-in error", "Client app", and "Protocol".
+   - Note error codes (e.g., 50139 / 50140-like internal codes) and any Conditional Access policy names triggered.
+   Warnings: Logs are time-sensitive; confirm timezone and timestamp accuracy.
+
+3. Action: Verify user account and authentication methods
+   Details:
+   - In Entra > Users > select user: confirm account Enabled, Password reset not pending, and Authentication methods are registered.
+   - If user recently had password reset: confirm they used the new password on at least one device or web session.
+   Warnings: Do not change MFA settings unless instructed by business policy.
+
+4. Action: Check device compliance (if Conditional Access requires device compliance)
+   Details:
+   - In Intune > Devices, locate the user's device(s). Check compliance state and last check-in.
+   - If device is noncompliant, remediate via company remediation steps (install required apps, update OS, or re-enroll).
+   Warnings: Avoid wiping or re-enrolling without user consent and change approval.
+
+5. Action: Revoke user sessions / refresh tokens
+   Details:
+   - Recommended when sign-in logs show refresh token or stale session issues (e.g., after credential change).
+   - Using Microsoft Graph PowerShell (preferred modern cmdlet):
+     - Connect: Connect-MgGraph -Scopes "User.ReadWrite.All"
+     - Revoke sessions: Revoke-MgUserSignInSession -UserId <user-objectId>
+   - Alternative (AzureAD module):
+     - Connect-AzureAD
+     - Revoke-AzureADUserAllRefreshToken -ObjectId <user-objectId>
+   Warnings: This will sign the user out of all applications and devices. Notify the user before executing.
+
+6. Action: Clear local credential caches on user devices
+   Details:
+   - Windows: In Credential Manager, remove any stored credentials for Office 365 / MicrosoftOnline; clear Modern Authentication token cache by signing out of Office apps and restarting.
+   - macOS/iOS/Android: Remove and re-add the account in mail/mobile apps; for iOS, sign out of Microsoft apps and sign back in.
+   - Outlook: Clear Autodiscover and cached credentials; use "File > Office Account > Sign out" then sign back in.
+   Warnings: Inform the user that certain apps will require re-authentication.
+
+7. Action: Test sign-in
+   Details:
+   - Have the user sign in on a known-good device and via a private browser window to isolate cached credential issues.
+   - If success occurs, ask the user to test the previously failing app(s) and confirm behavior.
+   Warnings: If app still fails, continue troubleshooting below.
+
+8. Action: Check Conditional Access policy configuration
+   Details:
+   - In Entra > Security > Conditional Access: identify policies applied to the user or group.
+   - Look for policies requiring device compliance, specific client apps, legacy auth blocks, or location restrictions.
+   - To quickly isolate: create a temporary policy exclusion for the affected user or add the account to an emergency access group and retest (follow org change control).
+   Warnings: Do not leave broad exclusions in place—remove temporary exclusions immediately after testing.
+
+9. Action: Address legacy authentication or client protocol issues
+   Details:
+   - From sign-in logs, if Protocol is "IMAP/POP/SMTP" or "Exchange ActiveSync" (legacy), advise the user to use modern auth-capable clients or enable app-specific modern auth paths.
+   - For blocked legacy auth, consider per-user enablement only if validated by security policy; better approach is to migrate clients.
+   Warnings: Enabling legacy auth increases security risk—obtain approval.
+
+VERIFICATION STEPS:
+- Confirm the user can sign in to the previously failing application(s) without error.
+- Verify that sign-in logs show successful authentication entries for the tested timestamp and device, and that earlier error entries no longer reoccur.
+- If refresh tokens were revoked, verify a new access/refresh token was issued (sign-in log details show successful token issuance).
+- Confirm device compliance state is "Compliant" if Conditional Access requires it.
+- Confirm with the user that MFA prompts (if applicable) behave as expected.
+
+TROUBLESHOOTING:
+Issue: Sign-in still blocked after revoking sessions
+Solution: Re-open sign-in log entry for the failed attempt. If Conditional Access "Grant" control blocked (e.g., "Require approved client app" or "Require device to be marked as compliant"), address that specific requirement (install Company Portal, enroll device, or use supported client). If the log shows "TermsOfUseRequired", ensure user has accepted policy.
+
+Issue: User can sign in to web but not Outlook/mobile app
+Solution: Clear local cached credentials on the device, remove and re-add the account in the app, ensure the app supports modern authentication. If mobile device is managed by Intune, check app protection policy and conditional launch settings.
+
+Issue: MFA prompt loops after password change
+Solution: Ensure refresh tokens were fully revoked and user cleared cached sessions on all devices. On rare occasions, revoke refresh tokens again and have the user perform a full sign-in (not "Keep me signed in").
+
+Issue: Unexpected Conditional Access exclusions not visible
+Solution: Confirm policy evaluation: check "What If" tool in Conditional Access to simulate the user's request and see which policies apply. Check for policy precedence, named locations, or group membership caching delays.
+
+ESCALATION:
+Condition: After following steps above, user remains unable to authenticate, sign-in logs show unclear internal error, or issue affects multiple users unexpectedly.
+Contact: Identity Engineering Team — identity-escalation@examplecorp.internal (ticket required)
+Escalation Path:
+- Level 1: Create/update support ticket with full metadata (tenant ID, user objectId, UPN, sign-in timestamp(s), correlation ID, screenshots of sign-in log entry, conditional access policy names, device IDs). Attach trace logs.
+- Level 2: Identity Engineering reviews logs and may request traces from Microsoft support. Provide admin consented Microsoft Graph logs and consent to open Microsoft support case if requested.
+- SLA: Identity Engineering will respond within 4 business hours for single-user impacting, 1 hour for multi-user or service-impacting incidents.
+
+RELATED DOCUMENTATION:
+- Title: Internal KB — Revoke user sessions and refresh tokens (graph and azuread)
+  URL: https://docs.examplecorp.internal/identity/revoke-user-sessions
+- Title: Internal KB — Clearing Office credential cache on Windows and macOS
+  URL: https://docs.examplecorp.internal/clients/office-credential-cleanup
+- Title: Internal KB — Conditional Access troubleshooting checklist
+  URL: https://docs.examplecorp.internal/security/conditional-access-troubleshoot
+- Title: Microsoft Entra sign-in diagnostics (reference)
+  URL: https://docs.examplecorp.internal/reference/entra-signin-diagnostics
+
+TAGS: authentication, entra-id, conditional-access, token-revocation
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2024-09-12T09:15:00.000000+00:00 | Author: Jordan Blake | Changes: Initial SOP created describing common causes and basic remediation for stale tokens and CA blocks.
+Version: 1.1 | Date: 2024-12-03T14:40:00.000000+00:00 | Author: Jordan Blake | Changes: Added Intune device compliance remediation steps and verification procedures.
+Version: 1.2 | Date: 2025-05-21T11:22:00.000000+00:00 | Author: Priya Ramesh | Changes: Included Microsoft Graph PowerShell commands and "What If" guidance for Conditional Access.
+Version: 1.3 | Date: 2025-08-07T16:05:00.000000+00:00 | Author: Jordan Blake | Changes: Expanded troubleshooting scenarios for legacy authentication and updated escalation contacts.
+Version: 1.4 | Date: 2025-11-28T03:05:00.000000+00:00 | Author: Jordan Blake | Changes: Minor clarifications to warnings, added approved-at metadata and refined verification steps.

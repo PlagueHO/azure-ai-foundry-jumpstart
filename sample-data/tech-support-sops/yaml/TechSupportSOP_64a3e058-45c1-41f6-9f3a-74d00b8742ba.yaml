@@ -1,0 +1,243 @@
+sop_id: 64a3e058-45c1-41f6-9f3a-74d00b8742ba
+version: '1.6'
+created_at: '2025-11-28T02:19:46.056053+00:00'
+last_updated: '2025-11-28T02:19:46.056053+00:00'
+title: 'AKS Monitoring: Resolve missing pod metrics and delayed alerts'
+problem_category: general
+complexity: medium
+system_context: Azure Kubernetes Service Monitoring
+severity: medium
+status: draft
+approval_level: manager
+author:
+  name: Marina Kepler
+  email: m.kepler@fictionalops.example
+problem_description: 'Intermittent or persistent absence of pod/container metrics
+  in Azure Monitor (Container Insights)
+
+  or metrics ingestion delays resulting in missing or delayed alerts for AKS workloads.
+  Symptoms
+
+  typically surface as empty time series in Metrics Explorer, zero values for expected
+  metrics
+
+  (cpuUsage, memoryWorkingSet), or Alert Rules not firing despite application load.
+  Root causes
+
+  include misconfigured Container Insights, Log Analytics workspace retention/ingestion
+  issues,
+
+  agent (AMA/OMS) pods crashing or evicted, network egress restrictions, or Prometheus
+  scraping
+
+  gaps when using Prometheus addon.
+
+  '
+symptoms:
+- Metrics not visible in Metrics Explorer (no data, time series empty) for last 5-30
+  minutes
+- Container Insights shows 'No data' for specific node(s) or pod namespaces
+- Alerts in Azure Monitor are not firing or are significantly delayed
+- ama/azuremonitor-containers agent pod in CrashLoopBackOff or Pending state
+- Prometheus scrape targets show 'UNKNOWN' or high scrape latency in Prometheus UI
+prerequisites:
+- Access to the Azure subscription with Monitoring Reader and AKS Contributor or Owner
+  role
+- kubectl configured to target the affected AKS cluster (kubeconfig set)
+- az CLI installed and logged in with an account that has access to Log Analytics
+  workspace
+- Knowledge of the Log Analytics workspace name and resource ID used by Container
+  Insights
+required_tools:
+- kubectl (v1.22+ recommended)
+- az CLI (v2.50+ recommended)
+- jq (for JSON parsing in commands)
+- Access to Azure Portal metrics blade and Log Analytics query access
+- 'Optional: kubectl logs, kubectl describe, kubectl -n <namespace> exec for agent
+  containers'
+estimated_resolution_time: 30-60 minutes
+resolution_steps:
+- step_number: 1
+  action: Confirm scope and map resources to workspace
+  details: "Identify which Log Analytics workspace the affected AKS cluster's Container\
+    \ Insights is configured to use.\nRun:\n  az aks show --resource-group <RG> --name\
+    \ <AKS_NAME> --query \"addonProfiles.omsagent.config.LOG_ANALYTICS_WORKSPACE_RESOURCE_ID\"\
+    \ -o tsv\nOr check Azure Portal > AKS cluster > Insights > Diagnostic settings.\n"
+  warnings: Do not change workspace configuration unless instructed by an authorized
+    approver.
+- step_number: 2
+  action: Validate agent pod status
+  details: "Check azuremonitor-containers (AMA) or omsagent pods in the kube-system\
+    \ namespace.\nRun:\n  kubectl get pods -n kube-system -l k8s-app=azure-monitor-containers\
+    \ -o wide\n  kubectl get pods -n kube-system -l component=omsagent -o wide\nIf\
+    \ pods are CrashLoopBackOff or Pending, collect logs:\n  kubectl logs -n kube-system\
+    \ <pod-name> --previous\n  kubectl describe pod -n kube-system <pod-name>\n"
+  warnings: Collect logs for the most recent crash to avoid losing transient log data.
+- step_number: 3
+  action: Check node-level health and disk pressure
+  details: "Disk pressure or node conditions can evict monitoring agents. Run:\n \
+    \ kubectl get nodes -o wide\n  kubectl describe node <node-name> | egrep -i 'Condition|DiskPressure|MemoryPressure|OutOf'\n\
+    Free up node disk or cordon/drain for remediation if disk pressure is present.\n"
+  warnings: Cordoning and draining nodes will disrupt workloads. Schedule maintenance
+    window if needed.
+- step_number: 4
+  action: Inspect Log Analytics ingestion and workspace quota
+  details: "In Azure Portal: Log Analytics workspace > Usage and estimated costs >\
+    \ Data ingestion.\nOr use az CLI:\n  az monitor log-analytics workspace show --resource-group\
+    \ <rg> --workspace-name <ws> --query \"{id:id, retentionInDays:retentionInDays,\
+    \ dailyQuotaGb:dailyQuotaGb}\" -o json\nCheck for ingestion throttling, exceeded\
+    \ daily cap, or retention misconfiguration.\n"
+  warnings: Do not increase quota without approval from cost owners.
+- step_number: 5
+  action: Query recent data in Log Analytics
+  details: "Run a focused Kusto query to determine recent ingestion:\n  // Example:\
+    \ container insights metrics (fictional field names)\n  AzureDiagnostics\n  |\
+    \ where ResourceType == 'CONTAINERS'\n  | where TimeGenerated > ago(30m)\n  |\
+    \ summarize count() by bin(TimeGenerated, 5m), namespace_s\nAdjust query to your\
+    \ workspace schema. If no rows return, ingestion is failing.\n"
+  warnings: Ensure you run queries against the correct workspace.
+- step_number: 6
+  action: If using Prometheus addon, check Prometheus targets and scrape configs
+  details: "For clusters using Prometheus scraping (Azure Monitor for Containers Prometheus\
+    \ integration or kube-prometheus):\n  - Access Prometheus UI (port-forward if\
+    \ private):\n      kubectl -n monitoring port-forward svc/prometheus 9090:9090\n\
+    \  - Visit http://localhost:9090/targets and look for DOWN or high scrape_duration_seconds.\n\
+    \  - Inspect scrape config ConfigMap: kubectl -n monitoring get configmap prometheus-server\
+    \ -o yaml\nFix target endpoints (serviceMonitor annotations, podLabels) if missing.\n"
+  warnings: Do not edit Prometheus scrape config without understanding serviceMonitor
+    vs static configs.
+- step_number: 7
+  action: Restart agent pods safely
+  details: "If agent pods are running but not ingesting, restart them to force reconnection:\n\
+    \  kubectl rollout restart daemonset -n kube-system azuremonitor-containers\n\
+    Or delete individual pod to let DaemonSet recreate:\n  kubectl delete pod -n kube-system\
+    \ <pod-name>\nMonitor recreated pod logs for successful startup and workspace\
+    \ handshake.\n"
+  warnings: Restarting agents will cause a small gap in metrics ingestion. Notify
+    stakeholders if SLA sensitive.
+- step_number: 8
+  action: Validate network egress and TLS inspection
+  details: "Ensure AKS nodes can reach Azure Monitor endpoints and Log Analytics ingestion\
+    \ endpoints:\n  - whitelist *.ods.opinsights.azure.com and *.monitor.azure.com\
+    \ as needed\n  - check proxy/TLS inspection that may break certificate pinning\n\
+    Test connectivity from a node:\n  kubectl debug node/<node-name> -n kube-system\
+    \ -- sleep 3600  # (if debug enabled)\n  curl -v https://<workspace-id>.ods.opinsights.azure.com/health\n\
+    If using NAT Gateway or custom egress, ensure SNAT port exhaustion not occurring.\n"
+  warnings: Do not expose workspace keys or secrets in logs.
+- step_number: 9
+  action: Confirm Alerts and Metric rules
+  details: "Check Azure Monitor alert rules tied to the workspace or metrics:\n  az\
+    \ monitor metrics alert list --resource-group <rg> --query \"[].{name:name,enabled:enabled}\"\
+    \nValidate that alert scopes still reference the correct resource IDs and metric\
+    \ namespaces.\n"
+  warnings: Avoid enabling duplicate alerts; coordinate with owners when changing
+    alert configuration.
+- step_number: 10
+  action: Collect diagnostics and open support ticket if unresolved
+  details: "If ingestion is still failing after prior steps, collect:\n  - Agent pod\
+    \ logs (last 60s to 10m)\n  - kube-system events: kubectl get events -n kube-system\
+    \ --sort-by=.metadata.creationTimestamp\n  - Output of az monitor diagnostic-settings\
+    \ list --resource <aks-resource-id>\n  - Log Analytics workspace configuration\
+    \ (resource ID, retention, ingestion quota)\nAttach collected artifacts to Azure\
+    \ Support ticket referencing Workspace ID and AKS resource ID.\n"
+  warnings: Ensure logs scrub secrets before attaching to tickets.
+verification_steps:
+- step: Confirm recent metrics appear in Metrics Explorer for affected namespaces
+    within 5-10 minutes
+- step: Run Log Analytics query and confirm rows returned for the last 15 minutes
+    for container metrics
+- step: 'Verify that agent DaemonSet pods are running and in Ready state across all
+    nodes: kubectl get ds -n kube-system azuremonitor-containers'
+- step: Trigger a synthetic alert (if safe) by creating a temporary CPU spike and
+    confirm alert fires within expected window
+troubleshooting:
+- issue: Agent pod restarts repeatedly (CrashLoopBackOff)
+  solution: 'Collect pod logs and describe. Common causes: OOMKilled due to insufficient
+    node memory, invalid config causing runtime exception,
+
+    or environment mismatch after cluster upgrade. Increase node memory, fix config
+    map, or roll back agent version to stable channel.
+
+    '
+- issue: No data in Log Analytics but agent pods are Running and Ready
+  solution: "Check network egress, workspace key validity, and ingestion quotas. Validate\
+    \ agent logs show successful workspace handshake.\nIf TLS interception is present,\
+    \ fingerprint verification failures will appear in logs \u2013 work with network\
+    \ team to create exception.\n"
+- issue: Prometheus targets show high scrape latency or DOWN
+  solution: 'Verify service discovery labels and network policies. Ensure serviceMonitor
+    CRs match pod labels and that network policies allow Prometheus namespace -> target
+    namespace traffic.
+
+    '
+- issue: Ingestion quota exceeded
+  solution: 'Engage cost/infra owners to temporarily increase daily cap or reduce
+    debug/verbose logging from workloads, then backfill monitoring as needed.
+
+    '
+escalation:
+  condition: Issue persists after completing all resolution steps and diagnostics
+    collection, or metrics missing across entire cluster for >60 minutes
+  contact: 'On-call SRE: PagerDuty (see internal roster) and AKS Platform Engineer
+    team'
+  escalation_path: '1) Contact on-call SRE with collected artifacts (agent logs, workspace
+    ID, kube-system events).
+
+    2) If no remediation within 30 minutes, create Azure Support technical case (Support
+    > New support request) with severity ''Standard'' or escalate to ''Critical''
+    if production outage.
+
+    3) Notify Manager and Platform Director with Support Case ID and timeline.
+
+    '
+related_documentation:
+- title: Azure Monitor for Containers - Container insights (internal playbook)
+  url: https://intranet.example.com/docs/azure-monitor-containers-playbook
+- title: AKS Network Egress and NAT troubleshooting
+  url: https://intranet.example.com/network/aks-egress-troubleshooting
+- title: Prometheus ServiceMonitor configuration guide
+  url: https://intranet.example.com/monitoring/prometheus-servicemonitor-guide
+- title: Azure Log Analytics workspace troubleshooting
+  url: https://intranet.example.com/docs/log-analytics-workspace-troubleshoot
+tags:
+- AKS
+- Monitoring
+- Azure Monitor
+- Container Insights
+- Prometheus
+version_history:
+- version: '1.0'
+  date: '2024-09-12T09:15:00+00:00'
+  author: Marina Kepler
+  changes: Initial draft covering common Container Insights ingestion failures and
+    agent troubleshooting.
+- version: '1.1'
+  date: '2024-12-05T14:40:00+00:00'
+  author: Marina Kepler
+  changes: Added Prometheus addon section and scrape troubleshooting; clarified network
+    egress checks.
+- version: '1.2'
+  date: '2025-03-22T11:05:00+00:00'
+  author: Andre Silva
+  changes: Expanded diagnostics collection commands and added guidance for workspace
+    quota checks.
+- version: '1.3'
+  date: '2025-06-10T07:30:00+00:00'
+  author: Priya Raman
+  changes: Updated agent restart recommendation and added warnings about maintenance
+    windows and SLA impact.
+- version: '1.4'
+  date: '2025-09-01T16:20:00+00:00'
+  author: Marina Kepler
+  changes: Added synthetic alert verification and examples of Kusto queries for ingestion
+    verification.
+- version: '1.5'
+  date: '2025-10-20T10:00:00+00:00'
+  author: Ethan Cole
+  changes: Refined escalation path and included guidance for opening Azure Support
+    tickets with artifacts.
+- version: '1.6'
+  date: '2025-11-28T02:19:46.056053+00:00'
+  author: Marina Kepler
+  changes: Minor wording edits for clarity; standardized command examples and updated
+    tool version recommendations.

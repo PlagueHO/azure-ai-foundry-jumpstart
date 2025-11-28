@@ -1,0 +1,136 @@
+SOP ID: 48bf1eea-3f27-41a0-8c65-167243fe4854
+Version: 1.4
+Created At: 2025-11-28T02:49:53.255055+00:00
+Last Updated: 2025-11-28T03:05:00+00:00
+Title: Resolve "file locked / cannot upload" errors for SharePoint Online document libraries
+Problem Category: application
+Complexity: medium
+System Context: SharePoint Online
+Severity: medium
+Status: published
+Approval Level: team_lead
+Author: Jordan Vale <jordan.vale@fictional-support.example>
+Approver: Priya Raman <priya.raman@fictional-support.example>
+Approved At: 2025-11-28T03:00:00+00:00
+
+PROBLEM DESCRIPTION:
+Users report being unable to upload or save files to a SharePoint Online document library with errors indicating the file is locked (examples: "The file is locked for editing by another user", "File couldn't be uploaded — file is locked", or a perpetual "Checked out to" status). The issue can be caused by a residual checkout, Office Online/desktop application session lock, OneDrive sync client conflicts, required-checkout and metadata settings, or an information governance (retention/hold) policy preventing modifications.
+
+SYMPTOMS:
+- Error message when uploading or saving: "The file is locked for editing by another user" or similar.
+- File shows as "Checked out" or "Checked out to [system account]" in version history.
+- Uploads repeatedly fail for the same filename but succeed for others.
+- Desktop apps (Word/Excel) show "Read-only" or "File locked for editing".
+- OneDrive sync shows "Sync conflict" for the same file.
+
+PREREQUISITES:
+- You must be a Site Collection Administrator for the affected site or have SharePoint Administrator privileges.
+- The affected file path, file name, site URL, and time window of the error must be available.
+- If using PowerShell, MFA-capable admin account and ability to run interactive sign-in.
+
+REQUIRED TOOLS:
+- PnP.PowerShell (recommended) or SharePoint Online Management Shell installed on support workstation.
+- Browser with SharePoint Online admin center access.
+- Tenant admin credentials (or delegated admin) for escalation steps.
+- Ability to collect screenshots, correlation ID, and browser console logs.
+- Access to Microsoft 365 Compliance center (if checking holds/retention).
+
+ESTIMATED RESOLUTION TIME: 15-45 minutes (depending on whether a retention/hold must be removed and approval wait times).
+
+RESOLUTION STEPS:
+1. Action: Reproduce and capture the error
+   Details: Attempt the same upload/save with the affected user (or a support account impersonating that user if permitted) to capture the exact error text, timestamp, site URL, file name, and correlation ID (if provided). Collect a screenshot and note whether the user is on web/desktop/OneDrive sync.
+   Warnings: Do not force changes to the user's local files without consent.
+
+2. Action: Check browser and client sessions
+   Details: Ask the user to close all Office web and desktop sessions (close browser tabs with Office Online, close Word/Excel/PowerPoint), sign out of Office in the desktop apps, and temporarily disable OneDrive sync for the site. Wait 60 seconds and retry upload.
+   Warnings: Inform user they may lose unsaved local changes in apps if closed.
+
+3. Action: Inspect file state via SharePoint UI
+   Details: As Site Admin, open the document library → locate the file → click ellipsis (...) → Version History and Details pane. Look for "Checked out to", "Modified by", or retention label in the details. Note any special metadata required by the library (required columns).
+   Warnings: Do not change metadata on a live file unless coordinated.
+
+4. Action: Connect using PnP.PowerShell
+   Details: On your admin workstation:
+     - Install/confirm PnP.PowerShell module: Install-Module PnP.PowerShell (if needed).
+     - Connect: Connect-PnPOnline -Url "https://<tenant>.sharepoint.com/sites/<site>" -Interactive
+     - Locate list item:
+         $list = Get-PnPList -Identity "Shared Documents"
+         $item = Get-PnPListItem -List $list -Query "<View><Query><Where><Eq><FieldRef Name='FileLeafRef'/><Value Type='Text'>filename.docx</Value></Eq></Where></Query></View>"
+     - Inspect fields: $item.FieldValues | Select CheckoutUser, Editor, FileLeafRef, LockedByUser, FileRef
+   Warnings: Replace placeholders with actual tenant/site/file values. Running PowerShell requires appropriate permissions.
+
+5. Action: Clear checkout or force check-in (if file is checked out)
+   Details:
+     - If $item.FieldValues shows a CheckoutUser and that user is no longer active or not available, run:
+         Undo-PnPFileCheckout -Url "/sites/<site>/Shared Documents/filename.docx" -Force
+       or
+         CheckIn-PnPFile -ServerRelativeUrl "/sites/<site>/Shared Documents/filename.docx" -CheckinType MajorCheckIn -Comment "Support: resolving stuck checkout"
+     - Confirm the file is no longer checked out in the UI.
+   Warnings: Undoing a checkout discards unsaved checked-out changes. Inform owner before forcing if possible.
+
+6. Action: Resolve Office Online / server-side lock
+   Details: If no checkout is present but Office Online has an orphaned lock, force a refresh by performing a metadata rewrite using PnP:
+     - Add a benign property update:
+         Set-PnPListItem -List "Shared Documents" -Identity $item.Id -Values @{"SupportLockReset" = "Reset at $(Get-Date -Format o)"}
+       This writes a small metadata column (create SupportLockReset if not present) to force server commit and release locks.
+   Warnings: Do not overwrite required metadata values.
+
+7. Action: Check OneDrive sync / client conflicts
+   Details: If the user uses OneDrive sync, ask them to pause sync, clear local cache (OneDrive > Settings > Office > uncheck "Use Office to sync files...") and re-attempt upload. If conflict markers exist (filename (conflict copy).docx), have user upload a renamed file after confirming contents.
+   Warnings: Encourage making a local backup before clearing caches.
+
+8. Action: Verify retention/hold or label is not preventing changes
+   Details: If file still cannot be modified, check tenant retention holds:
+     - In Compliance center, review retention policies and eDiscovery holds for the site. If site is on hold, document the hold name and owner and escalate to Compliance team to temporarily release or adjust policy.
+   Warnings: Do not remove holds without explicit authorization from Compliance/Legal.
+
+9. Action: Final retry and cleanup
+   Details: After locks/checkout/holds are cleared, ask user to re-upload or save. Confirm version history shows a new version and that file opens in Office web/desktop.
+   Warnings: If metadata edits were made for lock reset, revert or document the change per governance.
+
+VERIFICATION STEPS:
+- Attempt to upload a small test file to the same folder and confirm success.
+- Open the previously-locked file in Office Online and in desktop app; ensure it is editable.
+- Confirm Version History shows the new version and that there is no "Checked out" status.
+- If applicable, ask the user to perform the same action that previously failed and confirm success.
+- Document the exact actions taken and timestamps in the ticket.
+
+TROUBLESHOOTING:
+Issue: PowerShell commands fail with permission errors.
+Solution: Ensure your account is Site Collection Admin on the target site or has Global/SharePoint Administrator role. If using Connect-PnPOnline, use -Interactive for MFA accounts. If still blocked, escalate to tenant SharePoint Admin.
+
+Issue: Lock reappears immediately after clearing.
+Solution: Check for an automated process or third-party integration (document scanners, backup agents, metadata workflow) that may open files. Temporarily disable those flows or consult the integration owner, and monitor activity logs for the timestamped action that re-applies the lock.
+
+Issue: File still locked but CheckoutUser returns a system account or empty.
+Solution: This can be caused by orphaned Office Online sessions. Force a metadata rewrite as described in step 6 or schedule a short tenant-level service restart is not possible in SPO — escalate to Platform team so they can inspect backend session state and find the lock owner in ULS-like traces (use correlation id from UI error).
+
+Issue: Retention/Legal hold prevents edits, but Compliance team is slow to respond.
+Solution: Provide Compliance with the business justification and include ticket with site URL, file path, time window, and test evidence. If urgent, request an expedited exception through normal Compliance channels.
+
+ESCALATION:
+Condition: After completing the above steps the file remains locked, or you identify a tenant-wide pattern affecting multiple libraries/sites.
+Contact: SharePoint Platform Team — platform-sharepoint@fictional-support.example (internal)
+Escalation Path:
+- Level 1 (Support Engineer): Document all steps taken, include screenshots, PowerShell output (sanitized), site URL, file path, timestamp, correlation id, and test file name. Assign to Level 2 within 60 minutes.
+- Level 2 (Platform Engineer): Review tenant-level logs and session traces, coordinate with Microsoft support if backend intervention is required. If a retention/hold is suspected, include Compliance contact.
+- Level 3 (Tenant Admin / Microsoft Support): If Level 2 cannot resolve and backend intervention is required (or lock is due to Microsoft service behavior), open an MSFT ticket via Microsoft 365 admin center support and provide correlation id, trace, and activity logs.
+
+RELATED DOCUMENTATION:
+- Title: KB - Resolving Stuck Checkouts in SharePoint Online
+  URL: https://intra.fictional-support.example/kb/spo-stuck-checkouts
+- Title: KB - OneDrive Sync and SharePoint Lock Conflicts
+  URL: https://intra.fictional-support.example/kb/onedrive-sync-locks
+- Title: Guide - Using PnP.PowerShell for SharePoint Online support
+  URL: https://intra.fictional-support.example/guides/pnp-powershell-spo
+- Title: Compliance - Reviewing Retention Holds for a Site
+  URL: https://intra.fictional-support.example/compliance/retention-holds
+
+TAGS: SharePointOnline, file-lock, document-library
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2024-09-12T09:00:00+00:00 | Author: Jordan Vale | Changes: Initial draft covering common checkout/lock scenarios and PnP.PowerShell remediation.
+Version: 1.2 | Date: 2025-03-04T11:30:00+00:00 | Author: Jordan Vale | Changes: Added metadata rewrite method to clear Office Online orphaned locks and added OneDrive sync conflict steps.
+Version: 1.3 | Date: 2025-07-15T14:20:00+00:00 | Author: Jordan Vale | Changes: Expanded troubleshooting for retention/hold scenarios and added Compliance escalation notes.
+Version: 1.4 | Date: 2025-11-28T03:05:00+00:00 | Author: Jordan Vale | Changes: Added structured verification steps, clarified required permissions, and included contact/escallation path and approval metadata.

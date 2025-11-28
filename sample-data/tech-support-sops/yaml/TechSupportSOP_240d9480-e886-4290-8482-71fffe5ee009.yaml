@@ -1,0 +1,198 @@
+sop_id: 240d9480-e886-4290-8482-71fffe5ee009
+version: 1.0
+created_at: 2025-11-28 02:13:56.151768+00:00
+last_updated: 2025-11-28 02:35:00+00:00
+title: Recover Azure App Service Web App from intermittent 5xx / unresponsive behavior
+problem_category: general
+complexity: medium
+system_context: Azure App Service Web App
+severity: medium
+status: draft
+approval_level: team_lead
+author:
+  name: Casey Morgan
+  email: casey.morgan@acme-support.example.com
+approver:
+  name: Priya Patel
+  email: priya.patel@acme-support.example.com
+problem_description: 'Customers report intermittent 5xx responses or the Web App becoming
+  unresponsive. Root causes commonly include App Service Plan resource exhaustion,
+  unhealthy instances after a deployment, misconfigured health checks, or container/GC
+  issues for custom containers. This SOP describes a reproducible diagnostic and remediation
+  sequence for standard (Windows/Linux) App Service Web Apps and container-based Web
+  Apps hosted in an Azure App Service Plan.
+
+  '
+symptoms:
+- Intermittent 502/503 or 500 errors observed in user requests or synthetic tests
+- App responds slowly or times out for extended periods (30s+)
+- App Service instance CPU or memory spikes correlated with incidents
+- Recent deployment or slot swap shortly before errors started
+- Application Insights availability tests failing or show increased failed requests
+prerequisites:
+- Access to Azure subscription with Contributor or higher role for the App Service
+  resource
+- Access to the application's deployment credentials or Kudu (SCM) if container logs
+  are required
+- Knowledge of the app's deployment slot configuration and any autoscale settings
+required_tools:
+- Azure Portal access
+- Azure CLI (az) v2.40+ configured to the target subscription
+- Access to Application Insights (reader or contributor) for the app
+- Kudu / SSH access for Linux containers (scm endpoint)
+- Log streaming client (az webapp log tail or Browser for Kudu LogStream)
+estimated_resolution_time: 15-45 minutes
+resolution_steps:
+- step_number: 1
+  action: Confirm incident and collect initial evidence
+  details: 'Use Application Insights availability tests, Azure Monitor activity logs,
+    and the customer report to capture the incident time-window. Record the App Service
+    name, resource group, App Service Plan, and affected deployment slot (production
+    or staging).
+
+    '
+  warnings: Do not change production configuration until you have collected logs and
+    timestamps.
+- step_number: 2
+  action: Check Azure Portal > App Service blade > Diagnose and solve problems
+  details: 'Open the App Service in the Azure Portal, run the ''Current issues'' and
+    ''Availability and Performance'' checks. Note any flagged issues such as ''High
+    CPU'', ''Memory limits reached'', or ''Platform restart''.
+
+    '
+  warnings: Portal diagnostics summarize findings but may not show real-time transient
+    spikes.
+- step_number: 3
+  action: Inspect instance metrics (CPU, Memory, HTTP Queue, Response Time)
+  details: 'In the Monitoring > Metrics blade, plot CPU Percentage, Memory Working
+    Set, Http5xx, and Average Response Time for the incident window. If the App Service
+    Plan shows sustained CPU > 80% or Memory > 85%, resource exhaustion is likely.
+
+    '
+  warnings: Autoscale events may hide short spikes; set the time granularity to 1
+    minute for accuracy.
+- step_number: 4
+  action: Tail application and platform logs
+  details: 'For Windows or code-based apps run: az webapp log tail --name <app> --resource-group
+    <rg>. For Linux container apps, use Kudu/SSH: https://<app>.scm.azurewebsites.net/
+    and /LogStream or az webapp log tail. Capture stderr/stdout and platform events
+    around the error times.
+
+    '
+  warnings: Log streaming may drop older logs; collect full log files from Storage
+    or Log Analytics if needed.
+- step_number: 5
+  action: Check deployment activity and recent configuration changes
+  details: 'In Deployment Center and Activity Log, look for recent deployments, slot
+    swaps, or App Settings updates that align with the start time of errors. Rollback
+    or redeploy a known-good artifact if a bad deployment is suspected.
+
+    '
+  warnings: Rolling back production without approval can impact customers; get quick
+    approval per change control if required.
+- step_number: 6
+  action: Validate health probes and startup behavior (containers and custom commands)
+  details: 'Verify ''WEBSITE_HEALTHCHECK'' or built-in health check path is set correctly
+    (Platform > Health check). For Linux containers, confirm the container''s startup
+    command completes and that the container exposes the configured port. Restart
+    the app (Azure Portal > Overview > Restart) if container reports ''unhealthy''
+    but won''t recover.
+
+    '
+  warnings: If the app uses sticky sessions (ARR affinity) check session persistence
+    before restarting scale units.
+- step_number: 7
+  action: Perform controlled restart of app instances
+  details: 'If metrics indicate resource exhaustion or instance-level issues, perform
+    a rolling restart: a) Restart one instance at a time via Extensions > SSH/Kudu
+    to drain connections, or use Azure CLI: az webapp restart --name <app> --resource-group
+    <rg>. b) If single instance, schedule a restart during low-traffic window.
+
+    '
+  warnings: Avoid restarting all instances simultaneously for production apps with
+    active users.
+- step_number: 8
+  action: Scale App Service Plan vertically or horizontally if resource limits identified
+  details: 'If App Service Plan CPU/Memory is consistently high, scale up to a larger
+    SKU or scale out (increase instance count). Use Portal > Scale up (App Service
+    plan) or Scale out (App Service plan) and validate impact using metrics.
+
+    '
+  warnings: Scaling can change cost profile and may require a warm-up period for new
+    instances.
+- step_number: 9
+  action: If recent deployment suspected, swap back or redeploy
+  details: 'For slot-based deployments, consider swapping back to the previous slot
+    or re-performing the swap after verifying slot-specific App Settings. Command
+    example to swap: az webapp deployment slot swap --name <app> --resource-group
+    <rg> --slot staging --target-slot production
+
+    '
+  warnings: Confirm slot-specific app settings (e.g., connection strings) are configured
+    as slot settings to avoid leakage.
+- step_number: 10
+  action: If container-specific, capture diagnostic bundle and escalate to platform
+    team
+  details: 'Download the zip diagnostic bundle from Kudu (Diagnostic dump) including
+    docker logs, container stdout/stderr, and crash dumps. Attach the bundle to the
+    incident for deeper analysis by the platform/container engineering team.
+
+    '
+  warnings: Diagnostic bundles may contain application logs; scrub sensitive data
+    per policy before sharing externally.
+verification_steps:
+- step: Confirm Application Insights availability test returns success for the last
+    30 minutes
+- step: Verify 5xx count in Azure Monitor for the Web App is back to baseline (zero
+    or expected level) for at least two consecutive 5-minute intervals
+- step: Perform manual GET requests to key endpoints and ensure HTTP 200 responses
+    and acceptable latency
+- step: Confirm instance CPU and memory usage are within acceptable thresholds (CPU
+    < 60%, Memory < 70%) after remediation
+troubleshooting:
+- issue: App still returning 5xx after restart
+  solution: Collect full application stack traces from logs, check dependency endpoints
+    (databases, caches) for high latency, and verify environment variables/API keys
+    are valid. If using .NET, enable detailed error messages temporarily to capture
+    exception stack traces.
+- issue: Metrics show normal resource usage but users still experience timeouts
+  solution: Check network path (Application Gateway, Front Door, or custom proxy)
+    for rate limiting or backend health probe failures. Review TLS certificate expirations
+    and NGiNX/proxy timeouts.
+- issue: Container fails to become healthy after restart
+  solution: Verify container exposes the configured PORT environment variable, check
+    ENTRYPOINT/STARTUP scripts for blocking operations, and ensure health check endpoint
+    returns 200 quickly. Increase container startup timeout if necessary.
+- issue: Autoscale flapping (rapid scale up/down) observed
+  solution: Adjust autoscale rules to include a cooldown window, use metric averages
+    over 5 minutes, and set minimum instance count to prevent scale-to-zero during
+    noisy bursts.
+escalation:
+  condition: Issue persists after completing resolution_steps and troubleshooting
+    for 60 minutes or causes customer-impacting outage
+  contact: 'Platform Team Lead: priyapatel-oncall@acme-support.example.com, Pager:
+    +1-555-010-300 (fictional)'
+  escalation_path: '1) Notify Platform Team Lead via email and pager with incident
+    summary and collected logs. 2) Open a ticket with Cloud Infrastructure (include
+    diagnostic bundle and metrics). 3) If Platform Team cannot resolve in 2 hours,
+    escalate to Engineering Director with incident impact and recovery actions taken.
+
+    '
+related_documentation:
+- title: 'Internal: App Service Troubleshooting Playbook'
+  url: https://intranet.acme.example.com/docs/azure/app-service-troubleshooting
+- title: 'Internal: Container Startup and Healthcheck Guidelines'
+  url: https://intranet.acme.example.com/docs/containers/startup-healthchecks
+- title: 'Internal: Deployment Slot and Swap Runbook'
+  url: https://intranet.acme.example.com/runbooks/deployment-slots
+tags:
+- azure
+- app-service
+- troubleshooting
+- webapp
+version_history:
+- version: '1.0'
+  date: 2025-11-28 02:13:56.151768+00:00
+  author: Casey Morgan
+  changes: Initial draft SOP covering diagnostics and remediation steps for intermittent
+    5xx/unresponsive Azure App Service Web Apps.

@@ -1,0 +1,143 @@
+"sop_id: 35043d6d-0500-48f2-9552-78e7df322370\nversion: 1.9\ncreated_at: 2025-11-28T02:24:55.355422+00:00\n\
+  last_updated: 2025-11-28T02:24:55.355422+00:00\ntitle: Resolve Azure AD authentication\
+  \ failures caused by federated IdP metadata or conditional access misconfiguration\n\
+  problem_category: authentication\ncomplexity: medium\nsystem_context: Azure Active\
+  \ Directory\nseverity: critical\nstatus: draft\napproval_level: director\nauthor:\n\
+  \  name: Aisha Khan\n  email: aisha.khan@identityops.example.corp\napprover:\n \
+  \ name: ~\n  email: ~\n  approved_at: ~\nproblem_description: |\n  Users are failing\
+  \ to authenticate to Azure Active Directory-integrated applications (both Microsoft\
+  \ 365 and third-party SAML/OIDC apps).\n  Failures correlate with recent configuration\
+  \ changes to federation metadata (external IdP), application trust settings, or\
+  \ Conditional Access policies.\n  Symptoms commonly include refused tokens, repeated\
+  \ interactive prompts, or authentication loops during SSO. Root causes typically\
+  \ include stale federation metadata, expired signing certificates on the federated\
+  \ IdP, incorrect reply URLs/audience on app registrations, or overly restrictive\
+  \ Conditional Access policies that unintentionally block platform/baseline clients.\n\
+  symptoms:\n  - Intermittent or complete failure of SSO for multiple users across\
+  \ apps\n  - Azure AD sign-in log entries showing \"Authentication refused\" or \"\
+  User blocked by policy\"\n  - Users stuck in an authentication loop (redirects between\
+  \ IdP and Azure AD)\n  - Event correlation ID present in client/UI and Azure AD\
+  \ sign-in logs\n  - \"Invalid token\", \"invalid_audience\", or \"signature verification\
+  \ failed\" errors in application logs\nprerequisites:\n  - Global Administrator\
+  \ or Privileged Identity Administrator access to the tenant, or delegated identity\
+  \ ops role\n  - Break-glass admin account credentials available (unconditional access\
+  \ excluded)\n  - Access to the federated IdP admin console (or contact for IdP admin)\n\
+  \  - Change window scheduled if production impact is likely\nrequired_tools:\n \
+  \ - Azure portal (Portal.Azure.com) access\n  - Azure AD PowerShell (AzureAD or\
+  \ Microsoft.Graph modules) and authenticated session\n  - Browser with developer\
+  \ tools or Fiddler for tracing authentication redirects\n  - Access to application\
+  \ logs / App registration details\n  - jwt.ms or equivalent token inspection tool\n\
+  estimated_resolution_time: 30-75 minutes\nresolution_steps:\n  - step_number: 1\n\
+  \    action: Gather scope and impact\n    details: |\n      - Identify impacted\
+  \ users, applications, and timestamps from initial report.\n      - In Azure Portal,\
+  \ go to Azure Active Directory > Sign-ins. Filter by time range and application\
+  \ names mentioned.\n      - Record sample sign-in entries including Correlation\
+  \ ID, Client IP, UserAgent and error details.\n    warnings: Collect evidence before\
+  \ making changes; do not remove logs or clear audit data.\n  - step_number: 2\n\
+  \    action: Correlate sign-in log error codes and messages\n    details: |\n  \
+  \    - Review the \"Status\" and \"Conditional Access\" columns in the sign-in entry.\n\
+  \      - Note exact error text (e.g., \"signature verification failed\", \"token\
+  \ audience mismatch\", \"User blocked by conditional access policy\").\n      -\
+  \ If a Correlation ID is present, copy it for later troubleshooting with service\
+  \ support.\n    warnings: Human-friendly error messages may differ from backend\
+  \ error codes; rely on sign-in detail payload.\n  - step_number: 3\n    action:\
+  \ Verify federation metadata and IdP certificate validity\n    details: |\n    \
+  \  - For federated tenants (AD FS or third-party IdP), validate the IdP's SAML/OIDC\
+  \ metadata URL in the Azure AD Enterprise Application or in the Azure AD > External\
+  \ Identities configuration.\n      - Open the metadata URL in a browser and confirm\
+  \ the signing certificate expiration date and issuer details.\n      - If certificate\
+  \ has expired or metadata is stale, coordinate with IdP admin to publish updated\
+  \ metadata, then update it in Azure AD.\n    warnings: Do not change metadata endpoint\
+  \ URL unless instructed by the IdP admin; updating signing certificates without\
+  \ coordination can break SSO.\n  - step_number: 4\n    action: Confirm application\
+  \ registration/trust configuration\n    details: |\n      - Open Azure AD > App\
+  \ registrations (or Enterprise Applications) for impacted apps.\n      - Confirm\
+  \ Reply URLs, Redirect URIs, and Application ID URI/audience exactly match values\
+  \ expected by the app and the IdP.\n      - For SAML apps, validate Assertion Consumer\
+  \ Service (ACS) URL and NameID format.\n      - If audience mismatch is detected,\
+  \ correct the AppID URI or notify app owner to update their configuration.\n   \
+  \ warnings: Changing reply URLs may break active sessions; perform updates during\
+  \ maintenance windows for high-impact apps.\n  - step_number: 5\n    action: Review\
+  \ Conditional Access policies\n    details: |\n      - In Azure AD > Security >\
+  \ Conditional Access, evaluate policies that apply to the affected users, groups\
+  \ or cloud apps.\n      - Temporarily disable or exclude a test user from a suspect\
+  \ policy (prefer using a dedicated test account) to determine if the policy is the\
+  \ cause.\n      - Common problematic controls: requiring \"Approved client apps\"\
+  \ when users use legacy clients, requiring multi-factor only via unavailable methods,\
+  \ enforcing sign-in risk blocks.\n    warnings: Avoid disabling policies globally;\
+  \ use targeted exclusions and the break-glass account to remain safe.\n  - step_number:\
+  \ 6\n    action: Reproduce and collect live traces\n    details: |\n      - Use\
+  \ a non-privileged test account that is impacted to reproduce the issue while capturing\
+  \ network trace (browser developer tools or Fiddler).\n      - Observe redirect\
+  \ sequence: app -> Azure AD -> IdP -> Azure AD -> app. Identify where the flow breaks\
+  \ and what error parameters are returned (e.g., error_description, error code).\n\
+  \      - Capture token contents with jwt.ms to inspect audiences, issuer, and signature\
+  \ presence.\n    warnings: Do not expose tokens with PII in support tickets; redact\
+  \ before sharing externally.\n  - step_number: 7\n    action: Apply corrective changes\n\
+  \    details: |\n      - If metadata/certificate was expired: update federation\
+  \ metadata in Azure AD or upload new signing certificate as specified by the IdP,\
+  \ then force metadata refresh if necessary.\n      - If reply URL/audience was incorrect:\
+  \ update App registration and notify application owner to update their configuration;\
+  \ if using static config files, coordinate deployment.\n      - If Conditional Access\
+  \ is blocking: modify the policy, add an exclusion for the impacted test user or\
+  \ app, and re-run authentication tests.\n      - After changes, restart the IdP\
+  \ service (if on-prem) or clear cache at the IdP per vendor guidance.\n    warnings:\
+  \ Coordinate with affected app owners and IdP administrators. Always retain a rollback\
+  \ plan (original metadata/certs).\n  - step_number: 8\n    action: Validate persistence\
+  \ and monitor\n    details: |\n      - After fixes, initiate test sign-ins for multiple\
+  \ users across locations and platforms (web, mobile, desktop).\n      - Monitor\
+  \ Azure AD Sign-ins and the app logs for 30-60 minutes to confirm stable successful\
+  \ authentications.\n    warnings: Some tokens are cached for short-lived durations;\
+  \ instruct testers to clear browser cache or private session to force fresh token\
+  \ issuance.\nverification_steps:\n  - step: Confirm previously failing users can\
+  \ sign in to affected apps without error and no authentication loops occur.\n  -\
+  \ step: In Azure AD Sign-ins, verify the sample sign-in entries now show \"Success\"\
+  \ and no conditional access block entries for the same user and timestamp window.\n\
+  \  - step: Inspect tokens via jwt.ms or token inspection: issuer, audience, and\
+  \ signature validation fields are correct and certificate thumbprint matches current\
+  \ IdP signing cert.\n  - step: Confirm no new \"signature verification failed\"\
+  \ or \"invalid_audience\" errors appear in the app logs for 60 minutes post-fix.\n\
+  troubleshooting:\n  - issue: Intermittent success \u2014 some users can authenticate,\
+  \ others cannot\n    solution: |\n      - Check for per-user or per-group Conditional\
+  \ Access policies or legacy authentication fallbacks.\n      - Ensure affected users\
+  \ are not hitting an older cached configuration; advise users to clear browser cookies,\
+  \ use private window, or reboot managed device.\n  - issue: Federation metadata\
+  \ appears correct but signature verification still fails\n    solution: |\n    \
+  \  - Confirm the metadata referenced by Azure AD is the canonical published endpoint\
+  \ (no CDNs or proxied copies).\n      - Validate certificate chain at the client\
+  \ side; intermediate certs missing on the IdP server can cause verification failures.\n\
+  \      - If using AD FS, ensure ADFS service account trusts the certificate chain\
+  \ and that the token-signing certificate is present in the ADFS configuration.\n\
+  \  - issue: Conditional Access change required but policy won't update for test\
+  \ user\n    solution: |\n      - Confirm the user is in scope of the policy (users/groups/clause\
+  \ order).\n      - Use Policy evaluation tools in the Conditional Access blade (\"\
+  What If\" tool) to simulate the evaluation for the test user.\n      - If necessary,\
+  \ temporarily create a dedicated test user excluded from the policy for validation.\n\
+  \  - issue: Broken SAML response with incorrect NameID or attributes\n    solution:\
+  \ |\n      - Coordinate with application owner and IdP admin to ensure Claim mappings\
+  \ and NameID format match the app's expectation.\n      - Update the Enterprise\
+  \ Application user attributes & claims in Azure AD or the external IdP mapping as\
+  \ per the app's schema.\nescalation:\n  condition: If root cause is external IdP\
+  \ certificate rotation, vendor outage, or issue persists after 90 minutes and attempts\
+  \ in this SOP fail\n  contact: Identity Operations Director, identity-ops-director@example.corp\
+  \ (or the on-call IdP vendor liaison)\n  escalation_path: |\n    1) Open an internal\
+  \ incident in the ITSM system with collected logs, Correlation ID and traces.\n\
+  \    2) Notify Identity Operations Director and schedule an emergency call with\
+  \ IdP admin/vendor.\n    3) If vendor involvement is required, provide them with\
+  \ metadata endpoint, sample SAML/OIDC requests and responses (redact tokens), and\
+  \ errors.\n    4) If the problem impacts regulatory systems or >20% of users, escalate\
+  \ to CTO on-call per incident playbook.\nrelated_documentation:\n  - title: Azure\
+  \ AD sign-in diagnostics and log reference (internal)\n    url: https://intranet.identityops.example.corp/kb/azuread/signin-diagnostics\n\
+  \  - title: Federation metadata rotation playbook (internal)\n    url: https://intranet.identityops.example.corp/playbooks/federation-metadata-rotation\n\
+  \  - title: Conditional Access troubleshooting guide (shared KB)\n    url: https://kb.example.corp/azuread/conditional-access-troubleshoot\n\
+  tags:\n  - azure-ad\n  - authentication\n  - federated-idp\n  - conditional-access\n\
+  \  - sso\nversion_history:\n  - version: 1.0\n    date: 2024-09-12T09:15:00+00:00\n\
+  \    author: Priyanka Mehta\n    changes: Initial draft covering SAML metadata and\
+  \ basic conditional access checks\n  - version: 1.4\n    date: 2025-03-05T14:40:00+00:00\n\
+  \    author: Daniel Torres\n    changes: Added PowerShell diagnostic examples and\
+  \ token inspection guidance; clarified break-glass warnings\n  - version: 1.8\n\
+  \    date: 2025-10-11T08:22:00+00:00\n    author: Aisha Khan\n    changes: Expanded\
+  \ troubleshooting scenarios for mixed legacy and modern authentication; added \"\
+  What If\" policy simulation step\n  - version: 1.9\n    date: 2025-11-28T02:24:55.355422+00:00\n\
+  \    author: Aisha Khan\n    changes: Updated step ordering, improved escalation\
+  \ path, and added verification checklist for token inspection"

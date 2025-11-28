@@ -1,0 +1,125 @@
+"sop_id: f5c9b468-8d68-4b48-889a-7ce65b594741\nversion: 1.0\ncreated_at: 2025-11-28T02:42:30.030432+00:00\n\
+  last_updated: 2025-11-28T05:00:00+00:00\ntitle: Diagnose and Repair Azure Load Balancer\
+  \ Health Probe Failures Causing Backend Unhealthy States\nproblem_category: network\n\
+  complexity: medium\nsystem_context: Azure Load Balancer\nseverity: low\nstatus:\
+  \ published\napproval_level: team_lead\nauthor:\n  name: Lina Morrissey\n  email:\
+  \ lina.morrissey@acme-tech.example\napprover:\n  name: Jordan K. Park\n  email:\
+  \ jordan.park@acme-tech.example\n  approved_at: 2025-11-28T05:00:00+00:00\nproblem_description:\
+  \ |\n  Backend VM or VM Scale Set instances are marked Unhealthy by an Azure Load\
+  \ Balancer health probe.\n  Symptoms often include uneven or no traffic distribution\
+  \ to application instances behind a Standard or Basic Azure Load Balancer,\n  intermittent\
+  \ 502/504 responses at the client layer, or alerts from monitoring that back-end\
+  \ counts have dropped.\n  This SOP describes steps to identify root causes (NSG,\
+  \ VM firewall, probe configuration, app not listening, incorrect backend pool, or\
+  \ routing),\n  verify fixes, and validate the load balancer returns to healthy state.\n\
+  symptoms:\n  - Backend instances show status Unhealthy in Load Balancer backend\
+  \ health\n  - Application is reachable from within VM but not via Load Balancer\
+  \ IP\n  - Alerts: \"Backend pool capacity decreased\" or custom probe alerts\n \
+  \ - Intermittent client-side 502/504 or connection timeouts\nprerequisites:\n  -\
+  \ Access to Azure subscription with at least Network Contributor or Owner on affected\
+  \ resource group\n  - Access to at least one VM in affected backend pool (jumpbox\
+  \ or admin VM)\n  - Change window approval for production actions that may require\
+  \ service restarts\nrequired_tools:\n  - Azure CLI (az) v2.50+ installed locally\
+  \ or in Cloud Shell\n  - Network Watcher enabled in region of affected resources\n\
+  \  - SSH / RDP access to a backend VM or management jumpbox\n  - Access to Azure\
+  \ Portal and internal monitoring (e.g., internal dashboard)\nestimated_resolution_time:\
+  \ '15-45 minutes'\nresolution_steps:\n  - step_number: 1\n    action: Gather metadata\
+  \ and scope\n    details: |\n      Identify resource names: Load Balancer name (<lb-name>),\
+  \ resource group (<rg>), backend pool name (<backend-pool>),\n      probe name (<probe-name>),\
+  \ and affected VM names (<vm-names>).\n      Run basic discovery:\n        az network\
+  \ lb show --name <lb-name> --resource-group <rg> --query \"{name:name,sku:sku,frontend:frontendIPConfigurations}\"\
+  \n        az network lb probe list --lb-name <lb-name> --resource-group <rg>\n \
+  \     Note whether SKU is Standard or Basic (Standard enforces NSG rules).\n   \
+  \ warnings: 'Do not make configuration changes before you have the full list of\
+  \ affected instances.'\n  - step_number: 2\n    action: Check backend health state\
+  \ via CLI and Portal\n    details: |\n      Check backend health and probe status:\n\
+  \        az network lb probe show --resource-group <rg> --lb-name <lb-name> --name\
+  \ <probe-name>\n        az network lb backend-pool list --resource-group <rg> --lb-name\
+  \ <lb-name>\n        az network lb show-backend-health --resource-group <rg> --name\
+  \ <lb-name> --backend-pool-name <backend-pool> || (use Portal > Load Balancer >\
+  \ Backend health)\n      Capture screenshots or CLI output for incident log.\n \
+  \ - step_number: 3\n    action: Validate probe configuration\n    details: |\n \
+  \     Confirm probe protocol, port, interval and path match the application:\n \
+  \       - For TCP probes: ensure app listens on probe port.\n        - For HTTP\
+  \ probes: ensure probe path returns 200 (or configured success code).\n      Example:\
+  \ probe configured for HTTP /health on port 8080 with interval 15 and unhealthy\
+  \ threshold 3.\n      If probe path incorrect (e.g., /status vs /health) update\
+  \ probe:\n        az network lb probe update --resource-group <rg> --lb-name <lb-name>\
+  \ --name <probe-name> --protocol Http --port 8080 --path /health\n    warnings:\
+  \ |\n      Changing probe path or interval impacts health detection; coordinate\
+  \ with app owner for production systems.\n  - step_number: 4\n    action: Verify\
+  \ backend VM application and OS firewall\n    details: |\n      From a jumpbox or\
+  \ the VM itself run:\n        - Linux: az vm run-command invoke --command-id RunShellScript\
+  \ --name <vm-name> --resource-group <rg> --scripts \"ss -ltnp | grep :8080 || curl\
+  \ -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/health\"\n        - Windows:\
+  \ az vm run-command invoke --command-id RunPowerShellScript --name <vm-name> --resource-group\
+  \ <rg> --scripts \"netstat -ano | Select-String ':8080' ; Invoke-WebRequest -UseBasicParsing\
+  \ http://localhost:8080/health\"\n      Check VM OS firewall (ufw, iptables, Windows\
+  \ Firewall) allows probe port.\n    warnings: 'Avoid restarting application services\
+  \ unless agreed in change window.'\n  - step_number: 5\n    action: Check Network\
+  \ Security Group and effective rules\n    details: |\n      For Standard SKU, probes\
+  \ originate from Load Balancer VIP; ensure NSG allows probe traffic.\n      Review\
+  \ NSG inbound rules targeting VM subnet and NIC:\n        az network nsg show --resource-group\
+  \ <rg> --name <nsg-name>\n      Review effective security rules for NIC in Portal\
+  \ > Networking > Effective security rules or use:\n        az network nic show-effective-route-table\
+  \ --resource-group <rg> --name <nic-name>  (use Portal if CLI not available)\n \
+  \     If NSG blocks probe port, add a rule allowing probe source and port (limit\
+  \ to load balancer source tag or LB frontend IP).\n    warnings: 'When adding NSG\
+  \ rules, minimize exposure \u2014 scope to load balancer source if possible rather\
+  \ than 0.0.0.0/0.'\n  - step_number: 6\n    action: Perform network capture to validate\
+  \ probe packets\n    details: |\n      Use Network Watcher packet capture to see\
+  \ probe traffic:\n        az network watcher packet-capture create --resource-group\
+  \ <rg> --vm <vm-name> --name lb-probe-capture --time-limit 60 --filters \"[{\\\"\
+  protocol\\\":6,\\\"localPort\\\":\\\"8080\\\"}]\"\n      Download and review capture\
+  \ with Wireshark to confirm probe source IP and payload.\n    warnings: 'Packet\
+  \ captures on production VMs can be sensitive \u2014 remove after troubleshooting\
+  \ to avoid storage costs.'\n  - step_number: 7\n    action: Apply corrective action\
+  \ and monitor\n    details: |\n      Common corrections:\n        - Fix app to listen\
+  \ on probe port/path.\n        - Adjust probe path or port to match application.\n\
+  \        - Update NSG to allow probe traffic.\n        - Reassociate VM NIC to correct\
+  \ backend pool.\n      After applying fix, allow at least (probe interval * threshold\
+  \ + 30s) for Azure LB to re-evaluate health.\n    warnings: 'If multiple changes\
+  \ are required, apply one at a time and observe effects to avoid masking root cause.'\n\
+  verification_steps:\n  - step: Confirm backend instances show Healthy in Azure Portal\
+  \ > Load Balancer > Backend Health and via CLI (backend health shows status \"Healthy\"\
+  )\n  - step: From external client or test harness, confirm application responses\
+  \ via Load Balancer frontend IP: curl -v http://<lb-ip>:<port>/ (expect 200 or expected\
+  \ app response)\n  - step: Confirm monitoring alerts clear and check logs for successful\
+  \ probe returns for at least 3 consecutive probe intervals\n  - step: Confirm no\
+  \ unintended NSG or routing changes remain (document changes in change log)\ntroubleshooting:\n\
+  \  - issue: NSG still blocking probe traffic despite rule change\n    solution:\
+  \ |\n      - Verify rule priority is higher (lower numeric value) than any deny\
+  \ rule.\n      - Confirm rule applies to correct NIC or subnet.\n      - Use Portal\
+  \ > Network Interface > Effective security rules to see evaluated result.\n    \
+  \  - If using Azure Firewall or third-party virtual appliance, confirm it permits\
+  \ LB probe source and port.\n  - issue: Application returns 404/500 on probe path\n\
+  \    solution: |\n      - Inspect application logs for the probe path and fix app\
+  \ routing or add a lightweight health endpoint that returns 200.\n      - Temporarily\
+  \ change probe to TCP until app endpoint is repaired, if TCP is acceptable for your\
+  \ health semantics.\n  - issue: Backend pool membership incorrect (VM missing)\n\
+  \    solution: |\n      - Re-add NIC to backend pool:\n        az network nic ip-config\
+  \ update --resource-group <rg> --nic-name <nic-name> --name ipconfig1 --lb-name\
+  \ <lb-name> --lb-address-pools <backend-pool-id>\n      - Validate membership via\
+  \ azure portal or az network lb backend-pool show.\n  - issue: Load balancer SKU\
+  \ mismatch or known regional platform issue\n    solution: |\n      - Check SKU\
+  \ and consider differences in behavior (Standard requires explicit allow rules).\n\
+  \      - If platform incident suspected, check internal status page and open support\
+  \ case with Azure using subscription support if outage or bug suspected.\nescalation:\n\
+  \  condition: \"Issue remains unresolved after 60 minutes of troubleshooting or\
+  \ more than 3 production instances are affected.\"\n  contact: \"Team Lead: jordan.park@acme-tech.example;\
+  \ Network Engineering Pager: +1-800-555-0102 (internal)\"\n  escalation_path: |\n\
+  \    1) Notify Team Lead and Network Engineering Slack channel (#net-eng).\n   \
+  \ 2) Provide collected artifacts: lb show output, probe config, NSG rules, packet\
+  \ capture (pcap), VM local curl/netstat output, timestamps.\n    3) If suspected\
+  \ Azure platform fault, open Azure support ticket with debug logs and reference\
+  \ subscription ID and region; include Network Engineering in ticket.\nrelated_documentation:\n\
+  \  - title: Internal KB - Azure Load Balancer Health Probe Troubleshooting\n   \
+  \ url: https://kb.acme-corp.internal/network/azure-lb-health-probes\n  - title:\
+  \ Internal Runbook - Adding NSG Rules for Load Balancer Probes\n    url: https://kb.acme-corp.internal/network/nsg-allow-lb-probes\n\
+  \  - title: Internal Guide - Capturing Packets with Network Watcher\n    url: https://kb.acme-corp.internal/tools/network-watcher-pcap\n\
+  \  - title: Internal Monitoring Playbook - Validating SLA and Alerts\n    url: https://kb.acme-corp.internal/monitoring/sla-validation\n\
+  tags:\n  - azure\n  - load-balancer\n  - health-probe\n  - networking\n  - nsg\n\
+  version_history:\n  - version: 1.0\n    date: 2025-11-28T05:00:00+00:00\n    author:\
+  \ Lina Morrissey\n    changes: Initial published SOP covering diagnosis and repair\
+  \ of Azure LB health probe failures, including probe validation, NSG checks, packet\
+  \ captures, and escalation path."

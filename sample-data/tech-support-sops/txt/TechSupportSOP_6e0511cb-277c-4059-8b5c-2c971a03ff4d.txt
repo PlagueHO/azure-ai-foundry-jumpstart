@@ -1,0 +1,191 @@
+SOP ID: 6e0511cb-277c-4059-8b5c-2c971a03ff4d
+Version: 1.8
+Created At: 2025-11-28T02:48:35.569387+00:00
+Last Updated: 2025-11-28T03:12:00+00:00
+Title: Critical — Resolve Kerberos authentication failures on Windows Domain Controllers after patch or configuration change
+Problem Category: general
+Complexity: medium
+System Context: Windows Server
+Severity: critical
+Status: review
+Approval Level: manager
+Author: Alex Martin <alex.martin@example.corp>
+Approver: Priya Patel <priya.patel@example.corp>
+Approved At: 2025-11-28T03:10:00+00:00
+
+PROBLEM DESCRIPTION:
+Domain controllers (DCs) are failing to process Kerberos authentication requests after a recent patch, configuration change, or replication inconsistency. Users experience inability to sign in to domain-joined workstations and applications that use Kerberos (services, SQL Server delegation, file shares) are failing with authentication errors. The issue is intermittent on some DCs and consistent on others. This SOP covers diagnosis and stepwise remediation to restore Kerberos authentication and domain logon capability.
+
+SYMPTOMS:
+- Users are unable to log on to workstations or prompts for credentials repeatedly.
+- Applications that rely on Kerberos receive authentication failures (HTTP 401.2 / SPN errors / access denied).
+- Event Viewer on DCs shows Kerberos-related errors or warnings in Security, System, or Directory Service logs (ticket failures, KDC errors, Event IDs around 4768/4771/4776/5xx ranges, or Directory Service replication warnings).
+- Clients report time skew errors or “The target principal name is incorrect” messages.
+- netlogon or RPC errors in System log; replication issues shown by repadmin.
+
+PREREQUISITES:
+- Engineer with domain admin or equivalent privileged access to affected DC(s).
+- Access to a management workstation with RSAT (Active Directory and DNS tools) and PowerShell v5+.
+- Backup/snapshot of affected DCs or documented change window if remediation may require reboot or rollback.
+- Maintenance window or notification plan; this is a critical issue but coordinate if a DC reboot/rollback is required.
+
+REQUIRED TOOLS:
+- Remote Desktop (RDP) or console access to DCs.
+- PowerShell (Admin) and administrative command prompt.
+- Event Viewer (Eventvwr.msc), dcdiag, repadmin, nltest, netdom, w32tm, klist, setspn.
+- Network access to DNS servers and authoritative domain controllers.
+- Log collection location (SMB or secure FTP) for escalation artifacts.
+
+ESTIMATED RESOLUTION TIME: 30–120 minutes (depends on replication state and whether rollback is required)
+
+RESOLUTION STEPS:
+1. Action: Identify affected scope and timeline
+   Details:
+   - Confirm which DCs are exhibiting Kerberos failures and whether all DCs are affected.
+   - Collect the time window when failures began (matching to patch deployments, GPO changes, or AD replication events).
+   - Command examples:
+     - Get-ADDomainController -Filter * | Select-Object Name,Site,IPv4Address
+     - On client: nltest /dsgetdc:<domain>
+   Warnings: Do not reboot or make changes to all DCs at once; work on one DC at a time.
+
+2. Action: Check Event Logs on affected DC(s)
+   Details:
+   - Inspect Security, System, and Directory Service logs in Event Viewer for Kerberos/KDC related events and relevant Event IDs.
+   - Collect timestamps, event IDs, and correlated messages.
+   - Commands:
+     - wevtutil qe Security /q:"*[System[TimeCreated[@SystemTime>='2025-11-28T00:00:00.000Z']]]" /f:text (adjust time window)
+     - Use Event Viewer filter for keywords: KDC, Kerberos, Netlogon, RPC, Event IDs 4768, 4771, 4776, 4xx/5xx in Directory Service.
+   Warnings: Event logs can be large; filter by time and service.
+
+3. Action: Verify time synchronization on DCs and authoritative time source
+   Details:
+   - Kerberos will fail if clocks differ by more than configured tolerance (default 5 minutes).
+   - Commands:
+     - w32tm /query /status
+     - w32tm /stripchart /computer:time.windows.internal.pool.ntp.org /samples:3 (or use local NTP server)
+     - If skew > 5 minutes, resync: w32tm /resync
+   Warnings: If master time source is wrong, correct at the PDC emulator role.
+
+4. Action: Validate DNS and SRV records
+   Details:
+   - Kerberos depends on DNS; verify DC A records and _kerberos._tcp SRV records.
+   - Commands:
+     - nslookup <dcname>
+     - nslookup -type=SRV _kerberos._tcp.dc._msdcs.<domain>
+     - ipconfig /registerdns on DC if DNS entries are missing or stale.
+   Warnings: Avoid manual edits to AD-integrated DNS unless required and approved.
+
+5. Action: Check Netlogon and KDC processing
+   Details:
+   - Restart Netlogon service to refresh SRV records and secure channel registrations.
+   - Commands:
+     - net stop netlogon && net start netlogon
+     - nltest /dclist:<domain>
+     - nltest /sc_verify:<domain>
+   Warnings: Restarting Netlogon briefly interrupts replication of SRV registration; typically safe but avoid during heavy domain operations.
+
+6. Action: Flush Kerberos tickets and test locally on DC
+   Details:
+   - Purge Kerberos tickets to force new TGT issuance and test authentication.
+   - Commands:
+     - klist purge
+     - klist tickets
+     - Test using ktpass-generated service or simple Kerberos lookup on service account where applicable.
+   Warnings: Purging tickets on production servers may cause brief authentication retrials; plan accordingly.
+
+7. Action: Validate SPNs and machine account status
+   Details:
+   - Incorrect or duplicate SPNs and broken machine account passwords can cause authentication failures.
+   - Commands:
+     - setspn -L <dcname>
+     - nltest /sc_query:<domain>
+     - Test-ComputerSecureChannel -Repair -Credential (Run in PowerShell with domain admin credentials if machine account suspected)
+     - If machine account reset needed: netdom resetpwd /s:<partnerDC> /ud:<domain>\<user> /pd:*
+   Warnings: Resetting machine account password should be done for single DC at a time; document previous state.
+
+8. Action: Check AD replication health
+   Details:
+   - Replication problems can leave a DC with stale credentials.
+   - Commands:
+     - repadmin /replsummary
+     - repadmin /showrepl <DCName>
+     - dcdiag /v /c /d /e
+   - If errors: collect repadmin output for escalation.
+   Warnings: Large replication fixes (authoritative restores) are out of scope here — escalate per procedure.
+
+9. Action: Identify recent updates or configuration changes and consider rollback
+   Details:
+   - If Kerberos failures started after installing Windows Updates or changing GPOs, note the KB or change.
+   - Commands:
+     - Get-HotFix | Where-Object {$_.InstalledOn -gt (Get-Date).AddDays(-7)}
+     - wmic qfe list brief /format:table
+   - If a specific patch is suspected, coordinate with Change Management to uninstall the update on one DC and validate behavior before wider rollback.
+   Warnings: Uninstalling updates on domain controllers requires planned maintenance and backups.
+
+10. Action: Collect logs and artifacts for escalation (if unresolved)
+    Details:
+    - Gather:
+      - System, Security, Directory Service event logs (time window)
+      - Netlogon.log (enable debug if needed: nltest /dbflag:0x2080ffff)
+      - repadmin /showrepl output
+      - dcdiag output
+      - w32tm /query /status
+      - ipconfig /all
+    - Consolidate to secure log share and note the time range of incidents.
+    Warnings: Do not transmit logs over insecure channels; redact any PII if required.
+
+VERIFICATION STEPS:
+- Confirm clients can obtain a new TGT and access resources:
+  - On a client: klist purge; log off and log back on; verify no credential prompt.
+- Use nltest to confirm secure channel:
+  - nltest /sc_verify:<domain>
+- Verify Kerberos events show successful ticket issuance (look for Event IDs indicating success) and absence of recent failure events in the time window after remediation.
+- Run tests:
+  - Test-ComputerSecureChannel -Verbose on affected DCs.
+  - From client, run: klist tickets and attempt access to a Kerberos-protected resource (file share or web app) that previously failed.
+- Confirm replication healthy:
+  - repadmin /replsummary and dcdiag show no critical errors.
+
+TROUBLESHOOTING:
+Issue: Time skew persists despite w32tm resync
+Solution: Verify PDC emulator is pointing to correct external NTP source, reconfigure authoritative time on PDC:
+- w32tm /config /manualpeerlist:"pool.ntp.org" /syncfromflags:manual /reliable:yes /update
+- w32tm /resync /rediscover
+
+Issue: Duplicate or missing SPNs causing “target principal name is incorrect”
+Solution: Use setspn -X to find duplicates, then remove the duplicate SPN using setspn -D <spn> <computer> or correct the SPN mapping to the intended account. If SPN is missing for a service account, add it with setspn -S.
+
+Issue: Machine account password mismatches
+Solution: Use netdom resetpwd /s:<partnerDC> /ud:<domain>\<admin> /pd:* to reset machine account password; if multiple DCs show issues, reset one DC at a time and allow replication.
+
+Issue: Replication errors after remediation
+Solution: Run repadmin /syncall and inspect /showrepl; resolve DNS or transport issues between replication partners; if replication is blocked by lingering objects or USN rollback, escalate to AD engineering.
+
+ESCALATION:
+Condition: If after completing all applicable resolution steps and collecting logs the Kerberos authentication failures persist for more than 2 hours or if multiple DCs remain nonfunctional.
+Contact: AD Engineering Team — ad-eng@example.corp (pager: +1-800-555-AD01)
+Escalation Path:
+- Level 1: On-call Domain Services Engineer (available 24/7) — escalate via on-call channel with collected artifacts.
+- Level 2: AD Infrastructure Lead (Priya Patel <priya.patel@example.corp>) — include replication, Netlogon, and time sync artifacts.
+- Level 3: Vendor / Microsoft Premier Support — open a paid support case; provide collected logs, export of relevant event logs, repadmin and dcdiag outputs, Netlogon.log, and recent change list. Request escalation to AD/Kerberos engineering team.
+
+RELATED DOCUMENTATION:
+- Title: Diagnosing Kerberos Authentication Failures — Internal KB
+  URL: https://kb.example.corp/ad/kerberos-diagnosis
+- Title: Resetting a Domain Controller Machine Account Password (Guidance)
+  URL: https://kb.example.corp/ad/reset-dc-machine-account
+- Title: AD Replication and repadmin Quick Reference
+  URL: https://kb.example.corp/ad/replication-repadmin
+- Title: Time Synchronization Best Practices for Active Directory
+  URL: https://kb.example.corp/ad/time-sync-best-practices
+
+TAGS: active-directory, kerberos, windows-server, domain-controller
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2024-12-01T10:00:00+00:00 | Author: Alex Martin | Changes: Initial draft covering Kerberos failure diagnosis.
+Version: 1.3 | Date: 2025-03-12T14:30:00+00:00 | Author: Alex Martin | Changes: Added SPN and machine-account password remediation sections; added repadmin checks.
+Version: 1.6 | Date: 2025-07-04T09:20:00+00:00 | Author: Alex Martin | Changes: Enhanced time sync troubleshooting and verification steps; added safer rollback guidance for patches.
+Version: 1.8 | Date: 2025-11-28T03:12:00+00:00 | Author: Alex Martin | Changes: Updated escalation contacts, tightened log collection checklist, clarified restart cautions and added explicit verification steps.
+
+Notes:
+- This SOP is intended for internal use by domain administration teams. Follow change control and backup policies when making changes to domain controllers. If you are unsure about commands that modify AD state (machine reset, update uninstall), escalate to AD Engineering before proceeding.

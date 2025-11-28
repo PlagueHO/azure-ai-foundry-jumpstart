@@ -17,12 +17,14 @@ from .legal_contract import LegalContractTool  # noqa: F401
 from .manufacturing_maintenance_log import ManufacturingMaintenanceLogTool
 from .retail_product import RetailProductTool
 from .tech_support import TechSupportTool
+from .tech_support_sop import TechSupportSOPTool
 from .travel_booking import TravelBookingTool
 
 __all__ = [
     "CustomerSupportChatLogTool",
     "EcommerceOrderHistoryTool",
     "TechSupportTool",
+    "TechSupportSOPTool",
     "RetailProductTool",
     "HealthcareRecordTool",
     "HREmployeeRecordTool",

@@ -1,0 +1,139 @@
+SOP ID: c2aa8117-8b75-4b87-956a-ec851cebc7ba
+Version: 1.8
+Created At: 2025-11-28T02:49:53.279230+00:00
+Last Updated: 2025-11-28T03:12:00+00:00
+Title: Restore access for users receiving "Access Denied" on SharePoint Online libraries after site move or permission inheritance changes
+Problem Category: application
+Complexity: medium
+System Context: SharePoint Online
+Severity: high
+Status: published
+Approval Level: team_lead
+Author: Morgan Hale <morgan.hale@example-support.local>
+Approver: Priya Anand <priya.anand-teamlead@example-support.local>
+Approved At: 2025-11-28T03:05:00+00:00
+
+PROBLEM DESCRIPTION:
+Users report receiving "Access Denied" or cannot open files in specific SharePoint Online sites or document libraries after a site move (site collection URL change, hub association change) or after administrative permission changes. The underlying cause is typically broken permission inheritance, missing group memberships, Azure AD group sync issues, or site-level settings preventing access. This SOP walks a tech-support engineer through a validated, repeatable procedure to identify and resolve permission-related access-denied incidents in SharePoint Online.
+
+SYMPTOMS:
+- Users see "You don't have permission to access this site" or "Access denied" when navigating to the site or specific library.
+- Files open in read-only, or the user cannot see expected document library content.
+- Site owners report that expected user groups are not listed in Site permissions.
+- Audit logs show successful authentication but denied requests (401/403 behavior in logs).
+- Symptoms began after site move, hub association change, or bulk permissions operation.
+
+PREREQUISITES:
+- You are a member of the Support Team with delegated rights to run tenant-level checks.
+- You have Site Collection Administrator access to the affected site(s) or the ability to request it.
+- The user reporting the issue can be reached to validate during final verification.
+
+REQUIRED TOOLS:
+- Browser with access to SharePoint Admin Center and affected site(s).
+- SharePoint Online Management Shell (PowerShell) or PnP PowerShell installed on support workstation.
+- Access to Microsoft 365 Admin Center and Azure AD portal for group membership checks.
+- Audit log access (Office 365 Security & Compliance) to check recent permission changes.
+
+ESTIMATED RESOLUTION TIME: 30-60 minutes (varies with group sync latency and scope of permission repairs)
+
+RESOLUTION STEPS:
+1. Action: Reproduce and capture symptom details
+   Details: Confirm the exact URL the user is accessing and reproduce the "Access Denied" message. Ask the user to attempt access in private/incognito browser and note the timestamp. Capture the user's UPN, affected site URL, and the error screenshot. Record any recent admin actions (site move, hub reassignment, bulk permission change) and the exact time range.
+   Warnings: Do not change permissions before you have recorded current state; we need a baseline for rollback.
+
+2. Action: Confirm site collection admin and owner accounts
+   Details: In SharePoint Admin Center, open the affected site (Active sites -> select site). Verify there is at least one valid Site Collection Administrator assigned. If the assigned accounts are service accounts that no longer exist, add a temporary support account as admin.
+   Warnings: Adding a site collection admin gives elevated access; document changes and remove temporary accounts after resolution.
+
+3. Action: Check permission inheritance at site and library levels (GUI)
+   Details: Navigate to Site Settings -> Site permissions -> Check whether "This site has unique permissions" is displayed. For affected libraries, go to Library Settings -> Permissions for this document library -> verify if it inherits from parent. Note any broken inheritance.
+   Warnings: Avoid using "Stop inheriting permissions" unless intentionally creating unique permissions.
+
+4. Action: Inspect group membership (Azure AD and SharePoint groups)
+   Details: From Azure AD portal, verify that any Azure AD security groups used for SharePoint permissions are still present and have the expected members. In SharePoint, run:
+     - Connect-PnPOnline -Url https://tenant.sharepoint.com/sites/affectedSite -Interactive
+     - Get-PnPGroup | Where-Object { $_.Title -like "*Owners*" -or $_.Title -like "*Members*" }
+     - Get-PnPGroupMembers -Identity "Site Members"
+   If the user is absent from expected groups, add the user to the appropriate SharePoint group or ensure the AD group contains the user.
+   Warnings: If you add users manually, confirm this aligns with tenant permission policy (avoid permanent manual additions if org uses AD groups).
+
+5. Action: Check for Azure AD group sync / dynamic group issues
+   Details: If permissions are granted via an Azure AD security group, confirm the group is mail-enabled/security-enabled and not expired/blocked. Use Microsoft 365 Admin Center -> Groups or Azure AD -> Groups. For dynamic groups, validate membership rules and run a manual membership refresh if available. Document group objectId for escalation if group behavior is inconsistent.
+   Warnings: Do not change dynamic group rules without consulting Identity team.
+
+6. Action: Use PowerShell to surface explicit item-level permissions and role assignments
+   Details: Run PowerShell (PnP) to enumerate role assignments at web/list/item level:
+     - Connect-PnPOnline -Url https://tenant.sharepoint.com/sites/affectedSite -Interactive
+     - $web = Get-PnPWeb
+     - $web.RoleAssignments | Format-Table Member.Title, RoleDefinitionBindings
+     - Get-PnPList -Identity "Documents" | Get-PnPProperty -Property RoleAssignments
+   Look for unexpected entries or absence of expected groups.
+   Warnings: PowerShell queries are read-only unless you run modification commands; ensure commands are correct to avoid accidental changes.
+
+7. Action: Restore inheritance or reapply expected permissions
+   Details: If a library or item has unintentionally broken inheritance, consider:
+     - If intended: re-add expected groups with proper permission levels (e.g., Edit for Members, Read for Visitors).
+     - If unintended: restore inheritance to parent (via Library Settings -> Permissions -> Delete unique permissions -> Inherit parent permissions) or use:
+       - Set-PnPListPermission -Identity "Documents" -InheritPermissions
+     If using PowerShell, add missing group membership:
+       - Add-PnPUserToGroup -LoginName "contoso\\Site Members" -Identity "Site Members"
+   Warnings: Restoring inheritance will remove any unique permissions; ensure no business process depends on unique permissions before restoring.
+
+8. Action: Address external sharing and limited-access user issues
+   Details: If the affected users are guests/external users, verify external sharing settings in SharePoint Admin Center -> Policies -> Sharing. If guest access recently changed tenant-wide, you may need to re-invite guests. Use:
+     - Get-SPOExternalUser | Where-Object { $_.SiteUrl -eq "https://tenant.sharepoint.com/sites/affectedSite" }
+   Warnings: Guest invitations must comply with company policy; coordinate with Data Protection Officer if necessary.
+
+9. Action: Clear client caches and ask user to re-authenticate
+   Details: Ask the user to clear browser cache or try a different browser, and to sign out/in of Office apps. If the user uses OneDrive sync, advise to pause sync, clear cache, and re-link library. For Windows Office clients, tell user to run "Office -> Account -> Sign out" then sign in again.
+   Warnings: Client-side cache refresh may be required for changes to take effect; allow 10-15 minutes for propagation.
+
+10. Action: Document changes and monitor
+    Details: Record all modifications in the incident ticket (who, what, when). If you added a temporary Site Admin, schedule removal after confirmation of resolution. Monitor access for 24 hours and check Audit logs for any reoccurrence during the window.
+    Warnings: Do not close the ticket until verification steps confirm full resolution.
+
+VERIFICATION STEPS:
+- Ask user to access the site/library and confirm they can view and open files.
+- Verify expected permissions appear in Site Permissions and Library Permissions panels.
+- Confirm with PowerShell that the user's account or AD group is listed under appropriate RoleAssignments.
+- Check Audit logs (Compliance center) for successful access events corresponding to user's verification time.
+- Confirm no unexpected users were added and any temporary admin accounts have been removed.
+
+TROUBLESHOOTING:
+Issue: Changes not taking effect immediately for the user
+Solution: Wait 10-15 minutes for permission propagation; ask the user to sign out of all Microsoft sessions and sign back in. Confirm no Conditional Access policy (Azure AD) is blocking access.
+
+Issue: User is in an Azure AD dynamic group but does not get access
+Solution: Verify dynamic membership rules; force a delta sync if available or ask Identity team to run a full sync. If group is not security-enabled, convert or use proper security group.
+
+Issue: External guest cannot access despite invitation
+Solution: Verify the guest's account email is the same as the one invited. Revoke and re-issue the invitation. Check tenant external sharing restrictions and conditional access policies.
+
+Issue: Site still inaccessible and no Site Collection Admin present
+Solution: Use SharePoint Admin Center to assign a temporary Site Collection Admin to a support account, document assignment, and proceed with permission fixes. If GUI fails, escalate.
+
+ESCALATION:
+Condition: After completing the above steps, access is still denied for multiple users or for all users, and no misconfiguration is apparent (site admin present, groups correct).
+Contact: Escalate to Level 2 SharePoint Platform Team; open a ticket with Microsoft Support if tenant-level issue suspected.
+Escalation Path:
+- Step 1: Create Level 2 Support ticket and include: tenant name, site URL(s), UPN(s) of affected users, timestamps, and PowerShell outputs (RoleAssignments, group membership export).
+- Step 2: If Level 2 cannot resolve within 4 business hours, open Microsoft Premier/Unified Support case. Provide tenant ID, correlation timestamps, and evidence packet (screenshots, audit logs, PowerShell exports).
+- Step 3: For suspected Azure AD sync or Conditional Access issues, involve Identity team and provide them the Azure AD sign-in logs and the Conditional Access policy configuration.
+
+RELATED DOCUMENTATION:
+- Title: SharePoint Online Permissions and Inheritance Guide
+  URL: https://kb.example-support.local/sharepoint/permissions-inheritance
+- Title: PnP PowerShell: Managing Site Permissions
+  URL: https://kb.example-support.local/pnp/powershell-site-permissions
+- Title: Guidance for Azure AD Group Membership and Sync
+  URL: https://kb.example-support.local/identity/azuread-group-sync
+- Title: How to Use Audit Logs to Troubleshoot Access Issues
+  URL: https://kb.example-support.local/compliance/audit-log-access
+
+TAGS: SharePoint, permissions, access-denied, site-move, AzureAD
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2024-11-12T09:00:00+00:00 | Author: Morgan Hale | Changes: Initial draft covering GUI remediation steps.
+Version: 1.3 | Date: 2025-03-02T14:30:00+00:00 | Author: Morgan Hale | Changes: Added PowerShell commands and PnP guidance for enumerating role assignments.
+Version: 1.5 | Date: 2025-08-19T11:20:00+00:00 | Author: Morgan Hale | Changes: Included external sharing and guest troubleshooting sections.
+Version: 1.8 | Date: 2025-11-28T03:12:00+00:00 | Author: Morgan Hale | Changes: Updated escalation path, added audit-log verification steps, documented temporary admin handling policy.

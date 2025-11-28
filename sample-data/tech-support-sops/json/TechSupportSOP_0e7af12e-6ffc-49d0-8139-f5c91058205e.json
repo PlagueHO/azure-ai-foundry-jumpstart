@@ -1,0 +1,177 @@
+{
+  "sop_id": "0e7af12e-6ffc-49d0-8139-f5c91058205e",
+  "version": "1.7",
+  "created_at": "2025-11-28T02:46:07.608166+00:00",
+  "last_updated": "2025-11-28T05:20:00+00:00",
+  "title": "Respond to Suspected Compromise of Azure Key Vault (Isolate, Rotate, and Remediate)",
+  "problem_category": "security",
+  "complexity": "medium",
+  "system_context": "Azure Key Vault",
+  "severity": "critical",
+  "status": "archived",
+  "approval_level": "manager",
+  "author": {
+    "name": "Ava Mercer",
+    "email": "ava.mercer@fictional-corp.example"
+  },
+  "approver": {
+    "name": "Diego Alvarez",
+    "email": "diego.alvarez@fictional-corp.example",
+    "approved_at": "2025-11-28T03:30:00+00:00"
+  },
+  "problem_description": "Security telemetry indicates potential unauthorized access to one or more Azure Key Vault resources. Indicators include unexpected secret version creation, access from unusual IP ranges, spikes in Get/List operations, or changes to access policies. This SOP guides triage, temporary isolation of the vault, credential/service-principal rotation, application updates, and post-remediation verification.",
+  "symptoms": [
+    "Unexpected new secret or key versions created in a vault",
+    "Spike in Key Vault Get/List operations in a short time window",
+    "Access attempts from IP addresses not in the organization allowlist",
+    "Changes detected to Key Vault access policies or RBAC role assignments",
+    "Alerts from SIEM indicating possible exfiltration of secrets"
+  ],
+  "prerequisites": [
+    "Valid corporate Azure subscription number and the name(s) of affected Key Vault(s)",
+    "Incident declared by security team (if org policy requires)",
+    "Access to a non-production environment for testing rotated credentials"
+  ],
+  "required_tools": [
+    "Azure Portal with Owner or Key Vault Contributor access to target vault(s)",
+    "Azure CLI (Az module) with authenticated account having necessary privileges",
+    "Azure PowerShell (optional)",
+    "Access to corporate SIEM, Log Analytics workspace, and Azure Activity Logs",
+    "Out-of-band communication channel (e.g., secure incident channel) to coordinate changes"
+  ],
+  "estimated_resolution_time": "60-120 minutes (initial containment and rotation); follow-up application rollouts may take several hours",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Initial confirmation and evidence collection",
+      "details": "Record the vault name(s), subscription ID, region, and resource IDs. Collect relevant logs: Key Vault diagnostics, Azure Activity Log entries for the vault, and Azure AD sign-in logs for principals that accessed the vault in the suspicious timeframe. Save copies of logs to a secure incident storage container (read-only).",
+      "warnings": "Do not delete or modify CloudTrail/Azure logs or diagnostic settings prior to collection."
+    },
+    {
+      "step_number": 2,
+      "action": "Temporarily isolate the vault",
+      "details": "If the vault uses firewall rules or virtual network service endpoints, update the firewall to restrict access to the incident response team's management IP ranges only. If using Azure RBAC and access policies, temporarily remove or disable non-administrative access policies and service principal credentials known to be suspect. Use Azure CLI: az keyvault update --name <vault-name> --default-action Deny (or set network-acl rules).",
+      "warnings": "Isolating the vault can cause application outages. Notify application owners before making network/RBAC changes."
+    },
+    {
+      "step_number": 3,
+      "action": "Revoke active sessions and credentials",
+      "details": "For suspected compromised service principals, disable the service principal in Azure AD or rotate its credentials. Revoke refresh tokens by resetting credentials for the service principal (Azure AD) and forcing a sign-in policy change if possible. For managed identities, rotate any backing credentials or temporarily disable the identity's assignments.",
+      "warnings": "Disabling identities will immediately impact applications that rely on them."
+    },
+    {
+      "step_number": 4,
+      "action": "Rotate all secrets, keys, and certificates",
+      "details": "Create new versions of affected secrets and keys: use az keyvault secret set --vault-name <vault-name> --name <secret-name> --value <new-value>. For keys, generate a new key version or new key name and mark old ones as disabled. For certificates, generate/issue new certs and set them as active. Ensure new values are stored in a secure staging location and limit disclosure to authorized personnel.",
+      "warnings": "Do not delete old versions until applications have been updated and validated; use soft-delete/purge-protection features to prevent accidental loss."
+    },
+    {
+      "step_number": 5,
+      "action": "Update dependent applications and services",
+      "details": "Coordinate with application owners to deploy updated credentials. Prefer secretless authentication patterns (Managed Identity, Azure AD integrated auth) where possible. Validate each application in a controlled test slot/environment before promoting changes to production.",
+      "warnings": "Rollback plan must be prepared in case an updated credential causes unforeseen failures."
+    },
+    {
+      "step_number": 6,
+      "action": "Reinforce vault access controls",
+      "details": "After rotation and validation, re-enable a minimal set of access policies or Azure RBAC assignments following least privilege. Enable/fine-tune firewall and virtual network rules. Ensure Azure Key Vault's logging/diagnostic settings are configured to send logs to a Log Analytics workspace and SIEM.",
+      "warnings": "Avoid granting wide scope permissions (e.g., subscription-level) unless justified and approved."
+    },
+    {
+      "step_number": 7,
+      "action": "Enable advanced protections if not already enabled",
+      "details": "Turn on Soft Delete and Purge Protection if the vault supports them (ensure compliance with organizational policy). Enable Key Vault logging to include AuditEvent and Request logs and configure alerts for anomalous operation rates.",
+      "warnings": "Purge protection is irreversible in some environments; confirm organizational policy before enabling."
+    },
+    {
+      "step_number": 8,
+      "action": "Perform post-incident analysis",
+      "details": "Analyze collected logs to identify point of ingress, compromised identity keys, and any potential data exfiltration. Document root cause, timeline, affected systems, and corrective actions. Produce remediation and prevention recommendations for the security team.",
+      "warnings": "Maintain chain-of-custody of incident artifacts for possible future forensic review."
+    },
+    {
+      "step_number": 9,
+      "action": "Restore normal operations",
+      "details": "Once applications validate using rotated credentials and logs show no anomalous access, gradually lift strict isolation rules and restore standard access policies. Continue monitoring closely for 72 hours.",
+      "warnings": "Do not reintroduce previously compromised secrets or keys."
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm logs show no further anomalous Get/List/Create operations from unauthorized sources over a 72-hour observation window."
+    },
+    {
+      "step": "Validate that all production applications successfully retrieve secrets/keys from Key Vault using the newly issued versions in a staged deployment."
+    },
+    {
+      "step": "Verify disabled or rotated service principals cannot authenticate using old credentials (attempt managed-test authentication in a controlled environment)."
+    },
+    {
+      "step": "Ensure Key Vault diagnostic settings are active and that alerts for access spikes are configured in the SIEM/log analytics."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Unable to update Key Vault firewall due to insufficient permissions",
+      "solution": "Confirm your account has Owner or Key Vault Contributor permissions on the resource. If not, escalate to subscription owner or use the emergency access process defined by the cloud governance team."
+    },
+    {
+      "issue": "Applications fail after credential rotation",
+      "solution": "Rollback to previous credential version if available (do not delete old versions). Verify application configuration and network access. Use a staging slot to test incremental changes and check application logs for specific authentication errors."
+    },
+    {
+      "issue": "Old secret versions still accessible after rotation",
+      "solution": "Ensure applications reference the correct secret version or use latest/latest-version semantics. If old versions are accessible and should be revoked, disable the version or set an access policy to prevent read operations, then schedule deletion in accordance with soft-delete/purge policies."
+    },
+    {
+      "issue": "Cannot identify source of suspicious access in logs",
+      "solution": "Correlate Key Vault logs with Azure AD sign-in logs and network firewall logs. Search for patterns such as same source IP, user-agent strings, or anomalous timestamp clusters. If unresolved, escalate to the security incident response team for deeper forensic investigation."
+    }
+  ],
+  "escalation": {
+    "condition": "Unable to contain the incident within 2 hours, evidence of secret exfiltration, or inability to rotate compromised credentials without cross-impact to critical systems",
+    "contact": "Security Incident Response Team (security-ops@fictional-corp.example); On-call Cloud Engineer (+1-555-0100 internal line)",
+    "escalation_path": "1) Notify Security Incident Response Team and on-call Cloud Engineer. 2) If SIEM confirms exfiltration or attack continues, escalate to CISO and legal for incident declaration. 3) Open a support case with Microsoft Azure Support citing subscription and resource IDs for priority assistance."
+  },
+  "related_documentation": [
+    {
+      "title": "Internal: Azure Key Vault Incident Response Playbook",
+      "url": "https://intranet.fictional-corp.example/docs/playbooks/azure-keyvault-incident-response"
+    },
+    {
+      "title": "How-to: Rotate Service Principal Credentials",
+      "url": "https://intranet.fictional-corp.example/knowledge/rotate-sp-credentials"
+    },
+    {
+      "title": "Logging: Configuring Key Vault Diagnostics to Log Analytics",
+      "url": "https://intranet.fictional-corp.example/guides/keyvault-diagnostics"
+    }
+  ],
+  "tags": [
+    "azure",
+    "key-vault",
+    "security",
+    "incident-response",
+    "rotation"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2024-06-15T10:00:00+00:00",
+      "author": "Ava Mercer",
+      "changes": "Initial draft created with core containment and rotation steps."
+    },
+    {
+      "version": "1.4",
+      "date": "2025-03-12T14:25:00+00:00",
+      "author": "Ava Mercer",
+      "changes": "Expanded verification and troubleshooting sections; added step for revoking sessions and managed identities."
+    },
+    {
+      "version": "1.7",
+      "date": "2025-11-28T02:46:07.608166+00:00",
+      "author": "Ava Mercer",
+      "changes": "Updated to include tighter isolation guidance, emergency contact info, and clarifications on soft-delete and purge protection handling. Document archived per policy after review."
+    }
+  ]
+}

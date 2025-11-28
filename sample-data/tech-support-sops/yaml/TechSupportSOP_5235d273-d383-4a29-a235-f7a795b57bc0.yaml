@@ -1,0 +1,133 @@
+"sop_id: 5235d273-d383-4a29-a235-f7a795b57bc0\nversion: 1.1\ncreated_at: 2025-11-28T02:43:33.292935+00:00\n\
+  last_updated: 2025-11-28T03:10:00+00:00\ntitle: Microsoft Teams desktop: intermittent\
+  \ meeting audio dropouts and media freeze remediation\nproblem_category: application\n\
+  complexity: medium\nsystem_context: Microsoft Teams\nseverity: medium\nstatus: approved\n\
+  approval_level: manager\nauthor:\n  name: Jordan Vale\n  email: jordan.vale@example-corp.test\n\
+  approver:\n  name: Amira Solano\n  email: amira.solano@example-corp.test\n  approved_at:\
+  \ 2025-11-28T03:05:12+00:00\nproblem_description: >\n  Users on the Microsoft Teams\
+  \ desktop client experience intermittent one-way or two-way audio dropouts\n  and\
+  \ short audio/video freezes during scheduled meetings. The issue is observed primarily\
+  \ on Windows 10/11\n  corporate-managed devices, often after resume from sleep or\
+  \ when the device is connected to a VPN.\n  Symptoms can be caused by local client\
+  \ cache corruption, audio device driver conflicts, VPN/media bypass\n  interactions,\
+  \ or misapplied tenant policies (e.g., media bypass disabled, QoS not applied).\
+  \ This SOP guides\n  Level 2 support through diagnosis, remediation, and verification\
+  \ steps to restore stable audio and media flow.\nsymptoms:\n  - \"Users report audio\
+  \ cuts out for 3-30 seconds while remaining connected to the meeting.\"\n  - \"\
+  One-way audio where user can hear others but others cannot hear the user intermittently.\"\
+  \n  - \"Short video freezes (1-5s) during screen share or camera use without disconnecting\
+  \ the meeting.\"\n  - \"Issue occurs more frequently after system sleep/resume or\
+  \ when connecting/disconnecting VPN.\"\n  - \"Local Teams logs show recurring 'MediaEngine'\
+  \ warnings or 'RTC' socket disconnect events.\"\nprerequisites:\n  - \"User's device\
+  \ is reachable via remote support (RDP, Intune Remote Help, or equivalent).\"\n\
+  \  - \"Agent has permission to request client logs and to perform local profile/cache\
+  \ operations.\"\n  - \"Access to Microsoft 365 admin center and Teams admin center\
+  \ (Global admin or Teams service admin role recommended).\"\n  - \"Access to corporate\
+  \ VPN configuration documentation and network QoS policies.\"\nrequired_tools:\n\
+  \  - \"Remote support tool (example: Intune Remote Help, AnyDesk) with user consent.\"\
+  \n  - \"Access to Teams desktop client and the user's Windows device.\"\n  - \"\
+  Event Viewer (Windows) and Device Manager access.\"\n  - \"Command prompt / PowerShell\
+  \ with user-level privileges; admin privileges if driver reinstalls required.\"\n\
+  \  - \"Company log collection repository or support portal for uploading diagnostic\
+  \ bundles.\"\nestimated_resolution_time: \"20-45 minutes\"\nresolution_steps:\n\
+  \  - step_number: 1\n    action: \"Reproduce the symptom with the user.\"\n    details:\
+  \ \"Ask the user to join a test Teams meeting (can use 'Meet now') and reproduce\
+  \ the audio dropout while you observe. Note exact local time, meeting ID, and duration\
+  \ of dropout.\"\n  - step_number: 2\n    action: \"Collect Teams client logs and\
+  \ basic diagnostics.\"\n    details: \"On the user's machine, instruct or perform:\
+  \ 1) Close Teams fully (right-click system tray icon -> Quit). 2) Start Teams and\
+  \ press Ctrl+Alt+Shift+1 to collect logs (Windows). 3) Locate logs in %appdata%\\\
+  \\Microsoft\\\\Teams\\\\logs.txt and the zipped logs generated on desktop. Upload\
+  \ to the support repository with a filename containing userID and timestamp.\"\n\
+  \    warnings: \"Do not collect logs without user consent; logs may contain PII\
+  \ such as usernames in event traces.\"\n  - step_number: 3\n    action: \"Check\
+  \ Teams client version and update if out of date.\"\n    details: \"In Teams, select\
+  \ Profile -> About -> Version. Compare with the latest approved build in the Teams\
+  \ admin center. If the version is older than the approved baseline or a known-fix\
+  \ build, proceed to update via Company Software Center or direct installer from\
+  \ the Teams admin center.\"\n  - step_number: 4\n    action: \"Inspect Windows Event\
+  \ Viewer and Media Engine errors.\"\n    details: \"Open Event Viewer -> Applications\
+  \ and Services Logs -> Microsoft -> Windows -> MediaFoundation/RTC (or use custom\
+  \ supplier logs). Search for recurring errors at the time of reported dropouts.\
+  \ Note Event IDs and error messages and include them in the support ticket.\"\n\
+  \  - step_number: 5\n    action: \"Verify audio device configuration and drivers.\"\
+  \n    details: \"Open Device Manager -> Audio inputs and outputs. Confirm primary\
+  \ microphone/speaker devices are enabled and using the correct driver (manufacturer\
+  \ recommended). If driver shows warning or is an OS-generic driver, update driver\
+  \ via vendor site or roll back if a recent update correlates to the issue.\"\n \
+  \   warnings: \"Do not install unsigned drivers on corporate devices without following\
+  \ change control procedures.\"\n  - step_number: 6\n    action: \"Clear Teams client\
+  \ cache and sign back in.\"\n    details: \"1) Quit Teams. 2) Delete the contents\
+  \ of %appdata%\\\\Microsoft\\\\Teams\\\\Cache, blob_storage, databases, GPUCache,\
+  \ IndexedDB, Local Storage, and tmp. 3) Restart Teams and sign in. Re-test a meeting.\"\
+  \n    warnings: \"Clearing cache will remove local settings such as recent call\
+  \ history; document affected items before proceeding.\"\n  - step_number: 7\n  \
+  \  action: \"Check VPN and network path for media bypass or packet loss.\"\n   \
+  \ details: \"If user is on VPN, ask them to briefly disconnect and retest. Use ping\
+  \ and pathping to MCU or media relay IPs (use internal test endpoints published\
+  \ by network team). For corporate VPNs that force all media through the tunnel,\
+  \ confirm whether split-tunneling is permitted for Teams media. If VPN is the cause,\
+  \ escalate to Network team to enable media bypass (UDP/3478-3481, or TURN allocation).\"\
+  \n  - step_number: 8\n    action: \"Temporarily disable hardware acceleration in\
+  \ Teams and test.\"\n    details: \"In Teams: Profile -> Settings -> General ->\
+  \ uncheck 'Disable hardware acceleration' (toggle hardware acceleration state),\
+  \ then restart Teams. Re-test meeting to observe improvement for GPU-related media\
+  \ freezes.\"\n  - step_number: 9\n    action: \"Apply local policy or Teams admin\
+  \ change if tenant-level misconfiguration found.\"\n    details: \"If logs or admin\
+  \ center policies indicate 'Media Engine' routing forced to enterprise media processors\
+  \ incorrectly, update the Teams policy (Media bypass, QoS DSCP tags) in the Teams\
+  \ admin center and apply to a test user before broad rollout. Document change request\
+  \ and follow change control.\"\n    warnings: \"Tenant-level policy changes require\
+  \ admin approval and may impact many users; validate with a small pilot group first.\"\
+  \n  - step_number: 10\n    action: \"Reinstall Teams client if persistent.\"\n \
+  \   details: \"Uninstall Teams via Settings -> Apps, remove remaining %localappdata%\\\
+  \\Microsoft\\\\Teams and %appdata%\\\\Microsoft\\\\Teams folders, reboot, then install\
+  \ the latest approved MSI/EXE from the company software repository. Re-sign-in and\
+  \ retest with user.\"\nverification_steps:\n  - step: \"User joins a controlled\
+  \ test meeting and the agent monitors for 10-15 minutes without audio dropouts.\"\
+  \n  - step: \"Check that Teams logs post-remediation show no new repeated 'MediaEngine'\
+  \ or 'RTC socket disconnect' errors in the timeframe of the test.\"\n  - step: \"\
+  Confirm other users in the meeting report normal two-way audio and video during\
+  \ the verification period.\"\n  - step: \"If a VPN configuration change was made,\
+  \ confirm a packet loss <1% and jitter <30ms on critical media paths using pathping\
+  \ or enterprise network monitoring tools.\"\ntroubleshooting:\n  - issue: \"Dropouts\
+  \ still occur after cache clear and client update.\"\n    solution: \"Collect fresh\
+  \ logs and verify driver versions. Run Windows audio troubleshooter and escalate\
+  \ to Desktop Engineering to perform an offline driver reinstall. Check for recent\
+  \ Windows updates that map to the occurrence time and consider rolling back a known-bad\
+  \ KB as per corporate policy.\"\n  - issue: \"Audio is one-way only (others cannot\
+  \ hear user).\"\n    solution: \"Confirm microphone device selection in Teams (Profile\
+  \ -> Settings -> Devices). Verify microphone permissions in Windows Settings ->\
+  \ Privacy -> Microphone. If permissions are correct, check for another application\
+  \ locking the device (e.g., web conferencing overlay).\"\n  - issue: \"Issue improves\
+  \ when VPN is disconnected.\"\n    solution: \"Coordinate with Network team to enable\
+  \ Teams media bypass (split-tunnel exceptions) or configure SD-WAN to direct media\
+  \ locally. If split-tunneling policy can't be changed, open a network change ticket\
+  \ for QoS and media relay adjustments.\"\n  - issue: \"High frequency of MediaEngine\
+  \ warnings in logs pointing to TURN allocation failures.\"\n    solution: \"Confirm\
+  \ corporate TURN/STUN relay health. If relays are failing or saturated, escalate\
+  \ to Infrastructure team to scale TURN relays and verify firewall rules for outbound\
+  \ UDP 3478-3481 and TCP fallback.\"\nescalation:\n  condition: \"After completing\
+  \ all resolution_steps and troubleshooting items, the user still experiences dropouts,\
+  \ or logs indicate persistent TURN/STUN allocation failures or tenant-level policy\
+  \ conflicts.\"\n  contact: \"Level 3 Teams Platform Engineer - on-call: teams-l3@example-corp.test;\
+  \ pager: +1-555-000-TEST\"\n  escalation_path: >\n    1) Create/upsert ticket in\
+  \ the internal ITSM system with all collected logs, Event Viewer extracts, and repro\
+  \ timestamps.\n    2) Assign to Teams Platform team (Level 3) and include Network\
+  \ and Desktop Engineering ownership if logs show network or driver issues.\n   \
+  \ 3) If Level 3 cannot resolve within 4 business hours, escalate to Cloud Communications\
+  \ architect with details and request diagnostic session with Microsoft Support using\
+  \ tenant logs package.\nrelated_documentation:\n  - title: \"Company KB: Teams client\
+  \ cache and log collection procedure\"\n    url: https://kb.example-corp.test/teams/cache-log-collection\n\
+  \  - title: \"Network KB: Configure split-tunnel and QoS for Microsoft Teams\"\n\
+  \    url: https://kb.example-corp.test/network/teams-split-tunnel-qos\n  - title:\
+  \ \"Vendor guide: Recommended audio driver versions and validation\"\n    url: https://kb.example-corp.test/desktop/audio-driver-recs\n\
+  \  - title: \"Teams admin center: Media bypass and policy reference (internal mirror)\"\
+  \n    url: https://admin.example-corp.test/teams/media-policy\ntags:\n  - Teams\n\
+  \  - audio\n  - media\n  - troubleshooting\n  - VPN\nversion_history:\n  - version:\
+  \ \"1.0\"\n    date: 2025-10-15T09:12:00+00:00\n    author: \"Jordan Vale\"\n  \
+  \  changes: \"Initial draft covering common causes for Teams audio dropouts and\
+  \ standard remediation steps.\"\n  - version: \"1.1\"\n    date: 2025-11-28T03:10:00+00:00\n\
+  \    author: \"Jordan Vale\"\n    changes: \"Added verification steps, clarified\
+  \ VPN and TURN guidance, included explicit log collection method and escalation\
+  \ contact details.\""

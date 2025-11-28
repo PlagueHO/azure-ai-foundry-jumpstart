@@ -1,0 +1,138 @@
+SOP ID: 9a67a3f0-9d35-480f-a6de-ad4c763074c4
+Version: 1.7
+Created At: 2025-11-28T02:49:53.271257+00:00
+Last Updated: 2025-11-28T03:05:00+00:00
+Title: SharePoint Online — Resolve Stale Library Metadata, Search Mismatch and Sync Failures
+Problem Category: application
+Complexity: medium
+System Context: SharePoint Online
+Severity: medium
+Status: published
+Approval Level: director
+Author: Morgan Hale <morgan.hale@fictionalcorp-support.example>
+Approver: Priya Khatri <priya.khatri@fictionalcorp-it.example>
+Approved At: 2025-11-28T03:04:00+00:00
+
+PROBLEM DESCRIPTION:
+Users report document metadata (columns) not appearing in search results or library views, newly added/updated items failing to surface in search, and intermittent OneDrive/Teams sync failures for a specific SharePoint Online document library. This SOP guides tech support to diagnose and fix library-level indexing and metadata issues, re-trigger reindexing, correct column/index configuration, and remediate common permission and sync causes.
+
+SYMPTOMS:
+- New or updated documents do not appear in Search within 24–72 hours.
+- Library filters or views return inconsistent counts vs actual items.
+- Column values updated in the library are not searchable.
+- Users report the OneDrive client shows "sync pending" or "could not sync" for files in affected library.
+- Occasional 403/Access Denied errors when accessing items via API or search preview.
+
+PREREQUISITES:
+- Tenant-level change approval (if modifying search schema or managed properties).
+- Administrative access to the target SharePoint site (Site Collection Owner) and SharePoint Admin Center.
+- The library and a few affected sample items must be available to test.
+
+REQUIRED TOOLS:
+- Browser with access to SharePoint Admin Center (https://admin.microsoft.com > SharePoint).
+- PnP.PowerShell or SharePoint Online Management Shell installed on technician workstation.
+- Account with Global Admin or SharePoint Admin privileges, and Site Collection Owner on the affected site.
+- Access to tenant helpdesk ticketing system to log changes and approvals.
+
+ESTIMATED RESOLUTION TIME: 30-75 minutes (dependent on library size and reindexing queue).
+
+RESOLUTION STEPS:
+1. Action: Confirm scope and collect evidence
+   Details: Identify affected site URL, library name, sample item IDs, and timestamps of last-known-good state. Collect screenshots of the library view, search result (missing item), and OneDrive sync client errors. Record user-reported steps to reproduce.
+   Warnings: Do not make tenant-wide schema changes without approval.
+
+2. Action: Validate permissions and access
+   Details: Verify the account used for testing is Site Collection Owner. Check that the affected users are in correct Azure AD groups and that the library’s permissions are inherited or configured correctly (Site settings > Site permissions / Library settings > Permissions for this document library).
+   Warnings: Avoid changing permissions during peak production hours without scheduling.
+
+3. Action: Check library indexing and column configuration (UI)
+   Details: In the library, go to Library settings > Advanced settings and confirm "Allow items from this document library to appear in search results" is set to Yes. In Library settings > Columns check for “Indexed” marker on columns used in filters/search. For large libraries, ensure frequently filtered columns are indexed.
+   Warnings: Adding too many single-column indexes to very large lists can temporarily increase processing.
+
+4. Action: Trigger Library Reindex (recommended UI)
+   Details: In Library settings > Advanced settings click Reindex Document Library. Document the time and the sample item(s) to monitor. This places the library in the tenant reindex queue.
+   Warnings: Reindex may take from minutes to several hours depending on tenant load and library size.
+
+5. Action: Trigger Reindex programmatically (PnP.PowerShell) — when UI is not sufficient or for automation
+   Details:
+   - Connect: Connect-PnPOnline -Url "https://tenant.sharepoint.com/sites/sitename" -Interactive
+   - Acquire list object and call reindex (CSOM wrapper):
+     $list = Get-PnPList -Identity "LibraryName"
+     $ctx = Get-PnPContext
+     $list.Context.Load($list)
+     $list.Context.ExecuteQuery()
+     $list.Reindex()
+     $ctx.ExecuteQuery()
+   - Record output and timestamp.
+   Warnings: Use site-scoped account; do not run against multiple libraries in parallel without coordination.
+
+6. Action: Validate Search schema if column values still not searchable
+   Details: In the SharePoint Admin Center > More features > Search > Manage Search Schema, confirm that site column’s crawled properties are mapped to a manageable Managed Property (searchable/queriable). For tenant-managed properties, ensure mapping exists and that property is set to "Searchable" and "Retrievable" if required by callers. If missing, create or request creation of a tenant managed property mapping and include mapping request details (crawled property name, example item URL).
+   Warnings: Modifying tenant search schema affects all sites and must be approved by director-level (Approval Level in this SOP).
+
+7. Action: Verify OneDrive sync and file-level issue
+   Details: For sync issues, have the user:
+     - Pause and resume sync on OneDrive client.
+     - Sign out and sign back in.
+     - Clear client cache (OneDrive settings > Account > Unlink this PC, then re-link).
+     - Confirm path length and invalid characters are not present.
+   Check library for files > 100 MB or unsupported file types or retention holds blocking sync.
+   Warnings: Unlinking will require re-synchronization of the user’s library; warn users about potential bandwidth.
+
+8. Action: Re-upload or re-save an affected sample item to force metadata update
+   Details: Edit the sample document metadata, save, or re-upload the file with a small change to bump the Modified timestamp. This helps confirm reindexing surfaced updates.
+   Warnings: For critical documents consider creating a copy in a test library first.
+
+9. Action: Monitor reindexing and search crawl status
+   Details: Use the Search & intelligence insights in the Admin Center to view indexed content and query logs. Monitor the sample items periodically (every 15-30 minutes for first 2 hours, then hourly).
+   Warnings: Search center reporting can be delayed; do not assume failure until 72 hours in high-load scenarios.
+
+VERIFICATION STEPS:
+- Search for sample item by file name and by specific metadata value; item appears in search results.
+- Library view filters return expected item counts matching the item list.
+- Users report OneDrive sync status returns to "Up to date" and files open without errors.
+- In SharePoint Admin Center > Search > Crawl/Indexing logs, the library shows a successful reindex timestamp after the operation.
+- No 403 errors when previewing items via search or API.
+
+TROUBLESHOOTING:
+Issue: Reindex shows successful but items still not appearing in search.
+Solution: Confirm managed property mappings exist and are set to Searchable/Queryable/Retrievable as required. If mappings were added, reindex again and allow up to 24–72 hours. If the property is a site column, ensure it uses a consistent internal name across content types.
+
+Issue: Large library ( > 5,000 items) views time out or filters not working.
+Solution: Confirm filtered columns are indexed. Create targeted indexed views (folder segmentation) or use indexed columns in the view. Consider using metadata navigation to reduce list view threshold impacts.
+
+Issue: OneDrive client continues to fail on "sync pending" after reindex.
+Solution: Inspect OneDrive client logs (right-click OneDrive icon > View sync problems or collect logs via %localappdata%\Microsoft\OneDrive\logs). If logs point to "blocked by retention policy," verify retention labels or legal hold. If file path length/invalid character error appears, rename and repost.
+
+Issue: Permission inconsistencies causing 403 on search preview.
+Solution: Validate item-level permissions; if items inherit broken inheritance, restore expected permission inheritance or add the search account to appropriate groups for diagnostics only (temporary).
+
+ESCALATION:
+Condition: Tenant-level search schema change required, or issue persists >72 hours after reindexing with confirmed managed property mappings.
+Contact: SharePoint Platform Team (on-call): sp-platform@fictionalcorp-it.example, backup: platform-lead@fictionalcorp-it.example
+Escalation Path: 
+- Tier 1 support (this SOP) → open ticket with SharePoint Platform Team including collected evidence, sample item URLs, timestamps, and PnP reindex logs.
+- If Platform Team cannot resolve within SLA (24 hours), escalate to Director of Infrastructure (Priya Khatri <priya.khatri@fictionalcorp-it.example>) with ticket summary and risk assessment.
+- For suspected Microsoft service-side issues (search/indexing queue), Platform Team will open a Microsoft Premier Support case and include case number and correspondence in the ticket.
+
+RELATED DOCUMENTATION:
+- Title: Library Reindex and Search Schema Best Practices
+  URL: https://intranet.fictionalcorp.example/docs/sharepoint/reindex-search-schema
+- Title: OneDrive Client Troubleshooting Guide (Corporate)
+  URL: https://intranet.fictionalcorp.example/knowledge/onedrive/troubleshoot
+- Title: PnP.PowerShell Quick Reference — Reindexing Lists (internal scripts)
+  URL: https://devops.fictionalcorp.example/pnp/reindex-scripts
+- Title: Tenant Search Schema Change Request Template
+  URL: https://intranet.fictionalcorp.example/forms/search-schema-change
+
+TAGS: SharePoint, search, reindex, OneDrive, metadata
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2024-10-10T09:15:00+00:00 | Author: Morgan Hale | Changes: Initial creation covering library reindex and UI steps.
+Version: 1.3 | Date: 2025-02-02T14:22:00+00:00 | Author: Morgan Hale | Changes: Added PnP.PowerShell reindex snippet and OneDrive sync verification steps.
+Version: 1.5 | Date: 2025-07-18T11:40:00+00:00 | Author: A. Rios | Changes: Expanded troubleshooting for managed property mappings and retention label interactions.
+Version: 1.7 | Date: 2025-11-28T03:05:00+00:00 | Author: Morgan Hale | Changes: Updated escalation contacts, refined verification steps and added warnings for tenant-level changes.
+
+Notes:
+- Allow 24–72 hours for tenant search indexing to fully reflect changes; schedule changes outside business-critical windows where feasible.
+- Always document actions in the ticket and capture timestamps when triggering reindexing or schema changes.

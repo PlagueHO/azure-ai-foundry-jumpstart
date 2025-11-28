@@ -1,0 +1,215 @@
+{
+  "sop_id": "3b431fc5-2602-4fe6-80f7-36bc3073f4fb",
+  "version": "1.6",
+  "created_at": "2025-11-28T02:33:24.958993+00:00",
+  "last_updated": "2025-11-28T10:00:00+00:00",
+  "title": "Recover Azure Virtual Machines with Failed Disk Attachment / Provisioning Errors (Critical)",
+  "problem_category": "cloud",
+  "complexity": "medium",
+  "system_context": "Azure Virtual Machines",
+  "severity": "critical",
+  "status": "approved",
+  "approval_level": "director",
+  "author": {
+    "name": "Maya Kepler",
+    "email": "maya.kepler@example-tech.internal"
+  },
+  "approver": {
+    "name": "Darin Holt",
+    "email": "darin.holt@example-tech.internal",
+    "approved_at": "2025-11-28T09:45:00+00:00"
+  },
+  "problem_description": "One or more Azure Virtual Machines in a subscription report provisioningState failures or remain in 'Updating'/'Failed' state after a platform maintenance event or disk operation. Symptoms include 'Disk attach failed', VM stuck in provisioning state, OS not booting, services unreachable, and errors in the Azure Activity Log indicating failed disk operations. This SOP describes triage and recovery steps to bring VMs back to a running and healthy state while preserving data.",
+  "symptoms": [
+    "VM provisioningState = 'Failed' or 'Updating' for > 10 minutes",
+    "Azure Activity Log entries for 'Attach Disk' or 'Mount' with failure codes (e.g., DiskOperationFailed)",
+    "Boot diagnostics show kernel panic or filesystem mount failures",
+    "InstanceView shows 'VM Agent not reporting' or 'Guest agent disconnected'",
+    "Services on the VM are unresponsive though NIC and NSG appear intact"
+  ],
+  "prerequisites": [
+    "Azure subscription owner or VM contributor access to the affected resource group",
+    "Access to Azure Portal and Azure CLI (az) with authenticated session",
+    "SSH or RDP credentials for the VM (or recovery VM) or SSH private key",
+    "Permission to create managed disk snapshots and boot diagnostics storage accounts",
+    "Incident ticket opened in the internal ITSM system with incident ID"
+  ],
+  "required_tools": [
+    "Azure CLI (az) >= 2.50 installed locally or Cloud Shell",
+    "Azure Portal access",
+    "SSH client (ssh) or RDP client",
+    "Access to company log collection (S3/Blob) for uploading logs",
+    "JSON-capable editor for manipulating ARM/JSON output"
+  ],
+  "estimated_resolution_time": "30-90 minutes (may extend if disk snapshot or support escalation required)",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Identify affected VMs and scope",
+      "details": "Use the Portal Activity Log and az CLI to list recent operations in the resource group. Command: az monitor activity-log list --resource-group <rg-name> --start-time <ISO8601-1h> --query \"[?contains(operationName.value,'Attach') || contains(status.value,'Failed')]\" -o table. Record VM names, disk IDs, and operation IDs for post-mortem.",
+      "warnings": ""
+    },
+    {
+      "step_number": 2,
+      "action": "Check VM and disk provisioning state",
+      "details": "Run: az vm show -g <rg-name> -n <vm-name> --query \"{provisioningState:provisioningState, instanceView:instanceView.statuses}\" -o json. Run: az disk show -g <rg-name> -n <disk-name> --query \"provisioningState,managedBy\" -o json. Note any disks with provisioningState != 'Succeeded' or managedBy mis-matches.",
+      "warnings": ""
+    },
+    {
+      "step_number": 3,
+      "action": "Collect boot and serial console logs",
+      "details": "If Boot Diagnostics was previously enabled, download the screenshot and serial console log from the Portal or via az: az vm boot-diagnostics get-boot-log -g <rg> -n <vm> --output-file <vm>-bootlog.txt. If not enabled and you can tolerate enabling temporarily, enable Boot Diagnostics to capture future boots: az vm update -g <rg> -n <vm> --set diagnosticsProfile.bootDiagnostics.enabled=true --storage-account <diag-storage-account>.",
+      "warnings": "Enabling boot diagnostics may write to a storage account outside of the subscription if misconfigured; verify storage account parameters before enabling."
+    },
+    {
+      "step_number": 4,
+      "action": "Attempt soft-recovery: VM redeploy",
+      "details": "Redeploying moves the VM to a different host and can clear host-level attachment hiccups. Command: az vm redeploy -g <rg> -n <vm-name>. Monitor operation for completion. If redeploy succeeds, confirm OS and services.",
+      "warnings": "Redeploy will cause a brief downtime and may change the host; ephemeral / local temporary storage is lost."
+    },
+    {
+      "step_number": 5,
+      "action": "If redeploy fails, stop the VM and detach problematic data disks",
+      "details": "Stop the VM: az vm deallocate -g <rg> -n <vm>. Detach disk(s) showing errors: az vm disk detach --resource-group <rg> --vm-name <vm> --name <disk-name>. If az vm disk detach is unavailable, use az vm update --set storageProfile.dataDisks=[] with careful JSON to remove entries (capture current disk list first).",
+      "warnings": "Do NOT remove the OS disk unless preparing a recovery workflow. Verify disk names and IDs before detach."
+    },
+    {
+      "step_number": 6,
+      "action": "Re-attach disk(s) and start the VM",
+      "details": "Attach detached disk(s) back to VM after a short wait: az vm disk attach --resource-group <rg> --vm-name <vm> --name <disk-name> --new (if creating) OR --sku Standard_LRS to match original. Then start the VM: az vm start -g <rg> -n <vm>. Monitor provisioning state and instance view.",
+      "warnings": "Attaching the wrong disk as an OS disk can corrupt boot. Double-check LUN numbers for data disks."
+    },
+    {
+      "step_number": 7,
+      "action": "If attach still fails, create a snapshot of the disk and mount to a recovery VM",
+      "details": "Create a snapshot for recovery: az snapshot create -g <rg> -n <disk-name>-snap --source <disk-id> --location <location>. Create a new managed disk from snapshot: az disk create -g <rg> -n <recovery-disk> --source /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Compute/snapshots/<disk-name>-snap. Attach recovery disk to a known-good recovery VM and mount to inspect and recover files.",
+      "warnings": "Snapshot and temporary disks incur storage costs. Ensure you have capacity quotas."
+    },
+    {
+      "step_number": 8,
+      "action": "If the OS disk is corrupted: build a replacement VM using OS disk copy",
+      "details": "Copy the OS disk snapshot to a new managed disk and create a new VM from that disk: az vm create --resource-group <rg> --name <new-vm> --attach-os-disk /subscriptions/.../resourceGroups/.../providers/Microsoft.Compute/disks/<os-disk-copy> --os-type Linux. Validate that cloud-init or sysprep equivalents are handled per your image standard.",
+      "warnings": "Creating a new VM from an OS disk with unique system identifiers may require resetting host-based licensing or reconfiguring the application."
+    },
+    {
+      "step_number": 9,
+      "action": "Validate networking and NSG/UDR",
+      "details": "Ensure NIC and NSG rules have not been affected by operations. az network nic show -g <rg> -n <nic-name> --query \"ipConfigurations,networkSecurityGroup\" -o json. Confirm effective routes if custom UDRs are in place.",
+      "warnings": ""
+    },
+    {
+      "step_number": 10,
+      "action": "Restart dependent services and verify application health",
+      "details": "SSH/RDP to the VM and check system services (e.g., systemctl status <service> or Windows Services). For Linux, confirm disks are mounted (lsblk, mount -a) and fstab entries are correct. For Windows, ensure mounted volumes appear in Disk Management and drive letters are intact.",
+      "warnings": ""
+    },
+    {
+      "step_number": 11,
+      "action": "Collect and upload logs for post-mortem",
+      "details": "Collect: activity log snippets, az vm get-instance-view output, boot diagnostics logs, syslog or Event Viewer export, dmesg output. Compress and upload to the internal incident artifact store and attach to the ticket. Include timestamps and operation IDs in the upload.",
+      "warnings": ""
+    },
+    {
+      "step_number": 12,
+      "action": "Confirm remediation and document changes",
+      "details": "Record every action taken in the incident ticket, including commands executed, screenshots, and timings. If a platform root cause is suspected (Azure host issues), open a support request with Azure with the operation IDs and include the snapshot for investigation.",
+      "warnings": ""
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm az vm show shows provisioningState = 'Succeeded' and instanceView.statuses include 'PowerState/running' and 'Provisioning succeeded'."
+    },
+    {
+      "step": "Verify VM agent reports OK: az vm get-instance-view -g <rg> -n <vm> --query instanceView.vmAgent -o json (agentVersion present)."
+    },
+    {
+      "step": "For Linux: ssh to VM and run lsblk and mount to confirm data disks are present and filesystems are mounted as expected. For Windows: RDP and confirm volumes in Disk Management and that application services are running."
+    },
+    {
+      "step": "Confirm application-level health checks pass (HTTP/HTTPS endpoints return 200, background jobs report OK)."
+    },
+    {
+      "step": "Check Activity Log for no new 'Attach Disk' failures in the last 30 minutes."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Cannot access serial console or boot diagnostics logs are empty",
+      "solution": "Ensure boot diagnostics is enabled and the storage account is accessible to the subscription. If serial console access is blocked by policy, escalate to cloud security to temporarily allow Microsoft Console access for recovery."
+    },
+    {
+      "issue": "Disk detach command errors due to resource locks",
+      "solution": "Check for resource locks: az lock list -g <rg> --query \"[?contains(name,'<vm-or-disk-name>')]\". If a ReadOnly/Delete lock exists, coordinate with the owner to remove the lock or escalate per change control. Document the lock and reason before removing."
+    },
+    {
+      "issue": "VM redeploy repeatedly fails with HostErrors",
+      "solution": "Create a support case with Azure Support including deployment operation IDs, subscription ID, VM name, and timestamp. As interim, attempt to create a copy of the OS disk snapshot and provision a new VM from the disk."
+    },
+    {
+      "issue": "Attached disk mounts but filesystem is corrupted",
+      "solution": "Mount the disk to a recovery VM, run filesystem checks (fsck for ext4, chkdsk for NTFS) after taking a snapshot. If repair fails, restore data from backup snapshots or replicate files from application replicas."
+    },
+    {
+      "issue": "Managed disk has unexpected encryption or keyvault errors",
+      "solution": "Verify disk encryption settings (Azure Disk Encryption or CMK). Ensure access to Key Vault is available for the VM's managed identity. If missing, coordinate with the security/key management team to grant access or rotate keys."
+    }
+  ],
+  "escalation": {
+    "condition": "Issue persists after Step 8 (OS rebuild from snapshot) or total downtime > 2 hours, or data integrity is at risk.",
+    "contact": "Cloud Platform Response Team (CPRT) via PagerDuty: +1-555-0123 or pd-ops@example-tech.internal; Azure Support via portal with Priority:SevA for production-impacting incidents.",
+    "escalation_path": "1) Notify on-call CPRT -> 2) If unresolved in 30 minutes, escalate to Cloud Operations Manager -> 3) If unresolved in 2 hours, escalate to Director of Cloud (include this SOP, logs, operation IDs, and snapshot links) -> 4) Open Azure Support SevA case with Microsoft including subscription ID and operation IDs."
+  },
+  "related_documentation": [
+    {
+      "title": "Internal KB: Recovering Azure VMs from Disk Attachment Failures",
+      "url": "https://kb.example-tech.internal/cloud/azure/vm-disk-attach-recovery"
+    },
+    {
+      "title": "Runbook: Creating and Using Snapshots for Disaster Recovery",
+      "url": "https://docs.example-tech.internal/runbooks/azure/snapshots-dr"
+    },
+    {
+      "title": "Azure Support Escalation Playbook (internal copy)",
+      "url": "https://ops.example-tech.internal/playbooks/azure-support-escalation"
+    },
+    {
+      "title": "Azure CLI Reference - VM and Disk Commands (mirror)",
+      "url": "https://cli.example-tech.internal/azure/vm-disk-commands"
+    }
+  ],
+  "tags": [
+    "azure",
+    "vm",
+    "disk",
+    "recovery",
+    "critical",
+    "boot-diagnostics"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2025-05-12T09:00:00+00:00",
+      "author": "Maya Kepler",
+      "changes": "Initial draft covering basic detach/reattach and redeploy steps."
+    },
+    {
+      "version": "1.2",
+      "date": "2025-08-07T14:30:00+00:00",
+      "author": "Maya Kepler",
+      "changes": "Added snapshot-based recovery and guidance for OS disk replacement."
+    },
+    {
+      "version": "1.4",
+      "date": "2025-10-18T11:15:00+00:00",
+      "author": "Samir Patel",
+      "changes": "Expanded verification steps and added troubleshooting for encryption/Key Vault issues."
+    },
+    {
+      "version": "1.6",
+      "date": "2025-11-28T10:00:00+00:00",
+      "author": "Maya Kepler",
+      "changes": "Reviewed and approved by Director; updated escalation contacts and added commands for az vm disk detach/attach and boot diagnostics retrieval."
+    }
+  ]
+}

@@ -1,0 +1,187 @@
+{
+  "sop_id": "1b79ade1-c9f4-40c4-87e8-65bfd12caac3",
+  "version": "1.3",
+  "created_at": "2025-11-28T02:34:18.701010+00:00",
+  "last_updated": "2025-11-28T04:00:00+00:00",
+  "title": "Recover Azure VM that Fails to Boot Due to OS Disk Issues",
+  "problem_category": "cloud",
+  "complexity": "medium",
+  "system_context": "Azure Virtual Machines",
+  "severity": "low",
+  "status": "approved",
+  "approval_level": "team_lead",
+  "author": {
+    "name": "Alex Morgan",
+    "email": "alex.morgan@example.com"
+  },
+  "approver": {
+    "name": "Rina Patel",
+    "email": "rina.patel@example.com",
+    "approved_at": "2025-11-28T04:00:00+00:00"
+  },
+  "problem_description": "A virtual machine (VM) in Azure fails to complete its boot sequence due to suspected OS disk corruption, misconfigured bootloader, or file system inconsistencies. This SOP guides support engineers through non-destructive inspection and repair of the OS disk by using Azure snapshotting, a helper recovery VM, and disk repair utilities. The workflow is designed to minimize downtime and preserve data integrity.",
+  "symptoms": [
+    "VM stuck in Starting or Failed state in Azure Portal",
+    "Serial console shows kernel panic, GRUB errors, or Windows STOP/BSOD on boot",
+    "Boot diagnostics screenshot is blank or shows OS boot failure messages",
+    "RDP/SSH does not respond but Azure agent remains healthy (or unhealthy)",
+    "Recent OS updates or disk I/O errors recorded in metrics/logs prior to failure"
+  ],
+  "prerequisites": [
+    "Contributor or Disk Operator role on the subscription/resource group (can detach/attach disks and create snapshots)",
+    "Access to Azure Portal and Azure CLI (az) or Azure PowerShell (Az module)",
+    "An existing recovery/helper VM in same region and compatible OS (Linux helper for Linux disk, Windows helper for Windows disk)",
+    "Recent snapshot or backup is preferred but not required",
+    "Change window approval if VM is production (follow local change management rules)"
+  ],
+  "required_tools": [
+    "Azure Portal (https://portal.azure.com)",
+    "Azure CLI (az) v2.37+ or Azure PowerShell Az module",
+    "Remote desktop client (RDP) or SSH client",
+    "Storage Explorer or disk inspection tools on helper VM (e.g., ntfsfix, chkdsk, fsck)",
+    "Access to key vault if Azure Disk Encryption is used",
+    "Ticketing system to log actions (internal)"
+  ],
+  "estimated_resolution_time": "30-90 minutes (depending on disk size and repairs required)",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Identify and gather diagnostic data",
+      "details": "In Azure Portal, open the affected VM. Note VM name, resource group, subscription, availability zone, size, OS type (Linux/Windows), and attached disk(s). Collect Boot Diagnostics screenshot and Serial Console logs (if enabled). Run: az vm get-instance-view --resource-group <rg> --name <vm> to gather instance view and status.",
+      "warnings": ""
+    },
+    {
+      "step_number": 2,
+      "action": "Stop the VM and create a snapshot of the OS disk",
+      "details": "Deallocate the VM to ensure disk consistency: az vm deallocate -g <rg> -n <vm>. Identify the OS disk resource id (az vm show --resource-group <rg> --name <vm> --query storageProfile.osDisk.managedDisk.id -o tsv). Create a snapshot: az snapshot create -g <rg> -n <vm>-osdisk-snap --source <osDiskId> --sku Standard_LRS.",
+      "warnings": "Always snapshot before making any write changes to the disk. If the disk is encrypted (Azure Disk Encryption), ensure you have access to the Key Vault and necessary permissions."
+    },
+    {
+      "step_number": 3,
+      "action": "Detach OS disk from the VM",
+      "details": "Update the VM to remove the OS disk attachment: az vm update -g <rg> -n <vm> --set storageProfile.osDisk=null. Confirm in Portal that the VM has no OS disk attached. Do NOT delete the disk resource. Keep the snapshot and original disk.",
+      "warnings": "Do not delete the disk or snapshot. If operation fails due to locks or policies, contact subscription owner before proceeding."
+    },
+    {
+      "step_number": 4,
+      "action": "Create a managed disk from the snapshot",
+      "details": "Create a temporary managed disk from the snapshot to attach to the helper VM: az disk create -g <rg> -n <vm>-osdisk-recovery --source /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Compute/snapshots/<vm>-osdisk-snap --sku Standard_LRS.",
+      "warnings": ""
+    },
+    {
+      "step_number": 5,
+      "action": "Attach the recovered disk to a helper VM as data disk",
+      "details": "Choose a helper VM in the same region and compatibility (e.g., Linux helper for ext4/xfs, Windows helper for NTFS). Attach: az vm disk attach -g <rg> --vm-name <helper-vm> --disk <vm>-osdisk-recovery --new --size-gb <size-if-resizing-necessary>. Verify the disk appears in the helper VM (lsblk on Linux, Disk Management on Windows).",
+      "warnings": "Do not attach the disk as an additional OS disk to any VM. Attach only as a data disk to avoid accidental boot attempts."
+    },
+    {
+      "step_number": 6,
+      "action": "Inspect disk and attempt file system repair",
+      "details": "On the helper VM, identify the device (e.g., /dev/sdc). For Linux: mount read-only first to examine logs: sudo mount -o ro /dev/sdc1 /mnt/recover && sudo dmesg | tail -n 50. Run fsck: sudo umount /dev/sdc1 && sudo fsck -y /dev/sdc1. For Windows: use chkdsk via PowerShell: chkdsk /f <driveletter>: or use NTFS tools. If bootloader/GRUB issue on Linux, chroot and reinstall grub: sudo mount /dev/sdc1 /mnt/recover && for i in /dev /proc /sys; do sudo mount --bind $i /mnt/recover$i; done && sudo chroot /mnt/recover grub-install /dev/sdc && update-grub.",
+      "warnings": "Do not write to the disk until you have a snapshot. Running repair tools can further corrupt a disk in certain edge cases; ensure snapshot exists."
+    },
+    {
+      "step_number": 7,
+      "action": "Validate repaired disk structure and re-seal if necessary",
+      "details": "After repairs, mount the filesystem to ensure key system directories are present (/etc, /usr, /var for Linux; Windows: check Windows/System32 and Boot folder). If Azure Linux Agent or Windows Agent files were missing or corrupted, note to re-install the agent after reattaching to the original VM. If the disk is encrypted, ensure the encryption metadata is intact.",
+      "warnings": ""
+    },
+    {
+      "step_number": 8,
+      "action": "Detach the disk from helper VM and reattach as OS disk",
+      "details": "Detach from helper: az vm disk detach -g <rg> --vm-name <helper-vm> --name <vm>-osdisk-recovery. Option A - reattach to original VM as OS disk: az vm update -g <rg> -n <vm> --set storageProfile.osDisk={\"managedDisk\":{\"id\":\"/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Compute/disks/<vm>-osdisk-recovery\"},\"caching\":\"ReadWrite\",\"createOption\":\"Attach\"}. Start the VM: az vm start -g <rg> -n <vm>. Option B - if attach fails, create a new VM from the recovered disk using az vm create --name <new-vm> --attach-os-disk /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Compute/disks/<vm>-osdisk-recovery --os-type Linux/Windows -g <rg>.",
+      "warnings": "When reattaching, ensure correct caching setting and that VM size supports the disk I/O profile. If the original VM used ephemeral OS disk, follow ephemeral-specific recovery guidance (not covered here)."
+    },
+    {
+      "step_number": 9,
+      "action": "Start the VM and confirm boot behavior",
+      "details": "Start the original VM and monitor Boot Diagnostics and Serial Console for boot sequence. For Linux, expect login prompt and systemd target reached messages. For Windows, expect successful boot and ability to RDP. If VM fails again, proceed to escalate as below.",
+      "warnings": ""
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm VM enters 'running' state in Azure Portal and az vm get-instance-view shows PowerState/running."
+    },
+    {
+      "step": "Verify Boot Diagnostics screenshot shows OS login prompt or normal boot messages; check serial console logs for absence of boot errors."
+    },
+    {
+      "step": "Login via SSH (Linux) or RDP (Windows) to validate system responsiveness and verify key services start (e.g., cloud-agent, monitoring agent)."
+    },
+    {
+      "step": "Confirm application-level health checks and metrics show normal behavior for at least one monitoring period (5-15 minutes)."
+    },
+    {
+      "step": "Document the repair actions and update the incident ticket with snapshot/disk IDs and timestamps."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Cannot create snapshot due to resource locks or policy",
+      "solution": "Check resource lock on the disk or resource group (az lock list --resource-group <rg>). If a policy blocks snapshot creation, request temporary exemption from cloud governance or escalate to subscription owner."
+    },
+    {
+      "issue": "Disk cannot be attached to helper VM due to encryption",
+      "solution": "If Azure Disk Encryption (ADE) is in use, ensure you have access to the Key Vault and proper permissions to unwrap keys. Coordinate with Security/Key Vault owner to grant access or perform repair inside a VM that has access to the required KEKs/BEKs."
+    },
+    {
+      "issue": "fsck or chkdsk reports unrecoverable errors",
+      "solution": "If filesystem tools fail, restore from backup/snapshot to a new disk and compare files. Consider engaging data recovery specialists if critical data cannot be restored. Escalate according to the escalation section."
+    },
+    {
+      "issue": "GRUB re-installation fails or kernel panics continue after repair",
+      "solution": "Confirm kernel and initramfs versions are present in /boot. If corrupted, restore /boot from the latest backup or reinstall packages. If unfamiliar, escalate to Level 2 Linux engineering with collected logs and the snapshot id."
+    },
+    {
+      "issue": "VM still fails to boot after reattaching repaired disk",
+      "solution": "Boot a new VM from the repaired disk to isolate platform/VM configuration issues. If new VM also fails, the disk may still contain corruption\u2014escalate."
+    }
+  ],
+  "escalation": {
+    "condition": "If disk repair fails, filesystem tools report unrecoverable errors, or boot attempts continue to fail after all steps (approx. 2 hours), escalate.",
+    "contact": "Cloud Infrastructure Team: cloud-infra@example.com; Pager: +1-555-0100 (on-call). Include snapshot ID, disk ID, VM name, resource group, and serial console logs in the ticket.",
+    "escalation_path": "1) Notify Cloud Infra Team via ticket and email. 2) If no resolution in 2 hours, escalate to Cloud Team Lead (rina.patel@example.com). 3) If requiring vendor assistance, open Azure Support ticket via portal and include all gathered artifacts and snapshot/disk IDs."
+  },
+  "related_documentation": [
+    {
+      "title": "Internal KB: Azure VM Disk Recovery Playbook",
+      "url": "https://intra.example.com/kb/azure-vm-disk-recovery"
+    },
+    {
+      "title": "Internal KB: Handling Encrypted Managed Disks (ADE/KeK)",
+      "url": "https://intra.example.com/kb/azure-disk-encryption-recovery"
+    },
+    {
+      "title": "Sample CLI Commands for Disk Operations",
+      "url": "https://docs.example.com/azure/cli/disk-operations-samples"
+    }
+  ],
+  "tags": [
+    "azure",
+    "vm",
+    "disk-repair",
+    "boot-failure",
+    "recovery"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2025-06-10T09:00:00+00:00",
+      "author": "Alex Morgan",
+      "changes": "Initial SOP drafted covering basic snapshot, helper VM attach, and fsck/chkdsk repair workflow."
+    },
+    {
+      "version": "1.2",
+      "date": "2025-09-14T13:20:00+00:00",
+      "author": "Alex Morgan",
+      "changes": "Added encryption troubleshooting steps and additional verification items; clarified warnings around snapshots and KEK access."
+    },
+    {
+      "version": "1.3",
+      "date": "2025-11-28T04:00:00+00:00",
+      "author": "Alex Morgan",
+      "changes": "Standardized CLI examples, added escalation contacts and more robust verification checks; formal approval recorded."
+    }
+  ]
+}

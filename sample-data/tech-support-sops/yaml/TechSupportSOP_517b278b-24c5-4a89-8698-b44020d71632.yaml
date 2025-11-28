@@ -1,0 +1,217 @@
+sop_id: 517b278b-24c5-4a89-8698-b44020d71632
+version: 1.3
+created_at: 2025-11-28 02:53:00.146439+00:00
+last_updated: 2025-11-28 03:12:00+00:00
+title: Replace failed hot-swap drive backplane on Dell PowerEdge servers (R640/R740
+  family)
+problem_category: hardware
+complexity: medium
+system_context: Dell PowerEdge Servers
+severity: medium
+status: approved
+approval_level: cto
+author:
+  name: Jordan K. Vale
+  email: jordan.vale.ops@example-tech.internal
+approver:
+  name: Priya N. Kaur
+  email: priya.kaur.cto@example-tech.internal
+  approved_at: 2025-11-28 03:05:00+00:00
+problem_description: 'One or more hot-swap drive bays are not detected by the RAID
+  controller or the system shows a failed backplane event in iDRAC/BIOS. This SOP
+  covers safe identification, removal and replacement of a faulty hot-swap drive backplane
+  (drive cage assembly) on Dell PowerEdge 14th-generation servers (common examples:
+  R640, R740, R740xd) and verification that the controller and OS re-recognize drives
+  and begin or continue rebuilds. This document assumes a failed backplane (electrical
+  or midplane failure) rather than individual drive failures.
+
+  '
+symptoms:
+- iDRAC hardware log reports 'Backplane failure' or 'SAS expander error'
+- One or more drive bay LEDs remain amber or unlit while drives tested good
+- OS shows missing disks / degraded RAID after multiple drives appear offline
+- System event log (SEL) contains repetitive SAS or enclosure errors
+prerequisites:
+- Confirmed system model is within supported family (R640/R740/R740xd) and chassis
+  supports replaceable backplane
+- Validated part replacement is the correct FRU for this chassis and drive bay count
+- Current full backup or verified RAID redundancy in place (do not assume RAID integrity)
+- Change window scheduled and A/V personnel notified if required by site policy
+- On-site technical staff certified for simple server hardware replacements
+required_tools:
+- ESD wrist strap and ESD-safe work area
+- T10 and T15 Torx drivers, Phillips screwdriver
+- Antistatic bag for removed components
+- iDRAC (network) access credentials with administrator privileges
+- Lifecycle Controller / Dell OMSA access (for pre/post checks)
+- Replacement backplane FRU (field replacement unit) and any required bezel/cable
+  kit
+- SAS cable and connector retention clips (spares recommended)
+estimated_resolution_time: 45-90 minutes (excluding part delivery time)
+resolution_steps:
+- step_number: 1
+  action: Confirm failure and capture baseline logs
+  details: 'Access iDRAC (web UI) and capture the Hardware Logs (Lifecycle Logs).
+    Document PERC controller output (via iDRAC RACADM or OMSA): run ''omreport storage
+    controller'' and ''omreport storage pdisk controller=0'' or equivalent. Note which
+    bay numbers are reported as offline. Export logs to the ticket before proceeding.
+
+    '
+  warnings: Do not proceed with hardware removal if RAID rebuilds are active without
+    confirmed redundancy plan.
+- step_number: 2
+  action: Notify stakeholders and schedule brief outage
+  details: 'Inform application owners and any monitoring teams. Place server in maintenance
+    mode in monitoring systems if necessary. Record maintenance window start time
+    in the ticket.
+
+    '
+- step_number: 3
+  action: 'Pre-check: Safe-drive removal and data protection'
+  details: 'If any drive shows as ''hot spare'' or ''rebuilding'', pause and consider
+    postponing physical work unless replacement is urgent. If required, gracefully
+    evacuate virtual machines or migrate services. Take a last known-good configuration
+    backup (controller config export).
+
+    '
+  warnings: Removal without confirming redundancy may cause permanent data loss.
+- step_number: 4
+  action: Powering down the server (if recommended by FRU instructions)
+  details: 'If the FRU instructions recommend a cold service, shut down OS gracefully.
+    Use iDRAC to perform a graceful shutdown: ''Power -> Graceful Shutdown''. Confirm
+    AC power is removed from server before opening chassis.
+
+    '
+  warnings: If chassis and backplane support hot-swap replacement without power-off,
+    consult FRU note. When in doubt, power off.
+- step_number: 5
+  action: Remove front bezel and drive carriers
+  details: 'Unlock and remove the front bezel if installed. Label and remove all populated
+    drive carriers from the affected bay range. Place drives in antistatic bags in
+    bay order to preserve slot mapping.
+
+    '
+- step_number: 6
+  action: Disconnect backplane power and SAS connectors
+  details: 'Identify the backplane assembly connectors (power + SAS/midplane cable).
+    Unplug connectors using proper release tabs; avoid pulling on wires. If a support
+    cage or cable bracket secures the connectors, remove its fasteners.
+
+    '
+  warnings: Document connector orientation; do not force connectors or pry release
+    latches.
+- step_number: 7
+  action: Remove the backplane assembly
+  details: 'Remove the screws/retainers securing the backplane. Carefully slide the
+    backplane out of the chassis. Inspect mating surfaces and cable ends for debris,
+    bent pins, or burn marks. Photograph assembly for ticket record.
+
+    '
+- step_number: 8
+  action: Install replacement backplane FRU
+  details: 'Unpack the replacement FRU in ESD-safe conditions. Install in reverse
+    of removal. Secure with original screws, reconnect SAS/power connectors until
+    fully seated, and re-attach any retention brackets. Reinstall drive carriers.
+
+    '
+  warnings: Validate FRU part number against the ticket and chassis documentation
+    before installing.
+- step_number: 9
+  action: Power on server and monitor POST/iDRAC
+  details: 'Reconnect AC power and power on. Monitor POST messages and iDRAC system
+    event log for any immediate errors. Enter Lifecycle Controller if prompted to
+    run a quick hardware scan.
+
+    '
+- step_number: 10
+  action: Verify RAID controller and OS recognition
+  details: 'Use iDRAC/OMSA to verify the controller recognizes all drives. Commands:
+    ''omreport storage controller'' and ''omreport storage pdisk'' (or iDRAC web UI).
+    Confirm that any degraded arrays begin rebuilding automatically. If rebuild does
+    not start, import foreign configuration per controller guidance.
+
+    '
+- step_number: 11
+  action: Restore normal operations and update ticket
+  details: 'After verification, remove maintenance mode, notify stakeholders, and
+    attach all collected logs and photographs to the service ticket. Return removed
+    drives to their original bay order if not previously re-seated.
+
+    '
+verification_steps:
+- step: iDRAC event logs show backplane replaced and no new critical errors
+- step: OMSA (or PERC GUI) lists all physical disks as 'Online' or 'Rebuilding' as
+    expected
+- step: All front-panel drive bay LEDs show green/blue per vendor spec (no steady
+    amber)
+- step: Operating system sees all logical volumes and expected storage capacity
+- step: Controller rebuilds (if any) complete to 100% without further hardware errors
+troubleshooting:
+- issue: Drives not recognized after replacement
+  solution: 'Confirm SAS connector seating; power-cycle and reseat connectors. Check
+    midplane cable orientation (mirror keyed). Review iDRAC SEL for additional error
+    codes. If controller shows ''foreign configuration'', import via PERC GUI only
+    if you are certain it''s the original configuration.
+
+    '
+- issue: Controller reports mismatched backplane FRU or firmware mismatch
+  solution: 'Check FRU sticker and firmware revision. If firmware mismatch, download
+    recommended backplane firmware bundle to Lifecycle Controller and update firmware
+    per vendor guidance. If FRU incorrect, replace with correct part.
+
+    '
+- issue: LEDs remain amber/alert persists
+  solution: 'Re-run diagnostics in Lifecycle Controller (hardware diagnostics). Swap
+    in known-good SAS/power cable from another chassis to isolate cable vs backplane.
+
+    '
+- issue: Rebuilds fail with multiple disk errors
+  solution: 'Pause, verify backups and escalate to storage engineering. Collect HDD
+    SMART data (''omreport storage pdisk'') and attach to ticket. Consider cloning
+    failed drives to preserve data state.
+
+    '
+escalation:
+  condition: Any persistent critical hardware error in iDRAC after replacement, multiple
+    drive failures during rebuild, or inability to identify compatible FRU
+  contact: 'Hardware Support Lead: ops-hardware-lead@example-tech.internal, +1-555-0199
+    (internal)'
+  escalation_path: '1) Contact on-site vendor NOC for immediate RMA validation and
+    part swap confirmation. 2) If NOC cannot resolve, escalate to Hardware Engineering
+    (hw-eng@example-tech.internal). 3) If data integrity at risk, engage Storage Engineering
+    and Data Recovery teams per DRP.
+
+    '
+related_documentation:
+- title: 'Internal KB: Backplane FRU mapping for Dell 14G chassis'
+  url: https://kb.example-tech.internal/docs/dell-14g-backplane-fru-mapping
+- title: 'Internal KB: Using OMSA and RACADM for disk and controller diagnostics'
+  url: https://kb.example-tech.internal/docs/omsa-racadm-diagnostics
+- title: Vendor FRU Replacement Guide (site copy)
+  url: https://kb.example-tech.internal/docs/vendor-fru-replacement-guide
+tags:
+- poweredge
+- backplane
+- hot-swap
+- storage
+- hardware
+version_history:
+- version: '1.0'
+  date: 2024-10-03 09:20:00+00:00
+  author: Jordan K. Vale
+  changes: Initial draft focused on R740xd backplane replacement procedure.
+- version: '1.1'
+  date: 2025-04-08 14:45:00+00:00
+  author: Jordan K. Vale
+  changes: Added OMSA/RACADM verification commands and expanded troubleshooting for
+    firmware mismatch.
+- version: '1.2'
+  date: 2025-09-12 11:00:00+00:00
+  author: Maya R. Singh
+  changes: Clarified safety warnings, updated required tools list, and added escalation
+    contacts.
+- version: '1.3'
+  date: 2025-11-28 03:12:00+00:00
+  author: Jordan K. Vale
+  changes: Minor wording edits, added post-replacement verification checklist and
+    example log capture steps.

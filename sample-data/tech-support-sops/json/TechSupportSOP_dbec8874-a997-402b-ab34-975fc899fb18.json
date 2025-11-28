@@ -1,0 +1,186 @@
+{
+  "sop_id": "dbec8874-a997-402b-ab34-975fc899fb18",
+  "version": "1.8",
+  "created_at": "2025-11-28T02:44:47.379307+00:00",
+  "last_updated": "2025-11-28T03:05:00+00:00",
+  "title": "Resolve transient connection timeouts and sluggish queries on Azure SQL Database suspected due to parameter sniffing and plan instability",
+  "problem_category": "database",
+  "complexity": "medium",
+  "system_context": "Azure SQL Database",
+  "severity": "low",
+  "status": "draft",
+  "approval_level": "director",
+  "author": {
+    "name": "Aisha Moreno",
+    "email": "aisha.moreno+dbsop@example.corp"
+  },
+  "approver": {
+    "name": "",
+    "email": "",
+    "approved_at": ""
+  },
+  "problem_description": "Applications intermittently experience short connection timeouts and some OLTP queries suddenly show higher-than-normal duration and CPU. Investigation shows occasional high compilation times and multiple plans for the same parameterized queries in Query Store. Symptoms are consistent with parameter sniffing and plan instability on an Azure SQL Database (single database / vCore or DTU model).",
+  "symptoms": [
+    "Intermittent application timeouts (5-30 seconds) during peak traffic windows",
+    "Spike in avg_query_duration or CPU for specific stored procedures or parameterized queries",
+    "High number of compilations/sec observed in diagnostics",
+    "Query Store shows multiple plans for the same query and a recent plan with much higher average duration",
+    "No obvious resource saturation (DTU/vCore not at 100%) but response times increased"
+  ],
+  "prerequisites": [
+    "Database is hosted on Azure SQL Database (single DB or elastic pool)",
+    "Query Store enabled and configured with data retention covering the incident period (recommended: 7+ days)",
+    "You have read and write permissions on the target database (db_datareader + db_datawriter not sufficient; need db_owner or appropriate elevated role for plan forcing)",
+    "Maintenance window or low-impact testing window available for production changes",
+    "Backup/automatic PITR is enabled (Azure-managed backups present by default)"
+  ],
+  "required_tools": [
+    "Azure Portal access to monitor metrics (CPU, DTU, IO, worker_count)",
+    "Azure SQL query tools (Azure Data Studio or SQL Server Management Studio)",
+    "T-SQL execution ability against the target database (Query Editor or SSMS/Azure Data Studio)",
+    "Access to application logs and APM (e.g., synthetic check or tracing) to correlate observed timeouts",
+    "Access to company runbook system to record changes"
+  ],
+  "estimated_resolution_time": "30-90 minutes (diagnostics + temporary mitigation). Full validation and optional long-term fixes may take several hours.",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Confirm and collect symptom evidence",
+      "details": "Gather exact timestamps of timeouts from application logs and APM. Note connection strings, application user, and affected stored procedures or queries. Correlate to Azure metrics (CPU, DTU, worker_count, data_io) for the same timeframe in Azure Portal -> Metrics.",
+      "warnings": "Do not restart the database or change service tier without QA approval; this can disrupt users."
+    },
+    {
+      "step_number": 2,
+      "action": "Assess Query Store and compilation activity",
+      "details": "Run queries against Query Store to identify regressed queries. Example T-SQL (run in context of the target DB):\n- Query recent high-duration queries:\n  SELECT qs.query_id, qs.plan_id, qst.query_sql_text, rs.count_executions, rs.avg_duration\n  FROM sys.query_store_runtime_stats rs\n  JOIN sys.query_store_runtime_stats_interval rsi ON rs.runtime_stats_interval_id = rsi.runtime_stats_interval_id\n  JOIN sys.query_store_plan qp ON rs.plan_id = qp.plan_id\n  JOIN sys.query_store_query qs ON qp.query_id = qs.query_id\n  JOIN sys.query_store_query_text qst ON qs.query_text_id = qst.query_text_id\n  WHERE rsi.start_time >= DATEADD(hour, -6, SYSUTCDATETIME())\n  ORDER BY rs.avg_duration DESC;\n- Check compilation/sec:\n  SELECT type, counter_name, cntr_value FROM sys.dm_os_performance_counters WHERE counter_name LIKE '%compilations/sec%';",
+      "warnings": "Query Store queries can be I/O intensive; run during low activity if possible."
+    },
+    {
+      "step_number": 3,
+      "action": "Identify likely parameter sniffing candidates",
+      "details": "Look for single query_id with multiple plans where one plan's avg_duration is significantly higher and that plan's last_execution_time matches symptom window. Parameter sniffing often appears when parameter-sensitive predicates choose different index seeks/scans across plans.",
+      "warnings": "Do not assume parameter sniffing without reviewing plan differences (index usage, estimated rows)."
+    },
+    {
+      "step_number": 4,
+      "action": "Apply a short-term mitigation using Query Store forced plan",
+      "details": "If Query Store shows a historically stable plan, use Query Store force to pin that plan for the query. Use the Azure Portal Query Performance blade or T-SQL, for example:\n- Identify plan_id of the stable plan (from step 2)\n- Force it:\n  EXEC sp_query_store_force_plan @query_id = <query_id>, @plan_id = <plan_id>;\nMonitor impact for 30-60 minutes. Document the change in the runbook.",
+      "warnings": "Forcing a plan can make other parameter values regress. Only force plans as a temporary mitigation and monitor application behavior closely. Ensure you have permissions and company approval per change control."
+    },
+    {
+      "step_number": 5,
+      "action": "Update statistics and optionally rebuild indexes for involved objects",
+      "details": "Run targeted UPDATE STATISTICS and, if fragmentation is high, ALTER INDEX ... REBUILD on the affected tables. Example:\n  UPDATE STATISTICS dbo.MyTable WITH FULLSCAN;\n  ALTER INDEX ALL ON dbo.MyTable REBUILD;\nThese operations reduce cardinality estimate drift and can reduce recompiles.",
+      "warnings": "Rebuilds may consume IO and CPU. Schedule during a maintenance window for large indexes or high-transaction tables."
+    },
+    {
+      "step_number": 6,
+      "action": "Consider code-level fixes for long-term resolution",
+      "details": "If parameter sniffing is confirmed, options include:\n- Rewriting query to use OPTIMIZE FOR UNKNOWN hint\n- Use local variable assignment inside stored procedure to avoid sniffing\n- Implement parameter-sensitive plan splitting (use separate stored procedures or OPTION (RECOMPILE) for rare parameters)\nExample hint: SELECT ... OPTION (OPTIMIZE FOR (@param UNKNOWN));",
+      "warnings": "Changes to T-SQL must go through normal application release and testing. OPTION (RECOMPILE) increases CPU due to frequent recompilations."
+    },
+    {
+      "step_number": 7,
+      "action": "Create a plan guide if application code cannot be changed (optional)",
+      "details": "If you cannot change the application easily and forcing in Query Store is insufficient, create a plan guide to influence optimization for a specific query text. Example using sp_create_plan_guide; validate with a test environment before applying to production.",
+      "warnings": "Plan guides are persistent and can be hard to reason about; include detailed comment and expiration plan in the runbook."
+    },
+    {
+      "step_number": 8,
+      "action": "If plan forcing and statistics did not improve, collect deeper diagnostics",
+      "details": "Collect an Extended Events session focused on query_recompile, query_post_compilation_showplan and high compilation/compilation_end events, or capture Query Store WAIT stats. Save Query Store data and export the problematic query plan XML for offline analysis.",
+      "warnings": "Extended Events in Azure SQL must be configured carefully to avoid excessive storage use; follow company limits."
+    },
+    {
+      "step_number": 9,
+      "action": "Rollback or make permanent based on observed behavior",
+      "details": "If forced plan reduces timeouts without side-effects for 24-72 hours, transition to a permanent fix (code change, plan guide, or maintain forced plan with documented review cadence). If regression appears, unforce plan:\n  EXEC sp_query_store_unforce_plan @query_id = <query_id>;\nDocument all actions in the incident ticket.",
+      "warnings": "Permanent changes must follow change control policies."
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm application-level timeouts no longer occur for same timestamps and load profile. Use APM traces and synthetic checks."
+    },
+    {
+      "step": "Compare key query metrics (avg_duration, p95/p99, CPU time) before and after mitigation using Query Store and APM. Target: >50% reduction in p95 duration for affected queries or return to baseline."
+    },
+    {
+      "step": "Validate no new regressions: run a smoke test suite that exercises the set of queries that were forced or changed."
+    },
+    {
+      "step": "Monitor Azure metrics for 24-72 hours to ensure CPU, worker_count, and IO remain stable and no new compilation storms occur."
+    },
+    {
+      "step": "If a forced plan was applied, verify the forced plan remains in effect and review Query Store forced plan status: SELECT * FROM sys.query_store_plan WHERE is_forced = 1;"
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Query Store is disabled or has insufficient retention",
+      "solution": "Enable Query Store with an appropriate capture mode and retention (e.g., FULL and 7+ days) using ALTER DATABASE ... SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 7)); If immediate history is not available, use live diagnostics (sys.dm_exec_requests, sys.dm_exec_query_plan) and collect Extended Events."
+    },
+    {
+      "issue": "Forced plan improves some users but makes others worse",
+      "solution": "Unforce the plan and consider parameter-sensitive splitting: create two parameter-specific SPs or use OPTIMIZE FOR hint with a representative value. Test extensively in staging with realistic parameter distributions."
+    },
+    {
+      "issue": "High compilation rate persists after mitigation",
+      "solution": "Check for frequent schema changes, statistics updates, or plan cache pressure from resource constraints. If autostats or schema changes are causing recompiles, investigate application deployment/reconnect patterns and consider using connection pooling or reducing frequent DDL during peak windows."
+    },
+    {
+      "issue": "Cannot run ALTER INDEX REBUILD due to time/IO constraints",
+      "solution": "Run ALTER INDEX REORGANIZE for lower-impact maintenance or schedule rebuilds during maintenance windows. For very large indexes consider partition-level maintenance if table is partitioned."
+    },
+    {
+      "issue": "Query Store forced plan commands fail with permission errors",
+      "solution": "Ensure the account has ALTER DATABASE or db_owner on the database. If not available, engage database owner or DBA on duty."
+    }
+  ],
+  "escalation": {
+    "condition": "If problem persists after applying temporary mitigation and diagnostics (including forced plan, updated statistics, and index maintenance) for 4 hours, or if the change causes regression to wider user groups.",
+    "contact": "DBA Team Lead: Marcos Silva (marcos.silva.db@example.corp); Pager: +1-555-0123 (fictional). If Azure platform issue suspected, open an Azure Support ticket referencing subscription and database resource ID.",
+    "escalation_path": "1) Notify DBA Team Lead with incident ticket and collected artifacts (Query Store export, problematic plans, APM traces). 2) DBA Lead reviews and attempts advanced interventions (partitioning, schema refactor, or targeted refactor). 3) If a platform or service-level issue is suspected, DBA Lead opens Azure Support case and engages Cloud Platform (include diagnostic package and Query Store files). 4) If still unresolved after 24 hours, escalate to Director of Data Services and include business impact report."
+  },
+  "related_documentation": [
+    {
+      "title": "Internal: Azure SQL Query Store troubleshooting guide",
+      "url": "https://intranet.corp.example/docs/azure-sql/query-store-troubleshooting"
+    },
+    {
+      "title": "Internal runbook: Forcing and unforcing plans safely",
+      "url": "https://runbooks.corp.example/db/plan-force-guide"
+    },
+    {
+      "title": "Internal KB: Handling parameter sniffing in stored procedures",
+      "url": "https://kb.corp.example/articles/parameter-sniffing-mitigation"
+    }
+  ],
+  "tags": [
+    "azure-sql",
+    "query-store",
+    "parameter-sniffing",
+    "performance",
+    "mitigation"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2025-10-01T09:00:00+00:00",
+      "author": "Aisha Moreno",
+      "changes": "Initial draft created covering Query Store and basic mitigation steps."
+    },
+    {
+      "version": "1.5",
+      "date": "2025-11-15T14:30:00+00:00",
+      "author": "Aisha Moreno",
+      "changes": "Expanded troubleshooting section and added examples for UPDATE STATISTICS and index maintenance."
+    },
+    {
+      "version": "1.8",
+      "date": "2025-11-28T02:44:47.379307+00:00",
+      "author": "Aisha Moreno",
+      "changes": "Updated to include forced plan procedure examples, verification checklist, and escalation path. Metadata aligned to new SOP template."
+    }
+  ]
+}

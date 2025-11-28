@@ -1,0 +1,181 @@
+{
+  "sop_id": "a60dbd2f-53a4-404d-b83c-69774249e277",
+  "version": "1.5",
+  "created_at": "2025-11-28T02:46:07.611092+00:00",
+  "last_updated": "2025-11-28T03:10:00+00:00",
+  "title": "Azure Key Vault: Incident Response and Key/Secret Rotation for Suspected Compromise",
+  "problem_category": "security",
+  "complexity": "medium",
+  "system_context": "Azure Key Vault",
+  "severity": "high",
+  "status": "published",
+  "approval_level": "cto",
+  "author": {
+    "name": "Rina K. Alvarez",
+    "email": "rina.alvarez.ops@examplecorp.internal"
+  },
+  "approver": {
+    "name": "Marcus D. Haines",
+    "email": "marcus.haines.cto@examplecorp.internal",
+    "approved_at": "2025-11-28T03:09:45+00:00"
+  },
+  "problem_description": "This SOP covers investigation and containment steps when there's evidence or strong suspicion that one or more keys, secrets, or certificates stored in an Azure Key Vault have been exposed or used by an unauthorized actor. The goal is to rapidly contain the incident, rotate or revoke affected material, restore service using new credentials, and preserve forensic data for post-incident analysis.",
+  "symptoms": [
+    "Unexpected 'get' or 'list' operations from unknown IP ranges to a Key Vault (detected in diagnostic logs).",
+    "Alerts from WAF or IPS/IDS showing outbound access patterns referencing Key Vault resource IDs.",
+    "Application failures after a Key Vault secret change or when keys are used for signing but signatures mismatch expected values.",
+    "Unrecognized service principal authentication events associated with Key Vault access.",
+    "Audit log entries indicating 'purge' or 'delete' operations on keys/secrets (attempted or successful)."
+  ],
+  "prerequisites": [
+    "You must have an assigned role: Owner or Key Vault Contributor on the affected subscription/resource group or be a member of the incident response team with documented emergency access.",
+    "Access to the Azure tenant's Log Analytics workspace or storage account where Key Vault diagnostic logs are exported.",
+    "Access to the service owners/owners of applications using the affected Key Vault items.",
+    "Incident tracking (ticketing) system opened and running; incident ID recorded in this SOP."
+  ],
+  "required_tools": [
+    "Azure Portal access with required permissions",
+    "Azure CLI (az) v2.50+ or later with subscription set to affected tenant (ensure az login and az account set --subscription <id>)",
+    "Access to Azure Monitor / Log Analytics queries",
+    "Access to the tenant's Microsoft Entra ID (Azure AD) to disable service principals or rotate App Registrations",
+    "Secure communications (company-approved encrypted chat / phone) with SOC and app owners"
+  ],
+  "estimated_resolution_time": "30 minutes to 4 hours depending on number of affected objects and application dependencies",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Triage and containment - confirm scope",
+      "details": "Open the incident ticket and record time. Use Key Vault diagnostic logs in Log Analytics or storage to identify all operations in the last 48 hours for the vault: run a query in Log Analytics targeting Category == 'AuditEvent' and ResourceId == '/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.KeyVault/vaults/<vault-name>' to list all Get/Sign/List/Delete operations and the calling principal and IP addresses. Identify which keys/secrets/certificates show anomalous access.",
+      "warnings": "Do not delete any objects yet. Preserve logs and snapshots for forensics."
+    },
+    {
+      "step_number": 2,
+      "action": "Preserve forensic data",
+      "details": "Create a read-only export of the last 7 days of vault diagnostics to a secured storage container. Example az CLI command to verify diagnostic settings: az monitor diagnostic-settings list --resource /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.KeyVault/vaults/<vault-name>. If diagnostics are not enabled, immediately copy available portal/audit screenshots and export activity logs from the Activity Log for the subscription.",
+      "warnings": "Avoid modifying diagnostic settings before copying logs; changes may overwrite telemetry."
+    },
+    {
+      "step_number": 3,
+      "action": "Revoke or restrict access temporarily",
+      "details": "If the incident is active (ongoing unauthorized calls), temporarily block access: switch the vault to a restrictive state by updating access policies or RBAC rules. For vaults using access policies, remove or disable suspicious principal entries. For vaults using RBAC, disable or remove offending role assignments. Example: az role assignment delete --assignee <object-id> --role 'Key Vault Crypto User' --scope /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.KeyVault/vaults/<vault-name>.",
+      "warnings": "Removing access will break dependent applications; coordinate with app owners and use emergency keys in step 4 to restore minimal functionality."
+    },
+    {
+      "step_number": 4,
+      "action": "Create emergency replacement keys/secrets",
+      "details": "For each compromised key/secret/certificate, generate a new key or secret in a new version or in a separate 'emergency' Key Vault (recommended). Example to create a new RSA key: az keyvault key create --vault-name <vault-name> --name <key-name>-emergency --kty RSA --size 2048. For secrets: az keyvault secret set --vault-name <vault-name> --name <secret-name>-emergency --value '<generated-secret-value>'. Share emergency credentials only over secure channels with application owners.",
+      "warnings": "Do not publish emergency values in ticket comments or shared docs. Expire emergency secrets after rotation completion."
+    },
+    {
+      "step_number": 5,
+      "action": "Rotate application credentials to use new keys/secrets",
+      "details": "Update application configuration (Key Vault references, connection strings, managed identity mappings or App Registration credentials) to point to the new 'emergency' versions. Coordinate with each service owner and deploy configuration changes behind a feature flag or in a staged deployment. Confirm that CI/CD pipelines are updated to use the new secret identifiers.",
+      "warnings": "Ensure a rollback plan exists before changing production configuration."
+    },
+    {
+      "step_number": 6,
+      "action": "Revoke leaked service principal credentials",
+      "details": "For any service principal or application registration suspected of compromise, immediately disable or rotate credentials: in Entra ID, navigate to App Registrations -> <app> -> Certificates & secrets -> add a new client secret OR revoke credentials by removing existing secrets/certs. Example CLI to reset a credential: az ad app credential reset --id <app-id> --append --credential-description 'incident-rotation-<date>'. Then update consumers to the new credential.",
+      "warnings": "Revoking a service principal credential will immediately break all consumers; ensure emergency keys are active and tested before revocation if possible."
+    },
+    {
+      "step_number": 7,
+      "action": "Permanently rotate and retire compromised items",
+      "details": "After applications are confirmed using new credentials, schedule and perform permanent rotation: create new key versions or new secret objects with final values, update applications, and then disable the compromised versions: az keyvault key set-attributes --vault-name <vault> --name <key> --version <old-version> --enabled false. For secrets, set attributes to disabled or delete (soft-delete should be enabled in the tenant). If purge protection is off and deletion is necessary, enable purge protection first where possible.",
+      "warnings": "Do not purge keys or secrets until forensic and legal teams have signed off."
+    },
+    {
+      "step_number": 8,
+      "action": "Reinforce vault hardening and monitoring",
+      "details": "Enable or verify soft-delete and purge-protection on the Key Vault; enable firewall rules / virtual network integration so only known subnets can reach the vault. Ensure diagnostic settings are exporting to a dedicated, immutable storage account and to Log Analytics with alerts configured for anomalous operations. Example: az keyvault update --name <vault-name> --resource-group <rg> --enable-soft-delete true (note: actual enablement may vary by tenant and SDK/version).",
+      "warnings": "Changes to network rules can lock out legitimate access; coordinate with network and app owners."
+    },
+    {
+      "step_number": 9,
+      "action": "Post-incident analysis and documentation",
+      "details": "Compile a timeline of events, actors, and actions taken. Save all forensic artifacts in the incident repository. Run a permissions review of all vaults to remove overly broad access (principle of least privilege) and rotate any other high-risk credentials discovered during the review.",
+      "warnings": "Do not delete artifacts required for legal discovery."
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm that applications using the vault are functioning with new keys/secrets (perform smoke tests against staging and production)."
+    },
+    {
+      "step": "Verify that the compromised versions are disabled/marked for deletion and that no active operations are using the old versions (check service logs and Key Vault usage metrics)."
+    },
+    {
+      "step": "Validate that no further unauthorized access appears in diagnostic logs for at least 72 hours after containment actions. Run a filtered Log Analytics query for failed or anomalous calls and confirm they are absent."
+    },
+    {
+      "step": "Confirm that purge-protection and soft-delete are enabled, and that audit exports are intact and retained according to policy."
+    },
+    {
+      "step": "Verify credential rotation for all affected service principals in Entra ID and confirm that previous secrets are invalidated (attempt a test authentication with revoked secret to ensure it fails)."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Cannot find diagnostic logs for the Key Vault.",
+      "solution": "Check the vault's diagnostic settings: az monitor diagnostic-settings list --resource <vault-resource-id>. If diagnostics were not enabled, gather available Activity Log entries at the subscription level and coordinate with the SOC to gather network telemetry (firewall logs, proxy logs). Capture any remaining telemetry from application logs for correlation."
+    },
+    {
+      "issue": "Application fails after switching to emergency key.",
+      "solution": "Check that the application is retrieving the correct secret identifier (full versioned secret URI) and that managed identity or service principal used by the app has Get permission on secrets/keys. Temporarily enable more verbose logging on the app for the authentication and Key Vault access calls to identify permissions/URI mismatches."
+    },
+    {
+      "issue": "Unable to remove a suspicious role assignment due to permission errors.",
+      "solution": "Ensure you are operating with an account that has the required Owner or User Access Administrator role on the subscription or resource group. If you lack permissions, escalate to the cloud platform team immediately (see escalation section)."
+    },
+    {
+      "issue": "A deleted key or secret was purged accidentally.",
+      "solution": "If purge protection was not enabled and an item was purged, notify legal/SOC immediately. Restore from backup if available; if not available, coordinate with application owners for re-issuing credentials and rotate impacted systems."
+    }
+  ],
+  "escalation": {
+    "condition": "If the incident cannot be contained within 2 hours, if there is evidence of exfiltration to external IPs or persistence in multiple accounts, or if critical production systems remain degraded after rotation.",
+    "contact": "SOC (security-ops@examplecorp.internal) -> Cloud Platform Lead (cloud-platform@examplecorp.internal) -> CTO (marcus.haines.cto@examplecorp.internal). For immediate phone escalation, use the on-call SOC pager number maintained in the incident tracking system.",
+    "escalation_path": "1) Notify SOC with full incident ticket and log exports. 2) SOC opens high-severity incident and engages Cloud Platform Lead. 3) Cloud Platform Lead authorizes emergency account elevation or cross-tenant actions. 4) If business-critical impact or legal implications exist, CTO and Legal are engaged and an executive incident call is scheduled."
+  },
+  "related_documentation": [
+    {
+      "title": "Internal: Azure Key Vault Incident Response Playbook",
+      "url": "https://docs.internal.examplecorp/azure/keyvault-incident-playbook"
+    },
+    {
+      "title": "Internal KB: Rotating Key Vault Secrets and Minimizing Downtime",
+      "url": "https://kb.examplecorp.com/articles/kv-secret-rotation"
+    },
+    {
+      "title": "Internal: Entra ID App Registration Credential Rotation Procedures",
+      "url": "https://docs.internal.examplecorp/identity/app-registration-rotation"
+    }
+  ],
+  "tags": [
+    "azure",
+    "key-vault",
+    "security",
+    "rotation",
+    "incident-response"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2025-10-01T09:00:00+00:00",
+      "author": "Rina K. Alvarez",
+      "changes": "Initial draft of incident response SOP for Key Vault compromise scenarios."
+    },
+    {
+      "version": "1.2",
+      "date": "2025-11-10T14:15:00+00:00",
+      "author": "Rina K. Alvarez",
+      "changes": "Added emergency key creation flow and CLI examples, clarified preservation of diagnostics."
+    },
+    {
+      "version": "1.5",
+      "date": "2025-11-28T03:10:00+00:00",
+      "author": "Rina K. Alvarez",
+      "changes": "Updated escalation contacts and added verification step guidance; approved by CTO."
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+SOP ID: e9aa129f-54fb-4f25-8b6e-9e657131be2c
+Version: 1.3
+Created At: 2025-11-28T02:56:44.610807+00:00
+Last Updated: 2025-11-28T03:12:00+00:00
+Title: Emergency rollback and remediation for global authentication-method policy blocking password sign-ins in Microsoft Entra ID
+Problem Category: authentication
+Complexity: medium
+System Context: Microsoft Entra ID
+Severity: critical
+Status: archived
+Approval Level: manager
+Author: Jordan Blake <jordan.blake@fictionalcorp-support.example.com>
+Approver: Maya Chen <maya.chen@fictionalcorp-support.example.com>
+Approved At: 2025-11-28T03:05:12+00:00
+
+PROBLEM DESCRIPTION:
+A recent configuration change to an Authentication Methods policy in Microsoft Entra ID has disabled password-based authentication for the tenant's user population. The change was deployed organization-wide causing immediate failure for interactive and programmatic sign-ins that rely on password authentication. This SOP describes steps to identify the offending policy, perform an emergency rollback (or temporary mitigation), and validate normal authentication behavior is restored.
+
+SYMPTOMS:
+- Mass sign-in failures across multiple applications.
+- End-users receive password-related errors (e.g., AADSTS50126 / invalid_grant / "Incorrect username or password") during interactive login attempts.
+- Sign-in logs show high volume of failures with the same error code and a policy evaluation marking "Authentication Methods policy: Deny".
+- Conditional Access policies show "NotApplied" or "Failure" tied to authentication-method evaluation.
+- Calls to legacy/basic-auth apps that rely on password authentication immediately receive 401/403.
+
+PREREQUISITES:
+- Manager approval to perform emergency policy changes (Approval Level: manager).
+- A designated break-glass account (global admin) that is excluded from normal policy scope.
+- Audit trail and change window documentation for the suspected deployment (time / change request ID).
+- Correlation IDs and sample sign-in log entries from affected users.
+
+REQUIRED TOOLS:
+- Access to Microsoft Entra admin center (Global Administrator or Privileged Role Administrator).
+- Microsoft Graph PowerShell SDK (Connect-MgGraph) or Azure AD PowerShell modules installed on support workstation.
+- Access to tenant sign-in logs (Azure AD > Monitoring > Sign-ins).
+- Incident ticketing system to log actions (e.g., ITSM).
+- Secure shell to management workstation for running PowerShell (logging enabled).
+
+ESTIMATED RESOLUTION TIME: 30–90 minutes (depending on rollback approval and propagation)
+
+RESOLUTION STEPS:
+1. Action: Triage and capture evidence
+   Details: 
+   - Collect 3–5 representative sign-in log entries (timestamp, user principal name, application, client IP, error code, correlationId).
+   - Record the time and Change Request ID for the policy deployment (if available).
+   - Note whether the break-glass account can still sign in.
+   Warnings: Do not modify policies before capturing logs — you must preserve evidence for change review.
+
+2. Action: Identify the offending Authentication Methods policy
+   Details:
+   - In Microsoft Entra admin center, navigate to Identity > Authentication methods > Policy (or Policies > Authentication methods).
+   - Filter to recently modified policies (use the "Last modified" column). Look for policies that affect "Passwords" or have a global scope (All users).
+   - Alternatively, in PowerShell (Microsoft Graph):
+     - Connect-MgGraph -Scopes "Policy.Read.All"
+     - $policies = Get-MgAuthenticationMethodsPolicy   (note: module/cmdlet names may vary by SDK version)
+     - Inspect $policies for entries where PasswordAuthenticationAllowed -eq $false or similar flags.
+   Warnings: Some UI views are cached; refresh to ensure latest state.
+
+3. Action: Confirm policy is the root cause
+   Details:
+   - Cross-check sign-in log "Conditional Access" evaluation details to confirm the authentication method policy was evaluated and returned "Deny" or "Block".
+   - Search sign-in logs for the policyId referenced in the evaluation to confirm correlation across multiple users.
+
+4. Action: Perform emergency mitigation (preferred: scoped rollback)
+   Details:
+   - If a single policy is misconfigured, edit that policy to re-enable passwords for the affected scope, or exclude "All users" and add only a small remediation group.
+   - UI rollback:
+     - Open the offending policy and change "Enable for" from "On" to "Off" or change "Scope" from "All users" to a remediation group (e.g., "PolicyRollback-Test") and save.
+   - PowerShell rollback (example):
+     - Connect-MgGraph -Scopes "Policy.ReadWrite.AuthenticationMethod"
+     - $policy = Get-MgAuthenticationMethodsPolicy -PolicyId <id>
+     - $policy.PasswordBypass = $true
+     - Update-MgAuthenticationMethodsPolicy -PolicyId <id> -BodyParameter $policy
+   Warnings: Ensure you do NOT remove exceptions for break-glass accounts.
+
+5. Action: If policy cannot be edited quickly, apply temporary Conditional Access exception
+   Details:
+   - Create a temporary Conditional Access policy that grants access to all cloud apps for an emergency remediation group and set it to "Report-only" or "Grant access" to override blocking evaluation.
+   - Scope the policy to a small remediation group to minimize exposure.
+   Warnings: Conditional Access evaluation order matters; test with break-glass accounts first.
+
+6. Action: Revoke stale tokens (if required)
+   Details:
+   - Some clients may have cached tokens and may still be blocked until tokens are invalidated. Revoke refresh tokens for high-impact users or restart affected services.
+   - PowerShell example:
+     - Connect-MgGraph -Scopes "User.ReadWrite.All"
+     - Invoke-MgUserInvalidateAllRefreshToken -UserId <user@contoso.com>   (use batch where needed)
+   Warnings: Users will be forced to reauthenticate — schedule communications where appropriate.
+
+7. Action: Validate change and communicate
+   Details:
+   - Monitor sign-in logs for successful sign-ins for previously affected users.
+   - Confirm critical apps (mail, SSO apps, VPN) are functional.
+   - Notify affected user groups and leadership that mitigation is in place and a full remediation plan will follow.
+   Warnings: Do not mark incident resolved until verification completes.
+
+VERIFICATION STEPS:
+- Verify that 90–100% of previously failing sign-in attempts are now successful in sign-in logs for a 15-minute window after remediation.
+- Attempt interactive sign-in from a test user previously impacted and confirm access to at least two critical apps (e.g., Outlook Web, Office portal).
+- Confirm break-glass account remains functional and is not impacted by the changed policy.
+- Check Conditional Access & Authentication Methods policy audit logs to confirm the policy edit was saved and was performed by authorized staff.
+- Communicate with application owners to confirm end-user reports match logged behavior.
+
+TROUBLESHOOTING:
+Issue: Policy edit appears saved in UI but users still blocked
+Solution: Propagation delay may be up to 10 minutes. Force a token revoke for test users, clear local browser caches, and re-test. If still blocked, check for overlapping Conditional Access policies with "Block" controls that may take precedence.
+
+Issue: Cannot locate the Authentication Methods policy that caused the block
+Solution: Use sign-in logs and correlated policyId values. If policyId is not visible in UI, export full sign-in logs and search for policy ids. If necessary, escalate to Entra service engineering with collected logs and timestamps.
+
+Issue: PowerShell cmdlets fail with permission errors
+Solution: Ensure your account has appropriate delegated scopes (Policy.ReadWrite.AuthenticationMethod, User.ReadWrite.All) or use a managed identity account. If using Connect-MgGraph, include -Scopes that match the action. If blocked by tenant security, perform UI rollback with Global Admin.
+
+Issue: Some legacy applications still fail after mitigation
+Solution: Check whether application is using legacy authentication endpoints or a cached app credential. Restart the application service, rotate service account password if necessary, and ensure Service Principal secret/certificate is valid.
+
+ESCALATION:
+Condition: Emergency rollback does not restore sign-ins for >30 minutes or more than 50% of users remain blocked
+Contact: Entra Identity Engineering (internal escalation group) — escalation@fictionalcorp-identity.example.com, Pager: +1-555-0100 (fictional)
+Escalation Path: 
+1) Support L2 (on-call) — escalate within ticketing system and attach sign-in logs and policy change data.
+2) Entra Identity Engineering — include tenant ID, correlation IDs, and example sign-in logs; request immediate policy roll-back assistance.
+3) Microsoft Support — open a high-priority Microsoft Premier/Unified Support case (include correlation IDs and timeframe).
+Notes: When escalating to Microsoft, include at least 5 representative sign-in log entries, tenant ID, and sample affected users.
+
+RELATED DOCUMENTATION:
+- Title: Microsoft Entra ID — Authentication methods policy overview
+  URL: https://docs.internal.example.com/entra/auth-methods-policy-overview (fictional)
+- Title: How to view and filter sign-in logs in Microsoft Entra admin center
+  URL: https://docs.internal.example.com/entra/signin-logs-guide (fictional)
+- Title: Emergency break-glass and policy rollback playbook
+  URL: https://it-playbooks.example.com/break-glass-policy-rollback (fictional)
+- Title: Using Microsoft Graph PowerShell for tenant policy changes
+  URL: https://devtools.example.com/mggraph/powershell-policy-changes (fictional)
+
+TAGS: authentication, entra-id, authentication-methods, emergency-rollback, conditional-access
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2025-11-20T09:00:00+00:00 | Author: Jordan Blake | Changes: Initial draft created after simulated exercise involving Authentication Methods policy misconfiguration.
+Version: 1.1 | Date: 2025-11-24T14:22:00+00:00 | Author: Jordan Blake | Changes: Added PowerShell mitigation examples and token revoke steps; added verification checklist.
+Version: 1.2 | Date: 2025-11-27T21:40:00+00:00 | Author: Priya Kapoor <priya.kapoor@fictionalcorp-support.example.com> | Changes: Clarified Conditional Access override guidance and break-glass account warnings; updated escalation contacts.
+Version: 1.3 | Date: 2025-11-28T03:12:00+00:00 | Author: Jordan Blake | Changes: Finalized manager approval metadata, added example commands for Invoke-MgUserInvalidateAllRefreshToken and tightened verification steps; marked SOP archived after post-incident review.

@@ -1,0 +1,231 @@
+sop_id: 12895414-02c4-42e8-aeac-6f7c3daf2634
+version: '1.9'
+created_at: '2025-11-28T02:19:46.052398+00:00'
+last_updated: '2025-11-28T03:10:00+00:00'
+title: AKS Monitoring - Node and Pod Metrics Missing in Azure Monitor (Container Insights)
+problem_category: general
+complexity: medium
+system_context: Azure Kubernetes Service Monitoring
+severity: critical
+status: review
+approval_level: cto
+author:
+  name: Riley Park
+  email: riley.park@fictionaltech.example.com
+approver: {}
+problem_description: 'Azure Monitor (Container Insights) is not receiving node and
+  pod metrics and alerts for one or more AKS clusters. The cluster appears healthy
+  at the Kubernetes control plane level (API responsive, pods scheduling), but metrics
+  such as node_cpu_usage, pod_memory_working_set_bytes, and kubelet heartbeats are
+  absent or stale in the Log Analytics workspace. This results in missed alerts and
+  lack of telemetry in the operations dashboard. This SOP covers triage and remediation
+  for common causes: diagnostics/monitoring agent (daemonset) misconfiguration, Log
+  Analytics ingestion failures, workspace key/linked resource breakage, network egress
+  restrictions, and corrupted metric mappings.
+
+  '
+symptoms:
+- No node or pod metrics in Azure Monitor > Container Insights for the affected cluster
+- Last ingested time in Log Analytics for AKS data is older than 10 minutes
+- Container Insights 'No Data' banner in the Azure portal for the cluster
+- Monitoring agent pods (daemonset) CrashLoopBackOff or ImagePullBackOff in kube-system
+  namespace
+- Alerts based on node/pod metrics not firing
+prerequisites:
+- AZ CLI (az) v2.40+ installed and logged in with an account that has Reader and Monitoring
+  Metrics Publisher roles on resource group and Log Analytics workspace
+- kubectl v1.24+ configured for the target AKS cluster (kubeconfig set or az aks get-credentials
+  run)
+- Access to the AKS cluster's kube-system namespace and permissions to describe pods,
+  daemonsets, and view logs
+- Log Analytics workspace write permissions (or Monitoring Contributor) to verify
+  ingestion settings
+required_tools:
+- az (Azure CLI) with aks and monitor extensions
+- kubectl
+- jq (optional) for JSON parsing
+- kubectl-logs tooling or direct kubectl logs
+- Access to Azure Portal for manual verification
+estimated_resolution_time: 30-90 minutes
+resolution_steps:
+- step_number: 1
+  action: Confirm scope and impact
+  details: "Identify which cluster(s) and workspace(s) are affected. Record subscription\
+    \ ID, resource group, AKS cluster name, and Log Analytics workspace name/ID. Example\
+    \ commands:\n  - az aks show --resource-group rg-aks-monitoring-dev --name aks-prod\
+    \ --query \"{id:id, fqdn:fqdn}\" -o json\n  - az monitor log-analytics workspace\
+    \ show --resource-group rg-aks-monitoring-dev --workspace-name law-aks-prod -o\
+    \ json\n"
+  warnings: Do not modify cluster resources during the initial data collection step.
+- step_number: 2
+  action: Verify agent daemonset status
+  details: "Check daemonsets responsible for log/metric collection (commonly named\
+    \ azuremonitor-containers, omsagent, or fluentd depending on onboarding method).\
+    \ Example:\n  - kubectl get daemonset -n kube-system\n  - kubectl describe daemonset\
+    \ azuremonitor-containers -n kube-system\n  - kubectl get pods -n kube-system\
+    \ -l k8s-app=azuremonitor-containers\nLook for pods in CrashLoopBackOff, ImagePullBackOff,\
+    \ or Pending.\n"
+  warnings: If many pods are failing, do not delete them en masse without capturing
+    logs.
+- step_number: 3
+  action: Collect logs from failing agent pods
+  details: "For a failing pod, collect last 200 lines of logs and save to a local\
+    \ file for analysis/escalation:\n  - POD=$(kubectl get pods -n kube-system -l\
+    \ k8s-app=azuremonitor-containers -o jsonpath='{.items[0].metadata.name}')\n \
+    \ - kubectl logs $POD -n kube-system --tail=200 > /tmp/azuremonitor-$POD.log\n\
+    Also check events:\n  - kubectl get events -n kube-system --sort-by='.lastTimestamp'\
+    \ | tail -n 50\n"
+  warnings: Logs may contain sensitive cluster identifiers; scrub before sharing externally.
+- step_number: 4
+  action: Validate Log Analytics linkage and ingestion settings
+  details: "Ensure the cluster is still linked to the intended Log Analytics workspace\
+    \ and diagnostic settings exist. Example:\n  - az monitor diagnostic-settings\
+    \ list --resource /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.ContainerService/managedClusters/<aks-name>\n\
+    \  - az monitor log-analytics workspace linked-services show --workspace-name\
+    \ la-aks-prod --resource-group rg-aks-monitoring-dev || true\nConfirm workspace\
+    \ retention and ingestion quotas are not exceeded.\n"
+  warnings: Do not rotate workspace keys unless required; record original values before
+    changes.
+- step_number: 5
+  action: Check network egress and IP restrictions
+  details: "Confirm that cluster nodes can reach Azure Monitor ingestion endpoints.\
+    \ Run a network test from a node:\n  - kubectl run nettest --restart=Never --image=appropriate/curl\
+    \ -n kube-system --command -- /bin/sh -c \"curl -v https://ingest.monitor.azure.com/healthprobe\
+    \ || echo fail\"\nIf using NSGs, service endpoints, private endpoints, or Azure\
+    \ Firewall, validate exceptions to Log Analytics endpoints are present.\n"
+  warnings: Network changes may impact production traffic; coordinate with network
+    team if making ACL changes.
+- step_number: 6
+  action: Recreate or update agent daemonset
+  details: "If agents are misconfigured or image is corrupted, update the daemonset\
+    \ to the supported image tag or redeploy the solution:\n  - kubectl set image\
+    \ daemonset/azuremonitor-containers -n kube-system azuremonitor=registry.azurecr.io/azuremonitor:stable-2025.10\n\
+    Or reinstall via az:\n  - az aks enable-addons --addons monitoring --resource-group\
+    \ rg-aks-monitoring-dev --name aks-prod --workspace-resource-id /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.OperationalInsights/workspaces/law-aks-prod\n\
+    Monitor rollout:\n  - kubectl rollout status daemonset/azuremonitor-containers\
+    \ -n kube-system --watch\n"
+  warnings: When re-enabling addons, the command may create temporary duplicate resources
+    if previous onboarding was partial.
+- step_number: 7
+  action: Force diagnostics re-ingestion (soft reset)
+  details: "Trigger agent reconnection and re-registration by deleting one agent pod\
+    \ per node (respect pod disruption budgets). The daemonset will recreate pods\
+    \ and attempt to re-register.\n  - kubectl get pods -n kube-system -l k8s-app=azuremonitor-containers\
+    \ -o jsonpath='{range .items[*]}{.metadata.name}{\"\\n\"}{end}' | xargs -n1 -I{}\
+    \ kubectl delete pod {} -n kube-system --grace-period=30 --wait=false\nAfter deletion,\
+    \ monitor logs for successful registration messages.\n"
+  warnings: Stagger deletions to avoid simultaneous outages of the collector on all
+    nodes. Respect pod disruption budgets.
+- step_number: 8
+  action: Validate ingestion on Log Analytics
+  details: "Use Log Analytics queries to confirm new data arrived in the workspace:\n\
+    \  - az monitor log-analytics query -w <workspace-id> --analytics-query \"Perf\
+    \ | where TimeGenerated > ago(15m) | summarize count() by ObjectName\"\nConfirm\
+    \ nodes/pods metrics appear in the results and time series are updating.\n"
+  warnings: Query results may be delayed by up to 2 minutes depending on ingestion
+    lag.
+- step_number: 9
+  action: Re-run alert test and dashboard refresh
+  details: "Trigger a synthetic alert or use a stress test to generate metrics (e.g.,\
+    \ create CPU load on a test pod) and confirm alerting path:\n  - kubectl run cpu-test\
+    \ --image=busybox --restart=Never -- /bin/sh -c \"while true; do dd if=/dev/zero\
+    \ of=/dev/null bs=1M count=1024; sleep 5; done\"\nMonitor Azure Monitor for alert\
+    \ firing and check Action Group invocation.\n"
+  warnings: Run synthetic load only on non-critical nodes/pods or in a maintenance
+    window.
+- step_number: 10
+  action: Document remediation and close incident
+  details: 'Record actions taken, timeframe of data loss, affected dashboards and
+    alerts, and post-incident recommendations (e.g., automated monitor for agent health).
+    Attach collected logs to the incident.
+
+    '
+  warnings: Ensure personal accounts are not used for automated remediation steps
+    in documentation.
+verification_steps:
+- 'Confirm daemonset pods are Ready across all schedulable nodes: kubectl get ds azuremonitor-containers
+  -n kube-system -o wide'
+- 'Verify recent metric ingestion: az monitor log-analytics query -w <workspace-id>
+  --analytics-query "InsightsMetrics | where TimeGenerated > ago(10m) | summarize
+  count()"'
+- Check Container Insights dashboard in Azure Portal shows current node/pod metrics
+  (no 'No Data' banner)
+- Confirm previously failing alerts have a new firing event during synthetic test
+  or within expected SLA window
+troubleshooting:
+- issue: Agent pods stuck in ImagePullBackOff
+  solution: 'Verify image registry credentials, node outbound internet access, and
+    image tag validity. If using Azure Container Registry (ACR), ensure managed identity
+    or service principal has ''AcrPull'' role on the registry. Temporarily pull image
+    from a node to reproduce the error.
+
+    '
+- issue: Log Analytics workspace hitting ingestion cap
+  solution: 'Check workspace usage and quota in Azure Portal or via CLI. If ingestion
+    cap reached, consult cost/ingestion owners to increase quota or apply data collection
+    rules to filter low-value telemetry.
+
+    '
+- issue: Network egress blocked by NSG/Firewall
+  solution: 'Identify required endpoints and ports for Azure Monitor ingestion and
+    allow them. Use proxy settings if required and configure agents with proxy environment
+    variables.
+
+    '
+- issue: Agent logs show authorization/403 errors
+  solution: 'Confirm workspace shared keys, MSI (managed identity) assignments, or
+    service principal credentials are valid. Recreate credentials if rotated and update
+    the agent configuration.
+
+    '
+- issue: Pod disruption budget prevents agent pod restarts
+  solution: 'Check PDBs in kube-system and either temporarily increase budget or perform
+    rolling restarts with care; coordinate with SRE.
+
+    '
+escalation:
+  condition: After completing all resolution steps the cluster still shows no metrics
+    ingestion for >30 minutes or Production alerts continue to fail
+  contact: oncall-sre@fictionalsupport.example.com, +1-800-555-0123 (internal line)
+  escalation_path: '1) Notify on-call SRE with incident ticket ID, list of steps performed,
+    and attached logs from daemonset pods and control plane events. 2) If SRE cannot
+    identify root cause within 30 minutes, escalate to Monitoring Platform lead (monitoring-lead@fictionalsupport.example.com).
+    3) If a suspected Azure service outage or workspace-level issue persists, open
+    a support request with Azure Support including collected diagnostics (workspace
+    ID, cluster resource ID, timeseries samples) and reference internal escalation
+    number.
+
+    '
+related_documentation:
+- title: AKS Container Insights Troubleshooting Runbook (internal)
+  url: https://kb.fictionaltech.example.com/docs/aks/container-insights-troubleshoot
+- title: Log Analytics Workspace Ingestion and Quotas
+  url: https://kb.fictionaltech.example.com/docs/azure/log-analytics-ingestion
+- title: Network Requirements for Azure Monitor Agents
+  url: https://kb.fictionaltech.example.com/docs/azure/network/monitor-endpoints
+tags:
+- AKS
+- Azure Monitor
+- Container Insights
+- Log Analytics
+- monitoring
+version_history:
+- version: '1.0'
+  date: '2025-07-10T09:00:00+00:00'
+  author: Riley Park
+  changes: Initial draft focused on basic agent health checks and workspace linkage.
+- version: '1.4'
+  date: '2025-09-02T14:35:00+00:00'
+  author: Riley Park
+  changes: Added network egress checklist and synthetic alerting steps; clarified
+    CLI examples.
+- version: '1.7'
+  date: '2025-10-21T11:12:00+00:00'
+  author: Avery Chen
+  changes: Expanded troubleshooting section with common failure modes and added PDB
+    guidance.
+- version: '1.9'
+  date: '2025-11-28T03:10:00+00:00'
+  author: Riley Park
+  changes: Updated remediation steps for daemonset image updates, added soft reset
+    procedure, and formalized escalation contacts.

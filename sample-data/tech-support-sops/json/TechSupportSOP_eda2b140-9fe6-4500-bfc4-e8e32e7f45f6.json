@@ -1,0 +1,177 @@
+{
+  "sop_id": "eda2b140-9fe6-4500-bfc4-e8e32e7f45f6",
+  "version": "1.6",
+  "created_at": "2025-11-28T02:44:47.378142+00:00",
+  "last_updated": "2025-11-28T03:15:00+00:00",
+  "title": "Azure SQL Database Critical: Recover from Excessive Transaction Log Usage Causing Connection Failures",
+  "problem_category": "database",
+  "complexity": "medium",
+  "system_context": "Azure SQL Database",
+  "severity": "critical",
+  "status": "archived",
+  "approval_level": "cto",
+  "author": {
+    "name": "Lina Choi",
+    "email": "lina.choi@example.com"
+  },
+  "approver": {
+    "name": "Marcus Halpern",
+    "email": "marcus.halpern@example.com",
+    "approved_at": "2025-11-28T03:10:00+00:00"
+  },
+  "problem_description": "One or more Azure SQL Databases become effectively unusable: new client connections time out or are rejected, queries hang or are placed in long wait states. Root cause observed in monitored incidents is sustained, excessive transaction log usage and/or log write latency that prevents log truncation, leading to resource pressure and the SQL engine throttling connections. This SOP details steps to identify offending sessions/transactions, safely free log space or temporarily scale resources, and restore normal connectivity with minimal data loss risk.",
+  "symptoms": [
+    "Application errors: Timeout expired (login timeout or query timeout)",
+    "High log_utilization values in monitoring dashboards (log usage > 70%)",
+    "Long-running transactions visible in DMVs that prevent log truncation",
+    "Azure portal shows 'SQL database experiencing transient errors' or elevated 'Log IO latency' metric",
+    "Queries stuck in LOG_RATE_IDLE or WRITELOG wait types",
+    "New sessions are rejected or stuck in 'Connecting' state"
+  ],
+  "prerequisites": [
+    "Server admin or Azure SQL Contributor privileges on the target logical server",
+    "Access to Azure subscription resource group containing the database",
+    "Knowledge of the application(s) using the database and maintenance windows",
+    "Backup retention and restore plan documented (point-in-time restore window known)"
+  ],
+  "required_tools": [
+    "Azure Portal access",
+    "Azure CLI (az) >= 2.50 or Azure PowerShell v5+",
+    "sqlcmd or Azure Data Studio / SSMS for issuing T-SQL against the database",
+    "Access to monitoring (Application Insights / Azure Monitor) and runbook automation",
+    "Incident tracking (ticketing) system to record actions and approvals"
+  ],
+  "estimated_resolution_time": "30-90 minutes (may be longer if large transactions must roll back or if scaling operations are required)",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Confirm outage scope and collect initial telemetry",
+      "details": "Verify the exact database(s) affected in Azure Portal: navigate to Subscription > Resource Group > SQL servers > <server_name> > Databases > <database_name>. Record current values for 'DTU/CPU', 'Data IO', 'Log IO latency', 'Storage percent', and 'Connections'. Note any recent deployment or batch jobs that overlap the incident start time. Open a ticket in the incident system with a unique ID and record timestamps.",
+      "warnings": ""
+    },
+    {
+      "step_number": 2,
+      "action": "Connect to master and run inventory queries to locate blocking sessions and log usage",
+      "details": "Using sqlcmd or Azure Data Studio, connect with a server admin account. Run the following diagnostic queries (replace placeholder names):\n- SELECT name, state_desc, recovery_model_desc FROM sys.databases WHERE name = '<database_name>';\n- SELECT total_log_size_mb, used_log_space_percent FROM sys.dm_db_log_space_usage();\n- SELECT r.session_id, r.status, r.wait_type, r.blocking_session_id, r.cpu_time, r.total_elapsed_time, t.text\n  FROM sys.dm_exec_requests r\n  CROSS APPLY sys.dm_exec_sql_text(r.sql_handle) t\n  WHERE r.database_id = DB_ID('<database_name>')\n  ORDER BY r.total_elapsed_time DESC;\nCollect output and identify sessions with long-running transactions and high log generation (e.g., large INSERT/UPDATE without commit).",
+      "warnings": "Do not run intrusive commands yet (KILL) without confirming impact and notifying application owners when possible."
+    },
+    {
+      "step_number": 3,
+      "action": "If an obvious runaway transaction is found, coordinate and then terminate it",
+      "details": "If step 2 shows a single or small number of sessions with very large elapsed time and active transaction_count > 0, contact the app/owner and inform them you'll kill the session. Use: KILL <session_id>; Monitor sys.dm_exec_sessions for rollback status. Expect rollback time proportional to transaction size; this will release log space once rollback completes and a checkpoint occurs.",
+      "warnings": "KILL causes the transaction to roll back and may result in partial work lost. Inform stakeholders and allow a short approval window if possible for critical systems."
+    },
+    {
+      "step_number": 4,
+      "action": "Force a CHECKPOINT and monitor log truncation",
+      "details": "After transactions are committed or rolled back, run: CHECKPOINT; then re-check log usage: SELECT total_log_size_mb, used_log_space_percent FROM sys.dm_db_log_space_usage(); Also check log_reuse_wait_desc from sys.databases for the database to see if a particular condition prevents truncation (e.g., 'REPLICATION', 'AVAILABILITY_REPLICA', 'ACTIVE_TRANSACTION').",
+      "warnings": "CHECKPOINT is safe but will increase IO as dirty pages are flushed; monitor IO and CPU."
+    },
+    {
+      "step_number": 5,
+      "action": "If log remains at high utilization, perform a temporary compute/IO scale-up",
+      "details": "Scale the database up to one level higher compute/IO to allow faster log writes and catch-up. Example Azure CLI command:\naz sql db update --resource-group <rg> --server <server> --name <db> --service-objective GP_Gen5_4\n(Choose an appropriate sku for your environment, e.g., vCore increase or higher DTU). Wait for the scale operation to complete (monitor notifications). After log truncation is observed and steady state is reached, scale back to the original service objective using the same command with previous sku.",
+      "warnings": "Scaling causes a brief connection interruption (minutes). Ensure this is acceptable. Scaling up may incur cost; get approval if required."
+    },
+    {
+      "step_number": 6,
+      "action": "If scaling and KILL/CHECKPOINT do not resolve the issue, capture full diagnostics and open Azure Support ticket",
+      "details": "Collect extended diagnostics: SET STATISTICS IO ON; extended events (ring_buffer) capturing log_write_latency, and export sys.dm_os_wait_stats, sys.resource_stats for the server. Package query outputs and timestamps and open an Azure Support ticket (Severity A/Critical). Provide reproduction steps, timeline, and collected artifacts. Request internal cloud platform team involvement for underlying storage or throttling issues.",
+      "warnings": "Do not attempt data file operations (ALTER DATABASE ... MODIFY FILE) on Azure SQL since they are managed by the service."
+    },
+    {
+      "step_number": 7,
+      "action": "Notify stakeholders and restore normal service",
+      "details": "Once logs are truncated and new connections are accepted, notify application teams and stakeholders. If scaling was used, schedule scale-down outside business hours and document incurred costs. Document the incident in the postmortem with root cause, timeline, and preventive actions (see Related Documentation).",
+      "warnings": ""
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm sys.dm_db_log_space_usage reports used_log_space_percent <= 20% (or < configured alert threshold)."
+    },
+    {
+      "step": "Run a set of smoke tests from application tier: successful login, a representative read, and a representative write transaction within normal latency bounds."
+    },
+    {
+      "step": "Check Azure Monitor metrics: Connections trending back to baseline, Log IO latency reduced to normal baseline, and no elevated DTU/vCore throttling graphs."
+    },
+    {
+      "step": "Confirm no sessions remain in long-running active transaction state in sys.dm_exec_requests for the database."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Cannot connect to database to run diagnostics",
+      "solution": "Confirm network rules and firewall settings in the logical server. Use Azure Portal 'Query editor (preview)' which connects in the control plane if necessary. Verify Azure AD and SQL auth credentials. Check Azure Service Health for platform outages."
+    },
+    {
+      "issue": "KILL returns error or sessions reappear after killing",
+      "solution": "Session may be re-created by automated job or app pool. Identify and pause the application component or scheduled job (e.g., batch ETL) causing the transactions. If session cannot be killed due to internal rollback delay, monitor rollback progress via sys.dm_exec_requests and wait; consider scaling up to speed rollback."
+    },
+    {
+      "issue": "Log truncation blocked for reason 'AVAILABILITY_REPLICA' or 'REPLICATION'",
+      "solution": "If using Geo-Replication or Managed Instance link, verify replication health. For geo-replication, failover may be required after consulting owners. If the block is due to long-running secondary operations, coordinate with the HA/DR team."
+    },
+    {
+      "issue": "After scale-up log still not truncating",
+      "solution": "Collect extended diagnostics and open Azure Support; include storage diagnostics. Consider restoring a recent copy to a new database to validate data integrity while support investigates the original resource."
+    }
+  ],
+  "escalation": {
+    "condition": "If issue persists > 2 hours after killing offending transactions and attempting a single scale-up, or if Azure logs indicate underlying storage errors or service health incident",
+    "contact": "Cloud Platform Team (cloud-platform@acme.example), Pager: +1-555-0100 ext. 420 (fictional)",
+    "escalation_path": "1) Notify on-call DBA and Cloud Platform Team. 2) If unresolved after 30 minutes, escalate to Database Engineering lead. 3) If unresolved after 60 minutes, escalate to CTO and open Azure Support P1 ticket. Provide incident ID and full diagnostics bundle."
+  },
+  "related_documentation": [
+    {
+      "title": "Runbook: Investigate Azure SQL Transaction Log Pressure",
+      "url": "https://intranet.acme.example/docs/runbooks/azure-sql-log-pressure"
+    },
+    {
+      "title": "Azure CLI reference: az sql db update (service objective scaling)",
+      "url": "https://intranet.acme.example/docs/azure-cli/az-sql-db-update"
+    },
+    {
+      "title": "How to interpret sys.dm_db_log_space_usage and sys.databases log_reuse_wait_desc",
+      "url": "https://intranet.acme.example/docs/sql-dmv-log-usage"
+    },
+    {
+      "title": "Incident Postmortem Template",
+      "url": "https://intranet.acme.example/docs/incidents/postmortem-template"
+    }
+  ],
+  "tags": [
+    "azure-sql",
+    "transaction-log",
+    "incident-response",
+    "scaling",
+    "runbook"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2024-06-12T09:00:00+00:00",
+      "author": "Lina Choi",
+      "changes": "Initial draft covering basic diagnosis and killing long-running transactions."
+    },
+    {
+      "version": "1.2",
+      "date": "2024-11-05T14:30:00+00:00",
+      "author": "DevOps Team",
+      "changes": "Added scale-up procedure and Azure CLI examples; added warnings about cost and brief connectivity interruption."
+    },
+    {
+      "version": "1.4",
+      "date": "2025-08-21T11:20:00+00:00",
+      "author": "Marcus Halpern",
+      "changes": "Updated diagnostic queries to use sys.dm_db_log_space_usage() and added guidance for replication-related blockers."
+    },
+    {
+      "version": "1.6",
+      "date": "2025-11-28T03:10:00+00:00",
+      "author": "Lina Choi",
+      "changes": "Clarified escalation times, added verification steps and extended troubleshooting matrix. Approved by CTO."
+    }
+  ]
+}

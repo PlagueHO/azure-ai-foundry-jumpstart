@@ -1,0 +1,185 @@
+SOP ID: ad878ca4-7e58-43f8-9dbe-188b0897378c
+Version: 1.7
+Created At: 2025-11-28T02:56:44.619697+00:00
+Last Updated: 2025-11-28T03:10:00+00:00
+Title: Resolve Microsoft Entra ID authentication failures after on-premises password changes (Password Hash Sync / Token reissue)
+Problem Category: authentication
+Complexity: medium
+System Context: Microsoft Entra ID
+Severity: high
+Status: approved
+Approval Level: team_lead
+Author: Nadia Mercer <nadia.mercer@internal-example.com>
+Approver: Kiran Patel <kiran.patel@internal-example.com>
+Approved At: 2025-11-28T03:05:00+00:00
+
+PROBLEM DESCRIPTION:
+Users report immediate or intermittent authentication failures to Microsoft Entra ID (Azure AD) resources immediately after an on-premises Active Directory password change. Symptoms indicate password hash synchronization or refresh-token mismatch: password change on-prem completes, but user cannot sign in to cloud services (Office web apps, Teams, Outlook) until a manual intervention or sign-out/in sequence. Root causes typically include delayed or failed Azure AD Connect password sync, stale Primary Refresh Token (PRT) on devices, or conditional access sessions preventing re-authentication.
+
+SYMPTOMS:
+- User attempts to sign in to cloud services immediately after changing AD password and receives "Invalid credentials" or constant password prompt.
+- Successful on-premises authentication (RDP/AD domain logon) but cloud services fail.
+- Azure AD Sign-in logs show authentication failures with error codes such as 50125 (invalid username/password) or 500121 (token lifetime/STS issues) around the time of the password change.
+- Device shows SSO problems; dsregcmd /status shows AzureAdJoined but sign-in still fails.
+- Azure AD Connect synchronization shows recent runs but password sync errors recorded.
+
+PREREQUISITES:
+- Technician account with Global Administrator OR Privileged Authentication Administrator role in Microsoft Entra ID for targeted operations.
+- On-prem AD service account credentials (or delegated admin) to access Azure AD Connect server.
+- Access to the Azure AD Connect server (RDP) and the Synchronization Service Manager (miisclient.exe).
+- Affected user's username (UPN) and approximate time of password change. Do NOT include PII beyond the UPN format.
+
+REQUIRED TOOLS:
+- Azure Portal access (https://portal.azure.com) with required role
+- Azure AD PowerShell modules:
+  - Microsoft.Graph.Users (for sign-in session revocation) OR AzureAD module (legacy)
+- Access to Azure AD Connect server (RDP)
+- PowerShell on Azure AD Connect server with ADSync module available (Start-ADSyncSyncCycle)
+- Windows device access (if device troubleshooting required) with local admin or user consent
+- Access to sign-in logs and Conditional Access policies in Entra portal
+- Log collection location (local share) to stage evidence for escalation
+
+ESTIMATED RESOLUTION TIME: 20-45 minutes (per affected user/device). If Azure AD Connect service requires repair, estimate 1-3 hours.
+
+RESOLUTION STEPS:
+1. Action: Confirm scope and collect initial evidence
+   Details:
+   - Confirm the affected UPN and timestamp of the on-prem password change.
+   - In the Entra portal, go to Monitoring > Sign-ins and filter by the user and time window.
+   - Record failure error code(s), conditional access policies applied, and client app / IP address.
+   Warnings:
+   - Do not change user credentials or reset MFA at this stage; we are collecting baseline evidence.
+
+2. Action: Verify on-prem password change attributes
+   Details:
+   - On a domain controller or management workstation run:
+     - Get-ADUser -Identity "user@domain" -Properties pwdLastSet (requires RSAT ActiveDirectory module)
+   - Note the pwdLastSet timestamp to confirm the change occurred.
+   Warnings:
+   - Ensure you run commands under a privileged account and do not disclose the credential values.
+
+3. Action: Check Azure AD Connect synchronization health
+   Details:
+   - RDP to the Azure AD Connect server.
+   - Open Synchronization Service Manager (C:\Program Files\Microsoft Azure AD Sync\UIShell\miisclient.exe) and review the Connectors > run history for any recent password sync errors.
+   - Check the Azure AD Connect service status:
+     - In elevated PowerShell: Import-Module ADSync; Get-ADSyncScheduler
+   - On the server, review Event Viewer > Applications and Services Logs > Directory Synchronization for error events in the relevant timeframe.
+   Warnings:
+   - Do not restart services unless instructed in a later step.
+
+4. Action: Force a delta synchronization of Azure AD Connect
+   Details:
+   - On the Azure AD Connect server, run elevated PowerShell:
+     - Import-Module ADSync
+     - Start-ADSyncSyncCycle -PolicyType Delta
+   - Wait for synchronization to complete (check Synchronization Service Manager for status).
+   Warnings:
+   - Delta sync usually applies password changes; full sync may be disruptive and should be avoided unless needed.
+
+5. Action: Validate password change propagated to Entra
+   Details:
+   - Use Microsoft Graph PowerShell (or Azure AD cmdlets) to read last password change metadata:
+     - Connect-MgGraph -Scopes User.Read.All
+     - Get-MgUser -UserId user@domain -Property lastPasswordChangeDateTime
+   - Confirm lastPasswordChangeDateTime is at or after the on-prem pwdLastSet.
+   Warnings:
+   - If property is absent or unchanged, sync did not propagate; continue with ADSync troubleshooting.
+
+6. Action: Revoke the user's cloud sign-in sessions / refresh tokens
+   Details:
+   - If sync succeeded but users still cannot sign in, revoke refresh tokens to force issuance of new PRTs:
+     - Using Microsoft Graph PowerShell:
+       - Revoke-MgUserSignInSession -UserId <user@domain>
+     - OR using AzureAD (legacy):
+       - Revoke-AzureADUserAllRefreshToken -ObjectId <userObjectId>
+   - Document the timestamp when revocation is performed.
+   Warnings:
+   - Revoking sessions will sign the user out of all active applications. Notify the user before doing this in business-impact scenarios.
+
+7. Action: Instruct the user to sign out and sign back in (or perform device token refresh)
+   Details:
+   - Ask the user to:
+     - Sign out of browser sessions; clear browser cookies for the tenant.
+     - On Windows 10/11 device: Settings > Accounts > Access work or school > select account > Disconnect then re-connect, or run:
+       - dsregcmd /status (to verify);
+       - If necessary:
+         - dsregcmd /leave
+         - Reboot
+         - Re-join (Sign in to work or school account)
+     - On mobile devices, remove and re-add the work account in Outlook or Company Portal.
+     - Use klist purge on Windows to clear Kerberos tickets if hybrid scenarios present.
+   Warnings:
+   - dsregcmd /leave will temporarily remove device registration; ensure device re-join steps are available and user has required credentials.
+
+8. Action: Re-test authentication
+   Details:
+   - Have the user attempt sign-in to the affected cloud resource(s).
+   - Observe sign-in logs again for successful events and new tokens being issued.
+   Warnings:
+   - If the user still cannot sign in, proceed to step 9.
+
+9. Action: If Azure AD Connect shows errors or password sync still fails, perform ADSync deeper checks
+   Details:
+   - On the Azure AD Connect server:
+     - Verify the ADSync service account has not expired or password changed.
+     - Check the Connector Space for the on-prem AD connector for error objects.
+     - Run the Azure AD Connect Health (if configured) for additional diagnostics.
+     - If necessary, restart the Microsoft Azure AD Sync service and re-run Start-ADSyncSyncCycle -PolicyType Delta.
+   Warnings:
+   - Restarting services may affect other synchronizations; schedule if multiple tenants are impacted.
+
+10. Action: If conditional access or token lifetime is blocking re-authentication
+    Details:
+    - In Entra portal, review Conditional Access policies applied to the failed sign-in attempt (from step 1).
+    - Temporarily create a test policy exemption or disable the suspect policy for troubleshooting (document change and restore immediately after test).
+    Warnings:
+    - Modifying conditional access is high risk — obtain team_lead approval before changing production policies.
+
+VERIFICATION STEPS:
+- User can sign in to the previously failing cloud resources without error.
+- Azure AD Sign-in logs show a successful sign-in event for the user after the interventions (timestamped after the revoke/reauth).
+- Microsoft Graph Get-MgUser property lastPasswordChangeDateTime reflects the expected change and sync timestamp.
+- Device dsregcmd /status shows a valid AzureAdJoined or DomainJoined state and SSO is functional.
+- No new password sync errors appear in Synchronization Service Manager or Azure AD Connect logs.
+
+TROUBLESHOOTING:
+Issue: Delta sync reports success but lastPasswordChangeDateTime not updated
+Solution: Check connector filtering and attribute flows in Synchronization Service Manager; ensure the on-prem user object is not scoped out by sync rules. Validate that password synchronization is enabled in Azure AD Connect installation options (Password Hash Sync must be selected).
+
+Issue: User is forced to authenticate repeatedly after revoking sessions
+Solution: Inspect Conditional Access policies for "Require reauthentication" or session controls; check persistent browser session settings and browser cookie policies. Verify device compliance state if Conditional Access requires it.
+
+Issue: Azure AD Connect service failing to start or throws permission errors
+Solution: Verify the ADSync service account has not been revoked/expired and has sufficient local permissions. If the service account password changed, follow internal procedure to update the AD Connect credentials (do NOT change the account in the service directly without following documented rotation steps).
+
+Issue: Mobile devices continue to fail after account re-add
+Solution: Ensure Company Portal / Intune enrollment is healthy and device is not blocked by device compliance policies. Collect mobile logs (Intune logs) and device registration status.
+
+ESCALATION:
+Condition: After completing all resolution steps, user still cannot authenticate and sign-in logs show token issuance or STS errors (e.g., persistent 5xx or multi-system dependency failures), or Azure AD Connect exhibits persistent failures requiring reinstallation.
+Contact: Identity Operations Team (identity-ops@internal-example.com) and open an internal ticket with the following attachments:
+- Entra sign-in logs for the user (exported CSV)
+- Azure AD Connect synchronization logs and miisclient screenshots
+- dsregcmd /status output from affected device(s)
+- Exact timestamps of password change and attempted sign-ins
+Escalation Path:
+- Tier 2 Identity Operations -> Team Lead (Kiran Patel) -> Manager on-call for Identity -> Microsoft Entra Support (only after approval from manager). When contacting Microsoft Support, include Tenant ID, correlation IDs from sign-in logs, the time window, and the error codes; prepare to allow them access to debug traces.
+
+RELATED DOCUMENTATION:
+- Title: Internal KB — Azure AD Connect Password Sync Troubleshooting
+  URL: https://intra.example.com/kb/identity/ad-connect-password-sync
+- Title: Internal KB — Forcing device re-enrollment and clearing PRT on Windows
+  URL: https://intra.example.com/kb/identity/device-prt-reissue
+- Title: Microsoft Entra — Sign-in logs and error codes (reference)
+  URL: https://docs.example-microsoft.com/entra/sign-in-logs-reference
+- Title: Microsoft Graph PowerShell: Revoke user sign-in sessions (reference)
+  URL: https://docs.example-microsoft.com/graph/powershell/revoke-signin
+
+TAGS: EntraID, password-hash-sync, token-revocation, ad-connect
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2024-10-12T09:00:00+00:00 | Author: Nadia Mercer | Changes: Initial draft S.O.P. for password sync-related authentication failures.
+Version: 1.3 | Date: 2025-05-04T14:45:00+00:00 | Author: Nadia Mercer | Changes: Added device dsregcmd steps and klist purge guidance; clarified Graph vs AzureAD cmdlet options.
+Version: 1.5 | Date: 2025-10-20T08:30:00+00:00 | Author: Marco Lin | Changes: Included Conditional Access quick-check and temporary exemption guidance; tightened escalation criteria.
+Version: 1.7 | Date: 2025-11-28T03:10:00+00:00 | Author: Nadia Mercer | Changes: Updated verification steps, added explicit Azure AD Connect sync commands and logging locations; updated approver and approval timestamp.

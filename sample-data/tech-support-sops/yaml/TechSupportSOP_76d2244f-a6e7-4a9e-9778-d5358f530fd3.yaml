@@ -1,0 +1,209 @@
+sop_id: 76d2244f-a6e7-4a9e-9778-d5358f530fd3
+version: 1.7
+created_at: 2025-11-28 02:42:30.019766+00:00
+last_updated: 2025-11-28 03:40:00+00:00
+title: Restore Backend Connectivity and Health Probes for Azure Load Balancer (Standard)
+problem_category: network
+complexity: medium
+system_context: Azure Load Balancer
+severity: high
+status: published
+approval_level: cto
+author:
+  name: Morgan Vale
+  email: morgan.vale+docs@example-azure-fake.com
+approver:
+  name: Priya Khatri
+  email: priya.khatri+approver@example-azure-fake.com
+  approved_at: 2025-11-28 03:35:12+00:00
+problem_description: 'Backend VMs or instances attached to an Azure Standard Load
+  Balancer are showing Unhealthy or Degraded status in backend health checks, causing
+  partial or complete service outage. This SOP guides the network support engineer
+  through verification, remediation of probe, NSG, route, and NIC configuration issues,
+  and re-registration of backends for Azure Load Balancer.
+
+  '
+symptoms:
+- Load balancer backend pool reports Unhealthy or Unknown in Azure Portal or CLI
+- Applications cannot reach VIP but are reachable via internal IP on VMs
+- Health probe logs show consecutive failures (TCP/HTTP/HTTPS) on probe port
+- Sudden increase in dropped packets in Network Watcher/DST metrics
+- Scaling events show VMs not joining backend pool after provisioning
+prerequisites:
+- Maintenance window approved for potential brief interruption (5-15 minutes)
+- Contributor or Network Contributor role on the affected Azure subscription/resource
+  group
+- Read/write access to the load balancer, backend NICs, VM scale sets, and Network
+  Security Groups
+- Azure CLI or Azure PowerShell access from a trusted management workstation
+required_tools:
+- Azure CLI v2.50+ (az) or Azure PowerShell Az module (>= 7.0)
+- Azure Portal access for visual verification
+- SSH/RDP access to backend VMs to check application and OS-level firewalls
+- Network Watcher packet capture (nsg-flow-logs, packet capture) and ability to download
+  pcaps
+- Logging access to Azure Monitor/Application Insights and Activity Logs
+estimated_resolution_time: 30-90 minutes
+resolution_steps:
+- step_number: 1
+  action: Authenticate and gather high-level status
+  details: "\"Log into the tenant containing the load balancer (az login or Azure\
+    \ Portal).\n Record the load balancer name and resource group. Use the Azure Portal\
+    \ > Load balancer\n > Backend health or run:\n az network lb show-backend-health\
+    \ --name <LB_NAME> --resource-group <RG_NAME> --output json\n Capture the reported\
+    \ probe state and timestamp.\"\n"
+  warnings: Do not make configuration changes before documenting current state (take
+    screenshots or export JSON).
+- step_number: 2
+  action: Confirm Load Balancer SKU and probe type
+  details: "\"Confirm the Load Balancer is Standard (recommended) and identify the\
+    \ health probe (TCP/HTTP/HTTPS).\n az network lb show --name <LB_NAME> --resource-group\
+    \ <RG_NAME> --query '{sku:sku.name,probes:probes}' --output json\n Note probe\
+    \ port and interval/failure thresholds.\"\n"
+- step_number: 3
+  action: Verify backend IP configuration and registration
+  details: "\"List backend pool attachment for each NIC or VM scale set:\n - For individual\
+    \ VMs/NICs: az network nic ip-config list --nic-name <NIC_NAME> --resource-group\
+    \ <RG_NAME> --query '[].{Name:name,LoadBalancerBackendAddressPools:loadBalancerBackendAddressPools}'\
+    \ --output json\n - For VMSS: az vmss nic list --resource-group <RG_NAME> --vmss-name\
+    \ <VMSS_NAME> --query '[].{InstanceId:virtualMachine.id,LBPools:ipConfigurations[].loadBalancerBackendAddressPools}'\
+    \ --output json\n Ensure the expected IPs/instances are present in the correct\
+    \ backend pool.\"\n"
+  warnings: Removing and re-adding NICs will cause connections to drop; schedule accordingly.
+- step_number: 4
+  action: Validate OS-level and VM firewall settings
+  details: "\"SSH/RDP into a representative backend VM and verify:\n - The application\
+    \ process is listening on expected probe port (e.g., sudo ss -tulpn | grep <port>\
+    \ or netstat -an | findstr <port>)\n - Windows: netsh advfirewall firewall show\
+    \ rule name=all | findstr <port>\n - Linux: iptables/nftables rules allowing probe\
+    \ port\n If probe uses HTTP/HTTPS, confirm the endpoint returns 200/healthy with\
+    \ curl: curl -v http://localhost:<port>/health\"\n"
+  warnings: Do not restart application services unless coordinated; prefer configuration
+    fixes first.
+- step_number: 5
+  action: Check Network Security Groups (NSGs) and UDRs
+  details: "\"Review NSGs applied to NICs/subnets to ensure probe and client traffic\
+    \ are permitted.\n az network nsg rule list --nsg-name <NSG_NAME> --resource-group\
+    \ <RG_NAME> --output table\n Confirm there is an Allow rule for the probe port\
+    \ and for client source ranges.\n Inspect User Defined Routes (UDRs) for next\
+    \ hop misconfigurations that could blackhole probe traffic:\n az network route-table\
+    \ route list --resource-group <RG_NAME> --route-table-name <RT_NAME> --output\
+    \ json\"\n"
+  warnings: Modifying NSGs or routes may affect other services; validate with team
+    and change control.
+- step_number: 6
+  action: Run a targeted packet capture of health probe traffic
+  details: "\"Use Network Watcher packet capture or local tcpdump on a backend VM\
+    \ to capture probe packets\n (source: load balancer fabric IP range; destination:\
+    \ VM probe port). Example packet capture using tcpdump:\n sudo tcpdump -i eth0\
+    \ host <LB_HEALTH_PROBE_IP> and port <probe_port> -w /tmp/lb_probe.pcap\n Analyze\
+    \ capture for SYN/ACK or HTTP responses. If probes never reach the VM, NSG/UDR\
+    \ or Azure platform issue likely.\"\n"
+  warnings: Packet captures may contain sensitive data. Store captures in secure location
+    and delete after use.
+- step_number: 7
+  action: If backend instances are missing from pool, re-register NICs or VM instances
+  details: "\"For NIC-based backends:\n az network nic ip-config address-pool add\
+    \ --nic-name <NIC_NAME> --ip-config-name ipconfig1 --resource-group <RG_NAME>\
+    \ --lb-name <LB_NAME> --pool-name <POOL_NAME>\n For VMSS, update vmss model to\
+    \ include backend pool and perform a rolling upgrade:\n az vmss update --name\
+    \ <VMSS_NAME> --resource-group <RG_NAME> --set virtualMachineProfile.networkProfile.networkInterfaceConfigurations[0].ipConfigurations[0].loadBalancerBackendAddressPools=\\\
+    \"[{'id':'/subscriptions/<sub>/resourceGroups/<RG_NAME>/providers/Microsoft.Network/loadBalancers/<LB_NAME>/backendAddressPools/<POOL_NAME>'}]\\\
+    \" \n Then perform: az vmss rolling-upgrade start --name <VMSS_NAME> --resource-group\
+    \ <RG_NAME>\"\n"
+  warnings: Adding/removing endpoints will trigger short disruptions; communicate
+    to stakeholders.
+- step_number: 8
+  action: Refresh or recreate health probe if misconfigured
+  details: "\"If probe configuration is wrong (wrong path, port, interval), modify\
+    \ or recreate the probe:\n az network lb probe update --resource-group <RG_NAME>\
+    \ --lb-name <LB_NAME> --name <PROBE_NAME> --protocol Http --port <port> --path\
+    \ '/health' --interval 15 --threshold 3\n If update fails, delete and recreate\
+    \ the probe with correct parameters and re-associate load balancing rules to the\
+    \ new probe.\"\n"
+  warnings: Changing probe interval and threshold affects time-to-failover; follow
+    application SLO guidelines.
+- step_number: 9
+  action: Check diagnostics and platform events
+  details: "\"Inspect Activity Logs, Azure Monitor metrics (Dip/IncomingPackets, PacketDrop),\
+    \ and any platform maintenance notifications that may affect the LB:\n az monitor\
+    \ activity-log list --resource-group <RG_NAME> --start-time <ISO_START> --end-time\
+    \ <ISO_END> --resource-id /subscriptions/<sub>/resourceGroups/<RG_NAME>/providers/Microsoft.Network/loadBalancers/<LB_NAME>\
+    \ --output table\"\n"
+  warnings: Platform incidents may require Microsoft support; collect evidence before
+    escalation.
+- step_number: 10
+  action: Re-test and observe stabilization
+  details: "\"After changes, observe backend health for at least two probe intervals.\
+    \ Use:\n az network lb show-backend-health --name <LB_NAME> --resource-group <RG_NAME>\
+    \ --output json\n Also validate application-level requests to the VIP (curl/wget)\
+    \ from outside the VNet and from a client VM in the same VNet.\"\n"
+  warnings: Allow sufficient time for probe thresholds to mark instances healthy;
+    do not prematurely roll back working changes.
+verification_steps:
+- step: Confirm backend health shows 'Healthy' for all expected instances in Azure
+    Portal and via az network lb show-backend-health.
+- step: Perform end-to-end request to the load balancer VIP from an external client
+    and confirm successful application response.
+- step: Validate Azure Monitor metrics show expected decrease in packet drops and
+    normal probe success rate over two probe cycles.
+- step: Document the changes taken, timestamps, and ticket ID in the incident record.
+troubleshooting:
+- issue: Health probe still shows Unhealthy after configuring probe and opening firewall
+  solution: Capture packet trace to verify probe packets reach VM. If packets arrive
+    but no response, check application listen address (127.0.0.1 vs 0.0.0.0), reverse
+    proxy, or container network configuration. Restart the application only if safe.
+- issue: Backend VMs intermittently flapping between Healthy and Unhealthy
+  solution: 'Investigate transient resource exhaustion: CPU, memory, or ephemeral
+    port exhaustion. Check VM metrics and application logs. Consider adjusting probe
+    interval/threshold as temporary mitigation and plan capacity fixes.'
+- issue: Newly provisioned VMSS instances not joining backend pool
+  solution: Verify VMSS network configuration includes the correct backend pool in
+    the model. If using custom script extensions, ensure post-provisioning steps don't
+    remove NIC associations. Reimage a single instance to test corrected model before
+    bulk remediation.
+- issue: Probe packets not visible in packet capture
+  solution: Check Azure platform source range (AzureLB/health probe ranges) and ensure
+    capture filter is correct. Review NSG diagnostic logs to see if traffic is dropped
+    before hitting VM.
+escalation:
+  condition: After 90 minutes or when all reasonable remediation (probe, NSG, UDR,
+    VM config, VMSS) attempted without restoring Healthy status, or if Activity Log
+    indicates platform maintenance impacting LB.
+  contact: Network infrastructure on-call (primary), then Cloud Platform SME, then
+    Microsoft Azure Support if platform issue suspected.
+  escalation_path: "\"1) Pager duty: network-infra-oncall@example-fake.com (phone/SMS)\n\
+    \ 2) Slack: #cloud-platform-priority\n 3) Create a Microsoft Support ticket with\
+    \ 'Sev B - Load Balancer health degraded' including backend-packet-capture, az\
+    \ show-backend-health output, Activity Log entries, and subscription ID. Escalate\
+    \ to the CTO if customer SLA breach is imminent.\"\n"
+related_documentation:
+- title: Azure Load Balancer health probes (internal knowledge base)
+  url: https://kb.internal.example-fake.com/azure/load-balancer/health-probes
+- title: Standard Load Balancer backend pool troubleshooting playbook
+  url: https://kb.internal.example-fake.com/azure/load-balancer/backend-pool-troubleshoot
+- title: Network Watcher packet capture and analysis guide
+  url: https://kb.internal.example-fake.com/tools/network-watcher/packet-capture
+- title: 'Microsoft Azure: Diagnosing Load Balancer backend health (external)'
+  url: https://docs.example-azure-fake.com/network/load-balancer/diagnose-backend-health
+tags:
+- azure
+- load-balancer
+- network
+- troubleshooting
+- standard
+version_history:
+- version: '1.0'
+  date: 2025-11-28 02:42:30.019766+00:00
+  author: Morgan Vale
+  changes: Initial SOP creation covering common health probe and backend pool issues.
+- version: '1.3'
+  date: 2025-11-28 03:10:00+00:00
+  author: Morgan Vale
+  changes: Expanded resolution steps to include VMSS commands and packet capture guidance;
+    added NSG/UDR checks.
+- version: '1.7'
+  date: 2025-11-28 03:40:00+00:00
+  author: Priya Khatri
+  changes: Updated escalation path, clarified probe update commands, added verification
+    timing and warnings for production impact.

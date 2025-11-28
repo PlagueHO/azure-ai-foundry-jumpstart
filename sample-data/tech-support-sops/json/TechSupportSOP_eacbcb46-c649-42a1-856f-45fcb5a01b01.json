@@ -1,0 +1,182 @@
+{
+  "sop_id": "eacbcb46-c649-42a1-856f-45fcb5a01b01",
+  "version": "1.9",
+  "created_at": "2025-11-28T02:46:07.612870+00:00",
+  "last_updated": "2025-11-28T03:12:00+00:00",
+  "title": "Investigate and Remediate Suspected Unauthorized Access or Misconfiguration in Azure Key Vault",
+  "problem_category": "security",
+  "complexity": "medium",
+  "system_context": "Azure Key Vault",
+  "severity": "medium",
+  "status": "approved",
+  "approval_level": "cto",
+  "author": {
+    "name": "Aisha Rahman",
+    "email": "aisha.rahman@example.com"
+  },
+  "approver": {
+    "name": "Jonas Mercer",
+    "email": "jonas.mercer@example.com",
+    "approved_at": "2025-11-28T04:00:00+00:00"
+  },
+  "problem_description": "This SOP describes the steps to investigate and remediate suspected unauthorized access, misconfiguration, or accidental weakening of protections on an Azure Key Vault instance. Typical causes include accidental removal of purge protection, misapplied RBAC or access policy changes, or discovery of suspicious access patterns in audit logs indicating potential credential compromise. The goal is to secure the vault, validate integrity of keys/secrets/certificates, and restore recommended configurations with minimal downtime.",
+  "symptoms": [
+    "Alerts from SIEM or Azure Monitor indicating unusual Get/Sign/List operations on keys or secrets",
+    "Audit logs showing roleAssignment changes or access policy modifications at unexpected times",
+    "PurgeProtection disabled or soft-delete not enabled on a vault that should be immutable",
+    "Unexpected deleted keys or secrets in the vault (list-deleted returns results)",
+    "Failed application calls after restrictive network ACLs or access policy changes"
+  ],
+  "prerequisites": [
+    "Business justification approved for access to the affected subscription and Key Vault",
+    "Subscription ID, Resource Group name, and Key Vault name for the affected instance",
+    "Incident ticket opened in the security incident tracker and assigned to an investigator"
+  ],
+  "required_tools": [
+    "Azure Portal access with Owner / Key Vault Contributor or equivalent privileges",
+    "Azure CLI (az) version 2.50.0 or newer with logged-in account: az login",
+    "Azure PowerShell (Az module) 7.x or newer (optional)",
+    "Access to Azure Monitor / Activity Log and the organization's SIEM",
+    "Access to the organization's incident response communication channel (Slack/MS Teams/Phone)"
+  ],
+  "estimated_resolution_time": "30-90 minutes (may vary if key rotation or Microsoft Support engagement is required)",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Triage and isolate",
+      "details": "Confirm the incident ticket and assign an incident owner. Switch relevant application clients to fallback credential stores or secondary Key Vaults where possible to avoid service disruption. Notify stakeholders that a security remediation is in progress.",
+      "warnings": "Do not perform destructive operations (purge) unless explicitly approved by the incident owner and CISO/CTO."
+    },
+    {
+      "step_number": 2,
+      "action": "Collect basic metadata",
+      "details": "Record Subscription ID, Resource Group, Key Vault name, Azure region, and tenant ID. Example commands:\n- az account show --query \"{subscription:id, tenant:tenantId}\"\n- az keyvault show --name <vault-name> --resource-group <rg> --query \"{name:name, location:location, properties:properties}\"",
+      "warnings": ""
+    },
+    {
+      "step_number": 3,
+      "action": "Verify current Key Vault protections and state",
+      "details": "Check soft-delete and purge-protection settings and whether vault is currently deleted or recoverable:\n- az keyvault show --name <vault-name> --resource-group <rg> --query \"properties.enableSoftDelete, properties.enablePurgeProtection\"\n- az keyvault key list-deleted --vault-name <vault-name>   (if any deleted keys are suspected)\n- az keyvault secret list-deleted --vault-name <vault-name>",
+      "warnings": "If the vault shows enablePurgeProtection=false and deleted objects exist, escalate immediately; purge protection prevents permanent deletion."
+    },
+    {
+      "step_number": 4,
+      "action": "Review recent access and configuration changes",
+      "details": "Pull activity logs focused on roleAssignments, vault-level access policy changes, and Data Plane operations for the last 48-72 hours:\n- az monitor activity-log list --resource-group <rg> --resource-provider 'Microsoft.KeyVault' --start-time <ISO-8601-start> --query \"[].{time:eventTimestamp, operationName:operationName.localizedValue, caller:caller, status:status.value, correlations:correlationId}\"\n- For data plane audits, query Key Vault 'AuditEvent' entries in the organization SIEM or use Azure Monitor diagnostic logs (KeyVaultLogs) for Get/Sign/List operations.",
+      "warnings": "Audit logs may take a few minutes to become available; collect all evidence before making changes."
+    },
+    {
+      "step_number": 5,
+      "action": "Lock down access controls",
+      "details": "If unauthorized RBAC or access policies are present, temporarily restrict vault access to the minimum set of identities (incident responders and platform owners).\nExamples:\n- Remove suspicious role assignments: az role assignment delete --assignee <objectId-or-UPN> --scope /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.KeyVault/vaults/<vault-name>\n- If using access policies, update: az keyvault update --name <vault-name> --resource-group <rg> --set properties.accessPolicies=\"[<reduced-policies-json>]\"\n- Apply network restrictions if applicable: az keyvault update --name <vault-name> --resource-group <rg> --set properties.networkAcls.defaultAction=Deny",
+      "warnings": "Role assignment deletions are auditable. Ensure you do not remove emergency service accounts; coordinate with platform owners to prevent outages."
+    },
+    {
+      "step_number": 6,
+      "action": "Enable/restore immutable protections",
+      "details": "If purge protection or soft-delete was disabled and the current policy allows it, enable both immediately to prevent permanent erasure:\n- az keyvault update --name <vault-name> --resource-group <rg> --enable-purge-protection true --enable-soft-delete true\nConfirm settings with az keyvault show as in Step 3.",
+      "warnings": "If azure policy or subscription constraints disallow enabling purge-protection, escalate to cloud platform owners. Enabling purge-protection is irreversible for the lifetime of the vault."
+    },
+    {
+      "step_number": 7,
+      "action": "Assess keys/secrets integrity and perform conservative rotation",
+      "details": "Enumerate keys/secrets and look for unexpected creation or deletion dates. If compromise is suspected, plan rotation for impacted objects and revoke old credentials.\n- az keyvault key list --vault-name <vault-name>\n- az keyvault secret list --vault-name <vault-name>\nFor rotation, create new versions and update applications to use new versions or new client registrations. Keep tracking mapping of old->new for rollback if needed.",
+      "warnings": "Coordinate application update windows. Rotating certificates can impact TLS if used directly by services."
+    },
+    {
+      "step_number": 8,
+      "action": "Reinforce monitoring and alerts",
+      "details": "Ensure diagnostic settings for Key Vault are sending logs to the SIEM, Log Analytics workspace, or a storage account. Create alerts for sensitive operations (Key Create/Import/Sign, Secret Set/Delete, RoleAssignment Write):\n- az monitor diagnostic-settings create --name kv-diagnostics --resource /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.KeyVault/vaults/<vault-name> --workspace <log-analytics-workspace-id> --logs \"[{'category':'AuditEvent','enabled':true}]\"",
+      "warnings": ""
+    },
+    {
+      "step_number": 9,
+      "action": "Document findings and close the remediation loop",
+      "details": "Record all steps taken, timestamps (UTC), actor identities, commands run, and any rotated secrets/keys. Update the incident ticket with artifacts and recommended follow-ups (policy changes, automation for rotation).",
+      "warnings": ""
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm enableSoftDelete and enablePurgeProtection are true via az keyvault show and portal."
+    },
+    {
+      "step": "Validate there are no unexpected role assignments: az role assignment list --scope /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.KeyVault/vaults/<vault-name> and compare to approved baseline."
+    },
+    {
+      "step": "Check audit logs show your remediation actions and that no further suspicious activity occurs for 24-72 hours."
+    },
+    {
+      "step": "Verify applications using vault can still access updated secrets/keys (smoke tests) and report any failed operations."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Insufficient permissions to view or modify key vault configuration",
+      "solution": "Confirm you have Owner or Key Vault Contributor in the subscription or resource group. If not, request temporary elevated access via the cloud IAM ticketing process and include justification and timeboxed duration."
+    },
+    {
+      "issue": "Audit logs not showing expected data plane events",
+      "solution": "Ensure diagnostic settings are enabled for KeyVault and that KeyVaultAuditEvent/AuditEvent category is configured to send logs to the SIEM or Log Analytics. There can be a 5-15 minute ingestion delay."
+    },
+    {
+      "issue": "az CLI returns a version or schema error",
+      "solution": "Upgrade az CLI to the recommended minimum (2.50.0 or later) and retry. Example: curl -sL https://aka.ms/InstallAzureCli | bash (or use your environment's package manager)."
+    },
+    {
+      "issue": "Cannot enable purge protection due to subscription policy",
+      "solution": "Open a policy exception with cloud platform owners and escalate to Security/Platform teams. Temporarily restrict access as a compensating control until policy is changed."
+    },
+    {
+      "issue": "Applications fail after access policy changes",
+      "solution": "Rollback the last change to application-related identities (re-apply minimal access), then perform planned, tested access updates during a maintenance window. Use diagnostic logs to identify which identity is rejected."
+    }
+  ],
+  "escalation": {
+    "condition": "Any of the following: active signs of compromise (unauthorized key export or signing), inability to restore purge protection on an at-risk vault, or evidence of data exfiltration related to Key Vault secrets/keys.",
+    "contact": "Security Incident Response Team: sir-team@example.com; Phone: +1-555-0100 (internal)",
+    "escalation_path": "1) Notify SIRT and Cloud Platform Lead. 2) If data exfiltration or persistent attacker is suspected, escalate to CISO and CTO. 3) Open a Microsoft Premier/Support ticket with subscription ID and incident case; assign a Sev A support contact. Include forensic artifacts and timelines."
+  },
+  "related_documentation": [
+    {
+      "title": "Internal: Key Vault Security Hardening Checklist",
+      "url": "https://docs.internal.example-corp.local/azure/keyvault/hardening"
+    },
+    {
+      "title": "Internal: Incident Response Runbook \u2014 Cloud Secrets Exposure",
+      "url": "https://wiki.internal.example-corp.local/ir/runbooks/cloud-secrets-exposure"
+    },
+    {
+      "title": "Internal: Application Secret Rotation Playbook",
+      "url": "https://playbooks.example-corp.internal/security/rotation/kv-rotation"
+    }
+  ],
+  "tags": [
+    "azure",
+    "keyvault",
+    "security",
+    "incident-response",
+    "rbac",
+    "audit-logs"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2024-08-15T09:00:00+00:00",
+      "author": "Aisha Rahman",
+      "changes": "Initial creation of vault compromise investigation SOP."
+    },
+    {
+      "version": "1.5",
+      "date": "2025-05-12T11:30:00+00:00",
+      "author": "Aisha Rahman",
+      "changes": "Added network ACL lockdown steps and diagnostic settings guidance; clarified non-destructive remediation guidance."
+    },
+    {
+      "version": "1.9",
+      "date": "2025-11-28T03:12:00+00:00",
+      "author": "Aisha Rahman",
+      "changes": "Minor edits for clarity, added example az CLI commands and expanded escalation contacts; updated required tool versions."
+    }
+  ]
+}

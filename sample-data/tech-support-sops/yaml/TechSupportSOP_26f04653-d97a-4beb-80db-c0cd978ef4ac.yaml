@@ -1,0 +1,212 @@
+sop_id: 26f04653-d97a-4beb-80db-c0cd978ef4ac
+version: 1.3
+created_at: 2025-11-28 02:24:54.431624+00:00
+last_updated: 2025-11-28 02:45:00+00:00
+title: Resolve intermittent Azure AD authentication failures for affected users (PRT/Conditional
+  Access)
+problem_category: authentication
+complexity: medium
+system_context: Azure Active Directory
+severity: critical
+status: review
+approval_level: cto
+author:
+  name: Morgan Hale
+  email: morgan.hale@example-corp.internal
+problem_description: 'Users intermittently fail interactive authentication for Azure
+  AD-integrated applications. Investigation shows a subset of sign-ins are rejected
+  at token issuance with a transient authentication failure (internal error AUTH-AAD-PRT-001)
+  that manifests when Conditional Access policies evaluate device or refresh token
+  state. The root cause is commonly a mismatch between device registration state and
+  the Primary Refresh Token (PRT) cache or a Conditional Access policy referencing
+  stale device attributes. This SOP describes steps to diagnose, remediate, and verify
+  resolution for a single affected user or small group.
+
+  '
+symptoms:
+- User cannot access Azure AD SSO apps; repeated browser prompts lead to failure pages.
+- 'Authentication error visible in sign-in logs: AUTH-AAD-PRT-001 (token issuance
+  failure).'
+- Conditional Access tab in sign-in diagnostic shows policy evaluated but token not
+  issued.
+- Mobile/managed devices show 'Not registered' or 'Stale compliance' for otherwise
+  enrolled devices.
+- Some legacy sessions continue to work while new interactive logins fail.
+prerequisites:
+- Access to Azure AD tenant with at least Helpdesk Admin or Global Reader plus Audit
+  Logs access.
+- Ability to perform user session invalidation (delegated admin or Identity Admin
+  privileges).
+- Access to device management console (Intune or equivalent) for managed devices.
+- User availability for interactive reauthentication and potential device re-registration.
+required_tools:
+- Azure AD sign-in logs (Azure Portal) or equivalent sign-in export tool.
+- 'Identity troubleshooting PowerShell module: AzureAuthPS (v2.x) or corporate identity
+  CLI.'
+- 'Device registration diagnostic tool: DeviceRegDiag (corporate wrapper) or equivalent.'
+- ITSM ticketing to attach logs and escalate if needed.
+estimated_resolution_time: 30-60 minutes per affected user when user is available
+  for reauth
+resolution_steps:
+- step_number: 1
+  action: Collect symptom details and scope impact
+  details: 'Confirm user UPN(s), time of failed sign-in, client type (browser, mobile,
+    desktop), and whether issue affects single user or group. Record tenant ID and
+    application IDs for impacted apps. Note whether user currently has active sessions
+    on other devices.
+
+    '
+- step_number: 2
+  action: Retrieve Azure AD sign-in and Conditional Access evaluation details
+  details: 'Using the Azure Portal or AzureAuthPS, pull sign-in records for the user
+    around the failure time. Look at the ''Conditional Access'' evaluation pane for
+    each failed sign-in and capture: - Policy name(s) evaluated - Result (Grant/Block/Failure)
+    - Failure reason or internal error code (e.g., AUTH-AAD-PRT-001) - Device state
+    reported (AzureAdJoined/Registered/Compliant)
+
+    '
+  warnings: Do not share sign-in logs containing user identifiers outside secured
+    channels.
+- step_number: 3
+  action: Verify Conditional Access policy scope and requirements
+  details: 'Review policies that applied. Check for device-based requirements (Require
+    hybrid Azure AD joined, require device compliance, require approved client app).
+    Confirm whether policies reference stale group claims or a deprecated device compliance
+    profile.
+
+    '
+- step_number: 4
+  action: Check device registration and compliance state
+  details: 'For affected device(s), run DeviceRegDiag via remote session or instruct
+    the user to run it locally. Confirm device registration status, last registration
+    timestamp, and reported compliance state. If device shows ''stale'' or ''not registered''
+    while Intune shows compliant, note the timestamp discrepancies.
+
+    '
+  warnings: Do not perform device re-registration without user consent during business
+    hours for managed endpoints.
+- step_number: 5
+  action: Invalidate user tokens and force reauthentication
+  details: 'With Identity Admin privileges, execute token revocation for the user
+    to remove stale PRTs. Example (using AzureAuthPS): Reset-AzureAuthUserTokens -UPN
+    user@yourtenant.example -InvalidateAll Notify user that all sessions will be signed
+    out and they must reauthenticate.
+
+    '
+  warnings: Revoking tokens will sign the user out of all connected sessions; schedule
+    with the user.
+- step_number: 6
+  action: Have user perform interactive reauthentication and, if required, device
+    re-registration
+  details: 'Guide the user to: - Sign into a modern browser session and complete MFA.
+    - Accept any Conditional Access prompts. - If device was unregistered/stale: perform
+    corporate device re-registration flow (Device > Connect to Work/School account)
+    or run DeviceRegDiag repair. For mobile devices, remove and re-add the work profile/account
+    if app-based SSO fails.
+
+    '
+- step_number: 7
+  action: Monitor sign-ins for success and re-evaluate applied policies
+  details: 'After reauthentication, verify new sign-in records show successful token
+    issuance and Conditional Access Grant. Confirm device state now matches expected
+    (AzureAdJoined/Compliant) and token issuance errors are gone.
+
+    '
+- step_number: 8
+  action: If policy mis-evaluation is suspected, create a temporary bypass and test
+  details: 'If a specific Conditional Access policy continues to block, create a temporary
+    test policy that excludes the user or device to confirm policy behavior. Do not
+    leave bypasses enabled; document and remove after test.
+
+    '
+- step_number: 9
+  action: If root cause is device attribute staleness, remediate central records
+  details: 'Update device registry or compliance records in Intune/device inventory
+    to correct stale attributes that policies depend on. If necessary, retire and
+    re-enroll the device via standard corporate re-enrollment SOP.
+
+    '
+- step_number: 10
+  action: Document findings and close incident
+  details: 'Attach sign-in logs, device diagnostics, and corrective actions to the
+    ITSM ticket. Note whether the resolution was token reset, device re-registration,
+    or policy change.
+
+    '
+verification_steps:
+- step: Confirm sign-in log shows a successful token issuance entry for previously
+    failing attempts (no AUTH-AAD-PRT-001).
+- step: Check Conditional Access evaluation shows 'Grant' with expected requirement
+    checks satisfied.
+- step: Verify device registration status now reports as AzureAdJoined or Registered
+    and compliance is 'Compliant' if required by policy.
+- step: Have the user confirm access to the previously failing application(s) on affected
+    device(s) and at least one additional device.
+troubleshooting:
+- issue: Token revocation did not resolve the issue
+  solution: 'Re-run diagnostics. Check for clock skew on device (>5 minutes difference)
+    and correct system time. Collect network traces to identify interception or proxying
+    that may alter token responses. Confirm user''s account is not subject to legacy
+    token lifetime policies that could prevent PRT issuance.
+
+    '
+- issue: Device shows 'Registered' but Conditional Access still blocks
+  solution: 'Ensure device object in the directory has up-to-date attributes (deviceId,
+    isManaged flag). If device object is duplicated or stale, retire the stale object
+    and re-register from the endpoint.
+
+    '
+- issue: Policy evaluation shows unexpected group claims or role requirements
+  solution: 'Validate group membership in directory sync (AzureAD Connect) and refresh
+    on-prem sync. If claim rules were changed recently, allow replication window (up
+    to configured sync interval) or force a delta sync.
+
+    '
+- issue: Mobile app-based SSO fails after reauth
+  solution: 'Clear app cache, reinstall the corporate app, and ensure device OS version
+    meets app requirements. Re-enroll device if necessary.
+
+    '
+escalation:
+  condition: Issue persists after token revocation, device re-registration, and temporary
+    policy bypass attempts; or more than 2 hours elapsed for high-impact users.
+  contact: Identity Platform Team (on-call); open ITSM incident to Identity Platform
+    with full logs attached.
+  escalation_path: '1) Assign to Identity Platform Tier 2 with sign-in, device, and
+    policy logs. 2) If Tier 2 cannot resolve within 4 hours, escalate to Identity
+    Platform Tier 3 (CTO-level approval for tenant-wide changes). 3) For suspected
+    service-side faults (authentication service errors repeating across users), open
+    a support case with vendor cloud support including correlation IDs and timestamps.
+
+    '
+related_documentation:
+- title: 'Internal: Azure AD Sign-in Diagnostics Playbook'
+  url: https://intra.example-corp.internal/kb/azuread-signin-diagnostics
+- title: 'Internal: Device Re-registration SOP'
+  url: https://intra.example-corp.internal/sops/device-reregistration
+- title: 'Vendor: Identity Platform Troubleshooting Guide (internal mirror)'
+  url: https://intra.example-corp.internal/vendors/identity/troubleshooting
+tags:
+- azure-ad
+- authentication
+- conditional-access
+- prt
+- identity
+version_history:
+- version: '1.0'
+  date: 2025-11-28 02:24:54+00:00
+  author: Morgan Hale
+  changes: Initial draft covering basic diagnosis and token reset workflow.
+- version: '1.1'
+  date: 2025-11-28 02:30:12+00:00
+  author: Morgan Hale
+  changes: Added device re-registration steps and warnings about user impact.
+- version: '1.2'
+  date: 2025-11-28 02:38:40+00:00
+  author: Morgan Hale
+  changes: Expanded troubleshooting section with common policy and sync issues.
+- version: '1.3'
+  date: 2025-11-28 02:45:00+00:00
+  author: Morgan Hale
+  changes: Refined escalation path and verification steps; clarified required privileges
+    and tools.

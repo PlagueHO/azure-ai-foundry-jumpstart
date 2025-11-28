@@ -1,0 +1,171 @@
+SOP ID: 6cfa0aa2-b46e-45d3-83e0-18f83abb8a73
+Version: 1.4
+Created At: 2025-11-28T02:48:35.563779+00:00
+Last Updated: 2025-11-28T02:48:35+00:00
+Title: Resolve DNS Dynamic Update Failures for Secure AD-Integrated Zones on Windows Server
+Problem Category: general
+Complexity: medium
+System Context: Windows Server
+Severity: medium
+Status: draft
+Approval Level: director
+Author: Jordan Blake <jordan.blake@infrastructure.example.net>
+Approver: Not Assigned
+Approved At: N/A
+
+PROBLEM DESCRIPTION:
+Windows Server running Active Directory-integrated DNS zones intermittently rejects secure dynamic updates (RFC 2136) from domain-joined clients after a domain controller restore, metadata cleanup, or AD replication issues. Symptoms include stale DNS records, client registration failures, and split-brain name resolution between sites. The root cause is typically incorrect ACLs on the zone or the _msdcs zone objects, stale DNS server entries, or inconsistent zone ownership metadata following AD restore or replication problems.
+
+SYMPTOMS:
+- Clients fail to dynamically register hostname-to-IP entries; ipconfig /registerdns returns no errors but records do not appear in DNS Manager.
+- Event Viewer (DNS Server log) shows Event ID 5774 / 4015-like errors indicating replication or zone transfer inconsistencies (messages will vary by OS).
+- Stale records persist after DHCP lease renewals; new host A/AAAA records are missing, causing failed Kerberos authentication or service connection issues.
+- Inconsistent resolution between DNS servers (one DC resolves correctly, another does not).
+
+PREREQUISITES:
+- Authorization to perform changes to Active Directory and DNS (Domain Admin or delegated DNS admin).
+- Change window and stakeholder notification if production DCs will be restarted or taken offline.
+- Recent AD System State backup and DNS zone export (recommended) before changes.
+- Ensure you have a tested rollback plan.
+
+REQUIRED TOOLS:
+- Administrative workstation with RSAT (DNS and AD modules) and PowerShell 7 or Windows PowerShell 5.1.
+- Remote Desktop to domain controllers.
+- DNS Manager (dnsmgmt.msc).
+- Active Directory Users and Computers (ADUC) and ADSIEdit (only if required).
+- Access to ticketing system for escalation (DS-Ticketing@ops.example.internal).
+- Log collection tooling (e.g., built-in Event Viewer, and ability to collect DNS debug logs if needed).
+
+ESTIMATED RESOLUTION TIME: 30-90 minutes (depends on replication latency and number of DCs affected)
+
+RESOLUTION STEPS:
+1. Action: Verify scope and impact
+   Details:
+   - Confirm which zones are AD-integrated and secure. Open DNS Manager -> Zones -> right-click zone -> Properties -> check "Type" and "Dynamic updates".
+   - Identify controllers hosting the zone: use PowerShell on a DC:
+     Get-DnsServerZone -Name "example.local" | Select-Object Name, ZoneType, IsDsIntegrated, DynamicUpdate
+   Warnings:
+   - Do not immediately perform ACL changes on multiple DCs simultaneously; make changes to one DC, verify, then propagate.
+
+2. Action: Check DNS and AD replication status
+   Details:
+   - On each DC, run:
+     repadmin /replsummary
+     repadmin /showrepl * /csv > C:\temp\replshow.csv
+   - Check Event Viewer: Applications and Services Logs -> Microsoft -> Windows -> DNS-Server and Directory-Services for replication or DNS errors.
+   Warnings:
+   - If replication is failing, prioritize resolving AD replication before changing DNS ACLs.
+
+3. Action: Export the DNS zone (backup)
+   Details:
+   - Export the zone for safety:
+     dnscmd /ZoneExport example.local C:\temp\example.local.dns
+   - Or use PowerShell:
+     Export-DnsServerZone -Name "example.local" -FileName C:\temp\example.local.dns -ComputerName DC01
+   Warnings:
+   - Keep exports off-system or in a secure share if they contain sensitive hostnames.
+
+4. Action: Examine zone security descriptor (ACL)
+   Details:
+   - In DNS Manager: right-click zone -> Properties -> Security tab -> click Advanced -> review allowed principals (Authenticated Users, Domain Computers, DNSAdmins, Domain Admins, and the DNS server machine account).
+   - In PowerShell, get the SD:
+     $sd = Get-DnsServerZone -Name "example.local" -ComputerName DC01 | Select-Object -ExpandProperty SecurityDescriptorSddl
+     $sd
+   Warnings:
+   - Avoid manually editing SDDL unless comfortable; prefer GUI or specific Set-DnsServerZone cmdlets.
+
+5. Action: Restore recommended ACL entries for secure updates
+   Details:
+   - Typical required ACEs for secure dynamic updates:
+     - SYSTEM: FullControl
+     - Domain Admins: FullControl (or DNSAdmins)
+     - DNSAdmins: FullControl (if used)
+     - Authenticated Users / Domain Computers: Create Child / Delete Child / Write (to allow clients to register)
+     - Zone computer account (e.g., DC$) may require specific rights if using DNS server-side registrations.
+   - Use PowerShell to reset to a recommended template (example, adjust for your environment):
+     $zoneName = "example.local"
+     $server = "DC01"
+     $acl = New-Object System.Security.AccessControl.CommonSecurityDescriptor $false, $false, "O:BAG:BAD:(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;LA)"
+     # Note: The above SDDL is illustrative — adjust ACL to match org policy.
+     Set-DnsServerZoneSecurity -Name $zoneName -ComputerName $server -SecurityDescriptorSddl $acl.GetSddlForm('All')
+   Warnings:
+   - The SDDL snippet above is illustrative only. Always validate ACLs in a lab and prefer adding specific ACEs via GUI or ADSIEdit where necessary.
+
+6. Action: Check and fix ownership if required
+   Details:
+   - In DNS Manager -> Security -> Advanced -> Owner. Owner should typically be "Domain Admins" or "Administrators".
+   - If ownership is incorrect, set appropriate owner using ADSIEdit or via GUI owner change.
+   Warnings:
+   - Changing ownership in AD-integrated zone objects can have replication impact; do one zone/DC at a time.
+
+7. Action: Force client re-registration and server refresh
+   Details:
+   - On a test client, run:
+     ipconfig /registerdns
+     ipconfig /flushdns
+   - On DNS server:
+     Restart the DNS Server service gracefully:
+     Restart-Service -Name DNS -Force -Verbose
+   - Optionally, clear dynamic update cache by reloading the zone:
+     dnscmd DC01 /ZoneReload example.local
+   Warnings:
+   - Restarting the DNS service may briefly interrupt name resolution on that DC.
+
+8. Action: Monitor and allow replication
+   Details:
+   - After ACL changes, allow AD replication to propagate. Monitor with:
+     repadmin /showrepl
+   - Check that new registrations appear in DNS Manager on all DCs.
+   Warnings:
+   - Some client registrations may be delayed by DHCP lease times or TTL values.
+
+VERIFICATION STEPS:
+- From a client that previously failed, run ipconfig /registerdns and verify the A/AAAA record appears on all DNS servers within replication window.
+- Use nslookup to verify resolution from multiple DCs:
+  nslookup client-hostname example.local DC01
+  nslookup client-hostname example.local DC02
+- Confirm no new DNS-related errors in Event Viewer on any DC for 24 hours.
+- Confirm replication status is healthy (repadmin /replsummary shows no errors).
+- Validate dependent services (Kerberos, LDAP logins) succeed from affected clients.
+
+TROUBLESHOOTING:
+Issue: Changes do not take effect on some DCs.
+Solution: Verify AD replication topology and force synchronization:
+- Use repadmin /syncall DC01 /AeD
+- If replication still fails, check network connectivity, FSMO role holder health, and DNS SRV records for _msdcs and _tcp.
+
+Issue: Clients still cannot register despite correct ACLs.
+Solution:
+- Verify client-side issues: DNS client service running, machine time skew, network configuration (primary DNS point to the intended DC), and presence of multiple NICs with register settings disabled.
+- Check DHCP server dynamic update settings (if DHCP is performing updates on behalf of clients ensure it’s configured for secure updates and has correct permissions).
+
+Issue: Incorrect or corrupt zone file after manual edits.
+Solution:
+- Restore from the exported zone file:
+  dnscmd DC01 /ZoneAdd example.local /DsIntegrated /File C:\temp\example.local.dns
+- If using AD-integrated zones, consider restoring zone objects from an authoritative AD backup or performing a metadata restore only as last resort.
+
+ESCALATION:
+Condition: AD replication errors persist for > 2 hours after attempted remediation, or multiple domain controllers show inconsistent DNS data that impacts authentication for a large user base.
+Contact: Directory Services Lead — DS-Lead <ds-lead@ops.example.internal>
+Escalation Path:
+1. Create high-priority ticket in internal tracker and notify DS-Team@ops.example.internal with Time, Affected Zones, DCs, and logs attached.
+2. If Directory Services Lead cannot resolve within SLA, escalate to Infrastructure Director — infra-director <infra-director@ops.example.internal>.
+3. For 24/7 critical outages that meet incident criteria, page the on-call AD engineer via the Ops Pager (use internal escalation channel).
+
+RELATED DOCUMENTATION:
+- Title: AD Integrated DNS Best Practices (internal)
+  URL: https://intranet.example.internal/docs/ad-dns-best-practices
+- Title: Repadmin Quick Reference
+  URL: https://intranet.example.internal/tools/repadmin-guide
+- Title: DNS Server Security and ACLs — Field Guide
+  URL: https://knowledgebase.example.internal/dns-acl-guide
+
+TAGS: DNS, ActiveDirectory, replication, troubleshooting
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2024-10-12T09:00:00+00:00 | Author: Jordan Blake | Changes: Initial draft covering ACL diagnosis and remediation for dynamic update issues.
+Version: 1.1 | Date: 2025-02-05T14:30:00+00:00 | Author: Jordan Blake | Changes: Added PowerShell examples and export/import zone steps.
+Version: 1.2 | Date: 2025-06-18T11:15:00+00:00 | Author: Jordan Blake | Changes: Clarified ACL/SDDL guidance and added verification checklist.
+Version: 1.3 | Date: 2025-09-03T16:45:00+00:00 | Author: Jordan Blake | Changes: Expanded troubleshooting for DHCP-managed registrations and replication notes.
+Version: 1.4 | Date: 2025-11-28T02:48:35+00:00 | Author: Jordan Blake | Changes: Revised escalation contacts, updated tooling list, and added explicit backup/export steps before changes.

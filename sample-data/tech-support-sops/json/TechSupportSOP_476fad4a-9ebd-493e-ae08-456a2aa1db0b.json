@@ -1,0 +1,188 @@
+{
+  "sop_id": "476fad4a-9ebd-493e-ae08-456a2aa1db0b",
+  "version": "1.9",
+  "created_at": "2025-11-28T02:33:24.920254+00:00",
+  "last_updated": "2025-11-28T02:33:24.920254+00:00",
+  "title": "Azure VM Unreachable (SSH/RDP) \u2014 Network Security Group or Agent-related Recovery",
+  "problem_category": "cloud",
+  "complexity": "medium",
+  "system_context": "Azure Virtual Machines",
+  "severity": "low",
+  "status": "draft",
+  "approval_level": "manager",
+  "author": {
+    "name": "Morgan Reyes",
+    "email": "morgan.reyes@techops.example.com"
+  },
+  "approver": {
+    "name": null,
+    "email": null,
+    "approved_at": null
+  },
+  "problem_description": "A virtual machine (Linux or Windows) running in Azure is not accepting inbound management connections (SSH for Linux, RDP for Windows). Symptoms typically point to network filtering (NSG, UDR, Azure Firewall) or a host/VM agent issue preventing remote access. The SOP guides a tier-2 technician through diagnosis and remediation steps including checking NSG rules, testing network flow with Network Watcher, using the serial console and Run Command, redeploying or reinstalling VM agent extensions, and controlled NSG rule changes.",
+  "symptoms": [
+    "SSH (port 22) or RDP (port 3389) times out from permitted locations",
+    "Azure Portal shows VM as running but connection attempts fail",
+    "Boot diagnostics screenshot shows OS traces but cannot log in",
+    "Azure serial console connects but OS network is unresponsive",
+    "VM Agent reported as 'NotReady' or missing in VM instance view"
+  ],
+  "prerequisites": [
+    "Reader has Contributor or Owner role on the subscription or specific RBAC role that allows VM and network resources modifications",
+    "Knowledge of the VM resource group, VM name, NIC name, and NSG names",
+    "Change window or approval where applicable (modifying NSG or redeploying VM causes downtime)"
+  ],
+  "required_tools": [
+    "Azure Portal access (portal.azure.com)",
+    "Azure CLI (az) v2.50+ or Azure PowerShell (Az module) installed",
+    "Network Watcher enabled in the region",
+    "Access to serial console (subscription/role permitting)",
+    "Access to internal incident tracker and ability to open Azure Support case if required"
+  ],
+  "estimated_resolution_time": "15-60 minutes (may be longer if redeploy or Azure Support engagement is required)",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Collect identifying information and initial state",
+      "details": "Record subscription ID, resource group, VM name, NIC name, public IP (if applicable), NSG name, and time window. Use az to capture current instance view and power state: az vm get-instance-view --resource-group <rg> --name <vm-name> --output json. Record any recent change requests.",
+      "warnings": "Do not make configuration changes until you've recorded current settings for rollback."
+    },
+    {
+      "step_number": 2,
+      "action": "Check Azure Resource Health and boot diagnostics",
+      "details": "Open the VM's 'Resource health' tab in the Portal and check for platform events. In 'Boot diagnostics' capture the current screenshot and serial log to see boot-time errors. Alternatively use az vm boot-diagnostics get-boot-log --resource-group <rg> --name <vm-name> (or view from portal).",
+      "warnings": "Enabling boot diagnostics writes to storage account; ensure you have access to the storage account if enabling now."
+    },
+    {
+      "step_number": 3,
+      "action": "Verify Network Security Group (NSG) and effective security rules",
+      "details": "Check inbound NSG rules for ports 22/3389 and relevant source ranges: az network nsg rule list --resource-group <rg> --nsg-name <nsg-name> --output table. Then check NIC effective security rules: az network nic show-effective-nsg --resource-group <rg> --name <nic-name> --output json (or use Portal > NIC > Effective security rules). Look for deny rules with higher priority.",
+      "warnings": "Do not add 0.0.0.0/0 rules to production NSGs without approval; prefer temporary limited source IPs."
+    },
+    {
+      "step_number": 4,
+      "action": "Use Network Watcher IP flow and connection tests",
+      "details": "Run IP flow verification from Network Watcher to see if Azure fabric allows the flow: az network watcher test-ip-flow --direction Inbound --local <vm_private_ip> --remote <your_public_ip> --protocol Tcp --local-port 22 (or 3389) --resource-group <rg> --vm <vm-name>. Use test-connectivity or Test-NetConnection equivalents to trace where the block occurs.",
+      "warnings": "Network Watcher must be enabled in the region; enabling may require permissions."
+    },
+    {
+      "step_number": 5,
+      "action": "If NSG blocks traffic, add a temporary allow rule with limited scope",
+      "details": "Create a temporary high-priority allow rule for your troubleshooting source IP: az network nsg rule create --resource-group <rg> --nsg-name <nsg-name> --name Allow-Temp-SSH-From-Helper --priority 100 --access Allow --protocol Tcp --direction Inbound --source-address-prefixes <your_public_ip>/32 --source-port-ranges '*' --destination-port-ranges 22 (adjust for RDP 3389). After remediation, remove the rule and log the change.",
+      "warnings": "Only open minimal source range and remove immediately after verification. Document the temporary rule in the change log."
+    },
+    {
+      "step_number": 6,
+      "action": "Check for User-Defined Routes (UDR) or Azure Firewall blocking",
+      "details": "Inspect any route tables associated with the subnet: az network route-table route list --resource-group <rg> --route-table-name <rt-name> and check Azure Firewall or NVA logs if present. Ensure next hop for VM traffic is as expected (Internet or VirtualAppliance).",
+      "warnings": "Modifying route tables can disrupt other VMs in the subnet; coordinate with networking owners."
+    },
+    {
+      "step_number": 7,
+      "action": "Check and, if necessary, repair VM Agent or extensions",
+      "details": "From az, check VM agent status: az vm agent show --resource-group <rg> --vm-name <vm-name> (or view Extensions in Portal). If agent is missing or not ready, reinstall the appropriate VMAccess extension: For Linux use az vm extension set --publisher Microsoft.Azure.Extensions --name VMAccessForLinux --resource-group <rg> --vm-name <vm-name> --version 1.5 (adjust version as needed). For Windows use az vm extension set --publisher Microsoft.Compute --name VMAccessAgent --resource-group <rg> --vm-name <vm-name>. After installation, use Run Command to reset SSH keys or RDP user as needed.",
+      "warnings": "Reinstalling extensions can temporarily affect VM management operations. Test on non-production VM when possible."
+    },
+    {
+      "step_number": 8,
+      "action": "Use Serial Console or Run Command to inspect and repair OS network configuration",
+      "details": "If serial console connects, log in and check network interface status (ip addr, ip route, nmcli for Linux; Get-NetIPConfiguration for Windows via PowerShell). Use az vm run-command invoke --command-id RunShellScript --resource-group <rg> --name <vm-name> --scripts 'sudo systemctl restart network' (Linux) or --command-id RunPowerShellScript for Windows. Correct any misconfigured static IP, firewall/service blocks (iptables, ufw, Windows Firewall), or DNS issues.",
+      "warnings": "Commands executed via Run Command run as root/administrator; validate scripts locally first."
+    },
+    {
+      "step_number": 9,
+      "action": "Redeploy VM if host issue suspected",
+      "details": "If the VM agent remains unresponsive or there is a suspected host-level issue, redeploy the VM to another Azure host: az vm redeploy --resource-group <rg> --name <vm-name>. This preserves disk data but will cause a short downtime.",
+      "warnings": "Redeploy causes VM to stop and start on a different host. Schedule within maintenance window if production."
+    },
+    {
+      "step_number": 10,
+      "action": "Document actions and remove temporary changes",
+      "details": "Record all changes (temporary NSG rules, extension installs, redeploy) in incident ticket and remove temporary allow rules. Create a follow-up to harden access controls if temporary rules were used.",
+      "warnings": "Failure to remove temporary openings can increase security risk."
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm VM powerState shows 'VM running' and instance view reports ready: az vm get-instance-view --resource-group <rg> --name <vm-name>."
+    },
+    {
+      "step": "Attempt SSH/RDP connection from the same source IP used for testing. For SSH: ssh -vvv azureuser@<public-ip> and confirm successful login. For RDP, connect using RDP client and validate desktop access."
+    },
+    {
+      "step": "If connection still fails, repeat Network Watcher IP flow test to confirm successful inbound flow to VM private IP and a permitted NSG rule."
+    },
+    {
+      "step": "Check application-level health (if applicable): curl -I http://<vm-ip>:<app-port> or application-specific health endpoint."
+    },
+    {
+      "step": "Ensure temporary NSG rules have been removed and document final configuration and timestamps in the incident record."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "NSG allow rule added but connection still fails",
+      "solution": "Check effective NSG on the NIC and subnet (higher priority deny may exist). Verify no Azure Firewall, NVA or route table is directing traffic to an appliance. Use Network Watcher packet capture to inspect traffic flow if needed."
+    },
+    {
+      "issue": "VM Agent lists as Healthy locally but Portal shows NotReady",
+      "solution": "Restart the VM agent service inside the VM (waagent or Windows Azure Guest Agent) using serial console or Run Command; if no change, attempt to reinstall the VM agent extension and check for disk space or permission issues preventing the agent from writing status."
+    },
+    {
+      "issue": "Run Command fails with timeout or permission errors",
+      "solution": "Confirm that the VM extension subsystem is operational and that you have Owner/Contributor rights. If the VM is in a state preventing extension operations, escalate to redeploy or contact Azure Support with the boot diagnostics logs."
+    },
+    {
+      "issue": "Temporary NSG rule required repeatedly",
+      "solution": "Investigate change management and automation (ARM templates, Terraform, Azure Policy) that may be reverting NSG. Coordinate with infra-as-code owners to update baseline."
+    }
+  ],
+  "escalation": {
+    "condition": "If VM remains inaccessible after redeploy and NSG/UDR/Firewall checks, or if evidence of platform host failure or data corruption is found.",
+    "contact": "Cloud Infrastructure On-call (pager) -> cloud-infra-oncall@examplecorp.com; include subscription ID, resource group, VM name, timestamps, and diagnostic artifacts.",
+    "escalation_path": "1) Tier-2 cloud infra engineer. 2) Cloud platform manager if >60 minutes or production impact. 3) Open Azure Support case (Support > New support request) with Severity B/C depending on impact. Attach boot diagnostics, serial console logs, network watcher test results, and correlation IDs. Include request to investigate host-level or storage account issues if suspected."
+  },
+  "related_documentation": [
+    {
+      "title": "Internal KB: Azure VM Network Troubleshooting Checklist",
+      "url": "https://kb.examplecorp.com/azure/vm-network-troubleshoot"
+    },
+    {
+      "title": "Internal KB: Using Azure Serial Console and Run Command",
+      "url": "https://kb.examplecorp.com/azure/serial-console-run-command"
+    },
+    {
+      "title": "Microsoft (reference) - Troubleshoot connectivity to a VM in Azure (internal link placeholder)",
+      "url": "https://docs.microsoft.com/azure/virtual-machines/troubleshooting-connectivity"
+    }
+  ],
+  "tags": [
+    "azure",
+    "vm",
+    "networking",
+    "nsg",
+    "serial-console",
+    "vm-agent",
+    "troubleshooting"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2025-10-05T09:12:00+00:00",
+      "author": "Morgan Reyes",
+      "changes": "Initial draft covering NSG and basic VM Agent checks."
+    },
+    {
+      "version": "1.5",
+      "date": "2025-11-10T14:45:00+00:00",
+      "author": "Morgan Reyes",
+      "changes": "Added Network Watcher test-IP-flow examples and Run Command guidance; clarified warnings on temporary NSG rules."
+    },
+    {
+      "version": "1.9",
+      "date": "2025-11-28T02:33:24.920254+00:00",
+      "author": "Morgan Reyes",
+      "changes": "Updated escalation path, added redeploy step and verification checklist, standardized command examples and prerequisites."
+    }
+  ]
+}

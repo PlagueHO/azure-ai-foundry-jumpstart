@@ -1,0 +1,161 @@
+SOP ID: adcd9994-e17b-4436-8728-2b81b5feb1d6
+Version: 1.1
+Created At: 2025-11-28T02:56:44.616518+00:00
+Last Updated: 2025-11-28T03:15:00+00:00
+Title: Restore Sign‑in Access After Misapplied Entra Conditional Access / Identity Protection Policy
+Problem Category: authentication
+Complexity: medium
+System Context: Microsoft Entra ID
+Severity: critical
+Status: draft
+Approval Level: director
+Author: Jamie Rowan <jamie.rowan@fictionalcorp.example>
+Approver: Dr. Elaine Park <elaine.park@fictionalcorp.example>
+
+PROBLEM DESCRIPTION:
+A recently changed Conditional Access or Identity Protection sign-in risk policy is blocking interactive sign-ins for a broad set of users (or all users), causing a critical outage where employees and/or service accounts cannot authenticate to cloud apps. This SOP describes how to quickly identify a misapplied policy, create a temporary mitigation (disable or narrow the policy), and restore access while preserving auditability.
+
+SYMPTOMS:
+- Users report immediate authentication failures for Microsoft 365, Teams, or other Entra‑authenticated apps.
+- Sign-in logs show "ConditionalAccessPolicyState: failed" or "Sign-in risk blocked" errors.
+- Administrative users can still access Entra portal but some privileged roles are affected if not excluded.
+- Automated alerts from monitoring platform indicating spike in failed sign-ins or mass authentication errors.
+
+PREREQUISITES:
+- Emergency "break-glass" Global Administrator account exists and is accessible (account not governed by Conditional Access).
+- Incident owner assigned and communication channel established (e.g., #sec-incident Slack, incident bridge).
+- Change window or emergency change approval as per incident policy.
+
+REQUIRED TOOLS:
+- Administrative workstation with network access to management plane.
+- Microsoft Entra admin portal access: https://entra.microsoft.com (or portal.azure.com).
+- Microsoft Graph PowerShell module or AzureADPreview module installed (examples below).
+- Access to sign-in logs and Conditional Access policy management (Global Administrator or Conditional Access Administrator role).
+- Incident logging system (ticket/SEV) and audit log capture.
+
+ESTIMATED RESOLUTION TIME: 15-45 minutes (dependent on approvals and audit logging)
+
+RESOLUTION STEPS:
+1. Action: Triage and verify scope
+   Details:
+   - Confirm outage scope via reports/alerts and user feedback.
+   - Open an incident ticket (SEV) and notify incident response stakeholders.
+   - Ensure break-glass admin account credentials are ready.
+   Warnings:
+   - Do not perform broad policy deletions; prefer disabling or narrowing.
+
+2. Action: Check Entra sign-in logs for failure reason
+   Details:
+   - Portal: Entra admin center > Monitoring > Sign-ins.
+   - Filter by timestamp and look for error fields: Conditional Access, Failure reason, Risk level, Client app.
+   - Note the exact Conditional Access or Identity Protection rule name(s) referenced.
+   Warnings:
+   - Sign-in logs can be tardy by a few minutes. Capture logs/screenshots for evidence.
+
+3. Action: Identify the offending policy
+   Details:
+   - Portal: Entra > Security > Conditional Access (and Entra > Identity Protection > Policies).
+   - Look for policies recently modified (use audit logs) or policies targeting "All users" / "All cloud apps".
+   - If changes were made via automation, check CI/CD runbooks and deployment timestamps.
+   Warnings:
+   - Be careful to identify whether Identity Protection risk policy or Conditional Access is the root cause; both can block access.
+
+4. Action: Create a safe rollback plan (temporary mitigation)
+   Details:
+   - Preferred: Disable only the offending policy.
+   - Alternative: Narrow assignments (remove "All users", add an exclusion for break-glass or specific groups).
+   - Capture policy ID and current JSON/configuration before changes (Export/Copy).
+   Warnings:
+   - Avoid making changes that reduce long-term security; this is temporary.
+
+5. Action: Disable or narrow the policy (Portal method)
+   Details:
+   - Select the policy → set Enable policy = Off OR change Assignments → Users and groups → exclude break-glass user/group.
+   - Save and document the change, including operator and timestamp.
+   Warnings:
+   - Some policies may be enforced by management connectors or automation; update those sources too.
+
+6. Action: Disable or modify the policy (PowerShell method)
+   Details:
+   - Connect:
+     - Microsoft Graph example:
+       Connect-MgGraph -Scopes "Policy.ReadWrite.ConditionalAccess","AuditLog.Read.All"
+     - List policies:
+       $policies = Get-MgConditionalAccessPolicy
+       $offending = $policies | Where-Object { $_.DisplayName -like "*Risk*" -or $_.Conditions.Users -match "All" }
+     - Disable:
+       Update-MgConditionalAccessPolicy -ConditionalAccessPolicyId $offending.Id -State "disabled"
+   - AzureADPreview example:
+       Connect-AzureAD
+       $p = Get-AzureADMSConditionalAccessPolicy | Where-Object {$_.DisplayName -eq "PolicyName"}
+       Set-AzureADMSConditionalAccessPolicy -Id $p.Id -State "disabled"
+   Warnings:
+   - PowerShell cmdlet names/parameters can vary by module version; validate with Get-Help first.
+   - Ensure command output confirms "State: disabled" before proceeding.
+
+7. Action: Validate access restoration
+   Details:
+   - Request affected users to attempt sign-in; prioritize critical services and delegated admins.
+   - Monitor sign-in logs for reduction in failures (next 5–15 minutes).
+   Warnings:
+   - It can take up to a few minutes for policy state changes to propagate.
+
+8. Action: Remediate root cause and reapply secure settings
+   Details:
+   - Review policy intent and correct misconfiguration (e.g., target specific groups, require MFA instead of block, adjust risk threshold).
+   - Create a test group (pilot) to validate policy before wide re‑enablement.
+   - Update automation/CD pipelines if they applied the bad change.
+   Warnings:
+   - Do not re-enable the policy wide-scale without staged testing and approval.
+
+9. Action: Audit and document incident
+   Details:
+   - Record actions, time stamps, commands used, and who approved changes in the incident ticket.
+   - Export conditional access policy configuration pre/post for audit.
+   Warnings:
+   - Preserve logs for compliance; do not delete artifacts.
+
+VERIFICATION STEPS:
+- Confirm at least 3 affected user accounts can authenticate to primary apps (e.g., OWA, Teams) using standard authentication flows.
+- Confirm sign-in logs show successful sign-ins for previously failing users: filter by user and check Conditional Access result = "success".
+- Confirm break-glass account remains functional and unaffected by further policy edits.
+- Confirm policy state in portal or via PowerShell shows intended state (disabled or adjusted).
+- Confirm no new automation runs will re-apply the misconfiguration (check CI/CD job history).
+
+TROUBLESHOOTING:
+Issue: Cannot access Entra portal due to Conditional Access enforcement on admins
+Solution: Use the dedicated break-glass Global Admin account that is excluded from Conditional Access. If that is not available, use an on‑premises account with emergency access or contact on-call directory admin via out-of-band methods.
+
+Issue: PowerShell commands fail with permission error
+Solution: Ensure you are using an account with Global Administrator or Conditional Access Administrator permissions and that Microsoft Graph permissions were consented. Try re-authenticating with Connect-MgGraph and include the required scopes.
+
+Issue: Policy appears disabled but sign-ins still failing
+Solution: Check for overlapping policies (multiple Conditional Access policies or Identity Protection). Verify whether the app itself uses third‑party protection (e.g., proxy or app conditional logic). Check sign-in log details for which policy blocked the request.
+
+Issue: Change re-applies automatically
+Solution: Identify automation source (Azure DevOps, Terraform, ARM template, Identity Governance runbook). Temporarily stop the pipeline/runbook, update the source to correct the policy, then reapply.
+
+ESCALATION:
+Condition: Unable to identify offending policy, change is not taking effect, or outage persists beyond 60 minutes.
+Contact: On-call Entra/Identity team lead, and open an urgent support request with Microsoft Support.
+Escalation Path:
+- Level 1: Identity on-call engineer (internal pager/Slack) — immediate.
+- Level 2: Identity team lead (manager) — if not resolved in 15 minutes.
+- Level 3: Director of Identity (approval needed for emergency org-wide changes).
+- Microsoft Support: Create an Azure Support ticket (Severity A/SevA) with incident timeline, policy export, and sign-in logs; request immediate assistance for conditional access outage.
+
+RELATED DOCUMENTATION:
+- Title: Conditional Access basics and troubleshooting
+  URL: https://kb.fictionalcorp.example/entra/conditional-access-troubleshoot
+- Title: Identity Protection sign-in risk policy - guidance
+  URL: https://kb.fictionalcorp.example/entra/identity-protection-risks
+- Title: Microsoft Graph – Conditional Access API (reference)
+  URL: https://docs-mock.microsoft.com/graph/api/conditionalaccess-policies
+- Title: Runbook: Emergency break-glass account configuration
+  URL: https://runbooks.fictionalcorp.example/identity/breakglass
+
+TAGS: authentication, entra-id, conditional-access, incident-response
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2025-09-18T11:20:00+00:00 | Author: Jamie Rowan | Changes: Initial draft describing basic remediation and verification.
+Version: 1.1 | Date: 2025-11-28T03:15:00+00:00 | Author: Jamie Rowan | Changes: Added PowerShell examples, expanded troubleshooting and escalation steps, clarified verification checklist and audit requirements.

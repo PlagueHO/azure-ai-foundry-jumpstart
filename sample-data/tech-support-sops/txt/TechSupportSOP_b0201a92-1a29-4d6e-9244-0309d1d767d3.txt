@@ -1,0 +1,139 @@
+SOP ID: b0201a92-1a29-4d6e-9244-0309d1d767d3
+Version: 1.7
+Created At: 2025-11-28T02:49:53.268448+00:00
+Last Updated: 2025-11-28T14:12:00+00:00
+Title: Restore user access and repair document library sync failures in SharePoint Online caused by broken permission inheritance and orphaned unique permissions
+Problem Category: application
+Complexity: medium
+System Context: SharePoint Online
+Severity: high
+Status: archived
+Approval Level: cto
+Author: Mira Kato <mira.kato-support@examplecorp.internal>
+Approver: Jonah Reyes <jonah.reyes-cto@examplecorp.internal>
+Approved At: 2025-11-28T15:00:00+00:00
+
+PROBLEM DESCRIPTION:
+Users intermittently receive "Access Denied" or "You do not have permission to open this item" when attempting to open or sync files stored in a specific SharePoint Online document library. Some users report that files previously synced via OneDrive stop syncing and show "Sync paused" with an "insufficient permissions" warning. Investigation shows the affected library has been modified to use unique permissions (broken inheritance) and contains orphaned permission entries referencing deleted AD groups or guest accounts. These orphaned entries cause token evaluation to fail for certain accounts and break OneDrive and Office integration for affected users.
+
+SYMPTOMS:
+- "Access Denied" when opening documents from a library where users previously had access.
+- OneDrive sync shows "Sync paused — insufficient permissions" for the affected library.
+- Browser shows 403 HTTP responses on specific library paths while other site content is accessible.
+- Site collection administrators can browse library but non-admin users cannot.
+- SharePoint Online audit logs show repeated "PermissionCheckFailed" entries for the library resource.
+- Attempts to re-add users to the library do not persist (permission entries reappear or fail validation).
+
+PREREQUISITES:
+- Global Admin or SharePoint Administrator credentials for the tenant.
+- Site Collection Administrator or Site Owner access to the affected site.
+- Confirmed list of affected users and the specific document library URL.
+- Backup plan: snapshot of current permission state (see step 3) and scheduled maintenance window if library is in heavy use.
+
+REQUIRED TOOLS:
+- Microsoft 365 Admin Center (browser)
+- SharePoint Admin Center (modern)
+- PowerShell with SharePoint Online Management Module (fictional module name used in commands below: SPORepairModule v3.2)
+- Secure credentials vault (to retrieve admin credentials)
+- Optional: Browser developer tools (network tab) for capturing failing request details
+- Optional: Tenant audit logs viewer (in Security & Compliance Center)
+
+ESTIMATED RESOLUTION TIME: 30-90 minutes (depends on number of orphan entries and library size)
+
+RESOLUTION STEPS:
+1. Action: Confirm scope and reproduce the issue
+   Details: Validate the specific library URL (e.g., https://tenant-name.sharepoint.com/sites/ProjectX/Shared%20Documents). Attempt to reproduce using a non-admin test user account that has previously reported the issue. Document exact HTTP status codes and time of failure.
+   Warnings: Do not change permissions until you have a snapshot of current state.
+
+2. Action: Capture current permission state (snapshot)
+   Details: From an admin workstation, open PowerShell and import the repair module:
+     Import-Module SPORepairModule -Force
+     Connect-SPOAdmin -Url https://tenant-name-admin.sharepoint.com -Credential (Get-Credential)
+     Export-SPOListPermissions -SiteUrl "https://tenant-name.sharepoint.com/sites/ProjectX" -Library "Shared Documents" -Output "C:\temp\ProjectX_LibraryPerms_20251128.csv"
+   The export will list principal types, principal IDs, assignment sources (direct, AD group, guest), and inheritance state.
+   Warnings: Store the export in a secure location; it contains no PII but is sensitive.
+
+3. Action: Identify orphaned or invalid principals
+   Details: Filter the exported CSV for principals where PrincipalType = "ADGroup" or "Guest" and PrincipalStatus = "NotFound" or "Deleted". Also look for entries with Source = "UniquePermission (manually assigned)" and no valid parent group.
+     Example filter:
+       $perms = Import-Csv C:\temp\ProjectX_LibraryPerms_20251128.csv
+       $orphans = $perms | Where-Object { $_.PrincipalStatus -in @("NotFound","Deleted") -or ($_.Source -eq "UniquePermission" -and $_.PrincipalId -eq $null) }
+     Save the orphan list for reporting.
+
+4. Action: Re-enable inheritance where appropriate
+   Details: If the library should inherit permissions from the parent site and the broken inheritance is accidental, re-enable inheritance:
+     Set-SPOListInheritance -SiteUrl "https://tenant-name.sharepoint.com/sites/ProjectX" -Library "Shared Documents" -Inherit $true
+   This reverts unique permissions and will re-apply the parent site's permission set.
+   Warnings: This will remove all unique permissions from the library. Confirm with the site owner and notify impacted users.
+
+5. Action: Clean up orphaned principals and reassign valid groups/users
+   Details: If unique permissions must remain (business requirement), remove only the orphaned principals and reassign valid groups:
+     For each orphan:
+       Remove-SPOPrincipalFromList -SiteUrl "<site>" -Library "<lib>" -PrincipalId <id> -Confirm:$false
+     Then add the correct AD group or individual user:
+       Add-SPOPrincipalToList -SiteUrl "<site>" -Library "<lib>" -Principal "group@tenant.local" -Role "Contribute"
+   Warnings: Removing principals is irreversible through the UI; use exported snapshot to restore if needed.
+
+6. Action: Repair permission token cache and force re-evaluation
+   Details: Some clients (OneDrive/Office) cache permission tokens. To force re-evaluation:
+     - Ask affected users to sign out of OneDrive and Office apps and clear local credentials (Windows Credential Manager).
+     - From admin PowerShell, issue a token invalidation for the resource:
+       Invoke-SPOTokenRefresh -SiteUrl "https://tenant-name.sharepoint.com/sites/ProjectX" -ResourcePath "/Shared Documents"
+   This fictional command signals the tenant service to refresh cached permission tokens for the resource.
+   Warnings: Token refresh is tenant-scoped and may transiently interrupt active connections.
+
+7. Action: Validate Office/OneDrive client behavior
+   Details: After changes and token refresh, instruct users to:
+     - Restart OneDrive client and re-select the library to sync.
+     - Open files from the browser using Office for the web or open in desktop app.
+     - If desktop app prompts for credentials, use the updated account and approve any MFA prompts.
+
+8. Action: Audit and remediate recurring causes
+   Details: Review processes that led to orphaned principals (e.g., automated AD group deletions, guest account cleanup scripts). Implement a scheduled audit task:
+     - Weekly Export-SPOListPermissions for critical libraries
+     - Alert on PrincipalStatus = NotFound
+   Warnings: Do not automate corrective deletion without change control and approval.
+
+VERIFICATION STEPS:
+- Affected test user can open files in the library in the browser without 403 errors.
+- OneDrive sync for affected user resumes without "insufficient permissions" and completes initial scan.
+- SharePoint audit logs show successful PermissionCheck events for the resource for previously failing users.
+- The exported permissions snapshot after remediation shows no PrincipalStatus = NotFound entries for the library.
+- At least one file edit round-trip between browser and desktop app is successful (open -> edit -> save -> sync).
+
+TROUBLESHOOTING:
+Issue: Permission changes don't appear to take effect for some users.
+Solution: Ensure client-side caching is cleared: have users exit Office apps, clear Web Account tokens (Windows: Settings > Accounts > Access work or school, disconnect and reconnect), and sign out/in to the browser. If using conditional access or app policies, confirm those are not blocking access.
+
+Issue: Re-enabling inheritance removed business-required unique permissions.
+Solution: Restore from the exported permissions snapshot using Import-SPOListPermissions from the snapshot file. If Import-SPOListPermissions is unavailable, rebuild permission assignments from the saved CSV manually during off-hours.
+
+Issue: Token refresh command returns transient error or times out.
+Solution: Wait 10 minutes and retry. If retries fail, escalate (see Escalation section). As a workaround, ask affected users to re-provision OneDrive client (unlink and sign in) to obtain fresh tokens.
+
+ESCALATION:
+Condition: After performing all resolution steps and token refresh, at least one affected user still receives "Access Denied" or sync fails for more than 60 minutes; or export shows structural corruption (multiple libraries with inconsistent parent links).
+Contact: SharePoint Platform Team (on-call) — sharepoint-platform@ops.examplecorp.internal; Pager: +1-800-555-0199 (internal routing)
+Escalation Path:
+- Level 1: SharePoint Support Engineer (on-call) — assigned within 30 minutes.
+- Level 2: SharePoint Platform Team Lead — engage if Level 1 cannot resolve within 60 minutes.
+- Level 3: CTO (Approval Level holder) — engaged if change requires tenant-wide permission repair or service requests with Microsoft; open an internal incident ticket with full snapshots and tenant correlation IDs.
+Include in the escalation ticket: exported permission snapshots, affected user list with UPNs (no PII if emailing external), reproduction steps, and any SharePoint correlation IDs from the failing HTTP responses.
+
+RELATED DOCUMENTATION:
+- Title: SharePoint Permission Model Overview (internal guide)
+  URL: https://intra.examplecorp.internal/docs/sharepoint-permissions-overview
+- Title: Exporting and Importing Library Permission Snapshots (how-to)
+  URL: https://intra.examplecorp.internal/tools/spo-perm-snapshots
+- Title: OneDrive Client Reset and Troubleshooting (KB)
+  URL: https://intra.examplecorp.internal/kb/onedrive-reset
+- Title: Tenant Token Cache and Refresh Procedures (internal ops)
+  URL: https://intra.examplecorp.internal/ops/spo-token-refresh
+
+TAGS: sharepoint, permissions, onedrive
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2025-06-12T09:30:00+00:00 | Author: Mira Kato | Changes: Initial draft outlining problem statement and basic remediation steps for broken inheritance.
+Version: 1.2 | Date: 2025-08-05T11:15:00+00:00 | Author: Mira Kato | Changes: Added PowerShell snapshot workflow and token refresh step; clarified verification steps.
+Version: 1.5 | Date: 2025-10-10T16:40:00+00:00 | Author: Arjun Patel | Changes: Added troubleshooting for client caching and OneDrive re-provisioning; refined escalation contact information.
+Version: 1.7 | Date: 2025-11-28T14:12:00+00:00 | Author: Mira Kato | Changes: Finalized SOP for archival after successful runbook validation; updated approver and added auditing recommendations and explicit warnings about inheritance changes.

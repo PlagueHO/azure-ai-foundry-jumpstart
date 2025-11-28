@@ -175,6 +175,28 @@ data_generator generate --tool legal-contract --num-records 10 --contract-type N
 data_generator generate --tool legal-contract --num-records 5 --contract-type "Service Agreement" --complexity complex --output-file service_agreements.jsonl
 ```
 
+### 4.7 Tech-Support-SOP (`tech-support-sop`)
+
+Generate synthetic standard operating procedure (SOP) documents for fixing common tech support problems.
+
+| Flag                  | Required | Description                                                          | Default                           |
+|-----------------------|----------|----------------------------------------------------------------------|-----------------------------------|
+| `--problem-category`  | N        | Category of problem (general, network, application, authentication, hardware, database, cloud, security) | `general`                        |
+| `--complexity`        | N        | Complexity level (simple, medium, complex)                           | `medium`                          |
+| `--system-context`    | N        | System or environment context for the SOP                            | `Generic enterprise IT environment` |
+
+Example:
+
+```bash
+python -m data_generator \
+  --scenario tech-support-sop \
+  --count 20 \
+  --problem-category network \
+  --system-context "Azure cloud environment" \
+  --output-format yaml \
+  --out-dir ./sample-data/tech-support-sops
+```
+
 ---
 
 ## 5. Extending with New Scenarios

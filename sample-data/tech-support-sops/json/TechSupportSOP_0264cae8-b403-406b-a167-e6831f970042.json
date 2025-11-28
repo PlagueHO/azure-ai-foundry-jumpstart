@@ -1,0 +1,181 @@
+{
+  "sop_id": "0264cae8-b403-406b-a167-e6831f970042",
+  "version": "1.1",
+  "created_at": "2025-11-28T02:44:47.376779+00:00",
+  "last_updated": "2025-11-28T03:12:00+00:00",
+  "title": "Investigate and Mitigate Intermittent High Query Latency on Azure SQL Database (Single DB / vCore and DTU)",
+  "problem_category": "database",
+  "complexity": "medium",
+  "system_context": "Azure SQL Database",
+  "severity": "low",
+  "status": "approved",
+  "approval_level": "team_lead",
+  "author": {
+    "name": "Aisha Rahman",
+    "email": "aisha.rahman@fictionalcorp.example"
+  },
+  "approver": {
+    "name": "Diego Alvarez",
+    "email": "diego.alvarez@fictionalcorp.example",
+    "approved_at": "2025-11-28T03:05:00+00:00"
+  },
+  "problem_description": "Intermittent increases in query latency have been observed on an Azure SQL Database instance. Symptoms are sporadic slow response times for OLTP workloads, occasional user-reported timeouts, and short-lived spikes in CPU, DTU (if applicable), or IO metrics. Underlying causes commonly include blocking, parameter sniffing, regressed plans, missing or fragmented indexes, insufficient compute resources, or transient platform issues.",
+  "symptoms": [
+    "Short-lived spikes in average CPU (%), DTU or vCore CPU utilization on the Azure SQL resource charts",
+    "Elevated average query duration in application logs or App Insights",
+    "Intermittent connection timeouts reported by application users",
+    "Top queries in Query Store show sudden regression in duration or logical reads",
+    "Blocking chains visible on sys.dm_tran_locks / sys.dm_exec_requests during incidents"
+  ],
+  "prerequisites": [
+    "Azure subscription owner or contributor access to the subscription containing the SQL resource",
+    "SQL Server login with administrative (server-level or db_owner) privileges for the affected database",
+    "Knowledge of the affected application's normal workload and expected SLAs",
+    "At least one week of retained telemetry in Query Store or Azure Monitor metrics for baseline comparison"
+  ],
+  "required_tools": [
+    "Azure Portal access",
+    "Azure CLI (az) version >= 2.40 or Azure PowerShell",
+    "SSMS or Azure Data Studio for running diagnostic queries",
+    "Ability to open support cases in Microsoft Azure Support (subscription-level)",
+    "Application logs / APM access (e.g., Application Insights) to correlate client-side latency"
+  ],
+  "estimated_resolution_time": "30-90 minutes (may extend if scaling or Microsoft support engagement is required)",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Confirm incident window and collect initial telemetry",
+      "details": "Use Azure Portal -> SQL Databases -> [database] -> Overview to capture current state. Note timestamps of reported latency, and collect Azure Monitor metrics for CPU, DTU/vCore, Data IO, Log IO, waits, and connection count over the incident window. Pull application traces for the same timeframe.",
+      "warnings": ""
+    },
+    {
+      "step_number": 2,
+      "action": "Check for blocking and long-running requests",
+      "details": "Connect with SSMS/Azure Data Studio and run these diagnostic queries (run as db_owner):\n\n-- active requests and blocking chain\nSELECT r.session_id, r.status, r.cpu_time, r.total_elapsed_time, r.command, r.wait_type, r.blocking_session_id, s.login_name, s.host_name, SUBSTRING(t.text, r.statement_start_offset/2+1, (CASE WHEN r.statement_end_offset = -1 THEN LEN(CONVERT(nvarchar(max), t.text)) * 2 ELSE r.statement_end_offset END - r.statement_start_offset)/2) AS statement_text\nFROM sys.dm_exec_requests r\nJOIN sys.dm_exec_sessions s ON r.session_id = s.session_id\nCROSS APPLY sys.dm_exec_sql_text(r.sql_handle) t\nWHERE r.session_id <> @@SPID\nORDER BY r.total_elapsed_time DESC;\n\n-- waits summary\nSELECT wait_type, SUM(wait_time_ms) AS wait_time_ms, SUM(waiting_tasks_count) AS waiting_tasks_count\nFROM sys.dm_db_wait_stats\nGROUP BY wait_type\nORDER BY wait_time_ms DESC;\n\nIf blocking_session_id column shows values > 0, identify and evaluate the head blocker.",
+      "warnings": "Killing sessions can roll back transactions; coordinate with application owners before KILLing sessions in production."
+    },
+    {
+      "step_number": 3,
+      "action": "If a head blocking session is identified, determine safe remediation",
+      "details": "Inspect the blocking session for whether it is performing a long-running transaction, maintenance, or expected work. If it's an unexpected or stuck transaction and application owners approve, terminate the session:\n\nKILL <session_id>;\n\nAfter KILL, re-run the diagnostic queries to verify blocking cleared.",
+      "warnings": "KILL can cause transaction rollbacks which may be lengthy and increase log generation. Avoid killing sessions during critical processing windows without coordination."
+    },
+    {
+      "step_number": 4,
+      "action": "Use Query Store and Query Performance Insight to identify regressed queries",
+      "details": "If Query Store is enabled, query recent top resource-consuming queries:\n\nSELECT TOP 20 qs.query_id, qt.query_sql_text, rs.avg_duration, rs.avg_cpu_time, rs.avg_logical_io_reads\nFROM sys.query_store_query_text qt\nJOIN sys.query_store_query q ON qt.query_text_id = q.query_text_id\nJOIN sys.query_store_plan p ON q.query_id = p.query_id\nJOIN sys.query_store_runtime_stats rs ON p.plan_id = rs.plan_id\nORDER BY rs.avg_duration DESC;\n\nIn Azure Portal, open SQL -> Query Performance Insight and check 'Top resource consuming queries' and plan regressions. If a specific query shows plan regression, capture the plan and compare using sys.query_store_plan.",
+      "warnings": "Query Store retention or size may be limited; do not disable Query Store during diagnosis."
+    },
+    {
+      "step_number": 5,
+      "action": "Address plan regression or parameter sniffing",
+      "details": "Common mitigations:\n- Force a known good plan via Query Store (Force Plan) for the affected query if regression confirmed.\n- Add OPTIMIZE FOR UNKNOWN or use parameter hints in code for parameter sniffing cases.\n- Create/update plan guides only if application changes are not possible.\n\nTo force a plan in Query Store (example):\n-- Identify plan_id from sys.query_store_plan for the desired plan\nEXEC sp_query_store_force_plan @query_id = <query_id>, @plan_id = <plan_id>;\n",
+      "warnings": "Forcing plans can mask underlying issues and should be monitored; document any forced plans and set a review window."
+    },
+    {
+      "step_number": 6,
+      "action": "Check and remediate index and statistics health",
+      "details": "Run index usage and fragmentation checks:\n\n-- index usage\nSELECT DB_NAME() AS db, OBJECT_NAME(s.object_id) AS object_name, i.name AS index_name, s.user_seeks, s.user_scans, s.user_lookups, s.user_updates\nFROM sys.dm_db_index_usage_stats s\nJOIN sys.indexes i ON s.index_id = i.index_id AND s.object_id = i.object_id\nWHERE s.database_id = DB_ID();\n\n-- fragmentation\nSELECT a.object_id, OBJECT_NAME(a.object_id) AS object_name, a.index_id, b.name AS index_name, avg_fragmentation_in_percent\nFROM sys.dm_db_index_physical_stats(DB_ID(), NULL, NULL, NULL, 'LIMITED') a\nLEFT JOIN sys.indexes b ON a.object_id = b.object_id AND a.index_id = b.index_id\nWHERE avg_fragmentation_in_percent > 15;\n\nIf fragmentation or stale stats are present, schedule an online index rebuild or reorganize and UPDATE STATISTICS for affected tables. Example:\nALTER INDEX ALL ON schema.TableName REBUILD WITH (ONLINE = ON);\nUPDATE STATISTICS schema.TableName WITH FULLSCAN;\n",
+      "warnings": "ALTER INDEX ... REBUILD consumes IO and log resources. Avoid during peak hours unless a maintenance window is approved."
+    },
+    {
+      "step_number": 7,
+      "action": "If resource saturation is suspected, consider scaling or tier adjustment",
+      "details": "If CPU/IO consistently approaches platform limits and workload cannot be optimized quickly, scale the database up (vCore increase or higher DTU tier) using Azure CLI or Portal. Example CLI:\naz sql db update --resource-group MyRG --server myserver --name mydb --service-objective GeneralPurposeGen5-4\n\nAlternatively, enable read-only replicas (hyperscale or read-replicas where supported) or implement sharding if workload requires horizontal scaling.",
+      "warnings": "Scaling may cause transient connection resets; plan application retry logic. Scaling has cost implications\u2014notify billing owners."
+    },
+    {
+      "step_number": 8,
+      "action": "If suspected Azure platform issue or persistent unexplained latency, collect diagnostic package and open support case",
+      "details": "Collect the following and attach to a Microsoft Support case: resource id, subscription id (do not include PII), time ranges of incident, metric screenshots, the outputs of diagnostic queries run earlier, and relevant Query Store captures. Open support via Azure Portal -> Help + support -> New support request and choose 'Performance' category for SQL.",
+      "warnings": "Opening a support case may require subscription-level owner access; coordinate with subscription administrators."
+    },
+    {
+      "step_number": 9,
+      "action": "Apply temporary mitigations to reduce user impact",
+      "details": "Possible temporary steps:\n- Apply rate limiting at application layer to reduce concurrency\n- Redirect read traffic to a read-only replica (if available)\n- Increase connection retries and backoff in application\n- Schedule heavy batch jobs onto off-peak windows\nDocument all temporary changes and schedule a review once the incident resolves.",
+      "warnings": ""
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm Azure Monitor metrics (CPU, Data IO, Log IO, DTU or vCore utilization) have returned to baseline for at least 30 minutes after remediation."
+    },
+    {
+      "step": "Validate average query duration for previously affected queries has dropped to pre-incident baseline in Query Store or Application Insights for at least 30 minutes."
+    },
+    {
+      "step": "Confirm no sustained blocking chains visible in sys.dm_exec_requests and wait stats show reduction in the previously dominant wait types."
+    },
+    {
+      "step": "Coordinate with application owner to confirm user-reported timeouts are resolved and normal traffic is functioning."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Query Store is not enabled or has insufficient retention",
+      "solution": "Enable Query Store for diagnosis: ALTER DATABASE CURRENT SET QUERY_STORE = ON (OPERATION_MODE = READ_WRITE, SIZE_BASED_CLEANUP_MODE = AUTO, MAX_STORAGE_SIZE_MB = 1024, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 30)); Increase MAX_STORAGE_SIZE_MB if retention is needed for longer history."
+    },
+    {
+      "issue": "KILL session returns rollback and database shows large log growth",
+      "solution": "Monitor log_reuse_wait_desc in sys.databases to understand log usage. If log grows due to long rollback, avoid further KILLs; consider failover to secondary (if geo/replica exists) as last resort. Ensure transaction log backups (for managed instances or special configurations) are configured where applicable."
+    },
+    {
+      "issue": "Cannot reproduce issue during investigation",
+      "solution": "Collect extended telemetry: enable Query Store Wait Stats, increase Query Store capture level temporarily to 'ALL', enable diagnostic logging for the application to capture query text and parameters, and request a longer retention window in Azure Monitor to capture next occurrence."
+    },
+    {
+      "issue": "Query plan forcing fails or causes regressions",
+      "solution": "Unforce the plan (EXEC sp_query_store_unforce_plan @query_id = <id>) and evaluate alternative mitigations such as rewriting offending queries, adding covering indexes, or using plan guides sparingly. Rebaseline and monitor."
+    },
+    {
+      "issue": "Firewall or network rules prevent diagnostics",
+      "solution": "Confirm server-level firewall and VNet rules permit your client IP or service. Use Azure Portal to temporarily allow client IP or configure Azure Bastion / Jump host to run diagnostics from within the VNet."
+    }
+  ],
+  "escalation": {
+    "condition": "Issue persists after completing all remediation steps, or there is evidence of platform-level resource degradation (unusually high storage latency, sustained IO stalls), or the incident impacts multiple databases/servers.",
+    "contact": "On-call DBA team -> dba-oncall@fictionalcorp.example; If after hours, use PagerDuty incident channel 'DBA-Prod'.",
+    "escalation_path": "1) Notify DBA on-call and attach diagnostic artifacts. 2) If DBA cannot resolve within 60 minutes, escalate to Cloud Infrastructure Lead (cloud-lead@fictionalcorp.example). 3) If suspected Azure platform issue or if instructed by Cloud Lead, open Microsoft Support case and provide the collected diagnostics. 4) For business-impacting outages, notify Application Owner and Engineering Manager and follow the incident response runbook."
+  },
+  "related_documentation": [
+    {
+      "title": "Azure SQL Database performance troubleshooting (internal playbook)",
+      "url": "https://intranet.fictionalcorp.example/docs/azure-sql-performance-troubleshooting"
+    },
+    {
+      "title": "Query Store diagnostics and plan forcing guide",
+      "url": "https://kb.fictionalcorp.example/kb/query-store-plan-forcing"
+    },
+    {
+      "title": "Azure Monitor metrics for SQL Database \u2014 sample dashboards",
+      "url": "https://devops.fictionalcorp.example/docs/azure-monitor-sql-dashboards"
+    },
+    {
+      "title": "Microsoft Azure SQL Database: Create a support request (sample)",
+      "url": "https://support.fictionalcorp.example/processes/microsoft-azure-support-request"
+    }
+  ],
+  "tags": [
+    "azure",
+    "sql",
+    "performance",
+    "query-store",
+    "indexing",
+    "blocking"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2025-08-15T09:20:00+00:00",
+      "author": "Aisha Rahman",
+      "changes": "Initial creation of SOP covering detection and mitigation of intermittent latency on Azure SQL Database."
+    },
+    {
+      "version": "1.1",
+      "date": "2025-11-28T03:12:00+00:00",
+      "author": "Aisha Rahman",
+      "changes": "Added additional diagnostic queries (wait stats), clarified Query Store force/unforce steps, added escalation details and verification window guidance, and updated required tools list."
+    }
+  ]
+}

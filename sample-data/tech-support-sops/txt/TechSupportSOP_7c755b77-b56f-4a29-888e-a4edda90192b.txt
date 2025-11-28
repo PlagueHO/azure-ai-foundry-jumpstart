@@ -1,0 +1,157 @@
+SOP ID: 7c755b77-b56f-4a29-888e-a4edda90192b
+Version: 1.7
+Created At: 2025-11-28T02:50:58.000112+00:00
+Last Updated: 2025-11-28T03:00:00+00:00
+Title: Restore Backend Health for Azure Application Gateway Causing 502 / 504 Responses
+Problem Category: network
+Complexity: medium
+System Context: Azure Application Gateway
+Severity: low
+Status: approved
+Approval Level: manager
+Author: Alex Mercer <alex.mercer@faketech.example>
+Approver: Priya Rao <priya.rao@faketech.example>
+Approved At: 2025-11-28T03:05:00+00:00
+
+PROBLEM DESCRIPTION:
+Application Gateway (AppGw) is routing client traffic but backend pool members are reported as Unhealthy or Degraded and users see intermittent 502 Bad Gateway or 504 Gateway Timeout responses. This SOP describes steps to identify common misconfigurations (health probe mismatch, host header/SNI mismatch, port/NSG blocking, and TLS settings) and restore healthy backend status.
+
+SYMPTOMS:
+- Clients receive intermittent 502 or 504 responses from the AppGw.
+- Backend pool shows "Unhealthy" or "Unknown" in the Application Gateway backend health view.
+- Health probe logs show failures (probe status 502/404/timeout).
+- Recent change to backend app hostname, port, TLS certificate, or HTTP probe path.
+- No application-level errors visible in AppGw WAF logs (i.e., traffic is failing before backend responds).
+
+PREREQUISITES:
+- You must be a member of the subscription's Network Contributor or equivalent role, or have custom role that allows Application Gateway read/write and access to related NSGs/VMs.
+- Access to the Azure Portal and an administrator jumpbox or bastion host in the same virtual network for in-VM tests.
+- Knowledge of the backend application port, expected probe path, and any custom host header or SNI requirements.
+
+REQUIRED TOOLS:
+- Azure Portal (portal.azure.com).
+- Azure CLI (az) v2.40+ or PowerShell Az module.
+- SSH/RDP access to a jumpbox or to backend servers.
+- curl or httpie installed on jumpbox; Test-NetConnection (Windows) or telnet/tcping.
+- Access to application logs (web server or app insights) for backend servers.
+
+ESTIMATED RESOLUTION TIME: 20–60 minutes
+
+RESOLUTION STEPS:
+1. Action: Confirm scope and impact
+   Details: Identify the AppGw name and resource group. Note the affected listener(s), backend pool(s), and the time the issue started. Notify on-call if a customer-impacting change was recently deployed.
+   Warnings: Do not make configuration changes during a high-traffic window unless change is required to restore service.
+
+2. Action: Check Application Gateway backend health in Azure Portal
+   Details: Go to the AppGw resource -> Backend health. Record which backend IPs or targets are Unhealthy and note the returned status code or error (e.g., 404, 502, timeout). If portal shows "Unknown", proceed to probe and NSG checks.
+   Warnings: Portal values can be delayed by 30–60s; use CLI for up-to-the-second info.
+
+3. Action: Use Azure CLI to get detailed backend health
+   Details: Run:
+     az network application-gateway show-backend-health --name <AppGwName> --resource-group <RG>
+   Inspect probe status codes, backend response times, and failing pool members.
+   Warnings: Replace placeholders before running.
+
+4. Action: Validate the health probe configuration
+   Details:
+   - View the probe path, protocol, host, port, interval, timeout, and number of failures allowed.
+   - CLI example:
+       az network application-gateway probe show --gateway-name <AppGwName> --name <ProbeName> --resource-group <RG>
+   - Typical misconfigs: probe path wrong (e.g., /healthz vs /status), probe using HTTPS when backend expects HTTP, or probe host header not matching virtual host routing.
+   Warnings: Changing probe settings will affect health calculations immediately.
+
+5. Action: Test probe path from a jumpbox in same vNet/subnet
+   Details:
+   - SSH to jumpbox and run:
+       curl -v --resolve <backend-host>:<port>:<backend-IP> "http://<backend-host>:<port>/health-path"
+     or for HTTPS with SNI:
+       curl -v --resolve <backend-host>:<port>:<backend-IP> "https://<backend-host>:<port>/health-path" --cacert /path/to/ca.pem
+   - Alternatively:
+       Test-NetConnection -ComputerName <backend-IP> -Port <port> (Windows)
+   Warnings: Some app health endpoints require an expected Host header; supply it using --header "Host: <expected-host>".
+
+6. Action: Verify HTTP settings and host header configuration on AppGw
+   Details:
+   - Check the HTTP setting associated with the listener/route. Look for "Override backend path", "Pick host name from backend address", "Use custom probe", "Cookie-based affinity", and "Trusted Root CA" for HTTPS.
+   - CLI:
+       az network application-gateway http-settings show --gateway-name <AppGwName> --name <HttpSettingsName> --resource-group <RG>
+   - Common fix: If backend requires the original host header, enable "Pick host name from backend address" or set the custom host header to the backend's expected value.
+   Warnings: Changing Host header changes routing semantics at backend; coordinate with app owners.
+
+7. Action: Check TLS/SNI and certificate trust
+   Details:
+   - If HTTP setting uses HTTPS, confirm the backend server certificate is valid and that AppGw has the CA certificate uploaded when backend certificates are self-signed (AppGw needs the issuing CA in HTTP Settings “Trusted Root Certificates”).
+   - If backend requires SNI, ensure HTTP settings have "Override with new hostname" appropriately configured.
+   Warnings: Do not upload private keys to AppGw. Only upload CA certs for trust chain.
+
+8. Action: Verify NSG and UDR network connectivity
+   Details:
+   - Confirm NSG rules allow traffic from AppGw subnet (usually AppGw uses private IP in VNet) to backend on the configured port.
+   - Confirm UDRs on subnets do not blackhole traffic to the backend or route via an appliance that drops probes.
+   - Use:
+       az network nsg show --name <nsg-name> --resource-group <rg>
+     and inspect effective routes on backend NIC/subnet:
+       az network nic show-effective-route-table --name <nicName> --resource-group <rg>
+   Warnings: Changes to NSG/UDR may require change window approval.
+
+9. Action: Review application and server logs
+   Details:
+   - On the backend, check web server logs (NGINX/IIS/Apache) and application logs at the time of probe attempts. Look for 4xx/5xx being returned to the probe.
+   - If backend returns 401/403 for probe path, either change probe path or allow the probe. Consider creating a dedicated unauthenticated health endpoint.
+
+10. Action: Apply fixes in order of lowest risk
+    Details:
+    - If probe path incorrect -> update probe path to the existing health endpoint.
+    - If host header mismatch -> set custom host header to expected host or enable pick host from backend.
+    - If TLS trust issue -> upload backend CA certificate to AppGw HTTP settings.
+    - If NSG/UDR blocking -> update rule to allow AppGw IP range (or subnet) to backend port.
+    - After each change, wait 30–90 seconds and re-check backend health.
+    Warnings: Always document changes and, if required, revert plan.
+
+VERIFICATION STEPS:
+- Confirm backend health shows status "Healthy" for all formerly Unhealthy members in portal and via CLI:
+  az network application-gateway show-backend-health --name <AppGw> --resource-group <RG>
+  Expected: each backend entry displays "Healthy" and probe status 200 within timeout.
+- Perform end-to-end request from a client (or curl via public listener) to verify no 502/504 responses.
+- Check new traffic traces in Application Gateway access logs (if enabled) to confirm successful 200 responses to client requests.
+- If WAF is enabled, confirm no WAF rule blocks are producing false positives for legitimate traffic.
+
+TROUBLESHOOTING:
+Issue: Probe returns 404 but direct request to same path returns 200 from a browser.
+Solution: Verify the Host header and SNI used by probe. Use a curl from jumpbox with same Host header as AppGw probe; adjust HTTP setting host override.
+
+Issue: Backend shows "Unhealthy" and probe times out.
+Solution: Check NSG & UDR to ensure packets from AppGw to backend are allowed; run Test-NetConnection / telnet from jumpbox to backend port. If path slow, increase probe timeout/interval temporarily.
+
+Issue: HTTPS probe failing due to "certificate verify failed".
+Solution: Upload the issuing CA certificate to the Application Gateway HTTP settings "Trusted Root Certificates" list or ensure backend uses publicly trusted cert.
+
+Issue: A single backend instance is failing probes (others healthy).
+Solution: SSH/RDP to that instance, check web service process, binding/endpoint configuration, and local firewall. Restart service if necessary and re-run health probe.
+
+Issue: After fixes, one listener still returns 502.
+Solution: Confirm listener -> rule -> http settings binding is correct; ensure you edited the HTTP setting attached to that rule (there can be multiple similar HTTP settings).
+
+ESCALATION:
+Condition: After completing all resolution steps and 60 minutes of verification the backend remains Unhealthy or production traffic remains impacted.
+Contact: Network Engineering On-call (net-eng-oncall@faketech.example) and include AppGw name, resource group, change log, latest az show-backend-health JSON, and jumpbox probe curl output.
+Escalation Path: 
+- Level 1: On-call Network Engineer (net-eng-oncall@faketech.example) — 30 minutes SLA
+- Level 2: Network Architect (arch-network@faketech.example) — 60 minutes SLA
+- Level 3: Cloud Platform Manager (cloud-platform@faketech.example) — escalate if change approval or subscription-level intervention required.
+When escalating, attach screenshots of AppGw backend health, a copy of the CLI output, timestamps, and any recent deployment runbooks.
+
+RELATED DOCUMENTATION:
+- Title: Application Gateway Backend Health Troubleshooting Playbook
+  URL: https://kb.faketech.example/docs/appgw-backend-health
+- Title: Configuring Custom Health Probes for Application Gateway
+  URL: https://kb.faketech.example/docs/appgw-custom-probes
+- Title: NSG and UDR Effective Route Troubleshooting
+  URL: https://kb.faketech.example/docs/nsg-udr-troubleshoot
+
+TAGS: application-gateway, azure, network, troubleshooting
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2024-09-12T10:00:00+00:00 | Author: Alex Mercer | Changes: Initial creation covering basic probe and host-header issues.
+Version: 1.5 | Date: 2025-06-03T14:30:00+00:00 | Author: Alex Mercer | Changes: Added NSG/UDR checks, TLS/SNI guidance, and jumpbox test examples.
+Version: 1.7 | Date: 2025-11-28T03:00:00+00:00 | Author: Alex Mercer | Changes: Clarified escalation path, added CLI examples and verification checklist, adjusted estimated resolution time.

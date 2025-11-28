@@ -1,0 +1,196 @@
+{
+  "sop_id": "18b845d7-d69a-4176-8396-55a72801726b",
+  "version": "1.8",
+  "created_at": "2025-11-28T02:33:24.954234+00:00",
+  "last_updated": "2025-11-28T02:50:00+00:00",
+  "title": "Azure VM Fails to Boot / Stuck in Provisioning \u2014 Recovery and Repair using Serial Console and Rescue Disk",
+  "problem_category": "cloud",
+  "complexity": "medium",
+  "system_context": "Azure Virtual Machines",
+  "severity": "medium",
+  "status": "review",
+  "approval_level": "manager",
+  "author": {
+    "name": "Alex Mendoza",
+    "email": "alex.mendoza@support.example.com"
+  },
+  "approver": {
+    "name": null,
+    "email": null,
+    "approved_at": null
+  },
+  "problem_description": "One or more Azure Virtual Machines fail to complete boot or remain in a 'Provisioning' or 'Starting' state after updates/patches or show OS-level errors. Symptoms often indicate OS disk corruption, broken VM agent/extensions, or a misconfigured boot loader. This SOP describes safe steps to diagnose using Azure Portal, Azure CLI, Boot Diagnostics, Serial Console, and a rescue VM to repair the OS disk or remove faulty extensions and restore the VM to running state.",
+  "symptoms": [
+    "VM status shows 'Starting' or 'Provisioning' for extended period (>10 minutes)",
+    "Boot diagnostics screenshot shows kernel panic, initramfs, or 'no such device' messages",
+    "Unable to connect via SSH/RDP; connection times out",
+    "Azure Portal displays 'VM Agent not responding' or extension provisioning failures",
+    "Serial Console returns immedate kernel oops or stops at grub prompt"
+  ],
+  "prerequisites": [
+    "Contributor or higher role on the subscription or Resource Group containing the VM",
+    "Access to Azure Portal and Azure CLI (az) with a user that can detach/attach disks",
+    "Boot diagnostics must be enabled on the VM (recommended prior to incidents)",
+    "Credentials for a rescue VM admin account (if disk mount/repair is required)",
+    "Change window or approval if performing in production environment"
+  ],
+  "required_tools": [
+    "Azure CLI v2.45+ (az)",
+    "Access to Azure Portal (portal.azure.com)",
+    "SSH client (ssh) for Linux VMs or RDP client for Windows VMs",
+    "Serial Console access via Azure Portal",
+    "Secondary (rescue) VM in same region to attach problematic OS disk",
+    "Basic OS recovery tools: e2fsck/chroot (Linux), chkdsk/startrepair (Windows) on rescue VM"
+  ],
+  "estimated_resolution_time": "30-90 minutes",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Confirm basic Azure health and VM state",
+      "details": "Check Azure Service Health for any active platform incidents in the VM's region. In Portal, view the VM's Overview pane and note Power state and Status. Record observed provisioningState and powerState. Example CLI: az vm get-instance-view --resource-group <rg> --name <vm-name> --output json",
+      "warnings": ""
+    },
+    {
+      "step_number": 2,
+      "action": "Check Boot Diagnostics and capture screenshot/logs",
+      "details": "Open Boot Diagnostics from the VM blade to view console output and serial logs. Download screenshots and serial logs for troubleshooting ticket. If Boot Diagnostics is disabled, enable it (requires storage account) and reprovision if possible: az vm boot-diagnostics enable --resource-group <rg> --name <vm-name> --storage-uri https://<storage-account>.blob.core.windows.net/",
+      "warnings": "Enabling boot diagnostics on a running VM may briefly affect I/O; ensure change window for production VMs."
+    },
+    {
+      "step_number": 3,
+      "action": "Attempt graceful restart and restart provisioning agent",
+      "details": "Attempt an Azure-initiated restart first: az vm restart --resource-group <rg> --name <vm-name>. If the VM reaches 'Running' but still not reachable, try restarting the VM Agent (Linux: waagent, Windows: WindowsAzureGuestAgent) using run-command: az vm run-command invoke --command-id RunShellScript --name <vm-name> --resource-group <rg> --scripts \"sudo systemctl restart walinuxagent\" (Linux) or use the appropriate PowerShell for Windows.",
+      "warnings": "Do not remove VM Agent unless you intend to reinstall via rescue disk."
+    },
+    {
+      "step_number": 4,
+      "action": "Check and remove failed/blocked VM extensions",
+      "details": "List extensions: az vm extension list --resource-group <rg> --vm-name <vm-name> --output table. If an extension is stuck 'ProvisioningFailed', remove it: az vm extension delete --resource-group <rg> --vm-name <vm-name> --name <extensionName>. Common problematic extensions: customScript, guestAgent updates. After removal, reboot VM.",
+      "warnings": "Removing automation/security extensions may affect monitoring. Notify stakeholders if removal impacts detection."
+    },
+    {
+      "step_number": 5,
+      "action": "Use Serial Console to diagnose early-boot issues",
+      "details": "Open Serial Console from the VM blade. For Linux, drop to the recovery shell if grub or kernel errors are present. For Windows, use Emergency Management Services (EMS) prompts available in Serial Console logs. Capture exact kernel panic or NTFS messages and search internal KB for matching strings.",
+      "warnings": "Serial Console requires OS-level access support and role-based access; do not paste credentials into Serial Console."
+    },
+    {
+      "step_number": 6,
+      "action": "If OS appears corrupt, prepare a rescue VM",
+      "details": "Create a temporary rescue VM in the same availability zone and region with the same OS family. Stop the affected VM deallocate it: az vm deallocate --resource-group <rg> --name <vm-name>. Detach the OS disk: az vm disk detach --name <os-disk-name> --resource-group <rg> --vm-name <vm-name> (or update VM configuration to remove disk). Then attach the disk to rescue VM as a data disk: az vm disk attach --resource-group <rg> --vm-name <rescue-vm> --disk <os-disk-name> --new ? no --lun 1",
+      "warnings": "Do not attach the disk as an OS disk on the rescue VM. Always attach as data disk (avoid boot order conflicts)."
+    },
+    {
+      "step_number": 7,
+      "action": "Repair filesystem and OS from the rescue VM (Linux)",
+      "details": "SSH to rescue VM, identify the attached disk (lsblk). Mount partitions read-only first, then run fsck on suspect partitions: sudo umount /dev/sdc1; sudo e2fsck -f -y /dev/sdc1. If grub is corrupted, chroot and reinstall grub: sudo mount /dev/sdc1 /mnt; for EFI systems also mount /dev/sdc2 to /mnt/boot/efi; sudo chroot /mnt; grub-install /dev/sdc; update-grub. Check /etc/fstab for incorrect UUIDs.",
+      "warnings": "Filesystem repair can cause data loss in extreme corruption cases; ensure recent backups exist before destructive fixes."
+    },
+    {
+      "step_number": 8,
+      "action": "Repair Windows OS disk (if Windows VM)",
+      "details": "Attach disk to Windows rescue VM. Use Disk Management to bring disk online. Run chkdsk on the attached volume: chkdsk <drive-letter>: /f /r. If Boot Configuration Data (BCD) is corrupted, open an elevated command prompt and run bootrec /fixmbr, bootrec /fixboot, bootrec /rebuildbcd. Ensure Windows updates and patches are checked after successful boot.",
+      "warnings": "Running chkdsk with /r is time-consuming; perform during maintenance windows for large disks."
+    },
+    {
+      "step_number": 9,
+      "action": "Reattach the repaired disk and start the VM",
+      "details": "Detach the disk from rescue VM and reattach as OS disk to the original VM (or create a new VM using the repaired managed disk). Example: az vm update --resource-group <rg> --name <vm-name> --os-disk <os-disk-name> or create VM from disk: az vm create --resource-group <rg> --name <restored-vm> --attach-os-disk <os-disk-name> --os-type linux. Start the VM: az vm start --resource-group <rg> --name <vm-name>.",
+      "warnings": "When reattaching, ensure the VM's network/security settings are correct before exposing to production traffic."
+    },
+    {
+      "step_number": 10,
+      "action": "Post-recovery: verify VM Agent and reapply extensions",
+      "details": "Confirm VM Agent is running and reports healthy via az vm get-instance-view. Reinstall necessary extensions one at a time and validate. Re-enable monitoring/backup solutions. Run acceptance tests for application processes.",
+      "warnings": "Do not mass-reinstall extensions; apply minimal set and monitor for regressions."
+    },
+    {
+      "step_number": 11,
+      "action": "Document the incident and perform root cause analysis",
+      "details": "Collect logs, screenshots, commands executed, and time stamps. Create an incident report describing root cause, corrective actions, and recommended preventive changes (e.g., enable boot diagnostics, snapshot policy, pre-update backups).",
+      "warnings": ""
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm VM shows powerState 'running' and provisioningState 'Succeeded' in az vm get-instance-view output"
+    },
+    {
+      "step": "Confirm successful network connectivity: ping and SSH (Linux) or RDP (Windows) into VM and validate application endpoints"
+    },
+    {
+      "step": "Check Boot Diagnostics again to ensure no new kernel panic or bootloader errors in the latest screenshot/serial logs"
+    },
+    {
+      "step": "Verify VM Agent status and extension states are Healthy: az vm extension list --resource-group <rg> --vm-name <vm-name> --output table"
+    },
+    {
+      "step": "Run any environment-specific smoke tests and confirm monitoring/backup agents are reporting"
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Unable to access Serial Console",
+      "solution": "Ensure 'Microsoft.Compute' provider is registered on the subscription and that the user has Microsoft.Authorization/roleAssignments/read and Microsoft.Compute/virtualMachines/serialConsoleAccess/action roles. Also ensure Boot Diagnostics is enabled and storage account is accessible (not behind firewall)."
+    },
+    {
+      "issue": "Disk attach fails due to snapshot lock or write-once policy",
+      "solution": "Check if the disk is part of an immutable snapshot policy or has 'lock' at resource level. Remove locks if appropriate: az lock list --resource-group <rg>. If policy requires, create a snapshot and work from snapshot copy rather than locking original disk."
+    },
+    {
+      "issue": "Extension continues to fail provisioning after reinstallation",
+      "solution": "Inspect extension handler logs in VM (if accessible) or use run-command to collect logs. If extension vendor version is incompatible, pin to previous working version or open a case with extension vendor/support. Temporarily disable extension and monitor."
+    },
+    {
+      "issue": "Filesystem repair reports unrecoverable errors",
+      "solution": "Restore from the latest snapshot or backup of the disk. If no backups exist, contact data recovery specialist and escalate per data-loss policy."
+    }
+  ],
+  "escalation": {
+    "condition": "If VM cannot be recovered after performing the rescue disk repair steps and reattachment, or if multiple VMs in the region are affected indicating potential platform outage, escalate.",
+    "contact": "Cloud Infrastructure Team: cloud-infra@internal.example.com; Pager: +1-555-0102 (on-call)",
+    "escalation_path": "1) Notify Cloud Infra Team via email and Pager with incident ID and actions taken. 2) If Platform outage suspected, open a support case with Microsoft Azure Support via Azure Portal and reference subscription ID and incident logs. 3) If data recovery required, engage Data Recovery Lead and Security/Compliance for approvals."
+  },
+  "related_documentation": [
+    {
+      "title": "Internal - Azure VM Rescue Playbook",
+      "url": "https://docs.internal.example.com/azure/vm-rescue-playbook"
+    },
+    {
+      "title": "KB - Using Azure Serial Console for Linux and Windows VMs",
+      "url": "https://kb.internal.example.com/azure/serial-console"
+    },
+    {
+      "title": "Vendor Doc - Common Causes of Extension Provisioning Failures",
+      "url": "https://kb.internal.example.com/azure/extensions-provisioning-failures"
+    }
+  ],
+  "tags": [
+    "azure",
+    "vm",
+    "boot",
+    "serial-console",
+    "rescue-disk",
+    "troubleshooting"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2024-08-15T09:00:00+00:00",
+      "author": "Alex Mendoza",
+      "changes": "Initial draft covering basic boot failure recovery and use of Serial Console."
+    },
+    {
+      "version": "1.5",
+      "date": "2025-03-12T14:30:00+00:00",
+      "author": "Alex Mendoza",
+      "changes": "Added steps for extension removal and improved rescue disk attach/detach process; added Windows BCD recovery notes."
+    },
+    {
+      "version": "1.8",
+      "date": "2025-11-28T02:33:24.954234+00:00",
+      "author": "Alex Mendoza",
+      "changes": "Refined CLI examples, added verification checklist and escalation contacts; clarified warnings about production impact."
+    }
+  ]
+}

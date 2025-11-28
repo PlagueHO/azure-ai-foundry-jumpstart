@@ -1,0 +1,203 @@
+{
+  "sop_id": "895b0f12-b6ed-452a-a756-2851e3bee0aa",
+  "version": "1.5",
+  "created_at": "2025-11-28T02:47:14.340705+00:00",
+  "last_updated": "2025-11-28T02:47:14.340705+00:00",
+  "title": "Replace Faulty NVMe Backplane on Azure Stack HCI Node (S2D) With Minimal Impact",
+  "problem_category": "hardware",
+  "complexity": "medium",
+  "system_context": "Azure Stack HCI",
+  "severity": "high",
+  "status": "approved",
+  "approval_level": "cto",
+  "author": {
+    "name": "Riley Archer",
+    "email": "riley.archer@support.fictionaltech.net"
+  },
+  "approver": {
+    "name": "Marina Cortez",
+    "email": "marina.cortez@leadership.fictionaltech.net",
+    "approved_at": "2025-11-28T03:00:00+00:00"
+  },
+  "problem_description": "On an Azure Stack HCI cluster using Storage Spaces Direct (S2D), one node has reported multiple NVMe device failures tied to the drive backplane (drive cage) resulting in missing disks, degraded storage pool, and ongoing resilver operations. This SOP covers identification of the faulty NVMe backplane, safe node evacuation, physical replacement of the backplane, firmware/driver reconciliation, and reintegration of disks with minimal cluster impact.",
+  "symptoms": [
+    "One or more NVMe drives missing from Get-PhysicalDisk output on a single node",
+    "Event log entries indicating 'NVMe controller reset' or 'NVMe transport error' for a specific PCIe port",
+    "Storage Spaces Direct pool shows Reduced or Degraded and a long-running 'Repair' job",
+    "Windows Admin Center marking node as in maintenance/partially offline or cluster reporting storage connectivity errors",
+    "Front panel drive LED patterns indicating backplane/connection issue (amber LED on multiple slots)"
+  ],
+  "prerequisites": [
+    "Valid hardware replacement authorization and warranty/parts on file",
+    "Maintenance window with informed stakeholders; recommended: dedicated window with capacity to tolerate one-node degraded mode",
+    "Cluster backups / current backups of critical workloads and an exported list of VM replication settings",
+    "Ensure cluster has at least one healthy witness/quorum to tolerate node maintenance",
+    "BMC (iDRAC/iLO/HPE iLO/Lenovo XClarity) admin credentials and network access",
+    "A second operator available for physical assistance if required"
+  ],
+  "required_tools": [
+    "ESD wrist strap and ESD-safe tools (Torx T8/T10 set, Phillips)",
+    "Manufacturer replacement backplane assembly (spare PN from inventory)",
+    "BMC access (iDRAC/iLO) and serial console access",
+    "Windows Admin Center and Cluster PowerShell access (run as admin)",
+    "USB boot media with vendor hardware utilities (for remote NVMe controller firmware if required)",
+    "Labeling materials for cables and drives"
+  ],
+  "estimated_resolution_time": "45-90 minutes (does not include extended rebuild time for S2D resilvering)",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Confirm problem and collect pre-replacement data",
+      "details": "On controller and one operator terminal, collect the current cluster and storage state. Run: Get-ClusterNode; Get-PhysicalDisk | ft FriendlyName,SerialNumber,MediaType,OperationalStatus,CanPool; Get-StoragePool -IsPrimordial $false | Get-StorageJob. Also capture the node BMC logs and system event log entries referencing NVMe or PCIe errors. Record the node name and IPs. Save outputs to a timestamped incident package for the ticket.",
+      "warnings": "Do not remove any drives or open the chassis before completing evacuation and documenting exact drive-to-slot mappings."
+    },
+    {
+      "step_number": 2,
+      "action": "Identify the failed backplane using mapping and LEDs",
+      "details": "Use Windows Admin Center or Get-PhysicalDisk output to identify which physical slots/drives are missing or show faults. Cross-reference serial numbers to the OEM drive bay slot mapping (use vendor BMC / chassis diagrams). Confirm front-panel LEDs on the drive slots: multiple adjacent amber LEDs typically indicate a backplane or midplane fault rather than independent drive failures.",
+      "warnings": "If any drives show SMART 'predictive failure', treat them as suspect but do not remove until step 4 is complete."
+    },
+    {
+      "step_number": 3,
+      "action": "Place node into maintenance mode and drain workloads",
+      "details": "Using Windows Admin Center or PowerShell, move roles and VMs off the node, and put it into maintenance. In WAC: Node -> More -> Maintenance Mode. In PowerShell, use the cluster utilities to gracefully live-migrate clustered roles and VMs. Confirm VM migration completion. Verify cluster still has quorum and the storage pool is in a state that tolerates one removed node.",
+      "warnings": "Do not power down the node until VMs are evacuated and administrators confirm no running clustered role remains on the node."
+    },
+    {
+      "step_number": 4,
+      "action": "Retire affected disks from S2D",
+      "details": "For any physical disks that are mapped to the faulty backplane and show Non-Healthy status, retire them to start a resilient rebalancing/repair prior to physical removal. Example placeholder command (adjust per environment): Set-PhysicalDisk -FriendlyName '<disk-friendly-name>' -Usage Retired. Confirm corresponding Repair jobs start: Get-StorageJob and monitor until jobs are enqueued. If the pool's heal is immediate, allow background rebalancing to progress but do not wait for full completion before replacement if maintenance window is tight.",
+      "warnings": "Marking disks as Retired triggers data movement; ensure sufficient cluster capacity and avoid retiring more disks than redundancy allows."
+    },
+    {
+      "step_number": 5,
+      "action": "Power down and prepare the node for hardware replacement",
+      "details": "From BMC, perform a controlled shutdown of the OS. Verify power is off at the chassis and disconnect main power leads. Put a physical tag indicating 'Do not power on' and ground yourself with ESD strap. Label all cables and document positions before disconnecting. If hot-swap replacement is supported by vendor, follow that vendor-specific guidance instead of a full power down.",
+      "warnings": "Do not open the chassis or touch PCB components without ESD protection. Adhere to site lockout/tagout procedures."
+    },
+    {
+      "step_number": 6,
+      "action": "Remove and replace the NVMe backplane assembly",
+      "details": "Follow vendor mechanical removal steps: remove drive carriers per slot, unseat any midplane retention screws, disconnect the backplane power and data connectors from the PSU and system board, remove the faulty backplane assembly, and install the replacement. Verify part number on replacement. Reinstall drive carriers in original order using labels created earlier.",
+      "warnings": "Do not mix SATA and NVMe backplanes or attempt swaps across different chassis SKUs. If any drive carriers show physical damage, replace them as well."
+    },
+    {
+      "step_number": 7,
+      "action": "Re-seat NVMe SSDs and verify physical connections",
+      "details": "Ensure each NVMe SSD is fully seated and screws are torqued to vendor specifications. Reconnect any micro SAS, NVMe cabling, and power harnesses to the motherboard and PV connectors. Double-check BMC and front-panel connections.",
+      "warnings": "Avoid cross-threading screws; hand-start all screws before final torque to prevent PCB damage."
+    },
+    {
+      "step_number": 8,
+      "action": "Power on the node and validate firmware/driver compatibility",
+      "details": "Power on via BMC and watch POST messages. Enter vendor RAID/NVMe controller firmware UI if present and confirm firmware versions for the controller and backplane. Compare against cluster baseline and update if mismatch. If firmware update is required, use vendor-signed firmware via BMC/USB and follow vendor instructions. Document versions.",
+      "warnings": "Only use vendor-approved firmware builds for your exact SKU. Firmware updates can require reboots and may cause extended downtime."
+    },
+    {
+      "step_number": 9,
+      "action": "Confirm OS visibility of NVMe devices and reconcile with S2D",
+      "details": "On the node, run: Get-PhysicalDisk | ft FriendlyName,SerialNumber,MediaType,OperationalStatus. Validate that previously missing disks reappear and match serial numbers. For disks earlier Retired, confirm they are still marked Retired or can be cleared for pool use per policy. If any disk still shows 'LostCommunication' or similar, check cabling and repeat reseat.",
+      "warnings": "Do not force-insert a disk back into a pool without confirming it is the same physical device and that its metadata is intact\u2014if uncertain, treat as replacement."
+    },
+    {
+      "step_number": 10,
+      "action": "Return node to cluster and allow resilvering/rebalancing",
+      "details": "Exit maintenance mode in Windows Admin Center or use the cluster UI to re-enable the node to host cluster workloads. If you Retired physical disks, monitor Get-StorageJob and Repair-ClusterStorageSpacesDirect (or vendor-specific repair cmdlet) to ensure data copies are rebuilt. Avoid heavy host-level workloads on the node until resilvering completes.",
+      "warnings": "Do not assign new VMs or heavy IO until the storage pool reports Healthy and Repair jobs show completion or steady state per baseline thresholds."
+    },
+    {
+      "step_number": 11,
+      "action": "Run post-replacement validation and snap logs",
+      "details": "Collect post-change outputs: Get-ClusterNode; Get-PhysicalDisk; Get-StoragePool | Get-StorageJob; Get-EventLog -LogName System -After (time-of-change). Confirm no new critical NVMe or PCIe errors in event logs. Save BMC logs and POST logs to the incident package. Notify stakeholders of node reintegration and expected rebuild window.",
+      "warnings": "If persistent errors return within 30 minutes, consider powering off and re-checking connections or escalating per the escalation path."
+    },
+    {
+      "step_number": 12,
+      "action": "Cleanup and document completion",
+      "details": "Update the ticket and inventory to reflect the replaced backplane serial/PN and who performed the replacement. Close out temporary maintenance tags and restore any cable labels to their final state. Schedule full cluster health check 24 hours post-change.",
+      "warnings": "Retain replaced hardware per RMA instructions until vendor confirms destruction/reuse to preserve warranty compliance."
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Verify Get-PhysicalDisk shows all expected NVMe devices as Healthy/OK and with correct serial numbers."
+    },
+    {
+      "step": "Confirm Get-StoragePool reports 'Healthy' or an acceptable intermediate state and that Repair/Resilver jobs are present and progressing (use Get-StorageJob)."
+    },
+    {
+      "step": "Check cluster health via Get-ClusterNode and Windows Admin Center; ensure all nodes are Up and no critical storage alerts remain."
+    },
+    {
+      "step": "Review system and BMC event logs for 24 hours post-change to ensure no recurring PCIe/NVMe errors."
+    },
+    {
+      "step": "Perform sample I/O validation (e.g., run a read/write IO script against a non-critical volume) and verify latency is within baseline."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Replaced backplane but some NVMe devices still not visible",
+      "solution": "Reseat the NVMe SSDs and data/power connectors. Validate backplane-to-board cable seating and inspect for bent pins. Reboot into BMC utility and check whether the controller enumerates devices at POST. If still not visible, swap the controller riser (if hot-swap) or return to vendor diagnostics."
+    },
+    {
+      "issue": "Resilver / Repair jobs are extremely slow or stuck",
+      "solution": "Check background IO throttling settings and current network saturation. Confirm there are no other nodes undergoing maintenance simultaneously. Temporarily increase S2D repair thread limits only if cluster capacity justifies it and per support guidance. If IO stalls persist, gather storage and cluster logs and escalate to vendor support."
+    },
+    {
+      "issue": "Firmware mismatch between new backplane and remaining nodes",
+      "solution": "Do not leave mixed firmware levels longer than allowed by vendor policy. Schedule a firmware harmonization across cluster using vendor utilities during off-peak hours. If vendor firmware is unavailable, contact vendor support for approved interim guidance."
+    },
+    {
+      "issue": "Unexpected data loss or corruption reported after replacement",
+      "solution": "Immediately stop writes to affected volumes if possible, preserve current logs and disk states, and escalate to storage engineering and vendor support. Follow vendor-backed data recovery procedures; do not reinitialize disks unless instructed by L3/vendor."
+    }
+  ],
+  "escalation": {
+    "condition": "If the node cannot be stabilized (disks missing or persistent NVMe controller errors) after two hardware reseat attempts and BMC checks OR if data loss/corruption is suspected",
+    "contact": "Open a ticket with OEM Hardware Support and Azure Stack HCI Vendor Support. Provide incident package (collected logs, BMC dumps, Get-PhysicalDisk output, serial numbers), and reference SOP ID 895b0f12-b6ed-452a-a756-2851e3bee0aa.",
+    "escalation_path": "Level 1 (on-call cluster admin) -> Level 2 (storage engineering) -> Level 3 (vendor hardware OEM & Azure Stack HCI vendor support). If customer-impacting outages continue for >3 hours, notify director on call and initiate post-incident communication plan."
+  },
+  "related_documentation": [
+    {
+      "title": "Azure Stack HCI \u2014 Best Practices for Hardware Replacement (internal)",
+      "url": "https://intranet.fictionaltech.net/docs/azurestackhci/hw-replacement-best-practices"
+    },
+    {
+      "title": "Vendor NVMe Backplane Replacement Guide (model-specific)",
+      "url": "https://vendordocs.example.internal/hw/part-replacement/nvme-backplane/guide"
+    },
+    {
+      "title": "Windows Admin Center: Node Maintenance and Cluster Operations",
+      "url": "https://intranet.fictionaltech.net/tools/wac/cluster-maintenance"
+    }
+  ],
+  "tags": [
+    "azure-stack-hci",
+    "S2D",
+    "nvme",
+    "hardware-replacement",
+    "backplane",
+    "storage"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2025-06-12T09:00:00+00:00",
+      "author": "Riley Archer",
+      "changes": "Initial draft covering identification and replacement of NVMe backplane on single-node failure scenarios."
+    },
+    {
+      "version": "1.3",
+      "date": "2025-09-30T14:20:00+00:00",
+      "author": "Riley Archer",
+      "changes": "Added retire/retirement steps for disks and expanded troubleshooting for resilver issues."
+    },
+    {
+      "version": "1.5",
+      "date": "2025-11-28T02:47:14.340705+00:00",
+      "author": "Riley Archer",
+      "changes": "Updated approval metadata, added BMC-specific checks, clarified maintenance window guidance, and included escalation thresholds and post-change validation checklist."
+    }
+  ]
+}

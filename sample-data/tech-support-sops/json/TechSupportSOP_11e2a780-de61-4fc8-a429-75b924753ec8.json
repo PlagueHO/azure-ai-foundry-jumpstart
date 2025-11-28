@@ -1,0 +1,204 @@
+{
+  "sop_id": "11e2a780-de61-4fc8-a429-75b924753ec8",
+  "version": "1.5",
+  "created_at": "2025-11-28T02:33:24.964494+00:00",
+  "last_updated": "2025-11-28T04:12:00+00:00",
+  "title": "Azure VM 'Running' but Unreachable (SSH/RDP) \u2014 Diagnosis and Recovery",
+  "problem_category": "cloud",
+  "complexity": "medium",
+  "system_context": "Azure Virtual Machines",
+  "severity": "low",
+  "status": "published",
+  "approval_level": "manager",
+  "author": {
+    "name": "Maya Korhonen",
+    "email": "maya.korhonen@cloudops.internal"
+  },
+  "approver": {
+    "name": "Diego Alvarez",
+    "email": "diego.alvarez@cloudops.internal",
+    "approved_at": "2025-11-28T03:05:00+00:00"
+  },
+  "problem_description": "A virtual machine in Azure reports as 'Running' in the portal or via API but is unreachable over the network (SSH for Linux, RDP for Windows). This SOP covers systematic investigation (platform, network, guest), safe remediation steps (soft resets, RunCommand, redeploy, rescue disk attach) and guidance to recover connectivity while preserving data.",
+  "symptoms": [
+    "VM state shows 'Running' in Azure Portal or az cli",
+    "Unable to establish SSH (tcp/22) or RDP (tcp/3389) connections",
+    "Ping/ICMP may be blocked or not respond",
+    "Boot diagnostics screenshot shows kernel panic, cloud-init errors, or is blank",
+    "Azure Serial Console shows login prompt or kernel messages (if enabled)",
+    "az vm run-command returns errors related to guest agent"
+  ],
+  "prerequisites": [
+    "Contributor or Virtual Machine Contributor role on the target subscription/resource group (or equivalent scope)",
+    "Access to Azure Portal, Azure CLI (az 2.50.0 or later recommended) or PowerShell Az module",
+    "Account with permissions to create temporary rescue VM and managed disk attachments",
+    "Change window or approval if production-impacting steps will be executed"
+  ],
+  "required_tools": [
+    "Azure Portal (portal.azure.com) and Azure CLI (az)",
+    "Optional: SSH client (OpenSSH), RDP client, Azure Serial Console access",
+    "Support ticket template and internal on-call contact list",
+    "Knowledge of resource names: VM name, resource group, NIC, NSG, subnet, subscription ID"
+  ],
+  "estimated_resolution_time": "30-90 minutes (depends on escalation and data rescue steps)",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Gather initial diagnostics and metadata",
+      "details": "Record VM name, resource group, location, public IP, NIC name, and current power state. Run: az vm show --resource-group <rg> --name <vm> --query \"{name:name, powerState:instanceView.statuses[?starts_with(code, 'PowerState')].displayStatus | [0], provisioning:provisioningState}\" -o json. Collect boot diagnostics screenshot and serial console logs from the portal.",
+      "warnings": ""
+    },
+    {
+      "step_number": 2,
+      "action": "Check network-level blocks (NSG, UDR, Azure Firewall)",
+      "details": "Inspect NIC and subnet NSG rules for deny entries blocking ports 22/3389 or default inbound rules. Use: az network nsg show --name <nsg> --resource-group <rg> and az network nsg list-effective-rules --resource-group <rg> --name <nic-or-subnet>. Review effective routes on NIC: az network nic show-effective-route-table --name <nic> --resource-group <rg>.",
+      "warnings": "Do not change NSG rules without approval if VM is production; note existing rules before modifying."
+    },
+    {
+      "step_number": 3,
+      "action": "Verify platform health and Azure guest agent",
+      "details": "Check VM instance view: az vm get-instance-view --resource-group <rg> --name <vm>. Confirm Azure VM Agent (waagent/WALinuxAgent or Windows Guest Agent) is reported. If agent is 'not provisioned', many remediation commands will fail.",
+      "warnings": ""
+    },
+    {
+      "step_number": 4,
+      "action": "Attempt in-guest remediation with RunCommand",
+      "details": "If VM agent is healthy, try running a simple command to check networking: az vm run-command invoke --command-id RunShellScript --name <vm> --resource-group <rg> --scripts \"ip addr; ss -tuln\" for Linux, or az vm run-command invoke --command-id RunPowerShellScript for Windows to check service status. Use outputs to identify missing services or misconfigured IPs.",
+      "warnings": "RunCommand executes as SYSTEM/root; review scripts for safety."
+    },
+    {
+      "step_number": 5,
+      "action": "Use Serial Console for low-level troubleshooting",
+      "details": "If Serial Console is enabled, open it from Azure Portal. For Linux, inspect cloud-init logs (/var/log/cloud-init.log) and dmesg for kernel panic. For Windows, use Emergency Management Services (if configured) or look for Windows boot errors. Capture screenshots.",
+      "warnings": "Serial Console access requires subscription-level permissions; do not share outputs containing secrets."
+    },
+    {
+      "step_number": 6,
+      "action": "Try a soft remediation (restart, redeploy)",
+      "details": "If diagnostics show no disk corruption, perform a graceful restart: az vm restart --resource-group <rg> --name <vm>. If problem persists, try Redeploy (moves VM to new host): az vm redeploy --resource-group <rg> --name <vm>. Redeploy is safe for most workloads but may change ephemeral host-specific properties.",
+      "warnings": "Redeploy will cause a transient outage; schedule accordingly."
+    },
+    {
+      "step_number": 7,
+      "action": "If guest agent is absent or boot is corrupted, perform disk rescue",
+      "details": "1) Stop the VM: az vm deallocate --resource-group <rg> --name <vm>. 2) Detach the OS disk: az vm update --resource-group <rg> --name <vm> --remove storageProfile.osDisk.managedDisk.id (or use disk detach in portal). 3) Create a temporary rescue VM in same region and attach the OS disk as a data disk: az vm disk attach --vm-name <rescue-vm> --resource-group <rescue-rg> --disk <os-disk-name> --new?false. 4) Mount the disk on rescue VM, inspect /var/log, repair files (e.g., fstab, cloud-init configuration), reinstall/repair VM agent packages, fix network config. 5) Detach disk and reattach as OS disk to original VM, then start the VM.",
+      "warnings": "Always snapshot the disk before making changes: az snapshot create --resource-group <rg> --source <os-disk-name> --name <os-disk-snapshot>. Incorrect edits can render VM unbootable; perform only with recovery experience."
+    },
+    {
+      "step_number": 8,
+      "action": "Reset SSH or RDP configuration if necessary",
+      "details": "For Linux, use RunCommand to restore /etc/ssh/sshd_config or rebuild authorized_keys: az vm run-command invoke --command-id ResetSsh or use custom script. For Windows, reset RDP and local user via RunPowerShellScript or use VMAccessAgent to reset password.",
+      "warnings": "Password resets and user changes must follow company password policies and audit requirements."
+    },
+    {
+      "step_number": 9,
+      "action": "Check public IP and load balancer / NAT rules",
+      "details": "If VM uses a Load Balancer or NAT Gateway, verify health probes and backend pool membership. Inspect inbound NAT rules that map ports to VM NIC. Use: az network lb probe list --resource-group <rg> --lb-name <lb> and az network lb rule list --resource-group <rg> --lb-name <lb>.",
+      "warnings": ""
+    },
+    {
+      "step_number": 10,
+      "action": "If connectivity is restored, harden and document corrective actions",
+      "details": "Record changes made, update runbooks or cloud-init templates to prevent recurrence, and ensure backups/snapshots are in place. Schedule follow-up maintenance to validate network rules and image health.",
+      "warnings": ""
+    },
+    {
+      "step_number": 11,
+      "action": "If all in-house remediation fails, open Azure Support request",
+      "details": "Collect all evidence: subscription ID, VM resource ID, timestamps, run-command outputs, boot diagnostics screenshots, serial console logs, NSG and route dumps. Open a support ticket through Azure Portal Support -> New support request and attach the collected artifacts. Reference internal case ID in ticket notes.",
+      "warnings": ""
+    },
+    {
+      "step_number": 12,
+      "action": "Post-incident review and closure",
+      "details": "Summarize root cause, mitigation, and recommended preventive controls in the incident record. Notify stakeholders and update SOP if new failure modes were discovered.",
+      "warnings": ""
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm VM shows 'Running' and 'VMAgent' status healthy in az vm get-instance-view."
+    },
+    {
+      "step": "Validate inbound connectivity: SSH to port 22 (ssh -vv user@public-ip) or RDP to public IP/private IP behind VPN/Bastion."
+    },
+    {
+      "step": "Check application-level logs or services inside the VM to ensure services are listening (ss -tuln or Get-NetTCPConnection)."
+    },
+    {
+      "step": "Verify no unintended NSG or LB changes: compare current NSG rules and LB probes to baseline."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "NSG blocks necessary ports",
+      "solution": "Temporarily add allow rule for source=your IP, destination=VM NIC, port=22/3389 with a scheduled expiry; monitor and then harden rules."
+    },
+    {
+      "issue": "VM Agent not reporting / RunCommand fails",
+      "solution": "If agent is absent, perform disk rescue (attach OS disk to rescue VM) and reinstall guest agent package (WALinuxAgent for Linux or WindowsAzureGuestAgent). Then reattach disk as OS disk and boot."
+    },
+    {
+      "issue": "Boot diagnostics blank or shows kernel panic",
+      "solution": "Use Serial Console to view kernel output. If disk or filesystem corruption suspected, attach disk to rescue VM and run fsck (Linux) or chkdsk (Windows) from rescue environment after snapshotting disk."
+    },
+    {
+      "issue": "Load Balancer health probe failing but VM reachable directly",
+      "solution": "Check probe port and path; ensure probe endpoints listen on probe source and open security rules. Consider enabling custom probe path for HTTP(S) apps."
+    },
+    {
+      "issue": "Intermittent connectivity",
+      "solution": "Collect Azure Metrics (Network In/Out), NSG flow logs, and VM OS logs to correlate times. Consider redeploying VM host to eliminate noisy neighbor or host-level issues."
+    }
+  ],
+  "escalation": {
+    "condition": "If VM remains unreachable after disk rescue and redeploy steps, or if evidence indicates an Azure platform outage or data integrity risk.",
+    "contact": "Cloud Platform On-Call (pager: cloud-oncall@internal.example, phone: +1-555-0102), followed by CloudOps Manager (manager@internal.example).",
+    "escalation_path": "1) Notify Cloud Platform On-Call and provide collected diagnostics. 2) If On-Call cannot resolve within 30 minutes, escalate to CloudOps Manager and open an Azure support request (P1/P2 depending on business impact). 3) If Azure support requires access, prepare temporary delegated access and sign-off from manager."
+  },
+  "related_documentation": [
+    {
+      "title": "Internal KB: Azure VM Rescue Disk Procedure",
+      "url": "https://kb.internal-cloud.example/docs/azure/vm-rescue-disk"
+    },
+    {
+      "title": "Internal KB: NSG Effective Rules and Troubleshooting",
+      "url": "https://kb.internal-cloud.example/docs/azure/nsg-troubleshoot"
+    },
+    {
+      "title": "Azure Docs (internal bookmark style): Serial Console and Run Command",
+      "url": "https://internal-docs.example/azure/serial-console-run-command"
+    },
+    {
+      "title": "Support Request Template (Azure Support)",
+      "url": "https://support.internal.example/templates/azure-support-request"
+    }
+  ],
+  "tags": [
+    "azure",
+    "vm",
+    "network",
+    "troubleshooting",
+    "cloudops"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2025-02-12T09:00:00+00:00",
+      "author": "Maya Korhonen",
+      "changes": "Initial draft covering basic network checks, RunCommand usage, and soft restart procedures."
+    },
+    {
+      "version": "1.3",
+      "date": "2025-07-10T13:30:00+00:00",
+      "author": "Maya Korhonen",
+      "changes": "Added disk rescue workflow with snapshot guidance and expanded troubleshooting for guest agent and boot diagnostics."
+    },
+    {
+      "version": "1.5",
+      "date": "2025-11-28T04:12:00+00:00",
+      "author": "Maya Korhonen",
+      "changes": "Revised escalation contacts, added verification checklist, and hardened warnings for production changes. Approved by Diego Alvarez."
+    }
+  ]
+}

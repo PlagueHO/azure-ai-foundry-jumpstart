@@ -1,0 +1,194 @@
+{
+  "sop_id": "4cbaa3b2-ebe4-4e12-bce4-d52d8a9bcd83",
+  "version": "1.2",
+  "created_at": "2025-11-28T02:47:14.311837+00:00",
+  "last_updated": "2025-11-28T03:15:00+00:00",
+  "title": "Replace Faulted Physical Disk on Azure Stack HCI Node (Storage Spaces Direct)",
+  "problem_category": "hardware",
+  "complexity": "medium",
+  "system_context": "Azure Stack HCI",
+  "severity": "medium",
+  "status": "review",
+  "approval_level": "team_lead",
+  "author": {
+    "name": "Jordan Ames",
+    "email": "jordan.ames@example.com"
+  },
+  "approver": {
+    "name": null,
+    "email": null,
+    "approved_at": null
+  },
+  "problem_description": "A physical storage device in an Azure Stack HCI cluster node has reported a fault (SMART alert, predictive failure, or node-level health state degraded). This SOP covers identifying the affected disk, placing the node in maintenance, evacuating data from the device, performing the physical replacement, and returning the node to service while protecting Storage Spaces Direct resiliency and cluster availability.",
+  "symptoms": [
+    "Cluster shows one or more physical disks in 'Unhealthy' or 'Failed' state",
+    "Storage pool is in a degraded state; virtual disks show reduced redundancy",
+    "Windows Admin Center (WAC) or Failover Cluster Manager reports predictive failure or operational status warnings for a node",
+    "Server hardware management (iDRAC/iLO/CMM) shows a drive fault LED or SMART error for a drive slot",
+    "Event logs with Storage Spaces, S2D, or MSFT_StorageProvider warnings (event IDs 5120/1536 as examples)"
+  ],
+  "prerequisites": [
+    "Administrative access to the Azure Stack HCI cluster (local admin or cluster admin)",
+    "Access to Windows Admin Center and/or PowerShell Remoting to the affected node",
+    "Vendor management access (iDRAC/iLO/Chassis Management Module) credentials",
+    "Approved maintenance window if cluster redundancy will be impacted",
+    "Up-to-date backups and verified recovery plan for critical workloads"
+  ],
+  "required_tools": [
+    "Windows Admin Center (preferred) or PowerShell on a management workstation",
+    "Vendor hardware tool/web console (iDRAC / iLO / IMM) for device identification",
+    "Physical access to the server and appropriate ESD protection",
+    "Replacement drive (same form factor, firmware family and endurance class per vendor compatibility list)",
+    "Cluster and host logs collection tool (Get-ClusterLog or WAC diagnostics)"
+  ],
+  "estimated_resolution_time": "45-120 minutes (depending on rebuild time and cluster redundancy)",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Confirm cluster and node status",
+      "details": "From a management host run: Get-Cluster | Select Name, OperationalStatus; and on a controller node run: Get-PhysicalDisk | Sort OperationalStatus. Note any disks showing Unhealthy, Failed, or PredictiveFailure. In Windows Admin Center, open the cluster -> Storage -> Physical disks and note FriendlyName, SerialNumber, Model and Enclosure/Slot.",
+      "warnings": ""
+    },
+    {
+      "step_number": 2,
+      "action": "Gather diagnostic logs before changes",
+      "details": "Run Get-ClusterLog -Destination C:\\Temp\\ClusterLogs and collect Windows Event Logs (System, Storage, and Hardware). Export WAC diagnostic bundle if using WAC. Record the node name, disk FriendlyName and SerialNumber for ticketing.",
+      "warnings": "Do not clear or delete event logs before collection; logs are required for vendor support."
+    },
+    {
+      "step_number": 3,
+      "action": "Put the node into maintenance (drain roles)",
+      "details": "On the node run: Suspend-ClusterNode -Name <NodeName> -Drain. Verify cluster roles move off the node and virtual machines are live-migrated or clustered resources relocated. Wait for cluster to stabilize (Get-ClusterNode shows 'Paused' for that node).",
+      "warnings": "If the cluster is already at reduced redundancy, coordinate with application owners \u2014 draining may impact performance."
+    },
+    {
+      "step_number": 4,
+      "action": "Mark the affected physical disk for evacuation",
+      "details": "Using PowerShell identify the physical disk object: $pd = Get-PhysicalDisk | Where-Object {$_.SerialNumber -eq '<serial>' -or $_.FriendlyName -eq '<friendly>'}. Set it to retired/evacuate state: Set-PhysicalDisk -InputObject $pd -Usage Retired (or use the WAC 'Prepare for removal' action). Monitor Storage jobs: Get-StorageJob.",
+      "warnings": "Ensure you target the correct disk object; retiring the wrong disk can trigger rebuilds on healthy disks."
+    },
+    {
+      "step_number": 5,
+      "action": "Wait for data evacuation",
+      "details": "Monitor progress with Get-StorageJob and Get-PhysicalDisk | Select FriendlyName, OperationalStatus, Usage. Evacuation may take from minutes to hours depending on data size and workload. Do not power-cycle the host while the evacuation job is active.",
+      "warnings": "Interrupting evacuation may prolong recovery or place virtual disks at risk."
+    },
+    {
+      "step_number": 6,
+      "action": "Verify the disk is safe to remove and record slot",
+      "details": "In WAC or vendor BMC confirm the disk shows Retired/RemovedFromPool and no rebuild activity remains for that physical disk. Note the physical slot/enclosure ID from hardware management so the correct drive is removed.",
+      "warnings": ""
+    },
+    {
+      "step_number": 7,
+      "action": "Perform the physical replacement",
+      "details": "Follow vendor hot-swap procedure: confirm drive bay LED matches previously recorded slot, unlatch the drive carrier, replace with verified replacement drive, and insert until latched. Observe chassis management for new drive recognition. Apply ESD precautions.",
+      "warnings": "Do not force incompatible drives; mismatched firmware or endurance class may be rejected by controller."
+    },
+    {
+      "step_number": 8,
+      "action": "Confirm drive detected and clear alerts",
+      "details": "In vendor console (iDRAC/iLO) confirm new drive shows OK, and note model/firmware. In Windows Admin Center or PowerShell run Get-PhysicalDisk | Where-Object OperationalStatus -ne 'OK' to ensure no remaining faults.",
+      "warnings": ""
+    },
+    {
+      "step_number": 9,
+      "action": "Add the replacement disk back into the storage pool if needed",
+      "details": "If the disk did not automatically join the pool, add it with: Add-PhysicalDisk -PhysicalDisks (Get-PhysicalDisk -SerialNumber '<new-serial>') -StoragePoolFriendlyName '<PoolName>' or use WAC 'Add physical disk' wizard. Verify a rebuild job starts (Get-StorageJob).",
+      "warnings": "Adding a disk directly to a mismatched pool can cause tiering or performance differences; ensure replacement meets pool policy."
+    },
+    {
+      "step_number": 10,
+      "action": "Monitor rebuild and cluster health",
+      "details": "Monitor Get-StorageJob, Get-VirtualDisk and Get-PhysicalDisk for health. Verify virtual disks return to Healthy and that redundancy is restored. Use Test-Cluster -Include 'Storage' (or cluster-specific storage validation tooling) during low-load window if applicable.",
+      "warnings": "Rebuilds can saturate network or storage bandwidth; schedule monitoring and throttle if necessary using vendor QoS features."
+    },
+    {
+      "step_number": 11,
+      "action": "Resume node and validate services",
+      "details": "When rebuilds complete and cluster reports Healthy, resume node: Resume-ClusterNode -Name <NodeName>. Verify roles are balanced and VMs/services are back on expected nodes. Run Get-ClusterResource and test application connectivity.",
+      "warnings": ""
+    },
+    {
+      "step_number": 12,
+      "action": "Close the incident and record actions",
+      "details": "Upload collected logs, record serial numbers of failed and replacement drives, note job IDs and time-to-repair in the ticket. If drive was under warranty, open vendor RMA with serial and event logs as required.",
+      "warnings": ""
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm Get-Cluster reports all nodes 'Up' and cluster operational state Healthy."
+    },
+    {
+      "step": "Confirm Get-PhysicalDisk shows no Unhealthy/Failed disks and that the replacement disk is Online and in the pool."
+    },
+    {
+      "step": "Verify all virtual disks are Healthy (Get-VirtualDisk) and that no StorageJobs are pending or failed."
+    },
+    {
+      "step": "Validate application connectivity and performance baseline relative to pre-incident metrics."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Evacuation job stuck or failing",
+      "solution": "Check Get-StorageJob for failure reasons. If jobs show IO errors, check network connectivity between nodes, storage subsystem firmware versions, and ensure no ongoing backup or heavy IO. Restart the Storage Space Direct service on the host only if vendor guidance allows. Collect Cluster logs and open an engineering ticket."
+    },
+    {
+      "issue": "Replacement drive not recognized by host",
+      "solution": "Confirm drive is supported by vendor compatibility list and inserted in the correct slot. Re-scan SAS/NVMe bus in vendor firmware, power-cycle the enclosure if hot-swap LED still not active and if allowed by business continuity plan. If still not visible, the drive or backplane may be faulty \u2014 escalate to hardware vendor."
+    },
+    {
+      "issue": "Cluster loses redundancy during replacement",
+      "solution": "Undo any in-progress replacements if possible, ensure other nodes are not in maintenance, and consider placing the cluster in temporary degraded mode with maintenance window while vendor support is engaged. Restore redundancy by adding available spare drives or failover to secondary site if configured."
+    }
+  ],
+  "escalation": {
+    "condition": "Any step fails to complete (evacuation or rebuild) within 3 hours, or if additional drive faults are observed, or if hardware components (backplane, controller) appear to be failing.",
+    "contact": "HCI Tier-2 Support: hci-support-team@example.com; Vendor Hardware Support: open a ticket via the hardware vendor portal and reference the cluster logs and failed drive serial numbers.",
+    "escalation_path": "If Tier-2 cannot resolve within the SLA, escalate to Engineering on-call with collected logs and ClusterLogs archive. For confirmed hardware faults beyond drive replacement (backplane or controller), request on-site hardware engineer/RMA from vendor."
+  },
+  "related_documentation": [
+    {
+      "title": "Azure Stack HCI - Storage Spaces Direct Maintenance Guide (internal)",
+      "url": "https://intranet.example.com/docs/azurestackhci/s2d-maintenance"
+    },
+    {
+      "title": "Vendor Hot-Swap and Drive Replacement Procedure (example vendor)",
+      "url": "https://vendor.example.com/support/hot-swap-procedure"
+    },
+    {
+      "title": "Collecting Cluster Logs and Diagnostics for Azure Stack HCI",
+      "url": "https://intranet.example.com/docs/azurestackhci/collect-cluster-logs"
+    }
+  ],
+  "tags": [
+    "storage",
+    "S2D",
+    "disk-replacement",
+    "azure-stack-hci",
+    "hardware",
+    "maintenance"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2025-09-15T09:00:00+00:00",
+      "author": "Jordan Ames",
+      "changes": "Initial draft covering disk identification, evacuation, and replacement workflow for Azure Stack HCI nodes."
+    },
+    {
+      "version": "1.1",
+      "date": "2025-10-20T14:30:00+00:00",
+      "author": "Jordan Ames",
+      "changes": "Added additional verification and troubleshooting steps; clarified vendor console steps and log collection instructions."
+    },
+    {
+      "version": "1.2",
+      "date": "2025-11-28T03:15:00+00:00",
+      "author": "Jordan Ames",
+      "changes": "Editorial review and minor updates to maintenance commands and escalation SLA guidance; added warnings about rebuild impact and ESD precautions."
+    }
+  ]
+}

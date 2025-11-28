@@ -1,0 +1,157 @@
+SOP ID: 72666793-d9eb-41dc-b8fe-2e5efc571266
+Version: 1.6
+Created At: 2025-11-28T02:49:53.276532+00:00
+Last Updated: 2025-11-28T03:22:00+00:00
+Title: Critical — SharePoint Online site returns "Access Denied" for all users after tenant policy change
+Problem Category: application
+Complexity: medium
+System Context: SharePoint Online
+Severity: critical
+Status: approved
+Approval Level: director
+Author: Marina Cortez <marina.cortez.ops@fictitiouscorp.local>
+Approver: Daniel H. Rivers <daniel.rivers.ops@fictitiouscorp.local>
+Approved At: 2025-11-28T04:00:00+00:00
+
+PROBLEM DESCRIPTION:
+After a tenant-level configuration change (commonly Conditional Access, sharing policy, or site lock), one or more SharePoint Online site collections become inaccessible and consistently return "Access Denied" (HTTP 403) for site owners and regular users. This can affect multiple sites or an entire site collection and blocks collaboration, document access and automated flows (Power Automate). This SOP describes verification steps and precise remediation actions to restore site access and identify root causes.
+
+SYMPTOMS:
+- Site & pages show "Access Denied" or 403 to site owners, members, and visitors.
+- Site URL returns a blank page, or SharePoint shows the "You don't have access" UI.
+- Automated flows and sync clients (OneDrive) fail to access content with permission errors.
+- Audit/sign-in logs show Conditional Access policy failure or token rejection.
+- SharePoint Admin Center shows site Locked or LockState = NoAccess/ReadOnly.
+- Error message in browser console: failed to fetch resource 403 / token_renewal failed (depending on client).
+
+PREREQUISITES:
+- Global Admin or SharePoint Administrator role in tenant for remediation steps.
+- Site owner confirmation (list of known site owners) to validate permissions.
+- Backup or export plan for critical content before mass changes (if applicable).
+
+REQUIRED TOOLS:
+- SharePoint Online Management Shell (latest Microsoft.Online.SharePoint.PowerShell module).
+- Exchange/Microsoft 365 admin center access (for license checks).
+- Azure AD Portal (or Microsoft Entra admin center) with Conditional Access view.
+- Microsoft Graph PowerShell module (Connect-MgGraph) or equivalent sign-in logs access.
+- Browser with private/incognito mode for verification.
+- Internal runbook/KM system access to record actions and time.
+
+ESTIMATED RESOLUTION TIME: 30-90 minutes (depending on scope and number of affected sites)
+
+RESOLUTION STEPS:
+1. Action: Confirm scope and impact
+   Details: Identify affected site URLs and gather affected user list. Ask a site owner to reproduce the issue and capture screenshots, timestamp, and user UPN. Record whether problem affects single site, hub sites, or tenant-wide.
+   Warnings: Do not instruct site owners to modify permissions until admin has investigated tenant-level causes.
+
+2. Action: Check Microsoft 365 Service Health
+   Details: Go to Microsoft 365 Admin Center > Health > Service Health and verify any ongoing incidents for SharePoint Online that may affect access. Note incident ID if present.
+   Warnings: If a Microsoft-wide incident is confirmed, follow Microsoft incident guidance and escalate to vendor support only if incident persists beyond SLA.
+
+3. Action: Verify site LockState via SharePoint Online Management Shell
+   Details:
+   - Connect: Connect-SPOService -Url https://<tenant>-admin.sharepoint.com
+   - Check lock: Get-SPOSite -Identity https://<tenant>.sharepoint.com/sites/<site> | Select Url, LockState
+   - If LockState is NoAccess or ReadOnly, execute: Set-SPOSite -Identity https://<tenant>.sharepoint.com/sites/<site> -LockState Unlock
+   Warnings: Only change LockState if you are certain the prior state was not set intentionally (e.g., during legal hold or migration). Unlocking may cause concurrent writes if maintenance was in progress.
+
+4. Action: Confirm site collection administrators
+   Details:
+   - List site collection admins: Get-SPOUser -Site https://<tenant>.sharepoint.com/sites/<site> | Where-Object { $_.IsSiteAdmin -eq $true } | Select LoginName
+   - If no admins listed, add a known admin: Set-SPOUser -Site https://<tenant>.sharepoint.com/sites/<site> -LoginName svc_spadmin@fictitiouscorp.local -IsSiteCollectionAdmin $true
+   Warnings: Use a service account or named admin; do not add personal accounts for long-term admin use.
+
+5. Action: Check Azure AD Conditional Access and sign-in logs
+   Details:
+   - In Microsoft Entra admin center > Monitoring > Sign-ins, filter by the affected user and client IP/time of reproduction. Inspect Conditional Access column and failure reason.
+   - If CA policies appear to block access (e.g., "Access denied because the device is not compliant" or "Location block"), identify the policy name and scope.
+   - Temporarily exclude the affected site/service account or set an exception for testing (apply with caution).
+   Warnings: Do not permanently disable CA policies. Use a targeted temporary exclusion only for immediate remediation and log the change.
+
+6. Action: Validate Microsoft 365 Group/SharePoint permission inheritance
+   Details:
+   - If the site is backed by an Office 365 Group, verify group membership in the Microsoft 365 admin center or Azure AD.
+   - In the SharePoint Admin Center > Active sites > select site > Permissions, check if "Group" or "Site Permissions" show missing owners/members. Re-add owners if necessary.
+   Warnings: Restoring permissions may affect many users; coordinate with application owners.
+
+7. Action: Check tenant sharing settings and external access
+   Details:
+   - In SharePoint Admin Center > Policies > Sharing, ensure tenant-level settings aren’t restricting internal users inadvertently (e.g., a misconfigured "Only people in your organization" with other dependent controls).
+   Warnings: Changing sharing settings can widen exposure — do this only after confirming root cause.
+
+8. Action: Inspect license and account status
+   Details: Verify affected users have a valid SharePoint/Office 365 license assigned (Microsoft 365 E3/E5, SharePoint Online license). In Microsoft 365 admin center, verify license assignments and that accounts are not blocked or disabled.
+   Warnings: License changes can take up to 24 hours to propagate; prefer other fixes before mass license reassignment during an outage.
+
+9. Action: Clear caching and re-authenticate
+   Details: Have a test user attempt access in a private/incognito browser session and remove cached tokens:
+   - Browser: Sign out, clear cookies for tenant domain, then sign in again.
+   - For OneDrive: unlink and re-link the account on the OneDrive client.
+   Warnings: This is a verification step; do not instruct users en masse to clear caches until admin confirms scope.
+
+10. Action: If site was recently restored from recycle bin or restoration workflow ran
+    Details: Check SharePoint Admin Center > Deleted sites or use Get-SPODeletedSite. If site was restored, verify that sharing and site administrators were correctly restored and reapply missing site collection admins.
+    Warnings: Restored sites may not retain group memberships in all cases — verify and reassign.
+
+11. Action: Re-run any tenant-wide configuration changes in audit mode (if safe)
+    Details: If a recent tenant configuration change caused the issue, revert the change or re-apply it in a test OU/scope first. Use audit logs to identify the change (Unified Audit Log).
+    Warnings: Rolling back tenant policies affects other services; coordinate change windows and communicate status.
+
+12. Action: Record actions and communicate to stakeholders
+    Details: Log all steps, commands run, and timestamps in the incident ticket. Notify site owners, impacted users, and the Platform team once access is restored.
+
+VERIFICATION STEPS:
+- Affected site owners can open https://<tenant>.sharepoint.com/sites/<site> without Access Denied in an incognito browser.
+- OneDrive and Power Automate flows can access lists and documents; flows succeed on a test run.
+- SharePoint Admin Center shows LockState = Unlock for the site.
+- Sign-in logs show successful tokens and Conditional Access result = Success for test users.
+- Confirm with 2-3 impacted users in different locations/IPs to rule out location-based CA blocks.
+- Confirm no related service health incident is still active.
+
+TROUBLESHOOTING:
+Issue: Site shows Access Denied despite correct site admins and unlocked state.
+Solution: 
+- Confirm that the SharePoint Online admin center is pointing to the correct URL (tenant name mismatch).
+- Check for broken inheritance at the list/library level: navigate to Site Settings > Site permissions and Inspect list/library permissions. Re-inherit permissions or explicitly re-add groups.
+- Use Fiddler/Browser DevTools to inspect failed network calls for 401 vs 403 to differentiate authentication vs authorization failures.
+
+Issue: Conditional Access appears to block only external users or unmanaged devices.
+Solution:
+- Create a targeted CA exclusion for a small test group (admins) and verify access. If this resolves, update the CA policy conditions or require device compliance enrollment for users.
+
+Issue: Users report access only from certain networks.
+Solution:
+- Validate location-based CA rules or firewall/proxy interception. Confirm the clients are not IP-proxied or NAT-ed in a way CA interprets as blocked. Work with Network/Security to whitelist.
+
+Issue: Permissions are correct but Power Automate flows still fail with 403.
+Solution:
+- Recreate the connection in Power Automate using a service account with Site Collection Admin rights, reauthorize connectors, and re-run flows. Inspect the flow run history and connector error details.
+
+ESCALATION:
+Condition: If after completing all steps and checks the site remains inaccessible OR root cause appears to be a backend tenant replication issue, and 2 hours have passed since first remediation attempt.
+Contact: Platform Operations Lead — Jordan M. Hsu <jordan.hsu.platform@fictitiouscorp.local>
+Escalation Path:
+1. Notify Platform Operations Lead with incident ticket ID, actions taken, timestamps, and logs.
+2. Platform Lead attempts advanced tracing: open a support request with Microsoft Support (Premier) via the Microsoft 365 admin center. Include sign-in IDs, site URL, affected user UPNs, and timestamps.
+3. If Microsoft support response is delayed beyond SLA or symptoms indicate tenant corruption, escalate to Director of Cloud Services — Daniel H. Rivers <daniel.rivers.ops@fictitiouscorp.local> for approval to execute broader tenant-level rollbacks or emergency change window.
+
+RELATED DOCUMENTATION:
+- Title: Internal KB — SharePoint Online emergency site unlock procedure
+  URL: https://kb.fictitiouscorp.local/sharepoint/emergency-unlock
+- Title: Internal KB — How to analyze Conditional Access impacts on SharePoint
+  URL: https://kb.fictitiouscorp.local/security/conditional-access-sharepoint
+- Title: Runbook — Reassigning Site Collection Admins via PowerShell
+  URL: https://kb.fictitiouscorp.local/runbooks/spo-reassign-admins
+- Title: Incident Template — Microsoft Support case submission checklist
+  URL: https://kb.fictitiouscorp.local/support/ms-support-case-template
+
+TAGS: sharepoint, access, permissions, conditional-access
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2025-05-02T09:12:00+00:00 | Author: Marina Cortez | Changes: Initial draft covering basic unlock and admin restore steps.
+Version: 1.1 | Date: 2025-06-15T14:30:00+00:00 | Author: Marina Cortez | Changes: Added Conditional Access troubleshooting and sign-in log guidance.
+Version: 1.2 | Date: 2025-08-04T11:05:00+00:00 | Author: Ravi Patel | Changes: Included Power Automate connector remediation notes.
+Version: 1.3 | Date: 2025-09-21T16:45:00+00:00 | Author: Marina Cortez | Changes: Added verification checklist and OneDrive sync steps.
+Version: 1.4 | Date: 2025-10-30T10:00:00+00:00 | Author: Jordan M. Hsu | Changes: Expanded escalation path and added Microsoft support case template link.
+Version: 1.5 | Date: 2025-11-15T08:22:00+00:00 | Author: Marina Cortez | Changes: Clarified PowerShell commands and added LockState warnings.
+Version: 1.6 | Date: 2025-11-28T03:22:00+00:00 | Author: Marina Cortez | Changes: Finalized director approval metadata, tightened CA exclusion guidance, added estimated resolution time and additional verification steps.

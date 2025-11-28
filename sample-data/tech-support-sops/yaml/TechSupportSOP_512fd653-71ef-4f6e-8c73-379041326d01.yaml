@@ -1,0 +1,225 @@
+sop_id: 512fd653-71ef-4f6e-8c73-379041326d01
+version: 1.7
+created_at: 2025-11-28 02:13:56.140841+00:00
+last_updated: 2025-11-28 02:20:00+00:00
+title: Restore non-responsive Azure App Service Web App (HTTP 5xx / No response)
+problem_category: general
+complexity: medium
+system_context: Azure App Service Web App
+severity: low
+status: draft
+approval_level: cto
+author:
+  name: Morgan Harlow
+  email: morgan.harlow@platform.example.com
+approver:
+  name: ''
+  email: ''
+  approved_at: ''
+problem_description: 'Web App becomes non-responsive (returns HTTP 5xx errors, times
+  out, or shows blank pages) while App Service control plane reports the app as ''Running''.
+  Cause is often transient process crash, misconfigured app setting (for example run-from-package,
+  incorrect startup command), exhausted instance resources, or a deployment artifact
+  mismatch. This SOP guides support engineers through safe checks and remediation
+  steps to restore a standard Azure App Service Web App with minimal user impact.
+
+  '
+symptoms:
+- App returns HTTP 500 / 502 / 503 or timeouts for normal requests
+- App shows 'Your app service is temporarily unavailable' or blank page despite 'Running'
+  in portal
+- High memory or CPU usage spikes in App Service diagnostics
+- Recent deployment succeeded but site behavior changed
+- App logs show repeated worker process crashes (w3wp/node/dotnet) or startup exceptions
+prerequisites:
+- Access to Azure subscription with at least Web Plan Contributor role for the affected
+  resource group
+- Knowledge of the specific App Service name, Resource Group, and deployment slot
+  (if used)
+- Access to Application Insights (if enabled) and Kudu/SCM console credentials
+- Incident ticket created and linked to this SOP
+required_tools:
+- Azure Portal (portal.azure.com) access
+- Azure CLI (az) v2.40+ configured with the appropriate account
+- Browser able to access *.scm.azurewebsites.net (Kudu) and the public app URL
+- Application Insights access or equivalent logging system
+- Team collaboration channel (Slack/MS Teams) and incident management tool access
+estimated_resolution_time: 15-45 minutes
+resolution_steps:
+- step_number: 1
+  action: Confirm and document the symptom
+  details: '- Reproduce the issue from a public endpoint and record exact HTTP status,
+    response headers, and timestamps.
+
+    - Note the App Service name, resource group, slot name, region, and current App
+    Service Plan.
+
+    - Add initial findings to the incident ticket including any error snippets from
+    page.
+
+    '
+  warnings: Do not perform changes before documenting current state; preserve timestamps
+    and logs.
+- step_number: 2
+  action: Check App Service runtime status and basic metrics
+  details: "- Open Azure Portal \u2192 App Services \u2192 <app-name> \u2192 Overview.\
+    \ Verify 'State' is Running.\n- Check Metrics (CPU, Memory, HTTP 5xx, Requests)\
+    \ for sudden spikes or restart count in last 30 minutes.\n- CLI quick-check:\n\
+    \  - az webapp show --name <app-name> --resource-group <rg> --query '{state:state,defaultHostName:defaultHostName}'\
+    \ -o json\n"
+  warnings: ''
+- step_number: 3
+  action: Review recent deployments and configuration changes
+  details: "- Go to Deployment Center \u2192 check last deployment time, logs, and\
+    \ commit id.\n- Review App Settings (Configuration) for recent edits: WEBSITE_RUN_FROM_PACKAGE,\
+    \ SCM_DO_BUILD_DURING_DEPLOYMENT, STARTUP_COMMAND, platform (32/64-bit), and connection\
+    \ strings.\n- If a deployment artifact was recently changed, identify the release\
+    \ and ask deploy owner if any breaking changes were introduced.\n"
+  warnings: Don't change connection strings until you confirm credentials with app
+    owner or secrets manager.
+- step_number: 4
+  action: Stream and inspect live logs
+  details: "- Use Log stream in Portal (App Service \u2192 Log stream) or Kudu:\n\
+    \  - Browse to https://<app-name>.scm.azurewebsites.net/DebugConsole\n  - Check\
+    \ LogFiles\\Application\\ for .NET, node, or custom logs; also see EventLog.xml\
+    \ for Windows cases.\n- If Application Insights is enabled, use Live Metrics ->\
+    \ Requests/Failures to spot exception types and operation ids.\n"
+  warnings: Log level changes (e.g., to verbose) may increase noise; revert after
+    diagnosis.
+- step_number: 5
+  action: Perform a graceful restart of the Web App
+  details: "- Use Portal: App Service \u2192 Overview \u2192 Restart.\n- Or CLI: az\
+    \ webapp restart --name <app-name> --resource-group <rg>\n- Wait 2-5 minutes and\
+    \ re-test public endpoint.\n- Note: If using deployment slots, restart the specific\
+    \ slot (e.g., /slots/staging).\n"
+  warnings: Restart will briefly disrupt active connections; schedule if high traffic
+    unless urgent.
+- step_number: 6
+  action: If restart fails, collect process dump and advanced logs
+  details: '- For Windows: use Diagnostic Tools in Kudu to capture w3wp dumps or use
+    ProcDump.
+
+    - For Linux containers: attach to container via Kudu SSH, capture stdout/stderr
+    logs and core dumps.
+
+    - Save dumps to a secure storage location linked in the incident ticket for developers
+    to analyze.
+
+    '
+  warnings: Process dumps may contain sensitive data; store them in secured incident
+    artifacts.
+- step_number: 7
+  action: Check App Settings related to start-up and package deployment
+  details: '- If WEBSITE_RUN_FROM_PACKAGE=true, ensure the package exists and was
+    not corrupted during deployment.
+
+    - Validate STARTUP_COMMAND or entrypoint for Linux containers. Mistyped command
+    can cause immediate process exit.
+
+    - If using runtime version settings (e.g., WEBSITE_NODE_DEFAULT_VERSION), confirm
+    required version is set.
+
+    '
+  warnings: ''
+- step_number: 8
+  action: 'Temporary mitigation: scale or swap slot (if applicable)'
+  details: "- If instance resource exhaustion observed, scale out to additional instances\
+    \ or scale up the App Service Plan temporarily.\n- If a healthy staging slot exists,\
+    \ consider swapping to production with swap validation; ensure swap slot settings\
+    \ are correct.\n- CLI examples:\n  - az appservice plan update --name <plan> --resource-group\
+    \ <rg> --number-of-workers <n>\n  - az webapp deployment slot swap --name <app>\
+    \ --resource-group <rg> --slot staging --target-slot production\n"
+  warnings: Follow swap-sticky settings and slot settings behavior; coordinate with
+    deployment owner.
+- step_number: 9
+  action: Redeploy a known-good artifact
+  details: "- If diagnostics point to a bad deployment, redeploy a previously known\
+    \ good build.\n- Use ZIP deploy for quick rollback:\n  - az webapp deployment\
+    \ source config-zip --resource-group <rg> --name <app-name> --src ./good_build.zip\n\
+    - After deployment, restart the app and validate.\n"
+  warnings: Confirm the artifact is from a trusted release pipeline; do not deploy
+    unvetted code to production.
+- step_number: 10
+  action: If resolved, document remediation and close loop
+  details: '- Record all actions, time-to-recovery, and root cause hypothesis in the
+    incident ticket.
+
+    - If root cause is a platform or recurring issue, propose a follow-up change in
+    backlog (e.g., add health probe, scale rules, improved alerts).
+
+    '
+  warnings: ''
+verification_steps:
+- step: Verify the public endpoint returns expected HTTP 200/2xx within acceptable
+    latency (use curl -I or browser).
+- step: Confirm App Service 'Restart Count' and 'Last Restart Time' in portal match
+    the remediation time.
+- step: Check Application Insights for failed requests and exceptions to ensure error
+    rate dropped to baseline.
+- step: Confirm no new crash dumps or immediate process exits appear in Kudu logs
+    after restart/redeploy.
+troubleshooting:
+- issue: 502 Bad Gateway intermittent after restart
+  solution: Usually ARR or platform routing issue. Check platform outages (Azure Service
+    Health) and ensure the front-end has warmed. If persistent, add a warmup probe
+    or scale out to avoid cold-starts.
+- issue: App starts but immediately crashes (startup exception)
+  solution: Inspect startup logs in Kudu and Application Insights. Look for missing
+    environment variables, invalid connection strings, or runtime mismatch. Temporarily
+    set WEBSITE_RUN_FROM_PACKAGE to 0 to allow file changes if run-from-package prevents
+    debugging.
+- issue: High memory/CPU after deploy
+  solution: Rollback to previous build, scale out/scale up, and capture memory profile.
+    Consider increasing instance size or optimizing leaking code paths.
+- issue: Kudu unreachable or returns 503
+  solution: Check SCM site binding and outbound network rules. If SCM is blocked by
+    IP restrictions, temporarily relax access or use Azure Portal diagnostics. If
+    platform issue suspected, escalate to Azure support.
+escalation:
+  condition: Issue persists after steps 1-9 or there is a production outage affecting
+    >10% of users for >60 minutes
+  contact: 'On-call Platform Engineer, Platform Slack channel #platform-oncall, and
+    create a high-priority ticket in incident management system'
+  escalation_path: '1) Notify on-call Platform Engineer via Slack @oncall-platform
+    and paste initial findings + logs link.
+
+    2) If no response within 15 minutes or issue escalates, call the on-call pager
+    number listed in runbook.
+
+    3) Open an Azure Support case (Standard/Premium) with collected diagnostics and
+    mention ''App Service worker process crashes / restart required''.
+
+    4) If business-critical (customer-facing outage), escalate to Engineering Manager
+    and CTO per incident management policy.
+
+    '
+related_documentation:
+- title: 'Internal: Azure App Service Runbook - Troubleshooting Web App Restarts'
+  url: https://intranet.platform.example/docs/app-service-runbook
+- title: 'Internal: Deployment Rollback Procedures'
+  url: https://ci-cd.platform.example/pipelines/rollback-guide
+- title: 'Microsoft Docs: Azure App Service diagnostics and logs'
+  url: https://learn.microsoft.example.microsoft/en-us/azure/app-service/diagnostics
+- title: 'Microsoft Docs: Kudu (SCM) debug console'
+  url: https://learn.microsoft.example.microsoft/en-us/azure/app-service/kudu
+tags:
+- azure
+- app-service
+- webapp
+- troubleshooting
+- runbook
+version_history:
+- version: '1.0'
+  date: 2025-02-15 09:30:00+00:00
+  author: Morgan Harlow
+  changes: Initial draft covering basic restart and log collection steps.
+- version: '1.3'
+  date: 2025-07-22 14:45:00+00:00
+  author: Avery Quinn
+  changes: Added Kudu process dump instructions and Application Insights live metrics
+    verification.
+- version: '1.7'
+  date: 2025-11-28 02:20:00+00:00
+  author: Morgan Harlow
+  changes: Updated step ordering, added scale/swap mitigations, clarified escalation
+    timings, and improved troubleshooting tips.

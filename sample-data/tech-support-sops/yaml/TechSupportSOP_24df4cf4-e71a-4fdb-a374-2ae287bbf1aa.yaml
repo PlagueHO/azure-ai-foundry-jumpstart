@@ -1,0 +1,210 @@
+sop_id: 24df4cf4-e71a-4fdb-a374-2ae287bbf1aa
+version: '1.8'
+created_at: '2025-11-28T02:42:30.022866+00:00'
+last_updated: '2025-11-28T03:10:00+00:00'
+title: Restore healthy backend status for Azure Load Balancer (Standard) when instances
+  show Unhealthy
+problem_category: network
+complexity: medium
+system_context: Azure Load Balancer
+severity: high
+status: published
+approval_level: director
+author:
+  name: Morgan Clarke
+  email: morgan.clarke@acmecloud.test
+approver:
+  name: Devon Patel
+  email: devon.patel@acmecloud.test
+  approved_at: '2025-11-28T03:05:00+00:00'
+problem_description: 'Backend pool instances attached to an Azure Load Balancer (Standard
+  SKU) are reporting as Unhealthy or are intermittently failing client connections
+  (502/504/timeouts). Common root causes include misconfigured health probes (path
+  or port mismatch), NSG/UDR blocking probe/traffic, backend service listening on
+  unexpected port, or VM/VMSS misregistration with the backend pool. This SOP walks
+  a network engineer through diagnosis and remediation steps to restore healthy backend
+  status and confirm recovery.
+
+  '
+symptoms:
+- Load Balancer backend pool reports 'Unhealthy' or 'Degraded' for 1+ instances.
+- Intermittent 502/504 errors or TCP connection timeouts from clients to services
+  behind the LB.
+- Health probe failures in Load Balancer metrics with probe response errors or timeouts.
+- New instances added to backend pool immediately show Unhealthy.
+prerequisites:
+- Access to Azure subscription with Owner or Network Contributor permissions for the
+  target resources.
+- SSH/RDP access to affected backend VMs or ability to run commands in VMSS instances.
+- Knowledge of the application health endpoint and expected probe response (path,
+  port, protocol).
+- Change window approved if production-impacting remediation required.
+required_tools:
+- Azure CLI (az) v2.50+ or Azure PowerShell Az.Module
+- SSH client (for Linux) or RDP client (for Windows) with VM credentials
+- curl or wget installed on a management host for probe simulation
+- Log analytics / VM diagnostics access to check application logs
+estimated_resolution_time: 30-60 minutes
+resolution_steps:
+- step_number: 1
+  action: Gather initial facts
+  details: 'Identify Load Balancer and affected backend pool. Record resource group,
+    LB name, backend pool name, probe name, VM instance IDs, and timestamps of failure.
+    Example commands: az network lb show --name <LB_NAME> --resource-group <RG> az
+    network lb backend-pool list --lb-name <LB_NAME> --resource-group <RG>
+
+    '
+  warnings: Do not make configuration changes before collecting logs and confirming
+    change window for production.
+- step_number: 2
+  action: Check health probe configuration
+  details: 'Verify probe protocol, port, and probe path (for HTTP/HTTPS). Ensure probe
+    interval and unhealthy thresholds are appropriate. Example CLI: az network lb
+    probe show --resource-group <RG> --lb-name <LB_NAME> --name <PROBE_NAME> Confirm:
+    protocol (Tcp/Http), port matches service listener, and path (e.g., /healthz)
+    returns 200.
+
+    '
+  warnings: If probe path is changed, plan the change during maintenance window; avoid
+    changing probe frequency in high-traffic windows without approval.
+- step_number: 3
+  action: Simulate the health probe from a jump host
+  details: 'From a host in the same virtual network (or from the VM itself), run:
+    curl -v http://<backend_private_ip>:<probe_port>/<probe_path> or for TCP probe:
+    bash: nc -vz <backend_private_ip> <probe_port> Confirm the expected HTTP 200 response
+    or open TCP port.
+
+    '
+  warnings: Do not run excessive load tests on production instances.
+- step_number: 4
+  action: Validate backend service listener
+  details: 'On the affected VM: - Linux: sudo ss -lntp | grep <port> or sudo netstat
+    -lntp - Windows: netstat -ano | findstr :<port> and correlate with process id
+    Confirm service process is bound to 0.0.0.0:<port> or backend IP, not localhost
+    only.
+
+    '
+  warnings: Restarting services may cause transient downtime; notify stakeholders
+    if required.
+- step_number: 5
+  action: Check NSG and UDR rules
+  details: 'Confirm Network Security Groups allow probe source and client traffic:
+    - NSG inbound rules permit probe port from AzureLoadBalancer tag or subnet - No
+    UDR routes send probe traffic to a firewall appliance incorrectly Example: az
+    network nsg rule list --nsg-name <NSG> --resource-group <RG> az network route-table
+    show --name <RT> --resource-group <RG>
+
+    '
+  warnings: Modifying NSG/UDR can impact other services; apply least-permission rule
+    changes and document changes.
+- step_number: 6
+  action: Validate backend pool membership and IP assignment
+  details: 'Ensure the NIC/VM IP configured in the backend pool matches the IP that
+    the service listens on. For VMSS, verify backend instances are registered: az
+    network lb address-pool list --lb-name <LB_NAME> --resource-group <RG> Check NIC
+    IP config: az network nic show --name <NIC_NAME> --resource-group <RG>
+
+    '
+  warnings: Removing and re-adding NICs to backend pool for state reset should be
+    done with caution; expect transient connection loss.
+- step_number: 7
+  action: Redeploy or restart the application process on affected VM(s)
+  details: 'If the listener is not present or unhealthy, restart the application service
+    (systemctl restart <service> or IISRESET / Windows Service restart). After restart,
+    repeat the probe simulation (step 3).
+
+    '
+  warnings: Restarting application services will drop in-flight connections.
+- step_number: 8
+  action: Re-register instance into backend pool if required
+  details: 'If instance is still Unhealthy after fixes, remove and re-add NIC to backend
+    pool to force re-registration: az network lb address-pool address remove/add (or
+    use portal) For VMSS: perform an Update Instance to reapply network config: az
+    vmss update-instances --name <vmss> --resource-group <rg> --instance-ids <id>
+
+    '
+  warnings: Altering backend pool membership causes brief traffic disruption to that
+    instance only.
+- step_number: 9
+  action: Check Azure platform logs and metrics
+  details: 'Review Load Balancer diagnostics and metrics in Monitor (ProbeStatus,
+    HealthProbeStatus, PacketDropCount). If diagnostics are not enabled, enable them
+    (may take 5-10 minutes to collect).
+
+    '
+  warnings: Diagnostics changes may incur storage costs; follow internal policy.
+- step_number: 10
+  action: If using Application Gateway or Firewall in path, validate end-to-end connectivity
+  details: 'Confirm that any upstream virtual appliance or AppGW is forwarding probe
+    traffic unchanged and not modifying headers or paths. Use packet capture on a
+    jump host or the VM (tcpdump or Message Analyzer) to see probe packets.
+
+    '
+  warnings: Packet capture may include sensitive data; follow data handling policies.
+verification_steps:
+- step: Confirm that az network lb probe show returns a healthy state for the probe
+    and timestamps indicate recent success.
+- step: From an external client, perform repeated curl requests to the public IP/DNS
+    and confirm successful responses without 502/504 errors for at least 10 consecutive
+    requests.
+- step: Verify Load Balancer metrics report backend instances as Healthy for >= 2
+    consecutive probe intervals.
+- step: Check application logs on backend VMs for no new health-check related errors
+    in the last 15 minutes.
+troubleshooting:
+- issue: Health probe path returns 404 or non-200
+  solution: Confirm application exposes the configured probe endpoint. Update probe
+    path to the correct endpoint or add a lightweight route that returns 200 for the
+    probe.
+- issue: NSG blocks probe source
+  solution: Add an inbound rule to the NSG allowing probe port from the AzureLoadBalancer
+    service tag or from the LB subnet. Temporarily allow source 168.63.129.16 if required
+    by diagnostics.
+- issue: Service bound to localhost only (127.0.0.1)
+  solution: Reconfigure service to bind to 0.0.0.0 or the VM's private IP. Restart
+    service and verify listener with netstat/ss.
+- issue: VMSS instances not receiving updated network config
+  solution: Run az vmss update-instances for affected instance IDs or perform an automatic
+    upgrade in a staged manner; ensure VMSS model has correct networkProfile.
+- issue: SNAT exhaustion or high ephemeral port usage
+  solution: Investigate outbound connection patterns, enable Outbound Rules (Standard
+    LB outbound) or use NAT Gateway to increase SNAT port capacity; consult platform
+    team if changes required.
+escalation:
+  condition: Issue not resolved after 60 minutes of remediation steps or repeated
+    recurrences within 24 hours affecting customer SLAs.
+  contact: ops-director@acmecloud.test
+  escalation_path: '1) Notify on-call Network Lead via PagerDuty and include incident
+    ID, LB name, RG, and time of last probe failure. 2) If Network Lead cannot resolve
+    within 30 minutes, escalate to Ops Director (email above) and schedule a war-room
+    conference (Teams link). 3) Provide collected logs, az CLI outputs, packet captures,
+    and screenshots to Microsoft Azure Support with support request opened under the
+    subscription.
+
+    '
+related_documentation:
+- title: 'Internal KB: Azure Load Balancer health probe checklist'
+  url: https://kb.acmecloud.test/network/azure-lb-probe-checklist
+- title: 'Azure docs: Load Balancer health probes (reference)'
+  url: https://docs.microsoft-fake.example/azure/load-balancer/probes
+- title: 'Internal runbook: VMSS network re-registration procedure'
+  url: https://runbooks.acmecloud.test/vmss/network-reregister
+tags:
+- azure
+- load-balancer
+- health-probe
+- network
+version_history:
+- version: '1.0'
+  date: '2025-10-12T09:00:00+00:00'
+  author: Morgan Clarke
+  changes: Initial draft created covering probe misconfig and NSG blocks.
+- version: '1.5'
+  date: '2025-11-10T14:22:00+00:00'
+  author: Morgan Clarke
+  changes: Added VMSS-specific remediation and simulated probe steps.
+- version: '1.8'
+  date: '2025-11-28T03:10:00+00:00'
+  author: Morgan Clarke
+  changes: Expanded troubleshooting, added verification commands and escalation path;
+    updated approver and timestamps.

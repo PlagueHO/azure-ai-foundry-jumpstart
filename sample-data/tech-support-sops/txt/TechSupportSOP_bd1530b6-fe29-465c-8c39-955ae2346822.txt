@@ -1,0 +1,147 @@
+SOP ID: bd1530b6-fe29-465c-8c39-955ae2346822
+Version: 1.9
+Created At: 2025-11-28T02:56:44.587836+00:00
+Last Updated: 2025-11-28T03:28:00+00:00
+Title: Resolve failed interactive sign-ins for Microsoft Entra ID (federated & synchronized accounts)
+Problem Category: authentication
+Complexity: medium
+System Context: Microsoft Entra ID
+Severity: low
+Status: approved
+Approval Level: director
+Author: Dylan Rowe <dylan.rowe@example.com>
+Approver: Lena Ortiz <lena.ortiz@example.com>
+Approved At: 2025-11-28T03:00:00+00:00
+
+PROBLEM DESCRIPTION:
+Intermittent or persistent failed interactive sign-ins for users whose identities are managed in Microsoft Entra ID. Failures may affect federated (AD FS) or synchronized (Azure AD Connect) accounts and present as password failures, Conditional Access denials, or immediate token refresh failures. This SOP guides frontline tech support through diagnosis and remediation steps to restore primary authentication flows and confirm token issuance.
+
+SYMPTOMS:
+- Users report "Invalid username or password" or "Unable to sign in" when entering correct credentials.
+- Single Sign-On (SSO) failing for previously working applications (redirects to AD FS login loop or immediate denial).
+- Sign-in logs show "Failure" with reason codes such as "InvalidCredentials", "UserAccountLocked", "ConditionalAccessPolicy", "DeviceTokenExpired", or "PasswordHashSyncNotEnabled".
+- Some users succeed from other network locations or devices.
+- Token refresh failures after password reset (old refresh tokens still accepted by apps).
+
+PREREQUISITES:
+- You are a member of the Identity Support or Help Desk group with delegated Entra ID permissions.
+- Access to Microsoft Entra admin center (https://entra.microsoft.com) and sign-in logs.
+- If using Azure AD Connect or AD FS, access to the on-prem server or an admin who can run diagnostics.
+- Authorization to reset user passwords and revoke sessions per company policy.
+
+REQUIRED TOOLS:
+- Web browser with access to Microsoft Entra admin center.
+- Azure AD PowerShell module (AzureAD or Microsoft.Graph modules installed) on admin workstation.
+- Access to Azure AD Connect server or telemetry (if hybrid).
+- AD FS server console access (if federated).
+- Company support ticket system and the ability to escalate to Identity Engineering.
+
+ESTIMATED RESOLUTION TIME: 15-45 minutes (simple cases). 1-4 hours if federation or sync reconfiguration is required.
+
+RESOLUTION STEPS:
+1. Action: Collect basic incident information
+   Details:
+   - Ask the user for exact error message, time of failure, device type (Windows/Mac/iOS/Android), network (corporate/Wi‑Fi/home), and whether other users are affected.
+   - Note the user's UPN (do not record personal PII beyond UPN), workstation name, and application affected.
+   Warnings:
+   - Do not ask for or record user passwords.
+
+2. Action: Check Microsoft Entra sign-in logs
+   Details:
+   - In Microsoft Entra admin center > Monitoring > Sign-ins, filter by the user's UPN and time window.
+   - Record the top failure reason and correlationId/ActivityId for the failed attempt.
+   - Common fields to capture: Status (Success/Failure), FailureReason, Conditional Access result, Client App, IP address, Device detail.
+   Warnings:
+   - If logs show "PasswordHashSyncNotEnabled" and user is expected to be synced, escalate to Azure AD Connect check.
+
+3. Action: Verify user account status in Entra ID
+   Details:
+   - Users > search user > check "Block sign in" flag, "Password policies" (mustChangePasswordNextSignIn), and assigned authentication methods.
+   - If account is blocked or required to change password, follow company procedure to unblock or have user perform password reset.
+   Warnings:
+   - When unblocking, confirm request comes from authorized user or manager.
+
+4. Action: Revoke sessions and force token refresh
+   Details:
+   - Use portal: Users > select user > Authentication methods or Account > "Revoke sessions" (Revoke sign-in sessions).
+   - Or PowerShell (AzureAD module): Revoke-AzureADUserAllRefreshToken -ObjectId <userObjectId>
+   - Or Microsoft Graph PowerShell: Invoke-MgGraphRequest -Method POST -Uri "/users/<userId>/revokeSignInSessions"
+   - Ask user to sign out of all devices and sign back in.
+   Warnings:
+   - Revoking tokens will force reauthentication for all apps; schedule if heavy-impact.
+
+5. Action: If federated (AD FS), check AD FS health and claims flow
+   Details:
+   - On AD FS primary server, check Event Viewer (AD FS/Admin), time synchronization, and certificate validity for token-signing and token-decrypting certs.
+   - Verify relying party trust for Microsoft Entra ID (correct endpoints) and run Get-AdfsProperties and Get-AdfsRelyingPartyTrust (PowerShell).
+   - If AD FS shows "401" or loop behavior, restart AD FS service only after business approval.
+   Warnings:
+   - Do not reissue new certificates without change control approval.
+
+6. Action: If Azure AD Connect hybrid, verify sync health
+   Details:
+   - On Azure AD Connect server, open Synchronization Service Manager and check recent sync jobs for errors.
+   - Confirm password hash sync connector is enabled if using PHS. Run Start-ADSyncSyncCycle -PolicyType Delta.
+   - Check Azure AD Connect version compatibility and OS time skew (NTP).
+   Warnings:
+   - Avoid reinstallation of Azure AD Connect in field; escalate if connector shows repeated failures.
+
+7. Action: Review Conditional Access and MFA
+   Details:
+   - In Entra admin center > Security > Conditional Access, review policies that apply to the user or groups. Look for "Block" or "Grant - Require MFA" conditions.
+   - If Conditional Access blocks sign-in due to device compliance, check Intune device compliance or require device registration.
+   Warnings:
+   - Do not modify policies without approval; temporary "Exclude" of a user may be acceptable under emergency procedures.
+
+8. Action: Apply corrective action and test
+   Details:
+   - Based on findings: unblock account, perform password reset, sync password hash, reconfigure AD FS trust, update AD FS token signing certificate, or adjust Conditional Access (temporary exception).
+   - Have user attempt sign-in on a private browser session, then on corporate device.
+   Warnings:
+   - Keep a log of exact changes made and time for auditing.
+
+VERIFICATION STEPS:
+- Confirm a successful sign-in event appears in Entra sign-in logs for the user with Status: Success and no Conditional Access blocks.
+- User reports they can access affected applications (web and native) without credential errors.
+- For federated cases: test SSO flow using a fresh browser session and confirm AD FS issues cleared (no login loops).
+- For synced accounts: verify Azure AD Connect shows successful delta/full sync and no password sync errors.
+- If tokens were revoked, verify user is required to reauthenticate and receives fresh access tokens (test by accessing one protected app).
+
+TROUBLESHOOTING:
+Issue: Sign-in log shows "InvalidCredentials" but user insists password is correct.
+Solution: Confirm user is authenticating with correct UPN/alias; instruct user to sign into https://myaccount.microsoft.com and attempt password reset if allowed. If federated, verify AD FS authentication and local AD password state.
+
+Issue: Conditional Access blocks sign-in due to device compliance
+Solution: Check Intune device compliance status, ensure device is enrolled and compliant or temporarily exempt the user from the policy (follow policy change control). Consider asking user to register device (Work or School account > Access work or school).
+
+Issue: AD FS token signing certificate expired
+Solution: Replace token signing certificate with a valid one on AD FS and update relying party/token-signing on Entra if needed. Escalate to Identity Engineering if certificate rollover is automated or complex.
+
+Issue: Azure AD Connect not syncing password hashes
+Solution: On the Azure AD Connect server, confirm Password Hash Sync is enabled, check service account permissions, and run a full sync. If service account has expired credentials, update them in the Azure AD Connect configuration.
+
+ESCALATION:
+Condition: Unable to determine root cause after completing all steps, or remediation requires AD FS reconfiguration, Azure AD Connect re-installation, or Conditional Access policy changes that impact many users.
+Contact: Identity Engineering Team — identity-eng@example.com; Pager: +1-555-0102 (fictional)
+Escalation Path:
+- Level 1 (Help Desk): Document findings, capture sign-in log correlationId, screenshots, and Azure AD Connect/AD FS server logs. Create ticket in support system and assign to Identity Engineering.
+- Level 2 (Identity Engineering): If L1 cannot remediate within 2 hours or risk of service impact, escalate to Identity Engineering lead with full packet.
+- Level 3 (Director of Identity): If incident impacts >5% of users or requires emergency policy changes, notify Director on call and schedule incident bridge.
+
+RELATED DOCUMENTATION:
+- Title: Microsoft Entra ID — Sign-in logs troubleshooting
+  URL: https://kb.examplecorp.com/entra/signin-logs-troubleshoot
+- Title: AD FS certificate rollover checklist (internal)
+  URL: https://intranet.examplecorp.com/identity/adfs/cert-rollover
+- Title: Azure AD Connect health and password hash sync
+  URL: https://kb.examplecorp.com/azureadconnect/password-sync
+- Title: Conditional Access emergency exemption workflow
+  URL: https://intranet.examplecorp.com/policies/conditional-access-exemptions
+
+TAGS: authentication, EntraID, AD_FS, AzureADConnect, ConditionalAccess
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2025-06-02T09:00:00+00:00 | Author: Dylan Rowe | Changes: Initial draft covering common sign-in failure scenarios.
+Version: 1.4 | Date: 2025-09-18T14:12:00+00:00 | Author: Dylan Rowe | Changes: Added AD FS certificate and Azure AD Connect sync checks; included PowerShell token revoke commands.
+Version: 1.8 | Date: 2025-11-20T11:45:00+00:00 | Author: Dylan Rowe | Changes: Expanded Conditional Access troubleshooting and included verification checklist.
+Version: 1.9 | Date: 2025-11-28T03:28:00+00:00 | Author: Dylan Rowe | Changes: Formalized escalation path with contact points; updated portal navigation to Microsoft Entra admin center naming.

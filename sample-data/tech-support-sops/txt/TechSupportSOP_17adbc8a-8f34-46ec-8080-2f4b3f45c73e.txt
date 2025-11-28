@@ -1,0 +1,214 @@
+SOP ID: 17adbc8a-8f34-46ec-8080-2f4b3f45c73e
+Version: 1.6
+Created At: 2025-11-28T02:55:31.662580+00:00
+Last Updated: 2025-11-28T03:10:00+00:00
+Title: Azure Monitor — Resolve missing metrics and stalled Log Analytics ingestion for Azure resources
+Problem Category: cloud
+Complexity: medium
+System Context: Azure Monitor
+Severity: medium
+Status: approved
+Approval Level: manager
+Author: Jordan Reyes <jordan.reyes@ficticloud.example.com>
+Approver: Priya Menon <priya.menon@ficticloud.example.com>
+Approved At: 2025-11-28T03:05:00+00:00
+
+PROBLEM DESCRIPTION:
+Customers report that Azure Monitor is not showing recent metrics or alerts are not firing. Symptoms can include dashboards missing recent metric points, metric-based alert rules showing "No data" or stale values, and Log Analytics workspaces not receiving diagnostic data (stalled ingestion). This SOP covers root-cause checks and remediation steps focused on Azure metric pipelines, diagnostic settings, Data Collection Rules (DCR) / agents, and common configuration issues that prevent metric or log ingestion.
+
+SYMPTOMS:
+- Dashboards or charts in Azure Monitor show flat lines or "No data" for the last X minutes/hours.
+- Metric alert rules in the portal list as "No data" or do not trigger when expected.
+- Log Analytics workspace shows zero bytes ingested for specific resource types while resource activity is known to exist.
+- Diagnostic settings appear configured but last emitted timestamp is old.
+- CLI queries (az monitor metrics list / logs) return empty or truncated time ranges.
+
+PREREQUISITES:
+- You are a member of the Monitoring Operators or Owner role on the target subscription/resource, or have equivalent RBAC to view and modify diagnostic settings, alerts, and workspace DCRs.
+- Access to Azure Portal and Azure CLI (az) or PowerShell.
+- Knowledge of the target resource name(s), resource group, and subscription ID.
+
+REQUIRED TOOLS:
+- Azure Portal (portal.azure.com)
+- Azure CLI (az) v2.50+ or Azure PowerShell (Az module)
+- Access to Log Analytics workspace (Workspace ID) and metric/alert rule IDs
+- A log collection sample (Kusto query) or expected metric names and namespaces
+- Network connectivity to Azure management endpoints (management.azure.com)
+
+ESTIMATED RESOLUTION TIME: 30-90 minutes (depends on root cause; propagation can take up to 30 minutes after changes)
+
+RESOLUTION STEPS:
+1. Action: Confirm symptom and scope
+   Details:
+   - Identify affected resources, resource groups, and scope (single VM, scale set, app service, subscription-wide).
+   - Note the time window when metrics stopped updating.
+   - Record the alert rule name(s) and Log Analytics workspace ID.
+   - Example: "vm-prod-01 in RG=prod-rg, alert Rule=High-CPU-5m, workspace=la-prod-ws"
+   Warnings:
+   - Do not change production alert thresholds during investigation without stakeholder approval.
+
+2. Action: Check Azure Monitor service health and known issues
+   Details:
+   - In Azure Portal, open Service Health > Regional outages and Microsoft Azure status.
+   - If there is a known Microsoft incident for Metrics or Log Analytics in your region, document it and communicate to stakeholders.
+   Warnings:
+   - If a platform outage exists, remediation is not possible — follow vendor SLA notifications.
+
+3. Action: Validate resource provider registration
+   Details:
+   - Using Azure CLI:
+     az provider show --namespace Microsoft.Insights --query "registrationState"
+   - Expected: "Registered". If not registered, register:
+     az provider register --namespace Microsoft.Insights
+   Warnings:
+   - Provider registration can take several minutes.
+
+4. Action: Verify metric availability and definitions
+   Details:
+   - List metrics available for the resource (replace placeholders):
+     az monitor metrics list-definitions --resource /subscriptions/<SUB_ID>/resourceGroups/<RG>/providers/<PROVIDER>/<RESOURCE_TYPE>/<RESOURCE_NAME>
+   - Confirm expected metric namespace and metric names exist and check supported timeGrainOptions (timegrain).
+   - If metric is not available, the resource may not emit that metric or it may belong to a different namespace.
+   Warnings:
+   - Some metrics have minute-level granularity; querying with an unsupported time grain returns no data.
+
+5. Action: Query metrics directly for recent data
+   Details:
+   - Example:
+     az monitor metrics list --resource /subscriptions/<SUB_ID>/resourceGroups/<RG>/providers/<PROVIDER>/<RESOURCE_TYPE>/<RESOURCE_NAME> --metric "CpuPercentage" --interval PT1M --timespan 2025-11-28T02:00:00Z/2025-11-28T03:00:00Z
+   - Verify the returned timeseries points. If empty, note lastTimestamp if present.
+   Warnings:
+   - Use ISO-8601 timespan and ensure time window covers the expected data.
+
+6. Action: Inspect diagnostic settings and where metrics/logs are routed
+   Details:
+   - Portal: Resource > Diagnostic settings OR CLI:
+     az monitor diagnostic-settings list --resource /subscriptions/<SUB_ID>/resourceGroups/<RG>/providers/<PROVIDER>/<RESOURCE_TYPE>/<RESOURCE_NAME>
+   - Confirm if logs/metrics are routed to:
+     - Log Analytics workspace (workspaceId)
+     - Event Hub
+     - Storage account
+   - If a workspace is configured, confirm that workspace exists and is healthy.
+   Warnings:
+   - Changing diagnostic settings can change billing; notify stakeholders.
+
+7. Action: Check Data Collection Rule (DCR) and Agent status (for Windows/Linux/VM scale sets)
+   Details:
+   - For AMA (Azure Monitor Agent), verify the DCR is assigned and agent shows healthy:
+     - Portal: VM > Extensions + applications > AzureMonitorLinuxAgent or AzureMonitorAgent
+     - CLI (example check for VM extension):
+       az vm extension show --resource-group <RG> --vm-name <VM_NAME> --name AzureMonitorLinuxAgent
+   - For legacy agents, confirm Microsoft Monitoring Agent is running.
+   - If DCR not assigned or agent unhealthy, reassign DCR or reinstall agent.
+   Warnings:
+   - Reinstalling agents may briefly interrupt local monitoring; schedule appropriately.
+
+8. Action: Check workspace ingestion and retention settings
+   Details:
+   - In the workspace, check Usage and estimated costs > Daily usage and data ingestion trends.
+   - Run Kusto query to check recent log activity:
+     AzureDiagnostics
+     | where TimeGenerated >= ago(60m)
+     | summarize count() by Resource, bin(TimeGenerated, 5m)
+   - If no records for resource, confirm diagnostic settings point to this workspace.
+   Warnings:
+   - Kusto queries may return sampling artifacts; ensure correct table for resource type.
+
+9. Action: Verify RBAC and permission scope
+   Details:
+   - Confirm Monitoring Reader or Contributor roles assigned to the team for resource and workspace.
+   - Check that Managed Identity used by DCR or agent has required permissions to the workspace.
+   Warnings:
+   - Changing RBAC roles affects security; follow change approval processes.
+
+10. Action: Look for throttling, ingestion errors or quotas
+    Details:
+    - Check workspace health and diagnostic logs for "ThrottledRequests" or HTTP 429-like events (if available).
+    - For Event Hub or Storage targets, confirm capacity and retention not hit.
+    Warnings:
+    - Increasing quotas may require subscription-level changes.
+
+11. Action: Recreate / reapply diagnostic setting when misconfiguration found
+    Details:
+    - If diagnostic settings are corrupted (empty lastSeen or missing categories), remove and recreate:
+      az monitor diagnostic-settings delete --ids <SETTING_ID>
+      az monitor diagnostic-settings create --resource /subscriptions/<SUB_ID>/resourceGroups/<RG>/providers/<PROVIDER>/<RESOURCE_TYPE>/<RESOURCE_NAME> --workspace <WORKSPACE_ID> --logs '[{"category":"Administrative","enabled":true}]' --metrics '[{"category":"AllMetrics","enabled":true}]'
+    - Recreate DCR association for agent-managed resources if needed.
+    Warnings:
+    - Deleting and recreating will not backfill missing historic data; only new data flows will be recorded.
+
+12. Action: Validate alert rule configuration and time-grain
+    Details:
+    - Open the alert rule and confirm:
+      - Correct resource selected
+      - Correct metric name and namespace
+      - Aggregation type and evaluation period consistent with metric timegrain (e.g., aggregation over 5 minutes while metric emits 1-minute points)
+    - Test alerts by temporarily lowering threshold or using diagnostic test events (when safe).
+    Warnings:
+    - Do not enable noisy test alerts on production without notification.
+
+13. Action: Allow propagation and monitor
+    Details:
+    - After changes, wait 5-30 minutes and re-run metric/log queries and check alerts.
+    - Document steps taken and change window.
+
+VERIFICATION STEPS:
+- Use az monitor metrics list or Portal charts to confirm recent metric points are visible for the previously empty window (expected: metric data points within last 5-15 minutes).
+- Run Kusto query (example) against the Log Analytics workspace:
+  AzureDiagnostics
+  | where TimeGenerated >= ago(30m) and Resource == "<RESOURCE_NAME>"
+  | top 10 by TimeGenerated
+  Expected: recent rows returned for the resource.
+- Open the alert rule history; expected: new evaluation cycles show data and/or alert transitions (if threshold met).
+- Confirm agent/DCR status shows healthy in VM / scale set extension view.
+
+TROUBLESHOOTING:
+Issue: Metric definitions exist but metrics still show "No data".
+Solution: Confirm requested time grain matches supported timeGrainOptions. If it does, verify resource emits the metric (some metrics are emitted only on certain resource activity or with diagnostic settings enabled).
+
+Issue: Log Analytics workspace shows zero ingestion for a resource despite diagnostic settings pointing to it.
+Solution: Re-check that the diagnostic setting's workspaceId matches the workspace. Validate that the resource's categories are enabled (e.g., "Audit", "PerformanceCounters"). If using DCRs, ensure the DCR includes the targeted data streams and that the agent is using that DCR.
+
+Issue: Diagnostic settings list shows a workspace but lastSentTimestamp is old or missing.
+Solution: Delete and recreate the diagnostic setting for the resource; ensure no RBAC or policy blocks creation. Check if a policy enforces settings and adjust policy configuration.
+
+Issue: Alerts are not firing after metrics returned.
+Solution: Check alert rule evaluation period and frequency; increase the evaluation frequency to match the metric time grain. Inspect action group configuration (e.g., disabled webhook or inactive ITSM connector).
+
+Issue: Agent shows unhealthy after OS update or VM Extension failure.
+Solution: Restart the VM extension or reinstall the agent. Collect logs from the extension (extensions status) and the agent's local logs (e.g., /var/opt/microsoft/azuremonitoragent/log or C:\ProgramData\AzureMonitor\Logs).
+
+ESCALATION:
+Condition: After completing all steps above and waiting 30 minutes, no metrics or logs are ingested and there is no regional outage reported.
+Contact: Cloud Operations Manager — A. Sinclair <cloudops-manager@ficticloud.example.com>
+Escalation Path:
+- Level 1: On-call Monitoring Engineer (internal pager)
+- Level 2: Cloud Operations Manager (email + phone)
+- Level 3: Open a support case with Microsoft Azure Support:
+  - Provide subscription ID, affected resources, timestamps, correlation IDs from diagnostic setting logs, and captured az CLI output.
+  - Use Azure Portal > Help + Support to create a support request with "Monitoring and Diagnostics" category and include request ID and case notes.
+Notes:
+- When opening a Microsoft support case, attach:
+  - az monitor metrics list output
+  - az monitor diagnostic-settings list output for the resource
+  - Kusto query results showing no ingestion
+  - Extension status or agent logs
+  - Time window and example expected events
+
+RELATED DOCUMENTATION:
+- Title: Azure Monitor metrics troubleshooting guide (internal synthesis)
+  URL: https://kb.ficticloud.example.com/azure-monitor/metrics-troubleshooting
+- Title: Data Collection Rules and Azure Monitor Agent — configuration checklist
+  URL: https://kb.ficticloud.example.com/azure-monitor/dcr-ama-checklist
+- Title: Creating and managing diagnostic settings (Portal & CLI)
+  URL: https://docs.ficticloud.example.com/azure/diagnostic-settings
+- Title: How to open an Azure support request — internal template
+  URL: https://kb.ficticloud.example.com/operations/azure-support-template
+
+TAGS: azure, monitor, metrics, log-analytics, diagnostic-settings, troubleshooting
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2024-06-12T09:20:00+00:00 | Author: Jordan Reyes | Changes: Initial draft covering basic metric query and diagnostic setting checks.
+Version: 1.3 | Date: 2025-03-15T14:45:00+00:00 | Author: Jordan Reyes | Changes: Added DCR/AMA steps and agent health checks; included CLI examples.
+Version: 1.5 | Date: 2025-10-10T11:30:00+00:00 | Author: Jordan Reyes | Changes: Expanded troubleshooting section and verification Kusto queries; added guidance for RBAC and throttling checks.
+Version: 1.6 | Date: 2025-11-28T03:10:00+00:00 | Author: Jordan Reyes | Changes: Finalized approval edits, added escalation contact and improved alert rule validation steps.

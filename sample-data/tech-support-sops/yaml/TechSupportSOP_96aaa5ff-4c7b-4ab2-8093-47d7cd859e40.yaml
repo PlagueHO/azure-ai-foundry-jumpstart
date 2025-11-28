@@ -1,0 +1,233 @@
+sop_id: 96aaa5ff-4c7b-4ab2-8093-47d7cd859e40
+version: 1.8
+created_at: 2025-11-28 02:19:46.050734+00:00
+last_updated: 2025-11-28 02:30:00+00:00
+title: AKS Monitoring Agents Not Reporting / Delayed Metrics for Azure Monitor (Container
+  Insights)
+problem_category: general
+complexity: medium
+system_context: Azure Kubernetes Service Monitoring
+severity: medium
+status: draft
+approval_level: manager
+author:
+  name: Rowan Hale
+  email: r.hale@fictional-ops.example
+problem_description: 'Container Insights (Azure Monitor for containers) or a third-party
+  monitoring agent in an AKS cluster is not sending node/pod metrics or logs to the
+  configured Log Analytics workspace, or metrics are delayed beyond alert thresholds.
+  This SOP covers diagnosis and remediation steps for common causes: agent DaemonSet
+  failures, misconfigured Log Analytics workspace ID/keys, RBAC changes, network policies
+  blocking egress, or resource constraints on nodes that cause agent pods to be evicted/crash.
+
+  '
+symptoms:
+- No recent metrics in Log Analytics for one or more AKS nodes (e.g., no Heartbeat
+  records for >5 minutes).
+- Container Insights charts in Azure Portal show gaps or zero values for CPU/memory.
+- Monitoring agent DaemonSet pods are in CrashLoopBackOff, Pending, or Evicted status.
+- Alerts triggered for 'AKS metrics missing' or similar monitoring runbooks.
+- kubectl logs show authorization or TLS handshake errors for agent pods.
+prerequisites:
+- Access to Azure subscription with at least Monitoring Contributor or Owner on the
+  AKS resource and Log Analytics workspace.
+- kubectl configured and tested against the target AKS cluster (kubeconfig with cluster-admin
+  or monitoring-manager role).
+- az CLI logged in and set to target subscription (az login; az account set).
+- Helm (v3) installed locally if using Helm-managed agent deployments.
+- Change window approved if taking disruptive actions (restarting DaemonSets may cause
+  short monitoring gaps).
+required_tools:
+- kubectl (v1.24+ recommended for AKS versions maintained in 2025).
+- az CLI (v2.40+ recommended).
+- helm (v3) if agent installed via Helm chart.
+- Access to Azure Portal and Log Analytics query editor.
+- Terminal with access to cluster administrative kubeconfig.
+estimated_resolution_time: 30-60 minutes
+resolution_steps:
+- step_number: 1
+  action: Initial scope and impact assessment
+  details: 'Identify which nodes, namespaces, and time windows show missing data.
+    Use the Azure Portal -> Monitor -> Container insights or Log Analytics queries
+    to scope impact. Example query to check last heartbeat time: "Heartbeat | where
+    TimeGenerated > ago(30m) | summarize max(TimeGenerated) by Computer"
+
+    '
+  warnings: Do not perform cluster-wide restarts during a critical production release
+    window unless approved.
+- step_number: 2
+  action: Verify agent DaemonSet status in the cluster
+  details: 'Run: kubectl get daemonsets -n kube-system -o wide Look specifically for
+    resources named azuremonitor-containers, omsagent, or whatever the deployed agent
+    name is. Confirm desired vs available pods and note nodes where pods are not running.
+
+    '
+  warnings: ''
+- step_number: 3
+  action: Inspect problematic agent pod logs
+  details: 'For a failing pod: kubectl describe pod <pod-name> -n kube-system Then:
+    kubectl logs <pod-name> -n kube-system --previous Look for errors: Log Analytics
+    workspace ID/key misconfigured, 401/403 auth errors, TLS handshake, DNS resolution
+    failures, or OOMKilled messages.
+
+    '
+  warnings: ''
+- step_number: 4
+  action: Check node-level issues
+  details: 'kubectl get nodes -o wide kubectl describe node <node-name> Check for
+    kubelet pressure conditions, disk pressure, or taints that prevent DaemonSet scheduling.
+    For Pending pods, verify if the node has insufficient resources or disk.
+
+    '
+  warnings: ''
+- step_number: 5
+  action: Validate Log Analytics workspace connectivity and credentials
+  details: 'On agent configuration (ConfigMap/DaemonSet env vars), confirm WORKSPACE_ID
+    and WORKSPACE_KEY (or connection string) match the workspace in Azure Portal.
+    Example: kubectl get ds azuremonitor-containers -n kube-system -o yaml | grep
+    -i workspace In Azure Portal, check that the workspace is active and not deleted
+    or moved to a different subscription.
+
+    '
+  warnings: Never paste real workspace keys into shared chat tools. Use secure channels
+    when sharing secrets.
+- step_number: 6
+  action: Check network egress and network policies
+  details: 'If agents cannot reach Azure ingest endpoints, metrics will fail. Verify
+    cluster egress rules and any Calico/NetworkPolicy objects: - kubectl get networkpolicies
+    --all-namespaces - Attempt a curl from a debug pod to the agent endpoint (replace
+    with fake endpoint pattern): curl -v https://<monitor-endpoint>.ods.opinsights.azure.com
+    For private clusters, confirm Private Link / Private Endpoint configuration and
+    DNS resolution for workspace ingestion endpoints.
+
+    '
+  warnings: ''
+- step_number: 7
+  action: Restart or rollout the monitoring DaemonSet
+  details: 'If configuration was fixed, perform a rolling restart to force re-registration:
+    - kubectl rollout restart daemonset/azuremonitor-containers -n kube-system - Monitor
+    rollout status: kubectl rollout status daemonset/azuremonitor-containers -n kube-system
+    If the DaemonSet is managed by Helm, consider helm upgrade with the corrected
+    values file instead of direct kubectl edits.
+
+    '
+  warnings: Restarting the DaemonSet will temporarily stop metrics collection for
+    the duration of pod restarts.
+- step_number: 8
+  action: Scale resources or tune pod QoS if agent is OOMKilled or evicted
+  details: 'Edit DaemonSet to increase limits/requests or set better node selectors:
+    kubectl edit daemonset azuremonitor-containers -n kube-system Adjust resources.requests
+    and resources.limits for cpu/memory. Consider using top command on node to observe
+    usage.
+
+    '
+  warnings: "Changing resource requests may impact node scheduling \u2014 validate\
+    \ capacity before increasing requests cluster-wide."
+- step_number: 9
+  action: Reapply RBAC roles if authorization errors observed
+  details: 'If logs contain RBAC denied errors, reapply the monitoring rolebinding
+    manifest that grants the agent necessary ClusterRole and ClusterRoleBinding. Use
+    the vendor-provided YAML rather than hand-editing if available.
+
+    '
+  warnings: ''
+- step_number: 10
+  action: If agent version is known-broken, upgrade or rollback per vendor guidance
+  details: 'Check agent version in DaemonSet spec: kubectl get ds azuremonitor-containers
+    -n kube-system -o jsonpath=''{.spec.template.spec.containers[0].image}'' If a
+    recent upgrade correlates with failures, perform a rollback to previous working
+    image tag, or upgrade to a fixed version per vendor release notes.
+
+    '
+  warnings: Image rollbacks affect all nodes; schedule appropriately.
+- step_number: 11
+  action: Force a full re-install as last-resort (non-disruptive attempt first)
+  details: 'If configuration and restarts fail, uninstall and reinstall the agent
+    using vendor tooling. Example Helm uninstall/install for Helm-managed agent: -
+    helm uninstall azuremonitor -n kube-system - helm install azuremonitor <chart>
+    -n kube-system --values values-monitoring.yaml Ensure workspace IDs and CI/CD
+    secrets are set before install.
+
+    '
+  warnings: Uninstallation removes all agent pods; expect a monitoring gap during
+    reinstall.
+- step_number: 12
+  action: Document findings and changes
+  details: 'Record diagnostics, commands run, timestamps, and configuration changes
+    in the incident ticket. Include Log Analytics query snippets and pod log excerpts
+    for future postmortem.
+
+    '
+  warnings: ''
+verification_steps:
+- step: 'Confirm DaemonSet desired == available and all pods Running: kubectl get
+    daemonsets -n kube-system'
+- step: 'Query Log Analytics to verify recent Heartbeat and metrics: Heartbeat | where
+    TimeGenerated > ago(10m) | summarize max(TimeGenerated) by Computer'
+- step: Check Container Insights charts in Azure Portal reflect metrics for the affected
+    nodes and namespaces with no gaps in the last 15 minutes
+- step: Ensure alerts that previously fired are auto-resolved or suppressed after
+    metrics resume
+troubleshooting:
+- issue: Pod in CrashLoopBackOff with segmentation fault or panic
+  solution: Collect last 5 logs (kubectl logs --previous) and check release notes
+    for known crashing versions. Roll back to last known good image tag or apply vendor
+    hotfix. If crash log shows plugin config error, inspect ConfigMap mounted into
+    container.
+- issue: Agent cannot authenticate (401/403) to Log Analytics ingest
+  solution: Verify workspace ID/Key or connection string. Recreate secret used by
+    DaemonSet if rotated. Confirm the workspace has not been moved/deleted and that
+    the agent has correct workspace resourceId in configuration.
+- issue: DNS or TLS handshake errors from agent to ingestion endpoint
+  solution: From a debug pod, nslookup and curl the endpoint. If DNS fails in cluster,
+    investigate CoreDNS logs and config. For TLS issues, confirm cluster time is accurate
+    on nodes (chrony/ntpd) and trusted CA bundles for agent container are intact.
+- issue: NetworkPolicy blocks egress
+  solution: Temporarily allow egress from kube-system namespace to monitoring endpoints
+    and then implement a least-privilege policy whitelist for the required FQDNs and
+    IPs used by the workspace.
+- issue: High agent resource usage
+  solution: Tune resource limits/requests and consider node pool scaling. If high
+    due to log volume, implement log filtering or aggregation to reduce throughput.
+escalation:
+  condition: After completing resolution steps, metrics are still not arriving for
+    >60 minutes or key agent pods repeatedly fail with unknown errors.
+  contact: Monitoring Engineering Manager - monitoring-escalate@fictional-ops.example
+  escalation_path: '1) Notify Monitoring Engineering Manager via email with incident
+    ticket and all collected diagnostics. 2) If manager cannot resolve within 60 minutes,
+    contact Platform SRE Lead at platform-sre@fictional-ops.example and open a war-room
+    channel. 3) For suspected Azure platform outage, open a high-severity Azure support
+    request and provide Log Analytics workspace ID, subscription ID, and timestamps
+    for failed ingestion attempts.
+
+    '
+related_documentation:
+- title: AKS Container Insights Troubleshooting (internal runbook)
+  url: https://docs.internal.example/aks/container-insights/troubleshoot
+- title: Fictional Vendor Agent Install and Configuration
+  url: https://vendor.docs.example/azure-monitor-agent/install-config
+- title: Log Analytics Query Cookbook (internal)
+  url: https://kb.example/monitoring/log-analytics/queries
+- title: NetworkPolicy and Egress Requirements for Monitoring
+  url: https://networking.example/aks/egress-monitoring
+tags:
+- aks
+- monitoring
+- azure
+- log-analytics
+- container-insights
+version_history:
+- version: '1.0'
+  date: 2025-06-15 09:00:00+00:00
+  author: Rowan Hale
+  changes: Initial draft covering basic agent troubleshooting and verification queries.
+- version: '1.4'
+  date: 2025-09-02 14:20:00+00:00
+  author: Rowan Hale
+  changes: Added sections for network policy troubleshooting and resource tuning;
+    standardized verification steps.
+- version: '1.8'
+  date: 2025-11-28 02:30:00+00:00
+  author: Rowan Hale
+  changes: Expanded resolution steps to include rollout restart, Helm-managed deployments,
+    and explicit escalation path. Updated CLI tool version recommendations.

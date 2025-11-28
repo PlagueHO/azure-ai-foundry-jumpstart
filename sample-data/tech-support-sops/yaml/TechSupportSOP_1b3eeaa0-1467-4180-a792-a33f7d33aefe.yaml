@@ -1,0 +1,272 @@
+sop_id: 1b3eeaa0-1467-4180-a792-a33f7d33aefe
+version: '1.9'
+created_at: '2025-11-28T02:13:56.147815+00:00'
+last_updated: '2025-11-28T02:20:00+00:00'
+title: "Azure App Service Web App \u2014 Unresponsive / 5xx Error Triage and Recovery"
+problem_category: general
+complexity: medium
+system_context: Azure App Service Web App
+severity: high
+status: draft
+approval_level: cto
+author:
+  name: Ava Rhodes
+  email: ava.rhodes@example.corp
+approver:
+  name: Jordan Kline
+  email: jordan.kline@example.corp
+  approved_at: null
+problem_description: 'Intermittent or sustained HTTP 5xx errors, long cold-start times,
+  or completely unresponsive Azure Web App instances.
+
+  This SOP covers initial triage, standard corrective actions (restart, scale, configuration
+  fixes), and checks for containerized and code-based application failures.
+
+  It assumes the issue originates at the App Service layer (platform or app configuration)
+  rather than dependent services (databases, external APIs), although those are considered
+  during troubleshooting.
+
+  '
+symptoms:
+- End users report HTTP 502/503/500 errors for the web app
+- Web app is slow to respond or times out (>5s typical threshold)
+- Kudu (https://{app}.scm.azurewebsites.net) is slow or unreachable
+- Deployment or startup logs show repeated crashes / bootstrap failures
+- LogStream shows repeated worker process exits or OOM events
+- 'App Metrics: elevated 5xx count, increased CPU/Memory, instance restarts'
+prerequisites:
+- Access to the Azure subscription and resource group containing the App Service (Contributor
+  or Owner role recommended)
+- App Service name, resource group, and the app's deployment/publish profile credentials
+  (or permission to use managed identity)
+- Access to Log Analytics workspace if diagnostics are routed there
+- A recent backup or deployment artifact available (for emergency roll-back)
+- Maintenance window communicated to stakeholders if downtime is required
+required_tools:
+- Azure Portal access (portal.azure.com) with appropriate RBAC
+- Azure CLI (recommended >= 2.40) installed and authenticated (az login)
+- Access to Kudu (https://{app}.scm.azurewebsites.net) and Log Stream
+- ITSM system access to create/update incidents (e.g., ServiceNow/Jira)
+- 'Optional: Docker registry credentials if the app is containerized'
+estimated_resolution_time: 15-45 minutes
+resolution_steps:
+- step_number: 1
+  action: Record incident metadata
+  details: 'Capture the app name, resource group, subscription ID, exact timestamps
+    of first report,
+
+    user-visible errors (HTTP code, sample request IDs, correlation IDs), and the
+    region (e.g., eastus2).
+
+    Document maintenance windows and SLA impact before taking actions that may cause
+    additional downtime.
+
+    '
+  warnings: Do not perform destructive operations (swap/slot delete) without a rollback
+    artifact recorded.
+- step_number: 2
+  action: Check Azure service health and platform issues
+  details: 'In the Azure Portal, check ''Service Health'' for outages in the affected
+    region.
+
+    Also check the App Service ''Diagnose and solve problems'' blade for platform-detected
+    issues.
+
+    '
+  warnings: null
+- step_number: 3
+  action: Tail logs to confirm error pattern
+  details: 'Use Azure CLI or Portal:
+
+    - az webapp log tail --name <app> --resource-group <rg>
+
+    - Alternatively open Log Stream in the Portal or the App Service ''Log streaming''.
+
+    Identify repeated exceptions, process crashes, container image pull failures,
+    or startup timeouts.
+
+    '
+  warnings: Log tailing can produce large output; avoid running for longer than needed.
+- step_number: 4
+  action: Restart the App Service
+  details: 'Perform a graceful restart to clear transient failures:
+
+    - az webapp restart --name <app> --resource-group <rg>
+
+    Wait 60-90 seconds and re-check Log Stream and metrics (CPU, Memory, 5xx).
+
+    For Linux container apps, consider ''Restart'' from the Portal to ensure container
+    is re-pulled.
+
+    '
+  warnings: Restart will briefly interrupt traffic; schedule if impact is high.
+- step_number: 5
+  action: Inspect deployment and startup configuration
+  details: 'Review App Settings for critical flags that affect startup:
+
+    - WEBSITE_RUN_FROM_PACKAGE (zip deployment) -- ensure correct path/URL
+
+    - SCM_DO_BUILD_DURING_DEPLOYMENT for build-time deploys
+
+    - Always On (WEBSITE_ALWAYS_ON) should be true for background services
+
+    - For containerized apps, check DOCKER_CUSTOM_IMAGE_NAME / registry credentials
+
+    Use:
+
+    - az webapp config appsettings list --name <app> --resource-group <rg>
+
+    '
+  warnings: null
+- step_number: 6
+  action: Check instance health and scaling
+  details: "- In Portal, inspect 'Process Explorer' (Kudu) for runaway processes or\
+    \ memory leaks.\n- az webapp list-instances --name <app> --resource-group <rg>\
+    \ to view instance IDs and restart a specific instance if needed.\n- If CPU/Memory\
+    \ are high, scale up (vertical) or scale out (horizontal) temporarily:\n  * az\
+    \ appservice plan update --name <plan> --resource-group <rg> --sku P2V2\n  or\
+    \ change instance count in 'Scale out' settings.\n"
+  warnings: Scaling can incur cost. Obtain approval for manual SKU changes outside
+    runbook policy.
+- step_number: 7
+  action: 'For containerized apps: validate image pull and startup'
+  details: '- Check Container Settings and recent logs for image pull failures, auth
+    errors, startup command failures.
+
+    - Confirm the registry credentials (if private) and the image tag exists.
+
+    - If startup fails due to missing env vars, ensure required App Settings exist.
+
+    '
+  warnings: null
+- step_number: 8
+  action: 'For code-hosted apps: inspect application and framework logs'
+  details: '- For .NET apps check stdout logs and ensure ''ASPNETCORE_ENVIRONMENT''
+    and target framework versions are correct.
+
+    - For Node/Python apps check for uncaught exceptions, dependency errors, or EADDRINUSE
+    conflicts.
+
+    - If OOM is detected, check memory usage patterns and consider scale up or memory
+    profiling.
+
+    '
+  warnings: Enabling verbose logging in production may increase log volume and costs;
+    revert after diagnosis.
+- step_number: 9
+  action: If deployment appears corrupt, perform a safe rollback
+  details: "- If a recent deployment correlates with the outage, roll back to the\
+    \ last known good package or slot:\n  * For slot-enabled apps, perform a swap-back\
+    \ from the previous slot (if safe).\n  * For zip-deploy: re-deploy the previous\
+    \ artifact.\n- Ensure deployment logs are captured prior to the rollback.\n"
+  warnings: "Slot swaps may rehydrate app settings\u2014verify sticky settings before\
+    \ swapping."
+- step_number: 10
+  action: Validate networking and backend dependencies
+  details: '- Confirm VNet integration, private endpoints, and outbound NSG/Firewall
+    rules are not blocking calls.
+
+    - Verify database and external API availability; use application telemetry correlation
+    IDs to trace failures.
+
+    '
+  warnings: null
+- step_number: 11
+  action: If platform limits hit (e.g., file handle, worker process limits), collect
+    diagnostic dump
+  details: '- Use Kudu process dump or capture memory dumps for investigation and
+    attach to ticket for SRE/Dev.
+
+    - Consider enabling ''App Service Diagnostics'' snapshot to collect configuration
+    and logs.
+
+    '
+  warnings: "Memory dumps can be large and may contain sensitive data\u2014handle\
+    \ per data handling policy."
+- step_number: 12
+  action: Communicate status and next steps
+  details: '- Update the incident ticket with actions taken, time windows, and planned
+    follow-ups.
+
+    - If mitigation required customer-visible change, notify stakeholders with ETA
+    for permanent fix.
+
+    '
+  warnings: null
+verification_steps:
+- Confirm web app returns HTTP 200 for representative endpoints from multiple regions
+  (curl/telnet and browser checks).
+- Verify 5xx error count has dropped to baseline in Application Insights / App Service
+  metrics for 15 minutes.
+- Log Stream shows normal worker process startup with no crash loops and no OOM events
+  for 10 minutes post-restart.
+- CPU and Memory metrics stabilized below threshold for selected App Service Plan
+  size.
+- If a rollback was performed, confirm the expected build/version is active (via application
+  header or /version endpoint).
+troubleshooting:
+- issue: 502.5 / process failed to start for .NET app
+  solution: Check stdout logs and ensure ASPNETCORE_VERSION matches installed runtime;
+    verify 'WEBSITE_ENABLE_ORYX_BUILD' or build pipeline produced correct artifacts.
+    If missing runtime, either change target framework or switch to an App Service
+    plan with the required runtime image.
+- issue: Container repeatedly failing with image pull auth errors
+  solution: Validate registry credentials and secret rotation. Re-enter registry password
+    in Container Settings. Temporarily set image to a public test image to confirm
+    platform functionality.
+- issue: High memory / OOM errors after deploy
+  solution: Collect memory dump via Kudu, scale up to larger SKU for immediate relief,
+    and schedule a heap/profile analysis for the app team to find leaks.
+- issue: Kudu unreachable but site returns errors
+  solution: Kudu outage often indicates platform subsystem issue. Try app restart
+    and check Azure Service Health. If persistent, escalate to Azure Platform Support
+    with collected request IDs and timestamps.
+- issue: Slow cold starts
+  solution: Enable 'Always On' (WEBSITE_ALWAYS_ON = true) for non-consumption plans,
+    review startup code for heavy synchronous work, and consider warming endpoints
+    on scale-out events or using pre-warmed instances (if in App Service Environment
+    or Premium plans).
+escalation:
+  condition: Issue not resolved within 60 minutes, repeated incidents within 24 hours,
+    customer-critical outage impacting SLAs, or inability to collect required diagnostics
+  contact: Platform SRE team (platform-sre@example.corp); If after-hours, page on-call
+    via PagerDuty (see runbook)
+  escalation_path: '1) Update incident in ITSM and add ''platform-sre'' as assignee.
+
+    2) Page on-call SRE with incident summary, app name, resource group, span of outage,
+    and collected logs/dumps (Kudu, LogStream, AppInsights request IDs).
+
+    3) If SRE cannot resolve in 30 minutes, escalate to Director of Infrastructure
+    and then CTO if customer SLA breach imminent.
+
+    '
+related_documentation:
+- title: 'Internal: App Service Incident Triage Checklist'
+  url: https://intranet.example.corp/docs/app-service-incident-triage
+- title: 'Internal: Kudu and LogStream How-To'
+  url: https://intranet.example.corp/docs/kudu-logstream-guide
+- title: "Internal: Containerized App Start-up Failures \u2014 Playbook"
+  url: https://intranet.example.corp/docs/container-startup-playbook
+- title: 'External: Azure App Service Diagnostics (reference)'
+  url: https://docs.example.corp/azure/app-service/diagnostics
+tags:
+- azure
+- app-service
+- webapp
+- troubleshooting
+- high-availability
+version_history:
+- version: '1.0'
+  date: '2024-10-12T09:00:00+00:00'
+  author: Ava Rhodes
+  changes: Initial draft covering basic restart and log collection steps.
+- version: '1.5'
+  date: '2025-06-02T14:22:00+00:00'
+  author: Ava Rhodes
+  changes: Added container-specific diagnostics and rollback guidance; expanded troubleshooting
+    scenarios.
+- version: '1.9'
+  date: '2025-11-28T02:20:00+00:00'
+  author: Ava Rhodes
+  changes: Refined escalation path, clarified checks for app settings, and added verification
+    step signatures and timeboxes.

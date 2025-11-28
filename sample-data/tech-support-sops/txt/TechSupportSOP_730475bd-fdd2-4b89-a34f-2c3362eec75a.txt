@@ -1,0 +1,150 @@
+SOP ID: 730475bd-fdd2-4b89-a34f-2c3362eec75a
+Version: 1.6
+Created At: 2025-11-28T02:48:35.559467+00:00
+Last Updated: 2025-11-28T04:15:00+00:00
+Title: Recover and Reconfigure Windows Server Network Interface After DHCP Lease Loss or Interface Flap
+Problem Category: general
+Complexity: medium
+System Context: Windows Server
+Severity: medium
+Status: draft
+Approval Level: cto
+Author: Riley Quinn <riley.quinn@example.invalid>
+
+PROBLEM DESCRIPTION:
+Servers running Windows Server may experience a loss of network connectivity due to a DHCP lease loss, corrupted network adapter binding, or NIC driver/firmware state that leaves the interface unresponsive despite the OS appearing healthy. This SOP covers diagnosing the problem, recovering a non-functional network interface, re-establishing correct IP/DNS configuration, and validating connectivity for production services. All procedures assume the server is accessible via a management console (iLO/DRAC/VMRC) or that physical access is available; if remote access is lost, the console will be required.
+
+SYMPTOMS:
+- Server reports "Media disconnected" in ipconfig /all or displays no IPv4/IPv6 address.
+- Critical services (DNS server, IIS, SQL listener) remain unreachable from network.
+- Event Viewer shows repeated DHCP client or NetBT errors (Event IDs vary by role).
+- Get-NetAdapter shows adapter state as Disconnected, Disabled, or Up with no IP addresses.
+- NIC appears in Device Manager with an exclamation, or adapter is present but traffic counters stuck at zero.
+
+PREREQUISITES:
+- You must have authorization to perform maintenance on the target server during the planned window.
+- Confirm scheduled maintenance window or obtain approval for ad-hoc remediation.
+- Ensure you have console access (ILO/DRAC/KVM) if RDP or SSH is unavailable.
+- Ensure server backups and recent snapshots (if virtualized) are available in case of rollback.
+
+REQUIRED TOOLS:
+- Remote management console (iLO, DRAC, VMRC) or physical access.
+- Local administrator or Domain Administrator credentials.
+- A workstation with PowerShell 7+ or native Windows PowerShell remoting enabled.
+- Access to network documentation (IP allocations, VLAN mappings, DHCP scope info).
+- If applicable, vendor NIC driver package and firmware images (stored in central repo).
+
+ESTIMATED RESOLUTION TIME: 30-90 minutes (depending on hardware/firmware updates and validation)
+
+RESOLUTION STEPS:
+1. Action: Confirm symptoms and obtain console
+   Details: Use remote management console if RDP is unavailable. Log in with local administrator account to avoid domain credential dependency. Run: ipconfig /all and Get-NetAdapter | Format-Table -AutoName to capture current state.
+   Warnings: Do not reboot without communicating to application teams if production services are dependent on the server.
+
+2. Action: Capture diagnostic output
+   Details: Save the following outputs to a time-stamped troubleshooting file (C:\Support\NetRestore_<YYYYMMDD_HHMM>.log):
+     - ipconfig /all
+     - netsh interface ip show config
+     - Get-NetIPConfiguration | Out-String
+     - Get-NetAdapter -IncludeHidden | Format-List *
+     - Get-NetAdapterAdvancedProperty -Name "<adapterName>" (if PowerShell available)
+     - Event Viewer: Export System and Application logs for the last 24 hours related to DHCP/Netlogon/NetBT.
+   Warnings: Ensure logs do not contain credentials or sensitive data when attaching to tickets.
+
+3. Action: Check physical and virtual link state
+   Details: Verify NIC link speed and status in Get-NetAdapter; check switch port LED or switch admin console to confirm cable and VLAN. If on a hypervisor, verify virtual switch/VLAN mapping and that the VM's vNIC is connected.
+   Warnings: Do not unplug or move cables during peak hours without coordination.
+
+4. Action: Attempt a soft restart of network services
+   Details: Restart DHCP client and Network Location Awareness services:
+     - net stop "DHCP Client" && net start "DHCP Client"
+     - Restart-Service -Name NlaSvc -Force
+     - Alternatively run: ipconfig /renew (for DHCP clients)
+   Warnings: Restarting services may temporarily drop local name resolution; coordinate if needed.
+
+5. Action: Reset the adapter state in software
+   Details: If adapter remains down or has no IP after service restart, disable and re-enable the adapter:
+     - Disable-NetAdapter -Name "<adapterName>" -Confirm:$false
+     - Start-Sleep -Seconds 6
+     - Enable-NetAdapter -Name "<adapterName>"
+     - If using netsh: netsh interface set interface "<interface>" admin=DISABLED; netsh interface set interface "<interface>" admin=ENABLED
+   Warnings: Disabling the wrong interface (e.g., management network) can cut remote access. Use console before performing.
+
+6. Action: Reapply correct IP configuration
+   Details: If DHCP is not to be used or lease cannot be obtained persistently, remove stale addresses and reassign correct static settings:
+     - Remove existing addresses: Get-NetIPAddress -InterfaceAlias "<adapterName>" | Remove-NetIPAddress -Confirm:$false
+     - Add new static address: New-NetIPAddress -InterfaceAlias "<adapterName>" -IPAddress 10.10.5.23 -PrefixLength 24 -DefaultGateway 10.10.5.1
+     - Set DNS: Set-DnsClientServerAddress -InterfaceAlias "<adapterName>" -ServerAddresses ("10.10.2.5","8.8.8.8")
+     - If DHCP expected: Set-DnsClientServerAddress -InterfaceAlias "<adapterName>" -ResetServerAddresses ; ipconfig /renew
+   Warnings: Obtain correct IPs from network documentation. Do not assign duplicate IPs.
+
+7. Action: Check for driver or offload issues
+   Details: If adapter works then fails intermittently, update NIC driver and firmware:
+     - Obtain vendor driver package from central repo (\\updates\drivers\vendor\)
+     - Pre-stage driver and run pnputil /add-driver <inf> /install or use Device Manager to update.
+     - For firmware use vendor CLI per change control.
+   Warnings: Firmware updates usually require a reboot and may not be reversible. Schedule and record maintenance window.
+
+8. Action: Validate ARP, routing, and DNS
+   Details: From server run:
+     - arp -a to confirm MAC resolution on gateway
+     - route print to confirm default gateway presence
+     - nslookup <internal-service> to verify DNS resolution
+     - Test connectivity: Test-NetConnection -ComputerName 10.10.5.1 -Port 53 ; Test-NetConnection -ComputerName 8.8.8.8 -InformationLevel "Detailed"
+   Warnings: Avoid flooding the network with repeated automated tests during outage.
+
+9. Action: Reboot as final recovery step (if required)
+   Details: If adapter requires a firmware update or in-kernel network stack corruption suspected, schedule and perform a graceful reboot: Restart-Computer -Force
+   Warnings: Reboot will impact all services on the server. Confirm with stakeholders.
+
+VERIFICATION STEPS:
+- Confirm ipconfig /all shows the expected IPv4/IPv6 address, mask, default gateway, and DNS servers.
+- Confirm Get-NetAdapter shows the adapter status as Up and link speed is reported.
+- Confirm connectivity by pinging the default gateway and a known internal service:
+  - ping 10.10.5.1
+  - Test-NetConnection -ComputerName dc1.corp.example.invalid -Port 389
+- Validate application-level functionality (DNS registration, service binding): ensure services that depend on the NIC are listening and reachable (e.g., netstat -an | findstr :443).
+- Monitor for 15-30 minutes for stability: check interface error counters and Event Viewer for recurrence of relevant errors.
+
+TROUBLESHOOTING:
+Issue: DHCP lease fails to renew or DHCP client shows timeout
+Solution: Verify DHCP server reachability (ping, Test-NetConnection to DHCP IP). Check DHCP server scope exhaustion. If scope is exhausted, coordinate with network team to free or extend pool. Temporarily assign a static IP per change control if immediate restore is necessary.
+
+Issue: Adapter gets an APIPA address (169.254.x.x)
+Solution: Check VLAN tagging, switch port configuration, and cabling. Validate that the server is on the correct VLAN and that the upstream switch port is not set to shutdown or isolated. Disable and re-enable VLAN trunking on hypervisor if VM.
+
+Issue: After driver update, NIC still flaps
+Solution: Rollback to previous driver via Device Manager or pnputil /delete-driver and reinstall previous package. If persistent, open hardware replacement ticket with server vendor and attach driver/firmware logs.
+
+Issue: DNS suffix or registration incorrect after reconfig
+Solution: Check network adapter DNS settings: Set-DnsClient -InterfaceAlias "<adapterName>" -ConnectionSpecificSuffix "corp.example.invalid" and register DNS: ipconfig /registerdns
+
+ESCALATION:
+Condition: After steps above, network interface remains down or intermittent for more than 90 minutes, or you identify suspected hardware failure or firmware bug.
+Contact: Platform Reliability Team (On-call): sre-oncall@example.invalid
+         Network Operations Center: noc-team@example.invalid
+Escalation Path:
+- Level 1: On-call sysadmin/team lead (sre-oncall@example.invalid) — initial contact and provide diagnostic log bundle.
+- Level 2: Network Engineering (noc-team@example.invalid) — engage for switch/VLAN/DHCP scope investigation.
+- Level 3: Hardware Vendor Support (open support case with vendor, include SN and firmware images) — request RMA if hardware failure suspected.
+Include ticket ID, timestamps, steps taken, outputs of ipconfig /all, Get-NetAdapter output, and any Event Viewer extracts when escalating.
+
+RELATED DOCUMENTATION:
+- Title: Windows Server Network Adapter Recovery Checklist
+  URL: https://kb.example.invalid/windows-server/network-recovery-101
+- Title: PowerShell Network Cmdlets Reference (internal)
+  URL: https://docs.example.invalid/powershell/network-cmdlets
+- Title: Server Firmware and NIC Driver Update Procedure
+  URL: https://ops.example.invalid/guides/firmware-driver-update
+- Title: VLAN and Switch Port Mapping Inventory
+  URL: https://inventory.example.invalid/network/vlan-mapping
+
+TAGS: windows-server, network, dhcp, nic, troubleshooting
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2025-06-12T09:15:00+00:00 | Author: Riley Quinn | Changes: Initial draft covering basic adapter reset, DHCP renew, and verification.
+Version: 1.3 | Date: 2025-09-30T14:45:00+00:00 | Author: Riley Quinn | Changes: Added PowerShell cmdlet examples and ARP/route validation steps.
+Version: 1.5 | Date: 2025-11-01T11:00:00+00:00 | Author: Riley Quinn | Changes: Expanded troubleshooting with driver/firmware guidance and added explicit log collection path.
+Version: 1.6 | Date: 2025-11-28T04:15:00+00:00 | Author: Riley Quinn | Changes: Minor edits for escalation contacts and clarification about console requirement when remote access is lost.
+
+Note: This SOP is draft and requires CTO-level approval before publishing. Follow change control policy for any edits that touch firmware update steps.

@@ -1,0 +1,195 @@
+{
+  "sop_id": "b826513d-4395-4da6-b547-f926c94ff68d",
+  "version": "1.6",
+  "created_at": "2025-11-28T02:34:20.034972+00:00",
+  "last_updated": "2025-11-28T03:12:00.000000+00:00",
+  "title": "Azure VM Unreachable After Boot \u2014 Disk/OS Repair via Recovery VM",
+  "problem_category": "cloud",
+  "complexity": "medium",
+  "system_context": "Azure Virtual Machines",
+  "severity": "high",
+  "status": "draft",
+  "approval_level": "cto",
+  "author": {
+    "name": "Lara Nguyen",
+    "email": "lara.nguyen@sre.example.corp"
+  },
+  "approver": {},
+  "problem_description": "One or more Azure Virtual Machines fail to boot to a reachable guest OS after a restart or platform update. The VM shows a Running state in Azure but is unreachable via RDP/SSH, the Azure Serial Console shows the guest stuck in early init or filesystem mount errors, and Boot Diagnostics screenshot indicates OS boot errors. Root cause is commonly corrupt fstab/BCD, failed disk attach, or incomplete in-guest updates. This SOP guides safe investigation and repair by mounting the affected OS disk on a temporary recovery VM and performing filesystem or boot record repairs.",
+  "symptoms": [
+    "VM reports Running in Azure portal but no network connectivity to guest (RDP/SSH timeout)",
+    "Boot diagnostics screenshot shows kernel panic, Windows recovery screen, or 'mounting root' loop",
+    "Azure Serial Console shows early init messages or repeated mount errors",
+    "Azure Run Command fails with 500 or 'VM Agent not responding'",
+    "System logs (when accessible) show disk errors, fstab entries failing, or missing boot files"
+  ],
+  "prerequisites": [
+    "Azure subscription owner or contributor plus Disk/VM contributor role on the resource group",
+    "Ability to stop and deallocate the affected VM",
+    "Permission to create temporary resources (temporary VM, managed disk snapshots)",
+    "Knowledge of target VM OS type (Linux or Windows) and expected partition layout",
+    "At least one recovery VM image available in the same region and subscription"
+  ],
+  "required_tools": [
+    "Azure Portal",
+    "Azure CLI (az) v2.50+ installed locally or Cloud Shell",
+    "Az PowerShell module (optional)",
+    "SSH client for Linux VMs or RDP client for Windows VMs",
+    "Credentials for recovery VM (SSH key or RDP user/password)",
+    "Logging/incident ticketing access (internal ticket ID tracker)"
+  ],
+  "estimated_resolution_time": "45-120 minutes (varies with size of disk and complexity of repair)",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Initial triage",
+      "details": "Confirm the VM's Azure power state (Running/Stopped/Deallocated) in the portal and capture the resource IDs. Note the VM name, subscription, resource group, availability zone, and OS type. Record the current Boot Diagnostics screenshot and any serial console output. Create an incident ticket if one is not already open and attach these artifacts.",
+      "warnings": "Do not attempt in-guest changes until you have a snapshot backup of the disk."
+    },
+    {
+      "step_number": 2,
+      "action": "Check platform health and agents",
+      "details": "Verify Azure Service Health for the region for any ongoing platform events. In the portal, confirm the VM Agent extension status. If the VM Agent is failing and the VM is unreachable, proceed with disk-level recovery. If Service Health shows a platform outage, escalate to cloud platform operations first.",
+      "warnings": ""
+    },
+    {
+      "step_number": 3,
+      "action": "Take a snapshot of the OS disk",
+      "details": "Stop/Deallocate the VM. In the portal or az CLI, create a managed disk snapshot of the OS disk: az snapshot create --resource-group <rg> --source <osDiskId> --name <vmname-osdisk-snap-YYYYMMDD>. This snapshot provides a rollback point.",
+      "warnings": "Ensure VM is deallocated before snapshot to guarantee crash-consistent snapshot for Windows; for Linux a hot snapshot is possible, but we prefer stop/deallocate for safety."
+    },
+    {
+      "step_number": 4,
+      "action": "Create a temporary disk and recovery VM",
+      "details": "Create a new managed disk from the snapshot: az disk create --resource-group <rg> --name <recovery-disk> --source <snapshotId>. Provision a small recovery VM in the same availability zone and subnet (or in any subnet if access to disk only required). Use a known-good image that matches the OS family (e.g., Ubuntu 22.04 for Linux, Windows Server 2019 for Windows).",
+      "warnings": "Do not attach the disk to the original VM. Always use a different recovery VM."
+    },
+    {
+      "step_number": 5,
+      "action": "Attach the affected OS disk as a data disk to the recovery VM",
+      "details": "Attach the newly created managed disk to the recovery VM as a secondary disk. In Azure CLI: az vm disk attach --resource-group <rg> --vm-name <recoveryVM> --name <recovery-disk> --new --lun 1 (adjust lun as needed). Start the recovery VM if it was stopped.",
+      "warnings": "Confirm LUN does not conflict with existing devices on the recovery VM."
+    },
+    {
+      "step_number": 6,
+      "action": "Mount and inspect the disk (Linux)",
+      "details": "SSH into the recovery VM. Identify the attached disk (e.g., lsblk or sudo fdisk -l). For Linux OS disk with LVM, activate volume groups: sudo vgscan && sudo vgchange -ay. Mount the root volume to /mnt/recovery: sudo mount /dev/mapper/<vg-root> /mnt/recovery. Inspect /mnt/recovery/var/log, /etc/fstab, and /boot to identify errors. Use journalctl --directory=/mnt/recovery/var/log/journal to read journals if present. If fstab has invalid entries, correct them or comment problematic lines.",
+      "warnings": "Do not run fsck on an NTFS partition from a Linux guest unless using appropriate tools; for Linux partitions run fsck only when unmounted or in read-only maintenance."
+    },
+    {
+      "step_number": 7,
+      "action": "Mount and inspect the disk (Windows)",
+      "details": "RDP into the recovery Windows VM and open Disk Management. Bring the attached disk online if necessary and assign a drive letter. Use Windows Event Viewer logs from the mounted volume (if accessible) and check C:\\Windows\\System32\\LogFiles or Windows\\Panther for setup errors. If BCD is corrupted, use an elevated command prompt and run bcdedit /store <drive>\\Boot\\BCD to inspect. Use bootrec.exe on an attached VHD offline using a Windows PE image if needed.",
+      "warnings": "Do not run destructive repair commands until you have a snapshot. Offline BCD restore requires careful path parameters; double-check drive letters."
+    },
+    {
+      "step_number": 8,
+      "action": "Perform safe repairs",
+      "details": "Common Linux repairs: correct /etc/fstab entries, reinstall broken initramfs (chroot into /mnt/recovery and run update-initramfs -u or dracut --regenerate-all), reinstall grub if necessary (grub-install and update-grub in chroot). Common Windows repairs: fix BCD using bcdedit /import, run chkdsk /f on the attached NTFS volume from the recovery VM, replace missing boot files from known-good image copies, or export/import registry hives to repair misconfigured services.",
+      "warnings": "Reinstalling bootloaders or running chkdsk can be destructive if wrong device targeted. Verify device nodes and drive letters twice."
+    },
+    {
+      "step_number": 9,
+      "action": "Detach disk and reattach to original VM",
+      "details": "Safely unmount the disk (Linux: sudo umount /mnt/recovery && sudo vgchange -an; Windows: remove drive letter and take offline), detach disk from recovery VM using az vm disk detach or portal, and reattach it as the OS disk to the original VM. In portal, update the original VM's OS disk reference or use az vm update --set storageProfile.osDisk.managedDisk.id=<reattachedDiskId>.",
+      "warnings": "Make sure the original VM is in Stopped (deallocated) state before reattaching the OS disk."
+    },
+    {
+      "step_number": 10,
+      "action": "Start original VM and validate boot",
+      "details": "Start the original VM. Monitor Boot Diagnostics and Serial Console for progress. Wait for the VM to report 'Guest Agent: Ready' and verify SSH/RDP connectivity.",
+      "warnings": ""
+    },
+    {
+      "step_number": 11,
+      "action": "Post-repair validation",
+      "details": "Log into the VM, check system logs (journalctl -b for Linux, Event Viewer for Windows), ensure applications are running and services are healthy, and run a smoke test of main application endpoints. Update the incident ticket with steps taken, attach snapshots and logs, and schedule a follow-up for a root cause analysis.",
+      "warnings": "If any errors persist, follow troubleshooting and escalation steps."
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm VM boots to OS and Azure shows VM Agent as Ready"
+    },
+    {
+      "step": "Verify RDP/SSH connectivity and successful login as expected user"
+    },
+    {
+      "step": "Check application/service endpoints respond to basic health checks (HTTP 200, DB connection success, etc.)"
+    },
+    {
+      "step": "Review system logs for new errors in the last boot cycle (journalctl -b for Linux, System/Application logs for Windows)"
+    },
+    {
+      "step": "Confirm that the snapshot and recovery artifacts are stored in the incident ticket and cleanup temporary resources"
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Recovery disk won't attach to recovery VM (LUN conflict or quota limit)",
+      "solution": "Confirm subscription disk and VM quotas. Choose an available LUN and ensure the recovery VM size supports data disks. If quota reached, request temporary quota increase or use a different recovery VM in same region."
+    },
+    {
+      "issue": "Cannot identify correct root partition on attached disk",
+      "solution": "Use blkid, lsblk -f, and parted -l to list partitions and filesystem types. For Windows, use diskpart and list volume to map drive letters. Reference expected partition layout from provisioning documentation for that VM image."
+    },
+    {
+      "issue": "Filesystem check reports large number of errors or corrupt inodes",
+      "solution": "If fsck fixes errors, allow it to complete. If corruption is severe, restore from most recent good snapshot or backup. Escalate to storage team if underlying managed disk shows abnormal IOPS or health metrics."
+    },
+    {
+      "issue": "Serial console disabled or inaccessible",
+      "solution": "Ensure 'Serial console' is enabled at subscription level and the VM OS supports it. If not available, rely on Boot Diagnostics screenshots and disk attach method described in this SOP."
+    },
+    {
+      "issue": "Run Command fails with timeout or 500",
+      "solution": "Run Command requires VM Agent. If Windows/Linux Agent is unresponsive, proceed with disk-level recovery. Note Agent logs in /var/log/waagent.log or C:\\WindowsAzure\\Logs for diagnostics when possible."
+    }
+  ],
+  "escalation": {
+    "condition": "If disk-level repairs do not restore boot, if data corruption is extensive, or if the root cause remains unknown after 2 hours of recovery steps",
+    "contact": "Cloud Infrastructure Tier 3 (cloud-t3@example.corp) and Storage Team (storage-oncall@example.corp). Create a P1 ticket and include snapshot IDs, attached disk IDs, Boot Diagnostics screenshots, serial console logs, and recovery VM logs.",
+    "escalation_path": "1) Notify on-call Cloud Infra Tier 2. 2) If Tier 2 cannot resolve within 30 minutes or data integrity risk exists, escalate to Tier 3 and schedule immediate war room. 3) For suspected Azure platform issues, open Azure Support case and link incident ID. 4) Inform stakeholder mailing list (cloud-incident@example.corp) and CTO if customer-impacting."
+  },
+  "related_documentation": [
+    {
+      "title": "Internal: Azure VM Recovery Playbook",
+      "url": "https://intranet.example.corp/ops/azure-vm-recovery-playbook"
+    },
+    {
+      "title": "Internal KB: Creating and Restoring Managed Disk Snapshots",
+      "url": "https://kb.example.corp/azure/disks/snapshots"
+    },
+    {
+      "title": "Internal: Using Azure Serial Console and Boot Diagnostics",
+      "url": "https://intranet.example.corp/ops/azure-serial-console-boot-diagnostics"
+    }
+  ],
+  "tags": [
+    "azure",
+    "vm",
+    "boot",
+    "disk-recovery",
+    "sre"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2025-10-12T09:00:00+00:00",
+      "author": "Lara Nguyen",
+      "changes": "Initial draft focused on Linux disk attach recovery workflow."
+    },
+    {
+      "version": "1.3",
+      "date": "2025-11-05T14:22:00+00:00",
+      "author": "Lara Nguyen",
+      "changes": "Added Windows offline BCD repair steps and additional verification checks."
+    },
+    {
+      "version": "1.6",
+      "date": "2025-11-28T02:34:20.034972+00:00",
+      "author": "Lara Nguyen",
+      "changes": "Updated to include snapshot-first mandate, expanded troubleshooting scenarios, clarified escalation contacts, and standardized CLI examples."
+    }
+  ]
+}

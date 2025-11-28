@@ -1,0 +1,242 @@
+sop_id: 9a5e30a0-17d8-498a-9ef1-e3f584e24c40
+version: '1.9'
+created_at: '2025-11-28T02:42:29.926945+00:00'
+last_updated: '2025-11-28T02:42:29.926945+00:00'
+title: 'Critical: Restore Healthy Backend Pool for Azure Load Balancer (Unhealthy
+  Backend Endpoints)'
+problem_category: network
+complexity: medium
+system_context: Azure Load Balancer
+severity: critical
+status: published
+approval_level: team_lead
+author:
+  name: Maya R. Benton
+  email: maya.benton+docs@example-corp.com
+approver:
+  name: Jared K. Holt
+  email: jared.holt+approvals@example-corp.com
+  approved_at: '2025-11-28T03:15:00+00:00'
+problem_description: 'Production application is experiencing a total outage due to
+  the Azure Load Balancer marking all backend endpoints as Unhealthy. Symptoms include
+  502/504 responses, no successful connections routed to backend VMs, and application
+  monitoring alerts for service unavailability. The root causes addressed by this
+  SOP include misconfigured health probes (wrong protocol, port or path), backend
+  instances removed from the pool, NSG/UDR blocking probe traffic, VM-level service
+  failure (service not listening on probe port), or a recently applied scaling or
+  deployment change that altered NIC assignments. This SOP provides runbook steps
+  to restore backend health and confirm application availability.
+
+  '
+symptoms:
+- Application returns 502/504 or connection timed out for all client requests
+- 'Azure Monitor or pager alerts: ''BackendPoolUnhealthy'' or ''LoadBalancerBackendDown'''
+- Azure Portal Load Balancer > Backend health shows 'Unhealthy' or 'Unknown' for all
+  VM instances
+- No traffic reaches backend VMs (no increased CPU/network metrics despite inbound
+  requests)
+- Recent config changes deployed to Load Balancer, NSG, or VM scale set
+prerequisites:
+- Azure subscription ID and Resource Group containing the Load Balancer
+- 'Role-based access: Network Contributor or higher on the target resource(s)'
+- Access to cloud monitoring (Azure Monitor/Log Analytics) and Network Watcher
+- Access to backend VMs (SSH for Linux, RDP/WinRM for Windows) or to scale set model
+- Windows/Linux admin credentials or managed identity with sudo/admin where required
+required_tools:
+- Azure CLI (az) version >= 2.70 or Azure Cloud Shell
+- Azure Portal access
+- SSH/RDP client (e.g., OpenSSH, Windows RDP)
+- 'Network troubleshooting tools on jump host: curl/telnet/tcping/nc (netcat)'
+- Log Analytics query editor (for diagnostic logs)
+estimated_resolution_time: 15-45 minutes
+resolution_steps:
+- step_number: 1
+  action: Gather context and incident information
+  details: 'Record subscription ID, resource group, load balancer name, frontend IP
+    name, backend pool name, health probe name, recent deployment window and any related
+    change requests. Example variables: SUBSCRIPTION_ID, RG_NAME, LB_NAME, BACKEND_POOL_NAME,
+    PROBE_NAME.
+
+    '
+  warnings: Do not make configuration changes until the next steps confirm cause.
+- step_number: 2
+  action: Check backend health in Portal and CLI
+  details: 'In Azure Portal: Navigate to Load Balancer > [LB_NAME] > Backend health
+    and note status/state. In Azure CLI run (Cloud Shell): az account set --subscription
+    <SUBSCRIPTION_ID> az network lb show --resource-group <RG_NAME> --name <LB_NAME>
+    az network lb probe list --resource-group <RG_NAME> --lb-name <LB_NAME> Note probe
+    configuration: protocol (TCP/HTTP), port, interval, unhealthy threshold, and request-path
+    (HTTP).
+
+    '
+  warnings: Portal backend health may be delayed up to probe interval x threshold
+    before reflecting changes.
+- step_number: 3
+  action: Verify probe can reach backend VM from Load Balancer
+  details: 'Health probes originate from infrastructure-managed probe IPs; validate
+    service is listening on the probe port on each backend. On a jump host or directly
+    to the backend VM: - For TCP probe: nc -vz <backend_private_ip> <probe_port> -
+    For HTTP probe: curl -sS -I http://<backend_private_ip>:<probe_port><probe_path>
+    If using VM Scale Set, run netstat/ss on instance: sudo ss -ltnp | grep <probe_port>
+
+    '
+  warnings: Do not change application behavior (e.g., restart) without recording current
+    state.
+- step_number: 4
+  action: Check Network Security Group (NSG) and UDR rules
+  details: 'Inspect effective security rules for the backend NIC and subnet: In Portal:
+    VM NIC > Effective security rules CLI: az network nic show-effective-route-table
+    --name <nic_name> --resource-group <RG_NAME> az network nic list-effective-nsg
+    --resource-group <RG_NAME> --name <nic_name> Confirm inbound allowed from AzureLoadBalancer
+    (if using Basic endpoints pattern) and that probe port is not blocked.
+
+    '
+  warnings: NSG rules may be applied at both NIC and subnet level; check both.
+- step_number: 5
+  action: Validate application/service on backend instances
+  details: 'SSH/RDP into one unhealthy backend and confirm the app is listening and
+    responding on the probe endpoint. - For Linux: sudo systemctl status <service>;
+    journalctl -u <service> -n 200 - For Windows: Get-Service <service>; check IIS/HTTP
+    logs If service is not listening, restart service: sudo systemctl restart <service>
+    (or equivalent).
+
+    '
+  warnings: Restarting services may impact existing in-progress work; follow change
+    control if required.
+- step_number: 6
+  action: Correct health probe configuration if mismatch found
+  details: 'If probe protocol/port/path does not match what the service exposes, update
+    probe: az network lb probe update --resource-group <RG_NAME> --lb-name <LB_NAME>
+    --name <PROBE_NAME> --protocol Http --port 8080 --path /health --interval 10 --threshold
+    3 Or recreate with correct settings: az network lb probe create --resource-group
+    <RG_NAME> --lb-name <LB_NAME> --name <PROBE_NAME> --protocol Tcp --port 8080 --interval
+    10 --threshold 3
+
+    '
+  warnings: Changing probe semantics may temporarily cause transient state; choose
+    conservative interval/threshold.
+- step_number: 7
+  action: Re-associate backend pool / fix NIC membership
+  details: 'If backend instances are missing from backend pool (e.g., NIC detached
+    after scale or failed deployment), re-add NICs: az network nic ip-config update
+    --resource-group <RG_NAME> --nic-name <NIC_NAME> --name ipconfig1 --lb-address-pools
+    <backend_pool_id> For VM Scale Sets, update instance model or run: az vmss update-instances
+    --resource-group <RG_NAME> --name <vmss_name> --instance-ids <id>
+
+    '
+  warnings: Re-associating while service is unhealthy may cause repeated probe failures;
+    ensure probe matches service first.
+- step_number: 8
+  action: Check Azure Load Balancer diagnostics and metrics
+  details: 'Query Load Balancer metrics for ProbeHealth, DipAvailability and SNAT
+    port exhaustion in Metrics blade. Use Log Analytics: Search "AzureDiagnostics
+    | where Resource == ''<LB_NAME>'' and Category == ''LoadBalancerProbeHealth''".
+
+    '
+  warnings: Large time-range queries may take longer; focus on last 30 minutes by
+    default.
+- step_number: 9
+  action: Apply fixes and allow probes to converge
+  details: 'After fixes (service restart, NSG update, probe update, re-add backend),
+    wait for probe convergence: Wait probe interval * threshold * 2 (eg. 10s * 3 *
+    2 = 60s) before expecting stable healthy state.
+
+    '
+  warnings: If large-scale changes are required, perform in maintenance window if
+    possible to avoid detection noise.
+- step_number: 10
+  action: Document actions and notify stakeholders
+  details: 'Record exact commands run, time windows, and root cause analysis in incident
+    ticket. Notify on-call and affected application owners when service is restored.
+
+    '
+  warnings: Keep ticket updated with timestamps of each major action for post-incident
+    review.
+verification_steps:
+- Confirm Azure Portal Load Balancer > Backend health shows 'Healthy' for each previously
+  unhealthy instance
+- Run az network lb probe list and verify probe settings match application expectations
+- From external synthetic monitor (or curl from public test agent) receive 200/expected
+  response from application endpoint
+- Azure Monitor alerts for BackendPoolUnhealthy are resolved and metrics indicate
+  successful healthy probe counts
+- Confirm application logs show incoming requests and responses on restored instances
+troubleshooting:
+- issue: Probe shows Unhealthy even though service is listening
+  solution: 'Confirm firewall on VM (iptables/ufw/Windows firewall) allows probe source
+    and port. Verify HTTP probe path returns 200, not a redirect or 404. For HTTP
+    probes, any 2xx/3xx is considered healthy; confirm probe path does not return
+    401/403.
+
+    '
+- issue: NSG has deny rules that block probe traffic
+  solution: 'Add a temporary NSG allow rule for probe port from VirtualNetwork and
+    AzureLoadBalancer service tag Example: az network nsg rule create --resource-group
+    <RG> --nsg-name <nsg> --name AllowProbeFromALB --priority 100 --source-address-prefixes
+    AzureLoadBalancer --destination-port-ranges <port> --access Allow --direction
+    Inbound --protocol Tcp
+
+    '
+- issue: Backend instance not present in pool after autoscale or deployment
+  solution: 'Re-add NIC IP configuration to the backend pool or update VMSS model
+    and reimage/upgrade instances; review deployment scripts for missing backend_pool_id
+    references.
+
+    '
+- issue: SNAT port exhaustion or high ephemeral port usage
+  solution: 'Verify outbound connections/port usage. If SNAT exhaustion suspected,
+    recommend scaling to use Standard Load Balancer with outbound rules, or implement
+    TCP connection pooling on application side. Open a change request for architecture
+    remediation.
+
+    '
+- issue: Load Balancer configuration drift after IaC deployment
+  solution: 'Reconcile Load Balancer configuration from IaC (ARM/Bicep/Terraform).
+    Roll back recent deployment or apply corrected IaC template. Coordinate with deployment
+    owner.
+
+    '
+escalation:
+  condition: Unable to restore healthy backend state within 30 minutes, or root cause
+    involves subscription-level limits, Azure platform failures, or unsure how to
+    proceed.
+  contact: 'On-call Network Team Lead: oncall-network@example-corp.com; Pager: +1-555-010-0253
+    (internal)'
+  escalation_path: '1) Notify Network Team Lead (above). 2) If unresolved after 15
+    additional minutes, escalate to Cloud Infrastructure Manager (cloud-manager@example-corp.com).
+    3) Prepare incident packet: subscription ID, resource IDs (Load Balancer, backend
+    NICs, VM instance IDs), timestamps, screenshots of backend health, az CLI outputs,
+    and Log Analytics query snippets. 4) Open Azure Support ticket via https://portal.azure.com/#blade/Microsoft_Azure_Support/HelpAndSupportBlade/create
+    or use internal ticketing tool and request ''A2 - Platform Impacting'' priority
+    with the packet attached.
+
+    '
+related_documentation:
+- title: 'Internal KB: Azure Load Balancer - Backend Health Troubleshooting'
+  url: https://kb.example-corp.com/infra/azure/load-balancer-backend-health
+- title: 'Internal Runbook: Using Network Watcher Connection Troubleshoot'
+  url: https://kb.example-corp.com/infra/network/network-watcher-connection-troubleshoot
+- title: 'IaC Guidelines: Ensure Load Balancer Backend Pool Membership in ARM/Bicep'
+  url: https://devops.example-corp.com/docs/arm/best-practices/lb-backend-pools
+- title: 'Azure Support: How to open a subscription support request'
+  url: https://support.example-corp.com/azure/open-support-request
+tags:
+- azure
+- load-balancer
+- network
+- troubleshooting
+- production-incident
+version_history:
+- version: '1.0'
+  date: '2025-03-12T09:00:00+00:00'
+  author: Maya R. Benton
+  changes: Initial draft focusing on basic health probe remediation.
+- version: '1.5'
+  date: '2025-07-22T14:30:00+00:00'
+  author: Maya R. Benton
+  changes: Added NSG/UDR checks, CLI commands, and verification steps.
+- version: '1.9'
+  date: '2025-11-28T03:15:00+00:00'
+  author: Maya R. Benton
+  changes: Finalized critical incident flow, added escalation contact info and diagnostics
+    Log Analytics guidance; approved by Team Lead.

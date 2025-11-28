@@ -1,0 +1,211 @@
+{
+  "sop_id": "f5c27232-f754-4b36-a09b-5202a212ac6e",
+  "version": "1.3",
+  "created_at": "2025-11-28T02:33:24.980709+00:00",
+  "last_updated": "2025-11-28T02:33:24.980709+00:00",
+  "title": "Recover Detached/Corrupted OS Disk and Reattach to Azure VM (Managed Disks)",
+  "problem_category": "cloud",
+  "complexity": "medium",
+  "system_context": "Azure Virtual Machines",
+  "severity": "high",
+  "status": "approved",
+  "approval_level": "team_lead",
+  "author": {
+    "name": "Rina Patel",
+    "email": "rina.patel@cloudops.example.corp"
+  },
+  "approver": {
+    "name": "Marcus Lee",
+    "email": "marcus.lee@cloudops.example.corp",
+    "approved_at": "2025-11-28T04:15:00+00:00"
+  },
+  "problem_description": "An Azure Virtual Machine fails to boot because its OS disk is detached, corrupted, or in an inconsistent state. Symptoms include VM stuck in 'Starting' or 'Failed', boot diagnostics reporting no screenshots, serial console not responding, or VM showing 'OS disk not found' in compute properties. This SOP covers identifying the disk state, creating a snapshot or managed disk from the available artifact, reattaching or replacing the VM's OS disk, and boot recovery for both Linux and Windows VMs.",
+  "symptoms": [
+    "VM state is 'Stopped (Deallocated)', 'Starting', or 'Failed' and will not reach 'Running'",
+    "Boot diagnostics shows 'No boot diagnostics available' or blank screenshot",
+    "Azure Portal shows message 'OS Disk not found' or disk is listed as Detached/Unavailable",
+    "Attempting to redeploy or start VM returns error code referencing disk or storageProfile",
+    "Serial console returns 'Unable to establish session' or kernel panic messages for Linux"
+  ],
+  "prerequisites": [
+    "Contributor or Owner role on the subscription or a custom role that allows compute/disks/snapshots operations",
+    "Access to resource group containing the VM and managed disk(s)",
+    "If disk encrypted with CMK or platform-managed keys, ensure Key Vault access (get, unwrapKey) is available",
+    "A recovery window (scheduled maintenance window) \u2014 best to perform during low-impact hours",
+    "Backup/snapshot of current disk if available (recommended before any write operations)"
+  ],
+  "required_tools": [
+    "Azure Portal access",
+    "Azure CLI (az) >= 2.50 installed and logged in: az login",
+    "Azure PowerShell (Az module) available as backup",
+    "VM serial console (requires Owner or Virtual Machine Contributor and boot diagnostics enabled)",
+    "Internal runbook/KB access and ability to open support case with Microsoft (if escalation needed)"
+  ],
+  "estimated_resolution_time": "30-90 minutes (depends on disk size and snapshot/recreate time)",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Gather details and create a working snapshot",
+      "details": "Identify VM and disk resources. From Azure CLI: az vm show --resource-group <rg> --name <vmName> --query \"storageProfile.osDisk.managedDisk.id\" -o tsv. Note the managed disk resource id (or if missing, list disks in resource group: az disk list -g <rg>). If an OS managed disk exists, create a snapshot to preserve state: az snapshot create -g <rg> -n <vmName>-os-snap --source /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Compute/disks/<diskName> --sku Standard_LRS",
+      "warnings": "If the disk is encrypted with customer-managed keys, ensure you have keyvault unwrap permissions; snapshot creation will fail without them."
+    },
+    {
+      "step_number": 2,
+      "action": "Inspect disk health and lease state",
+      "details": "Check disk provisioning state and disk state: az disk show -g <rg> -n <diskName> --query \"{provisioningState:provisioningState, diskState:diskState, encryption:encryption}\" -o json",
+      "warnings": "If provisioningState != 'Succeeded' or diskState is 'Failed', do NOT attach. Proceed to step 3 to create a new managed disk from snapshot or copy."
+    },
+    {
+      "step_number": 3,
+      "action": "Create a replacement managed disk from snapshot (if disk corrupt or detached with failed state)",
+      "details": "Create a managed disk from the snapshot: az disk create -g <rg> -n <vmName>-os-repair --source /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Compute/snapshots/<vmName>-os-snap --sku Premium_LRS",
+      "warnings": "Match the OS disk size and performance SKU to the original if possible to avoid boot issues (e.g., OS expects certain disk performance)."
+    },
+    {
+      "step_number": 4,
+      "action": "If original disk is healthy but detached: ensure it's unattached and not used by another VM",
+      "details": "Confirm disk is not attached: az disk show -g <rg> -n <diskName> --query managedBy -o tsv. If managedBy is empty, disk is safe to attach. If managedBy is set, identify and coordinate with owner.",
+      "warnings": "Do not attach a disk that is in use by another running VM."
+    },
+    {
+      "step_number": 5,
+      "action": "Update VM to use the replacement OS disk",
+      "details": "Stop the VM first: az vm deallocate -g <rg> -n <vmName>. Then update the VM's storageProfile.osDisk.managedDisk.id to the new disk resource id. Example: az vm update -g <rg> -n <vmName> --set storageProfile.osDisk.managedDisk.id=\"/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Compute/disks/<vmName>-os-repair\"",
+      "warnings": "Be precise with the resource id string. Mistyping can leave VM without an OS disk configuration."
+    },
+    {
+      "step_number": 6,
+      "action": "If the VM is encrypted with a customer-managed key, reassign the encryption settings",
+      "details": "If original disk used CMK, ensure the new disk has encryption settings aligned: az disk update -g <rg> -n <diskName> --set encryptionSettingsCollection=\"[{'diskEncryptionKey':{'secretUrl':'https://<kv>.vault.azure.net/secrets/<key>','sourceVault':{'id':'/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.KeyVault/vaults/<kv>'}}}]\"",
+      "warnings": "Losing Key Vault access will prevent VM from booting. Confirm principal has access policy in Key Vault before boot."
+    },
+    {
+      "step_number": 7,
+      "action": "Start the VM and monitor boot diagnostics/serial console",
+      "details": "Start VM: az vm start -g <rg> -n <vmName>. Monitor instance view: az vm get-instance-view -g <rg> -n <vmName> --query \"{statuses:statuses}\" -o json. Check Boot diagnostics screenshot in Portal and the serial console for kernel/boot messages.",
+      "warnings": "If VM fails to progress past provisioning or shows repeated GuestAgent errors, do NOT repeatedly restart; capture logs and escalate as below."
+    },
+    {
+      "step_number": 8,
+      "action": "If VM still fails to boot: attach disk to a helper recovery VM",
+      "details": "Create or use a helper VM in same availability zone/region. Detach the replacement disk (if attached) and attach as data disk to helper VM: az vm disk attach -g <rg> --vm-name <helperVm> --disk <vmName>-os-repair --new --lun 1. Mount the disk on helper VM and run fsck (Linux) or chkdsk /f (Windows) on the attached volume. For Windows also check BCD and repair using DISM if needed.",
+      "warnings": "When attaching, ensure helper VM OS is compatible and helper VM has matching OS tools to perform offline repair."
+    },
+    {
+      "step_number": 9,
+      "action": "Perform offline filesystem and boot repairs",
+      "details": "Linux: identify device (e.g., /dev/sdc1), run e2fsck -f -y /dev/sdc1, verify fstab, and chroot to reinstall GRUB if needed. Windows: use DiskPart to assign drive letter, run chkdsk /f /r X:, then use bcdboot X:\\Windows to recreate boot files if BCD missing.",
+      "warnings": "Filesystem repair tools can be destructive; always operate on the snapshot or copied disk, not original when possible."
+    },
+    {
+      "step_number": 10,
+      "action": "Recreate VM from recovered managed disk (alternative if update fails)",
+      "details": "If updating storageProfile fails or VM metadata corrupted, create a new VM from the recovered disk: az vm create -g <rg> -n <vmName>-recovered --attach-os-disk /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Compute/disks/<vmName>-os-repair --os-type Linux (or Windows). Recreate network/security settings as needed.",
+      "warnings": "New VM name changes DNS and host identifiers. Coordinate with app owners for name/IP changes and update internal inventory."
+    },
+    {
+      "step_number": 11,
+      "action": "Post-recovery cleanups and snapshot archival",
+      "details": "After confirming VM boots, retain the snapshot and old disk (tag as DO_NOT_DELETE) for at least 7 days for forensic work. Optionally delete temporary repair disks after stakeholders sign off: az disk delete -g <rg> -n <vmName>-os-repair --yes",
+      "warnings": "Do not delete snapshots or original disks until recovery is validated and backups are confirmed."
+    },
+    {
+      "step_number": 12,
+      "action": "Document actions and update ticket",
+      "details": "Record timestamps, commands used, snapshot/disk IDs, and verification evidence (screenshots, serial console logs). Update change control and incident ticket with rollback plan if needed.",
+      "warnings": "Ensure documentation includes Key Vault references and any permissions changed during the process."
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm VM power state is 'running' via az vm get-instance-view -g <rg> -n <vmName> and check statuses for ProvisioningState and PowerState"
+    },
+    {
+      "step": "Check Boot Diagnostics screenshot in Azure Portal shows OS boot screens and no repeated kernel panic or blue screen"
+    },
+    {
+      "step": "For Linux: SSH into VM and confirm critical services start (systemctl status <service>) and run dmesg | tail to verify no new disk errors"
+    },
+    {
+      "step": "For Windows: RDP into VM, confirm Event Viewer has no new critical boot errors, and run chkdsk results summary"
+    },
+    {
+      "step": "Verify application-level connectivity (HTTP/HTTPS, database connections) and perform smoke tests defined by app owners"
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Snapshot creation fails with 'Forbidden' or 'Access denied' for Key Vault",
+      "solution": "Confirm the caller has access policies to Key Vault (get, unwrapKey). If using managed identity, ensure identity is granted necessary access. If still blocked, escalate to Security/KeyVault owner to whitelist the principal."
+    },
+    {
+      "issue": "az vm update command fails with 'Cannot set storageProfile.osDisk' or JSON validation error",
+      "solution": "Double-check the resource id syntax and ensure VM is deallocated. Use az vm show to export current storageProfile and edit with correct path. As alternative, recreate VM with --attach-os-disk from the managed disk."
+    },
+    {
+      "issue": "Disk shows 'diskState: Failed' or 'provisioningState: Failed'",
+      "solution": "Do not attach. Create a snapshot of the failed disk (if possible) or make a copy using az disk grant-access and az storage blob copy as emergency export. Engage platform team if disk service shows backend failure."
+    },
+    {
+      "issue": "VM boots but cloud-init/waagent/guest agent shows errors",
+      "solution": "Investigate cloud-init logs (/var/log/cloud-init.log) or Windows Azure Linux Agent logs. Reinstall/repair guest agent while VM is running or via offline repair on helper VM."
+    },
+    {
+      "issue": "New VM boots but services fail due to network or NIC change",
+      "solution": "Verify NIC, IP addresses, NSG, UDRs, and DNS. Restore original network interface if preserved or reconfigure network settings to match previous configuration."
+    }
+  ],
+  "escalation": {
+    "condition": "If after creating a fresh managed disk and attempting to boot (or recreating a VM from disk) the VM still fails to reach operational state OR if disk operations return persistent 500/503 or backend errors for >60 minutes.",
+    "contact": "Cloud Platform Team (cloud-platform-team@ops.example.corp) and open a Microsoft Support ticket for platform-level disk issues.",
+    "escalation_path": "1) Notify Cloud Platform Team and provide incident id, resource ids (VM, disk, snapshot), timestamps, and output from az vm get-instance-view. 2) If Cloud Platform Team cannot resolve in 30 minutes, create a paid Microsoft Support case (Severity A) with subscription id and console logs. 3) For encryption-related failures, include Key Vault owner and Security team in the case."
+  },
+  "related_documentation": [
+    {
+      "title": "Internal KB: Recovering Azure VM OS Disk (Managed Disk Workflow)",
+      "url": "https://kb.internal.example.corp/azure/vm/os-disk-recovery"
+    },
+    {
+      "title": "Internal Runbook: Offline Repair Procedures for Linux and Windows OS Disks",
+      "url": "https://runbooks.example.corp/cloud/azure/os-disk-offline-repair"
+    },
+    {
+      "title": "Vendor Guidance (simulated): Recovering and recreating VM from managed disk",
+      "url": "https://support.microsoft-fake.com/azure/compute/recover-vm-from-disk"
+    }
+  ],
+  "tags": [
+    "azure",
+    "vm",
+    "os-disk",
+    "recovery",
+    "managed-disk",
+    "boot-failure"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2025-07-12T10:00:00+00:00",
+      "author": "Rina Patel",
+      "changes": "Initial SOP created describing basic disk snapshot and reattach workflow for managed OS disks."
+    },
+    {
+      "version": "1.1",
+      "date": "2025-09-03T14:30:00+00:00",
+      "author": "Rina Patel",
+      "changes": "Added instructions for offline repair using helper VM and more detailed Linux/Windows filesystem repair commands."
+    },
+    {
+      "version": "1.2",
+      "date": "2025-10-21T09:20:00+00:00",
+      "author": "Jordan Kim",
+      "changes": "Extended troubleshooting section to include Key Vault CMK scenarios and RBAC notes."
+    },
+    {
+      "version": "1.3",
+      "date": "2025-11-28T02:33:24.980709+00:00",
+      "author": "Rina Patel",
+      "changes": "Approved version: refined step order, added explicit az cli commands, escalation path, and verification steps; added sample cleanup and documentation requirements."
+    }
+  ]
+}

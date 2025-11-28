@@ -1,0 +1,207 @@
+{
+  "sop_id": "41d7b31d-17ea-49a4-afa9-96fac718f4bb",
+  "version": "1.5",
+  "created_at": "2025-11-28T02:44:47.363160+00:00",
+  "last_updated": "2025-11-28T02:44:47.363160+00:00",
+  "title": "Azure SQL Database - Diagnose and Resolve Moderate Performance or Connection Degradation",
+  "problem_category": "database",
+  "complexity": "medium",
+  "system_context": "Azure SQL Database",
+  "severity": "medium",
+  "status": "approved",
+  "approval_level": "director",
+  "author": {
+    "name": "Riley Park",
+    "email": "riley.park@example-internal.dev"
+  },
+  "approver": {
+    "name": "Jordan Vance",
+    "email": "jordan.vance@example-internal.dev",
+    "approved_at": "2025-11-28T03:10:00+00:00"
+  },
+  "problem_description": "Intermittent or sustained degradation of query performance, increased connection timeouts, or a rise in failed client connections against an Azure SQL Database instance. This SOP covers investigation steps to determine whether the cause is resource saturation (compute/IO/DTU/vCore limits), blocking/long-running queries, statistics or indexing issues, transient network policies, or service-tier limitations, and provides remediation steps that are safe to perform by on-call DBAs and platform engineers.",
+  "symptoms": [
+    "Application reports increased SQL command timeout exceptions (e.g., timeout expired).",
+    "Elevated CPU %, high DTU/VCore memory or io_consumption metrics visible in Azure Portal.",
+    "Large number of requests in sys.dm_exec_requests with status 'suspended' or 'running' for extended periods.",
+    "Blocking chains visible in sys.dm_tran_locks and waiting_tasks.",
+    "Sudden increase in transient connection errors (e.g., A connection attempt failed).",
+    "Query Store shows sudden high runtime for previously fast queries."
+  ],
+  "prerequisites": [
+    "On-call engineer with Reader or higher role on the Azure subscription and SQL Server Contributor role for the logical server/database.",
+    "Audit trail: incident ticket created (include correlation ID, application hostname, and approximate start time).",
+    "Read access to database (VIEW DATABASE STATE) or membership in db_owner for remediation steps that modify schema or statistics."
+  ],
+  "required_tools": [
+    "Azure Portal (https://portal.azure.com) access to the subscription",
+    "Azure CLI (az) configured with an account that has access to the resource group",
+    "SQL client (sqlcmd, SSMS or Azure Data Studio) with credentials for the target database",
+    "Access to application logs (to correlate errors)",
+    "Incident ticketing system to record actions and timestamps"
+  ],
+  "estimated_resolution_time": "30-90 minutes (depends on scale operations and index rebuild duration)",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Record baseline incident data",
+      "details": "Capture exact error messages, application logs, timestamps, affected user sessions, and any recent deployments or schema changes. Note the database name, logical server, resource group, subscription ID, and approximate time window when errors began.",
+      "warnings": ""
+    },
+    {
+      "step_number": 2,
+      "action": "Check Azure resource health and service status",
+      "details": "Open Azure Portal -> SQL databases -> select the database -> Resource health. Also check https://status.azure.com and the subscription's Service Health in the portal for any ongoing outages that could explain connectivity issues.",
+      "warnings": ""
+    },
+    {
+      "step_number": 3,
+      "action": "Review platform and database metrics",
+      "details": "In Azure Portal -> SQL database -> Monitoring -> Metrics, inspect CPU percent, DTU (if applicable), vCore memory, io_consumption_percent, deadlocks, failed_connections, and storage. Set timeframe to the incident window and compare to normal baseline.",
+      "warnings": ""
+    },
+    {
+      "step_number": 4,
+      "action": "Query active requests and blocking",
+      "details": "Connect to the database and run diagnostic queries to identify blocking or long-running requests. Example T-SQL (modify for your environment):\nSELECT r.session_id, r.status, r.command, r.total_elapsed_time/1000.0 AS elapsed_seconds,\n       SUBSTRING(t.text, r.statement_start_offset/2+1, (CASE WHEN r.statement_end_offset = -1 THEN LEN(CONVERT(nvarchar(max), t.text)) * 2 ELSE r.statement_end_offset END - r.statement_start_offset)/2 + 1) AS sql_text,\n       s.login_name, s.host_name\nFROM sys.dm_exec_requests r\nCROSS APPLY sys.dm_exec_sql_text(r.sql_handle) t\nJOIN sys.dm_exec_sessions s ON r.session_id = s.session_id\nWHERE r.session_id > 50\nORDER BY r.total_elapsed_time DESC;",
+      "warnings": "Do not run blocking/kill commands without confirming the session belongs to the affected workload and coordinating with application owners when possible."
+    },
+    {
+      "step_number": 5,
+      "action": "If confirmed single-shop blocking session exists, safely terminate",
+      "details": "When a session is identified as an unresponsive, non-critical runaway (e.g., developer debug session or a known test harness), run: KILL <session_id>; Monitor rollback with sys.dm_tran_session_transactions and sys.dm_exec_requests. Document the session id, user, and reason in the incident ticket.",
+      "warnings": "KILL causes rollback which can take time; killing production user sessions can cause transaction loss. Get approval from application owner if unclear."
+    },
+    {
+      "step_number": 6,
+      "action": "Inspect Query Store and plan regression",
+      "details": "If Query Store is enabled, review top resource-consuming queries and plan changes. Example T-SQL to list top runtime queries:\nSELECT TOP 25 qsqt.query_sql_text, qsp.query_id, qsp.avg_duration, qsp.avg_cpu_time, qsp.last_execution_time\nFROM sys.query_store_query_text qsqt\nJOIN sys.query_store_query qsq ON qsqt.query_text_id = qsq.query_text_id\nJOIN sys.query_store_plan qsp ON qsq.query_id = qsp.query_id\nORDER BY qsp.avg_duration DESC;",
+      "warnings": "Do not force plans or change hints without validating in a staging environment."
+    },
+    {
+      "step_number": 7,
+      "action": "Update statistics and consider index maintenance",
+      "details": "If high logical reads or poor plans are identified, update statistics and rebuild fragmented indexes. Recommended sequence:\n- UPDATE STATISTICS schema.table WITH FULLSCAN;\n- ALTER INDEX ALL ON schema.table REBUILD (ONLINE = ON) \u2014 if your service tier supports ONLINE index operations; otherwise use REORGANIZE.\nPerform targeted maintenance on affected tables first to reduce risk and time.",
+      "warnings": "Index rebuilds can increase IO and transaction log usage; ensure there is sufficient log/storage. ONLINE rebuild may not be available on lower tiers."
+    },
+    {
+      "step_number": 8,
+      "action": "If resource saturation is confirmed, perform scale action",
+      "details": "If CPU or vCore/memory limits are reached, scale the database to a higher compute tier temporarily. Via Azure CLI example (replace placeholders):\naz sql db update --resource-group MyRG --server my-sql-server --name mydb --compute-model Serverless --tier GeneralPurpose --family Gen5 --capacity 4\nOr use the portal to scale vCores/DTU. Plan for brief reconnection behavior; document change and expected revert time.",
+      "warnings": "Scaling may cause connection resets and transient errors; schedule for maintenance windows if possible. Verify cost impact before scaling."
+    },
+    {
+      "step_number": 9,
+      "action": "Tune queries and add missing indexes cautiously",
+      "details": "Use sys.dm_db_missing_index_details and Query Store recommendations to find high-value missing indexes. Create indexes then monitor for improvements. Example create:\nCREATE INDEX IX_tbl_col ON schema.table (col1) INCLUDE (col2);\nPrioritize low-impact and high-benefit indexes first.",
+      "warnings": "Index creation increases storage and can impact write performance. Always evaluate and test before applying wide-scope changes."
+    },
+    {
+      "step_number": 10,
+      "action": "Address network and connection policy issues",
+      "details": "Confirm firewall rules on the logical server, VNet service endpoints or private endpoints, and connection string settings (connection timeout, application intent, retry logic). For transient failures, implement or tune client-side retry policies. If using Private Link, verify DNS resolution and IP configuration.",
+      "warnings": ""
+    },
+    {
+      "step_number": 11,
+      "action": "Force a controlled failover if suspect platform node issue",
+      "details": "If diagnostics point to a single node anomaly and scaling/queries have not helped, initiate a geo-failover or failover group (if configured) to force a primary swap. In Azure Portal > SQL Server > Failover groups > Initiate failover. This should be coordinated with stakeholders.",
+      "warnings": "Failover causes brief connectivity interruption and must be coordinated. Not all environments have failover groups configured."
+    },
+    {
+      "step_number": 12,
+      "action": "Monitor and close incident",
+      "details": "After remediation, monitor for 30-60 minutes to ensure metrics stabilize and application errors cease. Revert temporary scaling changes when safe and document actions taken, timestamps, and outcomes in the incident ticket.",
+      "warnings": ""
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm Azure metrics return to baseline (CPU, DTU/vCore memory, io_consumption_percent) for at least 30 minutes."
+    },
+    {
+      "step": "Run representative application queries and confirm response times are within SLA and error rate is near zero."
+    },
+    {
+      "step": "Verify Query Store top N queries show reduced average duration and no new plan regressions."
+    },
+    {
+      "step": "Check application logs for absence of timeout or connection-related exceptions in the incident window following remediation."
+    },
+    {
+      "step": "If sessions were killed or failover executed, confirm active sessions reconnect successfully and no orphaned transactions remain via sys.dm_tran_active_transactions."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Cannot connect to the database from the office network after firewall change",
+      "solution": "Verify server-level firewall rules in Azure Portal and ensure the client public IP is in the allowed list or that the Private Endpoint DNS is resolvable. Use nslookup on the DB host to confirm DNS resolution."
+    },
+    {
+      "issue": "Query Store shows high compile time and plan volatility (parameter sniffing)",
+      "solution": "Temporarily enable forced parameterization at the application or rewrite the query to use OPTIMIZE FOR UNKNOWN or recompile hints. Consider plan forcing in Query Store after testing in staging."
+    },
+    {
+      "issue": "Scaling up did not reduce latency",
+      "solution": "Validate that the bottleneck was compute and not blocking or IO. Use sys.dm_io_virtual_file_stats to check IO stalls and sys.dm_exec_requests for blocking. If IO is the issue, consider higher service tiers or moving large tempdb-like workloads to separate databases."
+    },
+    {
+      "issue": "Index rebuild failing due to insufficient log or storage",
+      "solution": "Perform targeted index rebuilds using SORT_IN_TEMPDB = OFF, use REORGANIZE for low fragmentation, or temporarily scale storage to allow rebuild. Coordinate with platform team for temporary storage increase."
+    },
+    {
+      "issue": "Frequent transient connection errors despite Azure healthy",
+      "solution": "Implement exponential backoff and retry logic in the client, verify TLS settings and network intermittency between the application and the Azure region, and open an Azure Support ticket if network path anomalies persist."
+    }
+  ],
+  "escalation": {
+    "condition": "Issue remains unresolved after completing all resolution steps and verification or if multiple databases across the server are impacted indicating a platform-level problem.",
+    "contact": "On-call Senior DBA (L2) via pager: +1-555-0102 (internal) and on-call Slack channel #db-oncall; Azure Support via portal ticket if platform suspected.",
+    "escalation_path": "1) L1 on-call follows SOP. 2) Escalate to L2 Senior DBA if symptoms persist >60 minutes or after index/scale actions. 3) If L2 cannot resolve or if Azure service issue suspected, open an Azure Support 'Technical' ticket and escalate to L3 Architect and Director-level stakeholders. Include subscription ID, resource IDs, diagnostic logs, and timestamps."
+  },
+  "related_documentation": [
+    {
+      "title": "Internal KB: Azure SQL - Performance Baselines and Alert Thresholds",
+      "url": "https://kb.example-internal.dev/azure-sql/performance-baselines"
+    },
+    {
+      "title": "Microsoft Docs: Monitor and tune Azure SQL Database",
+      "url": "https://docs.microsoft.com/fake-path/azure-sql/monitor-tune"
+    },
+    {
+      "title": "Internal Runbook: Initiate SQL DB Scale and Rollback Procedure",
+      "url": "https://runbooks.example-internal.dev/sql/scale-rollback"
+    },
+    {
+      "title": "Microsoft Docs: Query Store for Azure SQL Database",
+      "url": "https://docs.microsoft.com/fake-path/azure-sql/query-store"
+    }
+  ],
+  "tags": [
+    "azure",
+    "sql",
+    "performance",
+    "connectivity",
+    "query-store"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2025-09-10T09:00:00+00:00",
+      "author": "Riley Park",
+      "changes": "Initial draft covering basic diagnostics and blocking resolution steps."
+    },
+    {
+      "version": "1.4",
+      "date": "2025-11-12T14:30:00+00:00",
+      "author": "Riley Park",
+      "changes": "Added Query Store queries, scaling CLI examples, and additional warnings for online rebuilds."
+    },
+    {
+      "version": "1.5",
+      "date": "2025-11-28T02:44:47.363160+00:00",
+      "author": "Riley Park",
+      "changes": "Approved version \u2014 added verification steps, expanded troubleshooting scenarios, and formalized escalation path."
+    }
+  ]
+}

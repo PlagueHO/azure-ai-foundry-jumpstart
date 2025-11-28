@@ -1,0 +1,149 @@
+SOP ID: fde3740b-5ffc-43e3-a157-1c0902fc72b6
+Version: 1.7
+Created At: 2025-11-28T02:55:31.684256+00:00
+Last Updated: 2025-11-28T03:10:00+00:00
+Title: Azure Monitor Log Ingestion Stopped for Resource Group (Diagnostic Settings / DCR / Workspace)
+Problem Category: cloud
+Complexity: medium
+System Context: Azure Monitor
+Severity: medium
+Status: draft
+Approval Level: team_lead
+Author: Dana Veldt <dana.veldt.ops@example.local>
+
+PROBLEM DESCRIPTION:
+Azure Monitor has stopped ingesting logs/metrics from a specific resource group into the configured Log Analytics workspace and/or metric store. This SOP covers the most common causes (broken diagnostic settings, Data Collection Rule (DCR) misconfiguration, agent/extension failures, workspace ingestion throttling, RBAC/locking, and networking restrictions) and provides step-by-step remediation to restore ingestion.
+
+SYMPTOMS:
+- No new entries in Log Analytics for resources in the affected resource group for > 15 minutes.
+- Alerts based on workspace queries do not fire for resources in the group.
+- Diagnostic settings appear missing or show 'Failed' in Portal.
+- Data Collection Rule (DCR) shows an error state for targeted resources.
+- Azure Monitor agent (AMA/MMA) extension shows "ProvisioningFailed" or "NotRegistered".
+- Metric charts for affected resources show "No data" or flat lines where data previously existed.
+
+PREREQUISITES:
+- You have monitoring Owner or Monitoring Contributor role on the subscription or at least Contributor on the affected resource group and Reader on the Log Analytics workspace.
+- You have non-interactive console access to Azure CLI or Az PowerShell and Portal.
+- You have the resource group name and at least one example resource name (VM, App Service, etc.) that is affected.
+- Change window or approval to modify diagnostic settings if this is production.
+
+REQUIRED TOOLS:
+- Azure CLI >= 2.50 or Azure PowerShell Az module >= 7.x
+- Access to Azure Portal (portal.azure.com)
+- Access to Log Analytics workspace (Logs blade)
+- Optional: Network team contact for private link / NSG checks
+- Kusto Query Language (KQL) editor in Log Analytics
+
+ESTIMATED RESOLUTION TIME: 15-40 minutes
+
+RESOLUTION STEPS:
+1. Action: Confirm the scope and reproduce symptom
+   Details:
+   - Identify affected resource group (e.g., rg-monitor-prod) and pick a representative resource (e.g., vm-web-01).
+   - Run a quick Log Analytics query to show recent data:
+     - Example KQL: Heartbeat | where TimeGenerated > ago(30m) and Computer == "vm-web-01"
+   - Check Metrics blade for the resource in Portal and set timeframe to last 1 hour.
+   Warnings: Do not modify diagnostic settings until you have identified current state to avoid accidental data configuration loss.
+
+2. Action: Verify diagnostic settings on a sample resource
+   Details:
+   - Portal: Resource -> Diagnostic settings -> Confirm a diagnostic setting exists and points to expected Log Analytics workspace (la-ws-prod-01).
+   - CLI: az monitor diagnostic-settings list --resource /subscriptions/<sub>/resourceGroups/rg-monitor-prod/providers/Microsoft.Compute/virtualMachines/vm-web-01
+   - Confirm categories enabled (AuditLogs, Administrative, Metrics) match expected company baseline.
+   Warnings: Removing and recreating diagnostic settings can create gaps in data. Only recreate if settings are missing or corrupted.
+
+3. Action: Check Data Collection Rules (DCR) and Data Collection Endpoints (DCE) (if using AMA)
+   Details:
+   - CLI: az monitor data-collection rule show --name dcr-rg-monitor --resource-group rg-monitor-prod
+   - Confirm DCR has correct dataSources and destination pointing to the Log Analytics workspace or DCE.
+   - If using DCE/private endpoints, verify the DCE status and network reachability.
+   Warnings: Changing DCRs may affect many resources; apply changes narrowly (test DCR on single VM) before broad rollout.
+
+4. Action: Confirm agent/extension health on the target VM(s)
+   Details:
+   - CLI: az vm extension list --resource-group rg-monitor-prod --vm-name vm-web-01
+   - Look for extension names: AzureMonitorWindowsAgent (or AzureMonitorLinuxAgent) and check statuses.
+   - For extension show: az vm extension show --name AzureMonitorWindowsAgent --vm-name vm-web-01 --resource-group rg-monitor-prod
+   - If extension is failed, collect extension status and error message and attempt a restart of the extension (first a benign restart, not reinstall).
+   Warnings: Reinstalling the agent extension can cause temporary loss of local debugging logs. Reinstall only after collecting diagnostic logs.
+
+5. Action: Check workspace ingestion and quota issues
+   Details:
+   - Portal: Log Analytics Workspace -> Usage and estimated costs -> Check ingestion trends and any exceeded daily cap.
+   - CLI (inventory): az monitor log-analytics workspace show --resource-group rg-monitor-prod --workspace-name la-ws-prod-01
+   - If ingestion cap is hit, either increase daily cap (if configured) or contact billing/ops to increase subscription quota.
+   Warnings: Increasing ingestion cap may have cost implications. Obtain approval as required.
+
+6. Action: Validate RBAC and resource locks
+   Details:
+   - Check if there is a resource lock preventing changes: az lock list --resource-group rg-monitor-prod
+   - Confirm the service principal / managed identity used by the DCR or diagnostic setting has appropriate permissions on workspace (Monitoring Data Contributor or equivalent).
+   - Portal: Workspace -> Access Control (IAM) -> Search for the identity and confirm permissions.
+   Warnings: Do not remove or downgrade permissions without approval.
+
+7. Action: Network / Private Link / NSG checks
+   Details:
+   - If the Log Analytics workspace uses Private Link or workspace is in a restricted virtual network, confirm NSGs/Firewall rules permit ingestion from the resource's outbound IPs.
+   - For VMSS or VMs in a subnet, run a connectivity test from the VM to workspace ingestion endpoint (e.g., curl https://<workspace-id>.ods.opinsights.azure.com/health) or use tcpping depending on OS.
+   Warnings: Networking changes often require cross-team coordination; do not change firewall rules without network approval.
+
+8. Action: Reapply or recreate diagnostic setting / DCR (if identified as root cause)
+   Details:
+   - If diagnostic setting missing/corrupt: recreate a minimal diagnostic setting pointing only to the workspace to validate ingestion:
+     - CLI example:
+       az monitor diagnostic-settings create --name temp-diag-vm-web-01 --resource /subscriptions/<sub>/resourceGroups/rg-monitor-prod/providers/Microsoft.Compute/virtualMachines/vm-web-01 --workspace la-ws-prod-01 --logs '[{"category":"Administrative","enabled":true}]'
+   - If DCR is misconfigured, update to add the resource as a scoped resource or patch the destination workspace ID.
+   Warnings: Use minimal categories and short TTL to limit immediate ingestion volume and cost while testing.
+
+9. Action: Collect logs for unresolved extension or ingestion errors
+   Details:
+   - VM Agent logs: Windows C:\WindowsAzure\Logs\Plugins\<extension>\; Linux /var/log/azure/<extension>/
+   - Diagnostic setting error codes: capture AzureActivity or AzureDiagnostics entries indicating errors.
+   - Save log bundle and attach to incident for escalation.
+   Warnings: Do not upload sensitive files to public sites. Use secure internal storage.
+
+VERIFICATION STEPS:
+- Run KQL in the target workspace to confirm new data appears for the example resource:
+  - Heartbeat | where TimeGenerated > ago(15m) and Computer == "vm-web-01"
+  - or for diagnostic logs: AzureDiagnostics | where ResourceId contains "/virtualMachines/vm-web-01" | where TimeGenerated > ago(15m)
+- Confirm metric chart on the resource shows updated points for the last 15 minutes.
+- Confirm any previously failing alerts are now in "OK" or showing recent evaluation with data.
+- Check agent/extension status is 'ProvisioningSucceeded' or 'Running' in Portal and CLI.
+- Confirm no new "Failed" state entries in Diagnostic settings list for sample resources.
+
+TROUBLESHOOTING:
+Issue: Diagnostic setting appears present but no data is ingested.
+Solution: Validate that the diagnostic setting destination workspace ID matches the workspace resource ID exactly. If using DCR/DCE, confirm the DCR points to the DCE and that DCE has network path to workspace. Collect extension logs to confirm agent is sending.
+
+Issue: Agent extension shows ProvisioningFailed with a cryptic exit code.
+Solution: Gather extension logs from VM, check for time drift, ensure OS has required packages (glibc, openssl on Linux), and that outbound HTTPS is allowed to Monitor endpoints. Reinstall extension if dependency missing after remediation.
+
+Issue: Ingestion suddenly stopped and workspace shows "Throttled" or exceeded cap.
+Solution: Review workspace usage and retention policy; check for anomalous high-volume sources (e.g., misconfigured app sending verbose telemetry). Temporarily increase cap or refine retention/filters, block the noisy resource, and throttle source while root cause is remediated.
+
+ESCALATION:
+Condition: After completing Resolution Steps and Troubleshooting, ingestion is not restored within 90 minutes OR critical production alerts remain suppressed.
+Contact: Team Lead on-call: Marcel Ortega <marcel.ortega.ops@example.local> and Cloud Platform Senior: Priya Khatri <priya.khatri.cloud@example.local>
+Escalation Path:
+- Tier 2 Ops (first contact) — provide all collected logs, CLI outputs, and screen captures.
+- If Tier 2 cannot resolve within 90 minutes, escalate to Cloud Platform Architect and open an Azure Support ticket (Severity A) with collected log bundle and support snippet.
+- If Azure Support required, ensure request includes diagnostics (vm extension logs, DCR config, diagnostic-settings export, workspace ingestion telemetry).
+
+RELATED DOCUMENTATION:
+- Title: Azure Monitor Diagnostic Settings — internal troubleshooting guide
+  URL: https://intranet.example.local/ops/azure-monitor/diag-settings-troubleshoot
+- Title: Data Collection Rules (DCR) Playbook
+  URL: https://intranet.example.local/ops/azure-monitor/dcr-playbook
+- Title: Log Analytics Workspace Ingestion & Cap Management
+  URL: https://intranet.example.local/ops/azure-monitor/workspace-ingestion
+- Title: Agent Extension Logs Location (Windows/Linux)
+  URL: https://intranet.example.local/ops/azure-monitor/agent-logs
+
+TAGS: azure-monitor, log-analytics, diagnostic-settings
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2024-08-15T09:12:00+00:00 | Author: Dana Veldt | Changes: Initial draft focusing on diagnostic settings and agent failures.
+Version: 1.3 | Date: 2025-03-02T14:45:00+00:00 | Author: Dana Veldt | Changes: Added DCR/DCE troubleshooting and private link/network considerations.
+Version: 1.5 | Date: 2025-09-10T10:22:00+00:00 | Author: Dana Veldt | Changes: Added ingestion cap checks and escalation timing.
+Version: 1.7 | Date: 2025-11-28T03:10:00+00:00 | Author: Dana Veldt | Changes: Updated CLI examples, tightened verification KQL, clarified RBAC/lock checks and added explicit log collection paths.

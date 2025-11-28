@@ -1,0 +1,164 @@
+{
+  "sop_id": "b6001385-1e9d-49f5-a2d9-186f658c8d4c",
+  "version": "1.9",
+  "created_at": "2025-11-28T02:44:47.374606+00:00",
+  "last_updated": "2025-11-28T03:05:00+00:00",
+  "title": "Azure SQL Database: High CPU / Blocking Causing Connection Timeouts \u2014 Investigate and Mitigate",
+  "problem_category": "database",
+  "complexity": "medium",
+  "system_context": "Azure SQL Database",
+  "severity": "critical",
+  "status": "archived",
+  "approval_level": "team_lead",
+  "author": {
+    "name": "Jamie Cruz",
+    "email": "jamie.cruz@example.com"
+  },
+  "approver": {
+    "name": "Rina Patel",
+    "email": "rina.patel@example.com",
+    "approved_at": "2025-11-28T03:00:00+00:00"
+  },
+  "problem_description": "Production Azure SQL Database is experiencing sustained high CPU and heavy blocking which leads to transient connection timeouts and failed user transactions. The root cause is typically one or more runaway or regressed queries (e.g., parameter sniffing, missing indexes, plan regression) or an unexpected workload spike. This SOP guides tech support through identifying offending sessions/queries, applying immediate mitigations (kill, plan forcing, temporary scale-up), and implementing medium-term fixes (index tune, statistics update, plan forcing via Query Store).",
+  "symptoms": [
+    "User-facing application reports intermittent connection timeouts or 500 errors tied to DB calls",
+    "Azure Portal metrics show CPU% sustained above 80% and DTU/vCore compute consumed",
+    "Long blocking chains visible in sys.dm_tran_locks / sys.dm_exec_requests",
+    "Slow-running top queries in Query Store or sys.dm_exec_query_stats",
+    "Increased waits on CXPACKET, SOS_SCHEDULER_YIELD, or PAGEIOLATCH_*"
+  ],
+  "prerequisites": [
+    "Valid subscription access to Azure Portal and the target resource group",
+    "SQL Server admin (Azure SQL) or db_owner permissions on the affected database",
+    "Ticket or approval to perform transient blocking actions (KILL, scale-up)",
+    "Maintenance window or customer notification if performing scale or index rebuild"
+  ],
+  "required_tools": [
+    "Azure Portal (portal.azure.com) with subscription access",
+    "Azure CLI (az) v2.XX or later",
+    "sqlcmd (or SSMS / Azure Data Studio) with TLS-enabled connection",
+    "Query Editor in Azure Portal / access to Query Store",
+    "Monitoring tools: Azure Monitor metrics, Application Insights (optional)"
+  ],
+  "estimated_resolution_time": "30-90 minutes (mitigation). Permanent remediation (indexing, code changes) may take longer.",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Confirm and scope the incident",
+      "details": "Using Azure Portal -> SQL databases -> <db-name> inspect Overview and Metrics. Note current CPU percentage, DTU/vCore utilization, and time window. Record database name, server name, region, and subscription ID. Capture a timestamped screenshot of the metric spikes.",
+      "warnings": ""
+    },
+    {
+      "step_number": 2,
+      "action": "Gather active session and wait statistics",
+      "details": "Connect with sqlcmd or Azure Data Studio as SQL admin. Run the following diagnostic queries to list blocking and top waits (replace <db>):\n- SELECT * FROM sys.dm_exec_requests WHERE status <> 'background';\n- SELECT blocking_session_id, wait_type, wait_time_ms, resource_description FROM sys.dm_os_waiting_tasks WHERE blocking_session_id IS NOT NULL;\n- SELECT TOP 10 qs.sql_handle, qs.plan_handle, qs.total_worker_time/qs.execution_count AS avg_cpu, qs.execution_count, SUBSTRING(st.text, (qs.statement_start_offset/2)+1, ((CASE WHEN qs.statement_end_offset = -1 THEN DATALENGTH(st.text) ELSE qs.statement_end_offset END - qs.statement_start_offset)/2)+1) AS query_text FROM sys.dm_exec_query_stats qs CROSS APPLY sys.dm_exec_sql_text(qs.sql_handle) st ORDER BY avg_cpu DESC;",
+      "warnings": "Avoid running heavy ad-hoc diagnostics during peak CPU; run queries with TOP and narrow time ranges."
+    },
+    {
+      "step_number": 3,
+      "action": "Identify offending query via Query Store",
+      "details": "If Query Store is enabled, open Query Store reports in Azure Portal or query sys.query_store_query and sys.query_store_runtime_stats to find top CPU or duration queries in the last 15 minutes. Example query:\n- SELECT qsqt.query_id, qsq.query_text_id, MAX(rs.avg_duration) avg_duration FROM sys.query_store_runtime_stats rs JOIN sys.query_store_plan qp ON rs.plan_id = qp.plan_id JOIN sys.query_store_query qsq ON qp.query_id = qsq.query_id JOIN sys.query_store_query_text qsqt ON qsq.query_text_id = qsqt.query_text_id GROUP BY qsqt.query_id, qsq.query_text_id ORDER BY avg_duration DESC;",
+      "warnings": "If Query Store is disabled, enable it with conservative settings (e.g., 100 MB max size) only if you have headroom; enabling may briefly impact I/O."
+    },
+    {
+      "step_number": 4,
+      "action": "Apply an immediate mitigation",
+      "details": "Based on findings, choose one or more of the following mitigations:\n- Kill a blocking session: EXEC('KILL ' + @session_id) if session is user-initiated and safe to terminate.\n- Force a known good plan via Query Store: EXEC sp_query_store_force_plan @query_id = <id>, @plan_id = <plan_id>;\n- Temporarily scale up compute tier: az sql db update --resource-group <rg> --server <server> --name <db> --service-objective S4 (example). Monitor for reduction in CPU.\nDocument time and reason for any KILL or scale operations.",
+      "warnings": "KILL will rollback the session's transaction which can impact user operations. Coordinate with app owners. Scale-up may incur cost and should be reverted."
+    },
+    {
+      "step_number": 5,
+      "action": "Apply medium-term fixes",
+      "details": "After stabilization, collect execution plans for offending queries and implement fixes:\n- Create or rebuild missing/fragmented indexes (CREATE INDEX or ALTER INDEX ... REBUILD).\n- Update statistics with fullscan: UPDATE STATISTICS dbo.<table> WITH FULLSCAN;\n- Parameterize queries or add OPTIMIZE FOR UNKNOWN hints where parameter sniffing is suspected.\n- If forcing plan is required long-term, document and schedule review with developers to fix query or schema.\nTest index changes in staging prior to production where possible.",
+      "warnings": "Index operations can be IO/CPU intensive; schedule during low-traffic windows or use ONLINE=ON if service tier supports it."
+    },
+    {
+      "step_number": 6,
+      "action": "Revert temporary changes and document",
+      "details": "If a temporary scale-up was performed, plan and execute a scale-down once stable. Remove any forced plan only after code/schema fixes are deployed and verified. Create a post-incident report with findings, root cause hypothesis, mitigation steps, and recommendations.",
+      "warnings": "Do not remove forced plan until a validated replacement plan exists; removal may cause regression."
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm Azure Monitor metrics show CPU returning to normal (e.g., below 60%) for at least 30 minutes."
+    },
+    {
+      "step": "Verify that blocking chains are gone: no entries in sys.dm_os_waiting_tasks with blocking_session_id for the last 10 minutes."
+    },
+    {
+      "step": "Validate top query average duration and CPU usage have reduced in Query Store or sys.dm_exec_query_stats."
+    },
+    {
+      "step": "Check application health: run smoke tests or confirm application errors/timeouts have ceased."
+    },
+    {
+      "step": "Document timestamps of mitigation start/stop and attach relevant screenshots/queries to the incident ticket."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Query Store is disabled or was recently cleared",
+      "solution": "Enable Query Store with BEGIN_CAPTURE_MODE = AUTO and a small max size, or use sys.dm_exec_query_stats and plan cache to capture recent activity. Be aware enabling Query Store on a saturated DB may add overhead; weigh benefits vs. cost."
+    },
+    {
+      "issue": "KILL command fails or session persists",
+      "solution": "Confirm you have proper permissions (server admin). Some system sessions or cross-database sessions cannot be killed. If session is not terminating, escalate to DBA; consider short-term scaling or tenant-level throttling as alternative mitigation."
+    },
+    {
+      "issue": "Scale-up operation is blocked by subscription quota",
+      "solution": "Check subscription vCore/DTU quotas in Azure Portal. If quota is the blocker, open an Azure support ticket (see escalation) and apply throttling rules at app layer as interim mitigation."
+    },
+    {
+      "issue": "Forced plan causes regressions elsewhere",
+      "solution": "Unforce the plan and capture full execution plans and parameter values to perform root cause analysis. Consider FORCE PLAN only as temporary and implement proper fixes (hints/statistics/indexes)."
+    }
+  ],
+  "escalation": {
+    "condition": "If high CPU / blocking persists after mitigations (KILL, plan force, temporary scale) for >2 hours or incidents recur more than 2 times in 24 hours",
+    "contact": "Database team lead (on-call) and Cloud Platform team",
+    "escalation_path": "1) Page DBA lead (dba-lead@example.com) and Cloud Platform SRE (cloud-sre@example.com). 2) If quick remediation not possible, open Azure Support ticket via Azure Portal -> Help + support -> New support request; include subscription ID, server name, and trace artifacts (Query Store reports, sys.dm_exec_query_stats output). 3) If ticket needs escalation to Microsoft, request 'Technical' severity and include performance counters, diagnostic logs, and steps already performed."
+  },
+  "related_documentation": [
+    {
+      "title": "Azure SQL Database - Monitor resource utilization and performance",
+      "url": "https://intranet.example.com/docs/azure-sql-monitoring"
+    },
+    {
+      "title": "Query Store usage and sp_query_store_force_plan",
+      "url": "https://intranet.example.com/docs/query-store-force-plan"
+    },
+    {
+      "title": "Runbook: Safe use of KILL and transient session termination",
+      "url": "https://intranet.example.com/runbooks/kill-session-guidelines"
+    }
+  ],
+  "tags": [
+    "azure",
+    "azure-sql",
+    "cpu",
+    "blocking",
+    "query-store",
+    "performance"
+  ],
+  "version_history": [
+    {
+      "version": "1.9",
+      "date": "2025-11-28T03:05:00+00:00",
+      "author": "Jamie Cruz",
+      "changes": "Added guidance for Query Store-based plan forcing, clarified scale-up command examples, and included escalation contacts."
+    },
+    {
+      "version": "1.8",
+      "date": "2025-09-14T11:20:00+00:00",
+      "author": "Jamie Cruz",
+      "changes": "Refined diagnostic queries and added verification steps for application smoke tests."
+    },
+    {
+      "version": "1.0",
+      "date": "2024-12-01T09:00:00+00:00",
+      "author": "Alex Moreno",
+      "changes": "Initial SOP creation covering high CPU and blocking investigations for Azure SQL Database."
+    }
+  ]
+}

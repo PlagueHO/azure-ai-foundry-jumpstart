@@ -1,0 +1,181 @@
+{
+  "sop_id": "2ed2e837-d487-4b76-b402-3ba47e2c3ce2",
+  "version": "1.6",
+  "created_at": "2025-11-28T02:46:07.609766+00:00",
+  "last_updated": "2025-11-28T02:58:00+00:00",
+  "title": "Restore and Harden Azure Key Vault Settings After Access-Policy Drift",
+  "problem_category": "security",
+  "complexity": "medium",
+  "system_context": "Azure Key Vault",
+  "severity": "medium",
+  "status": "review",
+  "approval_level": "team_lead",
+  "author": {
+    "name": "Jane K. Moreno",
+    "email": "jane.moreno@acme-corp.internal"
+  },
+  "approver": {
+    "name": null,
+    "email": null,
+    "approved_at": null
+  },
+  "problem_description": "An access-policy drift or misconfiguration has been detected in one or more Azure Key Vault instances in the subscription. Symptoms indicate unauthorized or overly-permissive access policies, disabled purge protection, or accidental removal of soft-delete protection resulting from automation runbooks or RBAC migration scripts. This SOP guides remediation to restore vault hardening controls (soft-delete, purge protection, least-privilege access policies or RBAC), audit the change source, and prevent recurrence.",
+  "symptoms": [
+    "Unexpected creation/rotation/deletion requests in Key Vault activity logs",
+    "Vault properties show purge protection disabled while soft-delete enabled",
+    "Access policies include wildcard or broad object IDs (e.g., subscription-wide service principal)",
+    "Key/secret deletion successes where protection was expected to block them",
+    "Alerts from cloud security posture that key vault baseline deviates"
+  ],
+  "prerequisites": [
+    "Account with Owner or Key Vault Contributor + Microsoft.Authorization/roleAssignments write rights in target subscription",
+    "Knowledge of organization's vault hardening baseline (soft-delete = enabled, purge-protection = enabled for production vaults)",
+    "Inventory of Key Vaults and corresponding resource groups",
+    "Change window or approval if modifying production vaults"
+  ],
+  "required_tools": [
+    "Azure CLI (az) v2.50+ installed and configured",
+    "Az PowerShell module (Az.KeyVault) available for cross-checks",
+    "Access to Azure Portal and Activity Log in subscription",
+    "Access to organization's audit logging system (SIEM)",
+    "ServiceNow or incident tracker ticket ID for change record"
+  ],
+  "estimated_resolution_time": "30-90 minutes (per affected vault; additional time for audit and escalation)",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Authenticate and scope to subscription",
+      "details": "Log in with an account that has appropriate privileges. Use a dedicated admin session (not a user running random scripts). Commands: 'az login --tenant <TENANT_ID>' then 'az account set --subscription <SUBSCRIPTION_ID>'. Record the subscription ID and operator username in the incident ticket.",
+      "warnings": "Do not use a permanent high-privilege service principal interactively; prefer a dedicated admin user with MFA for the remediation session."
+    },
+    {
+      "step_number": 2,
+      "action": "Inventory candidate Key Vaults",
+      "details": "List vaults in the subscription and filter by suspicious properties. Example: 'az keyvault list --subscription <SUBSCRIPTION_ID> -o json' then inspect each entry. Alternatively, use resource tags (e.g., 'classification:production') to prioritize production vaults.",
+      "warnings": ""
+    },
+    {
+      "step_number": 3,
+      "action": "Inspect vault hardening properties and access model",
+      "details": "For each vault run: 'az keyvault show --name <VAULT_NAME> --resource-group <RG_NAME> --subscription <SUBSCRIPTION_ID>' and check properties.enableSoftDelete, properties.enablePurgeProtection, properties.enableRbacAuthorization, and accessPolicies[]. Document findings in the ticket.",
+      "warnings": "Reading settings is safe; avoid using update commands until you confirm change approvals."
+    },
+    {
+      "step_number": 4,
+      "action": "If purge protection is disabled but should be enabled, enable it",
+      "details": "Ensure soft-delete is enabled first. To enable purge protection: 'az keyvault update --name <VAULT_NAME> --enable-purge-protection true --resource-group <RG_NAME> --subscription <SUBSCRIPTION_ID>'. After running, validate: 'az keyvault show ...' and confirm properties.enablePurgeProtection == true.",
+      "warnings": "Enabling purge protection is irreversible for the lifetime of the vault; confirm with change approver for production vaults prior to enabling."
+    },
+    {
+      "step_number": 5,
+      "action": "Correct access policies to least privilege",
+      "details": "If the vault uses Access Policies model, remove overly-broad entries and reapply least-privilege policies. Use 'az keyvault delete-policy --name <VAULT_NAME> --object-id <OBJECT_ID>' to remove and 'az keyvault set-policy --name <VAULT_NAME> --object-id <OBJECT_ID> --secret-permissions get list --key-permissions get wrapKey unwrapKey' to reapply minimal permissions. If the vault uses RBAC, enumerate role assignments via: 'az role assignment list --scope /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RG_NAME>/providers/Microsoft.KeyVault/vaults/<VAULT_NAME> -o json' and remove inappropriate assignments with 'az role assignment delete --ids <ASSIGNMENT_ID>'.",
+      "warnings": "Do not remove the vault's system-assigned managed identity or service principals used by critical apps without coordinating downtime tests."
+    },
+    {
+      "step_number": 6,
+      "action": "Rollback unauthorized deletions and restore soft-delete protections",
+      "details": "If a key or secret was deleted and soft-delete was enabled, recover with: 'az keyvault secret recover --vault-name <VAULT_NAME> --name <SECRET_NAME>' or 'az keyvault key recover ...' If soft-delete was disabled and deletion was purged, document in incident and escalate to Security Ops (see escalation section).",
+      "warnings": "Recovery is only possible when soft-delete was enabled at time of deletion. Purged objects cannot be restored once purge protection is enabled and purge executed."
+    },
+    {
+      "step_number": 7,
+      "action": "Audit change source and update controls",
+      "details": "Query Activity Log for who/what initiated changes: use Azure Portal Activity Log filter or CLI: 'az monitor activity-log list --resource-id /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RG_NAME>/providers/Microsoft.KeyVault/vaults/<VAULT_NAME> --start-time <ISO_START> --end-time <ISO_END> -o json'. Identify automation (runbooks, pipelines, ARM templates, or Terraform) and tag the offending automation as needing fixes. If a misconfigured pipeline is found, block further runs until changed.",
+      "warnings": "Do not delete log entries or alter SIEM timestamps. Preserve logs for forensic review."
+    },
+    {
+      "step_number": 8,
+      "action": "Apply preventative hygiene: policies and alerts",
+      "details": "Create or verify an Azure Policy that enforces soft-delete and (for production) purge-protection. Example description: 'Deny creation of vaults without soft-delete' and enable a policy initiative. Configure alerts in the security posture solution to notify on vault property changes.",
+      "warnings": "Policy changes should be coordinated with Cloud Platform team; testing in non-production first is required."
+    },
+    {
+      "step_number": 9,
+      "action": "Document remediation and close incident ticket",
+      "details": "Capture actions taken, timestamps, operators, and copy of commands used in the ticket. Include recommended follow-up tasks (audit automation repos, rotate secrets exposed to removed identities).",
+      "warnings": ""
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm enableSoftDelete == true and enablePurgeProtection == true via 'az keyvault show' for each remediated vault."
+    },
+    {
+      "step": "Confirm access policy list or RBAC assignments reflect least-privilege: run 'az keyvault show' and 'az role assignment list' as appropriate and compare to baseline policy."
+    },
+    {
+      "step": "Attempt an authorized delete operation on a test (non-production) secret/key to verify soft-delete prevents permanent loss; then recover the test object."
+    },
+    {
+      "step": "Review Activity Log entries for the remediation steps and ensure they are recorded with appropriate operator identity."
+    },
+    {
+      "step": "Validate alerts/policies are active by performing a controlled configuration change in a test vault and ensure the alert fires."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "az CLI returns a permission denied when attempting to update vault",
+      "solution": "Confirm the operator account has both Key Vault Contributor and Microsoft.Authorization/roleAssignments/write rights in the scope. If not, request temporary elevation via your approval process or perform steps with a delegated owner account under supervision."
+    },
+    {
+      "issue": "Enable-purge-protection command fails with policy error",
+      "solution": "Check subscription and management group Azure Policy that might block changes. Use 'az policy assignment list' and 'az policy state list' to find blocking policy. Escalate to Cloud Platform if policy needs modification."
+    },
+    {
+      "issue": "Changes do not appear in Activity Log immediately",
+      "solution": "Activity Log ingestion can have up to several minutes delay. Wait 5-10 minutes and re-query. If still missing, check diagnostic settings and SIEM ingestion pipeline for filters that may drop Key Vault events."
+    },
+    {
+      "issue": "Unable to recover a deleted object",
+      "solution": "Confirm soft-delete was enabled at time of deletion. If it was not, the object may have been purged and unrecoverable; escalate to Security Ops for impact analysis and coordinate secret/key rotation and application remediation."
+    }
+  ],
+  "escalation": {
+    "condition": "If remediation cannot be completed within 60 minutes, if purge protection cannot be established due to policy or subscription constraints, or if signs of active compromise (suspicious secrets exfiltration) are present.",
+    "contact": "security-ops@acme-corp.internal; cloud-platform@acme-corp.internal. Pager: PagerDuty team 'cloud-sre' (follow internal on-call rotation in Confluence).",
+    "escalation_path": "1) Notify on-call Cloud SRE and Security Ops with incident ticket and timeline. 2) If sensitive keys/secrets were likely exposed, escalate to Incident Response lead and Compliance. 3) If automation or IaC is root cause, involve Platform Automation team to block the pipeline and create a rollback. 4) If vendor-managed service implicated, open vendor incident and include all collected logs."
+  },
+  "related_documentation": [
+    {
+      "title": "Internal KB: Key Vault Baseline Hardening Standards",
+      "url": "https://kb.acme-corp.internal/docs/key-vault-hardening"
+    },
+    {
+      "title": "Internal Runbook: Investigate Key Vault Access Policy Changes",
+      "url": "https://kb.acme-corp.internal/runbooks/investigate-kv-access-change"
+    },
+    {
+      "title": "Playbook: Azure Policy for Enforcing Key Vault Soft-Delete",
+      "url": "https://docs.acme-corp.internal/cloud/policy/keyvault-softdelete-enforcement"
+    }
+  ],
+  "tags": [
+    "azure",
+    "key-vault",
+    "security",
+    "access-control",
+    "incident-response"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2025-11-28T02:46:07.609766+00:00",
+      "author": "Jane K. Moreno",
+      "changes": "Initial SOP created covering remediation steps for access-policy drift and vault hardening."
+    },
+    {
+      "version": "1.5",
+      "date": "2025-11-28T02:52:00+00:00",
+      "author": "Jane K. Moreno",
+      "changes": "Expanded troubleshooting section, added verification steps and example CLI commands for role assignments."
+    },
+    {
+      "version": "1.6",
+      "date": "2025-11-28T02:58:00+00:00",
+      "author": "Jane K. Moreno",
+      "changes": "Clarified warnings around irreversible purge-protection enabling and added audit activity-log CLI examples."
+    }
+  ]
+}

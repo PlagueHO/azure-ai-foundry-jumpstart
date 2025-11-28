@@ -1,0 +1,173 @@
+SOP ID: 9cd54b97-ba4e-4653-a84d-c119459d362f
+Version: 1.9
+Created At: 2025-11-28T02:55:31.680113+00:00
+Last Updated: 2025-11-28T06:12:00+00:00
+Title: Azure Monitor — Missing Metrics / Unexpected Critical Alerts for Resource Group
+Problem Category: cloud
+Complexity: medium
+System Context: Azure Monitor
+Severity: critical
+Status: review
+Approval Level: cto
+Author: Morgan Kepler <morgan.kepler@acmecloud.example>
+Approver: N/A
+Approved At: N/A
+
+PROBLEM DESCRIPTION:
+A set of critical alerts is firing for resources in one or more resource groups while metric charts in Azure Monitor (metrics explorer) show "No data" or incomplete time series for the same time range. The issue is typically caused by missing metric ingestion, broken diagnostic settings, misconfigured alert rules (wrong metric namespace/aggregation), metric namespace changes, agent/extension failures on VMs, or platform-side ingestion delays/throttling. This SOP documents steps to identify the root cause, restore metric ingestion or correct alert configuration, and verify that alert behavior returns to expected.
+
+SYMPTOMS:
+- Alerts incorrectly in a "Fired" state for resource(s) in a resource group.
+- Metrics Explorer shows "No data" or empty charts for the affected metric(s).
+- az CLI metric queries return empty series for recent timestamps.
+- Diagnostic settings exist but are not forwarding metrics/logs to the expected workspace or storage.
+- Azure Monitor activity log or diagnostic logs show ingestion or throttling errors.
+- VM or agent health shows extension failures or crash loops.
+
+PREREQUISITES:
+- You have Owner or Monitoring Contributor access on the affected subscription and resource group.
+- Access to the Log Analytics workspace and Azure Monitor alerting configuration.
+- On-call engineer knowledge of the resource naming conventions and the alerting runbook.
+- Known example affected resource IDs and at least one alert rule name that is firing.
+
+REQUIRED TOOLS:
+- Azure Portal (portal.azure.com)
+- Azure CLI (az) v2.50+ with Az.Monitor modules
+- Azure PowerShell Az module (optional)
+- Access to Log Analytics (Kusto) queries
+- SSH/RDP access to affected VMs (if agent troubleshooting is required)
+- Internal monitoring playbook & incident channel (Slack/MS Teams)
+- Ability to open a Microsoft Support case (support plan and subscription credentials)
+
+ESTIMATED RESOLUTION TIME: 30–90 minutes (depends on replication and whether Microsoft platform support is required)
+
+RESOLUTION STEPS:
+1. Action: Confirm alert and metric scope
+   Details:
+   - Open Azure Portal -> Monitor -> Alerts -> View the alert instance. Note the alert rule name, target resource ID, metric namespace, metric name, aggregation and evaluation period.
+   - From CLI: az monitor metrics alert show --name "<alert-name>" --resource-group "<rg>" (or use REST if needed) to capture rule configuration.
+   Warnings: Do not modify alert rules yet — gather configuration to avoid losing the original settings.
+
+2. Action: Validate metric availability from the service API/CLI
+   Details:
+   - Run a direct metric fetch for the affected resource:
+     az monitor metrics list \
+       --resource "/subscriptions/<sub>/resourceGroups/<rg>/providers/<provider>/<resourceType>/<resourceName>" \
+       --metric "MetricName" \
+       --interval PT1M \
+       --aggregation Average \
+       --output json
+   - Confirm timestamps and series exist in the returned JSON.
+   Warnings: Use the exact resourceId from the alert to avoid checking a similarly named resource.
+
+3. Action: Check metrics in Metrics Explorer and cross-validate with CLI
+   Details:
+   - In Portal -> Monitor -> Metrics, select the resource and metric namespace. Set time range to last 1 hour and granularity to 1 minute.
+   - Compare with CLI output. If Portal shows data but CLI doesn't (or vice versa), record disparity — this can indicate a query/permission or API-version mismatch.
+
+4. Action: Inspect Diagnostic Settings and Targets
+   Details:
+   - Check if the resource has Diagnostic Settings configured (these forward metrics/logs):
+     az monitor diagnostic-settings list --resource "/subscriptions/<sub>/resourceGroups/<rg>/providers/<provider>/<resourceType>/<resourceName>"
+   - Confirm destinations (Log Analytics workspace, Event Hub, Storage) match the expected workspace used by existing alerts or queries.
+   - If diagnostic settings are missing for a resource that should forward metrics, recreate using:
+     az monitor diagnostic-settings create --resource "<resourceId>" --name "diag-<timestamp>" \
+       --workspace "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.OperationalInsights/workspaces/<workspaceName>" \
+       --metrics '[{"category": "AllMetrics","enabled": true}]'
+   Warnings: Creating or changing diagnostic settings may increase costs; confirm with cost center if creating long retention.
+
+5. Action: Check Log Analytics for ingested records (KQL)
+   Details:
+   - Use Kusto to find recent diagnostics and ingestion errors:
+     AzureDiagnostics
+     | where TimeGenerated > ago(1h)
+     | where ResourceId contains "<resourceNameOrId>"
+     | summarize count() by Category, OperationName, bin(TimeGenerated, 5m)
+   - Also check for ingestion errors:
+     AzureDiagnostics
+     | where Category == "IngestionErrors"
+     | where TimeGenerated > ago(6h)
+   Warnings: Workspace schema varies; adjust query to known table names (Perf, InsightsMetrics, etc.).
+
+6. Action: Validate agents / extensions on VM resources
+   Details:
+   - For VMs, check the Azure Monitor Agent or Log Analytics Agent status.
+   - From CLI:
+     az vm extension list --resource-group "<rg>" --vm-name "<vmName>" --output json
+   - On the VM, confirm agent process is running and connecting to workspace (Linux: omsagent/ama processes, Windows: MMA/AMA services). Restart agent service if necessary:
+     sudo systemctl restart azuremonitoragent
+   Warnings: Restarting agents can temporarily pause telemetry; schedule if needed.
+
+7. Action: Inspect subscription/resource quotas, throttling, and platform health
+   Details:
+   - Check Activity Log for service errors:
+     az monitor activity-log list --resource-id "/subscriptions/<sub>" --start-time "$(date -u -Iseconds -d '1 hour ago')"
+   - If you see quota or throttling errors, note the error code and counts.
+   - Check Azure Service Health (Portal -> Service Health) for known Azure Monitor/Regional incidents.
+   Warnings: Platform incidents require Microsoft support involvement.
+
+8. Action: Reconcile alert rule configuration if mismatch found
+   Details:
+   - If the alert references a wrong metric namespace, wrong resource type, or wrong aggregation period, edit the alert rule to match the metric in Metrics Explorer.
+   - To update alert via az CLI (example):
+     az monitor metrics alert update --name "<alert-name>" --resource-group "<rg>" \
+       --condition "avg Percentage CPU > 80" --description "Corrected aggregation/namespace"
+   Warnings: Changing an alert rule will affect active incidents; fully document changes and notify incident channel.
+
+9. Action: If no root cause found, collect diagnostic bundle and escalate
+   Details:
+   - Collect the following and upload to incident record:
+     - CLI outputs from metrics list, diagnostic-settings list, agent extension list
+     - Kusto query results showing missing data or ingestion errors
+     - Timestamps of when alerts started firing and sample event IDs
+   - Open Microsoft Support case with collected artifacts if platform ingestion appears to be failing and all local configs are correct.
+   Warnings: Support cases require subscription owner role; ensure you have approval to open.
+
+VERIFICATION STEPS:
+- From CLI: az monitor metrics list returns time series points for the affected metric within the expected time range.
+- Metrics Explorer in portal shows continuous data for the affected metric over the last 30–60 minutes.
+- The previously firing alert clears or moves to "Resolved" per the alert rule evaluation period (or you see resolution in the incident timeline).
+- Log Analytics shows new Records (Perf/InsightsMetrics/AzureDiagnostics) for the resource after remediation actions.
+- If agent was restarted, the agent status report shows "Connected" and last heartbeat within 2–5 minutes.
+
+TROUBLESHOOTING:
+Issue: Metrics present at resource provider but not visible in Metrics Explorer.
+Solution: Confirm you are selecting the correct metric namespace and aggregation. Some providers expose identical metric names under multiple namespaces. Also check time grain — choose 1 minute/5 minutes appropriately. Use az monitor metrics list to validate.
+
+Issue: Diagnostic settings appear configured but no records reach Log Analytics.
+Solution: Verify workspace IDs and permissions. Confirm the workspace is in same tenant and subscription and that the resource has permissions to write. Check that diagnostic settings include the correct metric categories and that retention policy isn't immediately deleting data.
+
+Issue: Agent shows as installed but not sending data.
+Solution: Restart the agent, check agent logs (/var/opt/microsoft/azuremonitoragent/log, C:\ProgramData\AzureMonitorAgent\Logs), and confirm time sync (NTP) on the VM. If the workspace shared key rotated, reconfigure the workspace in the agent.
+
+Issue: Frequent alert flapping after fix.
+Solution: Increase alert evaluation frequency/grace period or adjust threshold to accommodate telemetry latency; consider add suppressed/recovered actions in the alert rule or use cross-resource metric alert to de-duplicate.
+
+ESCALATION:
+Condition: After completing resolution steps, metrics are still missing and:
+ - Portal and API both show no data for metric, AND
+ - There are no local agent/diagnostic configuration issues, OR
+ - You observe quota/throttling or platform errors (Service Health shows Azure Monitor affected).
+Contact: Cloud Platform On-call (oncall-cloud@acmecloud.example) and Cloud Infra Manager (infra-manager@acmecloud.example)
+Escalation Path:
+1) On-call engineer triages and documents findings in the incident ticket (15–30 minutes).
+2) If unresolved or platform issue suspected, escalate to Cloud Infra Manager with collected artifacts (30–60 minutes).
+3) Cloud Infra Manager opens Microsoft Support case (if required) and notifies CTO if impact is business-critical (within 60–120 minutes).
+4) If Microsoft confirms a platform incident and ETA is not acceptable, CTO-level engagement for priority support is initiated.
+
+RELATED DOCUMENTATION:
+- Title: Monitoring Playbook — Diagnostic Settings and Metric Forwarding
+  URL: https://intranet.acmecloud.example/playbooks/monitoring/diagnostic-settings
+- Title: Kusto Queries for Azure Monitor — Common Diagnostic Patterns
+  URL: https://kb.acmecloud.example/azure-monitor/kusto-queries
+- Title: Incident Runbook — Alerts and Escalation Procedures
+  URL: https://intranet.acmecloud.example/runbooks/alerts-escalation
+- Title: How to Open a Microsoft Support Case (Internal)
+  URL: https://support.acmecloud.example/processes/ms-support-case
+
+TAGS: azure-monitor, metrics, diagnostics, alerts, log-analytics
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2025-09-10T10:00:00+00:00 | Author: Morgan Kepler | Changes: Initial draft covering basic metric/alert troubleshooting.
+Version: 1.5 | Date: 2025-10-22T14:40:00+00:00 | Author: Priya Anand | Changes: Added agent restart procedures and Kusto query examples; clarified diagnostic-settings examples.
+Version: 1.9 | Date: 2025-11-28T06:12:00+00:00 | Author: Morgan Kepler | Changes: Updated resolution steps to include CLI examples for az monitor metrics list and az monitor diagnostic-settings; added escalation flow and verification checklist.

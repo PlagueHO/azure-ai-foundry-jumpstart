@@ -1,0 +1,205 @@
+sop_id: 4d0fa360-39be-4fa1-8095-b4d3d6c448e3
+version: '1.2'
+created_at: '2025-11-28T02:08:50.567850+00:00'
+last_updated: '2025-11-28T02:18:12+00:00'
+title: Restore Modern Attachment Preview for Outlook on the Web (OWA) in Microsoft
+  365
+problem_category: general
+complexity: medium
+system_context: Microsoft 365
+severity: low
+status: approved
+approval_level: cto
+author:
+  name: Arielle Quinn
+  email: arielle.quinn@support-example.com
+approver:
+  name: Jordan Patel
+  email: jordan.patel@support-example.com
+  approved_at: '2025-11-28T02:15:00+00:00'
+problem_description: 'Users report that attachments stored in OneDrive/SharePoint
+  or shared via modern links open as forced downloads or show "Preview unavailable"
+  when using Outlook on the web (OWA). The issue affects file preview rendering for
+  Office documents (Word/Excel/PowerPoint) and certain PDFs. Root causes encountered
+  historically include tenant-level attachment preview policy misconfiguration, Conditional
+  Access or device compliance restrictions, browser compatibility/extensions, transient
+  Microsoft 365 service degradation, and misrouted tenant DNS/proxy rules that block
+  preview endpoints.
+
+  '
+symptoms:
+- Clicking an attachment link in OWA immediately downloads the file instead of opening
+  inline preview.
+- Preview pane shows 'Preview unavailable' or 'Could not load preview' for otherwise
+  valid files.
+- Issue occurs intermittently across multiple users or for a specific security group.
+- Other mail clients (desktop Outlook) can access attachments normally.
+prerequisites:
+- Admin account with Exchange Administrator or Global Administrator privileges.
+- Target user's mailbox and sample message ID (to reproduce).
+- Access to Microsoft 365 Admin Center and Azure AD Conditional Access console.
+- 'PowerShell access with ExchangeOnlineManagement module installed (fictional: v3+
+  recommended for this SOP).'
+required_tools:
+- Browser with developer tools (Chrome/Edge) and ability to run in InPrivate/Incognito.
+- PowerShell (7.x recommended) and Exchange Online PowerShell module (Connect-ExchangeOnline).
+- Access to tenant network/proxy/firewall settings or documentation.
+- Microsoft 365 Service Health dashboard (admin center).
+estimated_resolution_time: 15-45 minutes
+resolution_steps:
+- step_number: 1
+  action: Confirm scope and reproduce the issue
+  details: 'Collect affected user(s), mailbox alias, sample message ID and attachment
+    name. Attempt to reproduce the behavior with the user''s account in an Incognito/InPrivate
+    browser session and in a second browser to rule out profile-specific issues.
+
+    '
+  warnings: Do not share user PII outside secure channels. Use only the sample message
+    ID and mailbox alias for diagnostics.
+- step_number: 2
+  action: Check Microsoft 365 service health
+  details: 'Log into Microsoft 365 Admin Center -> Health -> Service health. Look
+    for any ongoing incidents related to ''Attachment preview'', ''Office Web Apps'',
+    ''OneDrive'' or ''Exchange Online''. If an active Microsoft incident exists, note
+    the incident ID and expected remediation time.
+
+    '
+  warnings: If Microsoft incident affects tenant, follow the incident guidance; do
+    not change tenant policies while incident is active.
+- step_number: 3
+  action: Verify browser/network is not blocking preview endpoints
+  details: 'In the reproducing browser session, open Developer Tools -> Network tab.
+    Click the attachment and observe calls to preview endpoints (typical pattern:
+    tenant sharepoint/odsp preview endpoints and a preview proxy service). Look for
+    4xx/5xx or blocked requests. If blocked, confirm corporate proxy or firewall allows
+    traffic to: ''*.sharepoint.com'', ''*.odsp.example-preview.net'' (fictional preview
+    host used by our environment).
+
+    '
+  warnings: Do not modify corporate firewall rules without network team approval.
+- step_number: 4
+  action: Check Conditional Access / device compliance policies
+  details: 'In Azure AD -> Security -> Conditional Access, review policies that target
+    OWA or Exchange Online. Temporarily exclude the test user from policies that require
+    compliant devices or block ''web'' access to see if previews restore. Document
+    policy IDs before making changes.
+
+    '
+  warnings: Make temporary policy exclusions timeboxed (e.g., 10 minutes) and revert
+    immediately after test.
+- step_number: 5
+  action: Review mailbox attachment preview configuration via PowerShell
+  details: "Connect to Exchange Online in PowerShell: 1) Install/Import module: Install-Module\
+    \ ExchangeOnlineManagement (if needed) 2) Connect: Connect-ExchangeOnline -UserPrincipalName\
+    \ admin@yourtenant.example 3) Run tenant-level configuration check (fictional\
+    \ diagnostic cmdlet shown for parity):\n   Get-OrganizationPreviewConfig | Format-List\
+    \ TenantId, ModernAttachmentPreviewEnabled, PreviewDomains\nIf ModernAttachmentPreviewEnabled\
+    \ is false, enable it:\n   Set-OrganizationPreviewConfig -ModernAttachmentPreviewEnabled\
+    \ $true\nNote: The cmdlets described here are realistic in style but represent\
+    \ tenant-specific preview configuration actions; adapt to your tenant tooling.\n"
+  warnings: Only change tenant-level settings with approval. Changes may take up to
+    15 minutes to propagate.
+- step_number: 6
+  action: Temporarily adjust mailbox-level override
+  details: "If tenant is enabled but a mailbox-level override exists for the affected\
+    \ user, run:\n   Get-Mailbox -Identity user@yourtenant.example | Format-List Name,AttachmentPreviewState\n\
+    If AttachmentPreviewState shows Disabled, set the override:\n   Set-Mailbox -Identity\
+    \ user@yourtenant.example -AttachmentPreviewState Enabled\nSign the user out of\
+    \ all sessions or clear relevant OWA cookies to force policy refresh.\n"
+  warnings: Ensure you have explicit consent / ticket for changing mailbox settings
+    for a user.
+- step_number: 7
+  action: Clear browser site data and test again
+  details: 'Instruct the user to sign out of OWA, clear cookies/storage for outlook.office.com
+    and sharepoint.com, or use Incognito mode, then sign back in and attempt to open
+    the attachment. If issue persists, test from a different machine/network.
+
+    '
+  warnings: Clearing cookies will sign the user out of sessions and may require reauthentication.
+- step_number: 8
+  action: Isolate third-party extension interference
+  details: 'Disable browser extensions (ad-blockers, security tooling) or use an extension-free
+    profile. If preview returns, re-enable extensions one-by-one to identify the offending
+    extension and document findings.
+
+    '
+- step_number: 9
+  action: Check tenant-level DLP or IRM policies
+  details: 'Review Data Loss Prevention (DLP) and Information Rights Management (IRM)
+    policies in Microsoft Purview / Compliance center that might enforce ''block document
+    preview'' or ''force download'' actions. Temporarily exclude the test message
+    or user from these policies to test behavior.
+
+    '
+  warnings: Do not permanently disable DLP/IRM policies without stakeholder approval.
+- step_number: 10
+  action: If no tenant misconfiguration found, collect logs and escalate
+  details: "Collect:\n  - The reproduction steps, browser network HAR file, screenshots\
+    \ of DevTools errors\n  - Exchange PowerShell outputs (Get-OrganizationPreviewConfig,\
+    \ Get-Mailbox attachment preview state)\n  - Service Health incident IDs if any\n\
+    Open an internal incident and escalate per the escalation section below.\n"
+  warnings: Ensure logs are scrubbed of any PII before attaching to tickets for external
+    vendors or public forums.
+verification_steps:
+- "Reproduce the previously failing attachment click in OWA and confirm the inline\
+  \ preview loads within 5\u201310 seconds for sample files."
+- Confirm that the preview pane shows document rendering (text, images) and not a
+  forced file download.
+- Ask the user to test from their normal browser session; confirm issue no longer
+  occurs there as well.
+- Verify any temporary tenant or mailbox policy changes are documented and reverted
+  if they were only for testing.
+troubleshooting:
+- issue: Preview works in one browser but not another
+  solution: Clear cookies, disable extensions, test in Incognito. If reproducible
+    only in one browser, escalate to desktop/browser support to refresh browser profile.
+- issue: Preview broken for many users at same time
+  solution: Check Microsoft 365 Service Health for platform incidents and consult
+    recent tenant configuration changes. If service health is clear, collect logs
+    and open escalation.
+- issue: Conditional Access is suspected
+  solution: Temporarily exclude a test user from Conditional Access policy that targets
+    Exchange/OWA to confirm. If exclusion restores preview, update policy to allow
+    'web preview' or require compliant devices with preview exceptions.
+- issue: Network firewall/proxy blocks preview endpoints
+  solution: Work with network team to allow traffic to tenant preview endpoints. Add
+    temporary allow entries and test; document required host patterns for long-term
+    rules.
+escalation:
+  condition: SOP steps do not restore attachment preview for one or more affected
+    users after full diagnostics and log collection.
+  contact: 'Exchange Admin Lead: escalations@examplecorp-internal.com; Phone: +1-555-0102
+    (internal).'
+  escalation_path: '1) Open an internal ticket in ITSM with collected artifacts (HAR
+    file, PowerShell outputs, screenshots). 2) Notify Exchange Admin Lead and include
+    tenant admin credentials for live troubleshooting if requested. 3) If internal
+    escalation cannot resolve within 4 business hours, open a Microsoft Support ticket
+    referencing the Service Health checks and include HAR/logs.
+
+    '
+related_documentation:
+- title: 'Internal KB: Troubleshooting OWA Attachment Preview'
+  url: https://support-example.com/kb/m365/owa-attachment-preview
+- title: Conditional Access Policy Checklist
+  url: https://support-example.com/kb/security/conditional-access-checklist
+- title: Microsoft 365 Service Health - How to interpret incidents
+  url: https://support-example.com/kb/m365/service-health-guide
+tags:
+- microsoft-365
+- outlook-web
+- attachment-preview
+- exchange-online
+version_history:
+- version: '1.0'
+  date: '2025-10-10T09:30:00+00:00'
+  author: Arielle Quinn
+  changes: Initial draft created with reproduction and basic remediation steps.
+- version: '1.1'
+  date: '2025-11-12T14:05:00+00:00'
+  author: Arielle Quinn
+  changes: Added Conditional Access checks and network/proxy troubleshooting guidance.
+- version: '1.2'
+  date: '2025-11-28T02:18:12+00:00'
+  author: Arielle Quinn
+  changes: Reviewed and approved by CTO; added escalation contacts and tightened warnings
+    about policy changes.

@@ -1,0 +1,192 @@
+{
+  "sop_id": "8375a7d9-e8d8-4db8-b9f7-0215168c2811",
+  "version": "1.0",
+  "created_at": "2025-11-28T02:47:14.354822+00:00",
+  "last_updated": "2025-11-28T03:10:00+00:00",
+  "title": "Replace and Reintroduce a Degraded NVMe/SSD in an Azure Stack HCI Node (Storage Spaces Direct)",
+  "problem_category": "hardware",
+  "complexity": "medium",
+  "system_context": "Azure Stack HCI",
+  "severity": "critical",
+  "status": "review",
+  "approval_level": "cto",
+  "author": {
+    "name": "Riley Harper",
+    "email": "riley.harper@example.local"
+  },
+  "approver": {
+    "name": "",
+    "email": "",
+    "approved_at": null
+  },
+  "problem_description": "One or more disks in a Storage Spaces Direct (S2D) pool in an Azure Stack HCI cluster report degraded health or predictive failure, causing storage pool degradation, high IO latency, VM failover, or placement of physical disks into 'Retired' or 'Unknown' state. This SOP covers identification of the affected disk, controlled evacuation of data, physical replacement of the NVMe/SSD, and safe reintroduction to the cluster.",
+  "symptoms": [
+    "Windows Admin Center shows Storage pool state: Degraded / Warning",
+    "One or more PhysicalDisk objects report HealthStatus != 'Healthy' or OperationalStatus contains 'PredictiveFailure'",
+    "Event Viewer: System/Application logs with SMART warnings or vendor driver errors",
+    "Cluster service initiating VM live migrations or VMs failing over unexpectedly",
+    "Elevated IOPS latency or throttling on volumes hosted on the cluster",
+    "Storage jobs (repair/resiliency) stuck or slow to complete"
+  ],
+  "prerequisites": [
+    "Maintenance window scheduled; cluster owners informed",
+    "Cluster and node backups (snapshot or replica) taken per site policy",
+    "Physical access to the affected rack/node and ESD protection",
+    "Administrator credentials with Cluster and node local admin rights",
+    "Latest inventory of node hardware (model, firmware revision, slot mapping)"
+  ],
+  "required_tools": [
+    "Laptop with Azure Stack HCI management tools (PowerShell 7+ with FailoverClusters and Storage modules, Windows Admin Center access)",
+    "Out-of-band management access to server (iLO/iDRAC/IMM/KVM-IP)",
+    "Standard server toolset: torque screwdriver, pliers, ESD wrist strap",
+    "Replacement NVMe/SSD matching vendor model and capacity (site approved spare)",
+    "Access to firmware/driver repository for vendor updates"
+  ],
+  "estimated_resolution_time": "60-120 minutes (depends on rebuild time and hardware swap)",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Confirm cluster and disk health",
+      "details": "Log into Windows Admin Center (WAC) or a management workstation. In PowerShell (connected to a cluster admin session), run: Get-Cluster | Select Name; Get-ClusterNode | Sort Name; Get-PhysicalDisk | Select FriendlyName, DeviceId, HealthStatus, OperationalStatus, Usage, SerialNumber, Manufacturer, Size",
+      "warnings": "Do not restart cluster services or reboot nodes at this stage unless instructed in later steps."
+    },
+    {
+      "step_number": 2,
+      "action": "Identify candidate failing disk(s)",
+      "details": "Look for PhysicalDisk entries where HealthStatus is not 'Healthy', OperationalStatus contains 'PredictedFailure' or 'Failed', or Usage is 'Retired'. Example filter: Get-PhysicalDisk | Where-Object { $_.HealthStatus -ne 'Healthy' -or $_.OperationalStatus -like '*Fail*' } | Format-Table -AutoSize",
+      "warnings": "Confirm SerialNumber and DeviceId match the physical device before any physical intervention."
+    },
+    {
+      "step_number": 3,
+      "action": "Collect logs and cluster state for audit",
+      "details": "Run: Get-ClusterLog -Destination C:\\temp\\ClusterLog; Export-WinEvent -LogName System -MaxEvents 500 | Out-File C:\\temp\\SystemEvents.txt; In WAC capture the Storage > Disks view. Save the outputs to the ticket.",
+      "warnings": "Preserve logs before making state changes for vendor escalation if needed."
+    },
+    {
+      "step_number": 4,
+      "action": "Place node into maintenance (drain roles)",
+      "details": "Choose the node hosting the failing disk (e.g., node name 'HCI-Node03') and run: Suspend-ClusterNode -Name HCI-Node03 -Drain -FailCurrentRoles:$true -Timeout 00:30:00. Verify VMs moved by running Get-ClusterGroup | Where-Object { $_.OwnerNode -eq 'HCI-Node03' }",
+      "warnings": "Suspend-ClusterNode will live migrate VMs; ensure network bandwidth is available for migrations."
+    },
+    {
+      "step_number": 5,
+      "action": "Mark the physical disk as Retired to start proactive rebuild",
+      "details": "In PowerShell, run: Set-PhysicalDisk -FriendlyName 'PhysicalDisk-123' -Usage Retired. Confirm a Storage Job starts: Get-StorageJob | Where-Object { $_.JobStatus -ne 'Completed' }",
+      "warnings": "Marking disks Retired signals S2D to rebuild onto remaining capacity; ensure cluster has sufficient free capacity to absorb data."
+    },
+    {
+      "step_number": 6,
+      "action": "Monitor resiliency/rebuild progress",
+      "details": "Use these commands periodically: Get-StorageJob; Get-ClusterSharedVolume -Name * | Get-Volume | Select FileSystemLabel, HealthStatus; In WAC watch the resiliency progress under Storage > Pools > Health.",
+      "warnings": "If rebuild progress is extremely slow (>2x normal), pause and escalate (see Escalation)."
+    },
+    {
+      "step_number": 7,
+      "action": "Prepare for physical replacement",
+      "details": "When rebuild has completed or data evacuation is confirmed, shutdown the node cleanly: Stop-ClusterNode -Name HCI-Node03 -Force (if required by local policy) then use out-of-band management to power off the server. Follow server vendor ESD procedures and rack safety protocols.",
+      "warnings": "Do not hot-remove NVMe if server vendor does not explicitly support hot-swap for that slot; power state must match vendor guidance."
+    },
+    {
+      "step_number": 8,
+      "action": "Replace the NVMe/SSD",
+      "details": "At the server, remove the indicated NVMe following slot mapping labels and replace with the approved spare. Verify the replacement device has the same or compatible capacity/format. Re-seat connectors, ensure thermal pads are correctly placed, then power the node on via iLO/iDRAC/KVM.",
+      "warnings": "Ensure correct orientation and torque on screws. Use ESD protection at all times."
+    },
+    {
+      "step_number": 9,
+      "action": "Verify device is visible to OS and cluster",
+      "details": "After boot, in the node PowerShell run: Get-PhysicalDisk | Where-Object { $_.SerialNumber -eq '<new-serial>' } | Format-Table FriendlyName, HealthStatus, Usage, OperationalStatus. If Usage is 'Retired' or 'Unknown', set to 'Auto' with: Set-PhysicalDisk -FriendlyName 'PhysicalDisk-New' -Usage Auto",
+      "warnings": "Do not run Initialize-Disk or diskpart on disks that are managed by Storage Spaces Direct unless instructed by S2D guidance."
+    },
+    {
+      "step_number": 10,
+      "action": "Allow S2D to re-add the disk and start repairs",
+      "details": "Cluster should detect the new device and automatically enroll it into the pool. Confirm with: Get-StoragePool -FriendlyName 'S2D*' | Get-PhysicalDisk; and monitor Get-StorageJob for rebalancing.",
+      "warnings": "If the disk is not automatically claimed, gather vendor metadata and do not force-add without vendor/S2D specialist confirmation."
+    },
+    {
+      "step_number": 11,
+      "action": "Resume node from maintenance",
+      "details": "When rebalancing is underway and health is acceptable, run: Resume-ClusterNode -Name HCI-Node03. Confirm ownership: Get-ClusterNode | Select Name, State, PauseInfo",
+      "warnings": "Resuming too early may put extra load on the node; ensure jobs are not in 'corrupt' or 'failed' status."
+    },
+    {
+      "step_number": 12,
+      "action": "Finalize and document",
+      "details": "Collect final logs: Get-ClusterLog, Get-StorageJob (ensure Completed), Get-PhysicalDisk (HealthStatus healthy). Update the ticket with serial numbers (removed and installed), firmware revisions, and time stamps. Reconcile spare inventory.",
+      "warnings": "If any health checks are not green, do not close the ticket \u2014 escalate per procedure."
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Run Get-PhysicalDisk and verify the replaced disk reports HealthStatus = 'Healthy' and Usage = 'Auto' and OperationalStatus contains 'OK' or similar healthy indicators."
+    },
+    {
+      "step": "Confirm Storage pool shows HealthStatus = 'Healthy' and No 'Degraded' alerts in Windows Admin Center."
+    },
+    {
+      "step": "Verify no ongoing failed storage jobs: Get-StorageJob should show only 'Completed' or 'Running' with expected throughput; no 'Failed' state."
+    },
+    {
+      "step": "Confirm cluster resource health: Get-ClusterResource / Get-ClusterGroup show desired owners and no offline critical resources."
+    },
+    {
+      "step": "Check Event Viewer for recent SMART or vendor errors; none should appear for the replaced device within 30 minutes after re-introduction."
+    },
+    {
+      "step": "Validate VM performance and application behavior for affected workloads (sample I/O benchmark or application health checks)."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Rebuild does not start after marking disk Retired",
+      "solution": "Confirm there's sufficient spare capacity in the cluster; run Get-StoragePool | Get-PhysicalDisk to verify pool free capacity. Check cluster log for blocking errors (Get-ClusterLog). If a storage job is stuck, try clearing stale jobs with Clear-StorageJob (use with caution) and escalate to S2D specialist if it persists."
+    },
+    {
+      "issue": "New disk is not claimed by S2D after physical install",
+      "solution": "Check firmware compatibility and NVMe namespace mapping in vendor management interface. Ensure the disk is not pre-initialized with a foreign partition table. Do not run Initialize-Disk unless authorized by S2D guidance; contact HCI vendor team if automatic claim fails."
+    },
+    {
+      "issue": "High latency persists after replacement",
+      "solution": "Validate network/RDMA fabric health (check NIC drivers, RoCE configuration). Run Get-ClusterNetwork | Get-ClusterNodeNetworkInterface to verify MTU and RDMA settings. Review Perfmon counters for storage and SMB Direct."
+    },
+    {
+      "issue": "Node will not resume from Suspended state",
+      "solution": "Confirm all cluster resources are online on other nodes and no critical maintenance tasks are in progress. Inspect Suspend-ClusterNode output for lingering groups. Use Resume-ClusterNode -Force if required and after confirming safety, or escalate to cluster specialist."
+    }
+  ],
+  "escalation": {
+    "condition": "Any step results in persistent 'Failed' storage jobs, repeated SMART failures on replacement devices, rebuilds stuck > 4 hours, or critical production impact not resolved by this SOP.",
+    "contact": "HCI Platform Engineering Team (on-call), Hardware Vendor Support, and Site Operations",
+    "escalation_path": "1) Notify HCI Platform Engineering (pager) immediately with ticket ID and logs. 2) Open hardware vendor RMA case with serial numbers and attach ClusterLog and StorageJob outputs. 3) If the vendor cannot resolve within SLA, escalate to Cloud Infrastructure Director and CTO with impact summary and remediation attempts."
+  },
+  "related_documentation": [
+    {
+      "title": "Azure Stack HCI: Storage Spaces Direct - Maintenance and Disk Replacement (internal)",
+      "url": "https://intranet.contoso.corp/knowledge/ashci/s2d-disk-replacement"
+    },
+    {
+      "title": "Windows Admin Center \u2014 Cluster Storage Monitoring (internal guide)",
+      "url": "https://intranet.contoso.corp/tools/wac/cluster-storage-monitor"
+    },
+    {
+      "title": "Vendor NVMe Replacement Procedure (example vendor doc)",
+      "url": "https://vendordocs.example.local/hardware/nvme-replacement-guide"
+    }
+  ],
+  "tags": [
+    "AzureStackHCI",
+    "StorageSpacesDirect",
+    "NVMe",
+    "disk-replacement",
+    "hardware-maintenance"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2025-11-28T02:47:14.354822+00:00",
+      "author": "Riley Harper",
+      "changes": "Initial creation. Documented controlled evacuation, physical replacement, and reintroduction for degraded NVMe/SSD in Azure Stack HCI nodes."
+    }
+  ]
+}

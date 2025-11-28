@@ -1,0 +1,179 @@
+SOP ID: fffaa1ff-1c4f-43da-896b-76e4e32c5afd
+Version: 1.9
+Created At: 2025-11-28T02:50:58.002198+00:00
+Last Updated: 2025-11-28T03:12:00+00:00
+Title: Restore Backend Health and Resolve 502/503 Responses on Azure Application Gateway
+Problem Category: network
+Complexity: medium
+System Context: Azure Application Gateway
+Severity: low
+Status: approved
+Approval Level: team_lead
+Author: Morgan Hale <morgan.hale@faketech.example>
+Approver: Dana Park <dana.park@faketech.example>
+Approved At: 2025-11-28T03:00:00+00:00
+
+PROBLEM DESCRIPTION:
+Users report sporadic 502 or 503 responses when accessing front-end applications served through an Azure Application Gateway. Backend pool shows "Unhealthy" or "Unknown" in the Application Gateway Backend Health view. The issue is commonly caused by probe misconfiguration, host header mismatch, TLS mismatch, NSG/UDR blocking, or application binding to localhost only.
+
+SYMPTOMS:
+- Backend health reports Unhealthy or No Response for one or more backend instances.
+- Increase in 502 or 503 responses in Application Gateway metrics/logs.
+- Application works locally on backend VM/container, but fails when routed via App Gateway.
+- Application Gateway Access logs show backend status codes 502/503 or backend connection errors.
+- Backend probe fails with HTTP 400 or no response.
+
+PREREQUISITES:
+- You are a member of the team with at least Network Contributor or Application Gateway Contributor role on the subscription or resource group.
+- Access to Azure Portal and Azure CLI or PowerShell.
+- Access to Log Analytics workspace where Application Gateway logs are sent (if enabled).
+- Names of resources: Resource group, Application Gateway name, Backend Pool name, Backend VM/VMSS or App Service names.
+
+REQUIRED TOOLS:
+- Azure Portal
+- Azure CLI (az) >= 2.40 or Azure PowerShell
+- curl or wget for HTTP probe tests (from jumpbox inside VNet if backend is private)
+- SSH/RDP access to backend instance(s) or container logs
+- Access to Network Security Group (NSG) and User-Defined Routes (UDR) configuration tools
+
+ESTIMATED RESOLUTION TIME: 30-60 minutes
+
+RESOLUTION STEPS:
+1. Action: Confirm scope and impact
+   Details:
+   - Identify resource group and Application Gateway name.
+   - Determine whether the gateway is Internet-facing or internal.
+   - Note affected backend pool and instances.
+   Warnings:
+   - Do not make changes during peak production hours unless approved.
+
+2. Action: Check Application Gateway backend health
+   Details:
+   - Azure CLI: az network application-gateway backend-health show --resource-group <RG> --name <AppGwName>
+   - Portal: Application Gateway -> Backend health
+   - Note probe statuses, HTTP response codes and probe path shown in output.
+   Warnings:
+   - Backend health output may take 30-60 seconds to reflect changes after fixes.
+
+3. Action: Inspect probe configuration
+   Details:
+   - Azure CLI to list probes: az network application-gateway probe list --resource-group <RG> --gateway-name <AppGwName>
+   - Verify probe protocol (HTTP/HTTPS), host, path, interval, unhealthy threshold, and expected status codes.
+   - Common required settings:
+     - probe path should be a light-weight health endpoint (e.g., /health or /ping), not the app’s heavy pages.
+     - For Host header sensitive apps, ensure probe host matches expected host header or use “Pick host name from backend HTTP settings”.
+   Warnings:
+   - Changing probe path to a heavy endpoint may mask unhealthy behavior by making probes slow/timeout.
+
+4. Action: Validate HTTP settings and Host header handling
+   Details:
+   - az network application-gateway http-settings show --resource-group <RG> --gateway-name <AppGwName> --name <HttpSettingsName>
+   - Check:
+     - Port and protocol (HTTP/HTTPS)
+     - Host name override (Override with specific host name / Pick from backend)
+     - Cookie-based affinity and connection draining settings
+     - Backend protocol TLS settings including trusted root if using HTTPS
+   - If backend expects original Host header, set "Pick host name from backend address" or explicitly set host.
+   Warnings:
+   - For HTTPS backends, ensure backend certificates are valid and trusted by App Gateway (use trusted CA or set to accept untrusted in lab only).
+
+5. Action: Test probe and host header from within the VNet
+   Details:
+   - From a jumpbox in the same VNet/subnet, run:
+     - curl -I -H "Host: <expected-host>" http://<backend-ip-or-private-dns><probe-path>
+     - curl -I --resolve <public-host>:443:<backend-ip> https://<public-host><probe-path> (if TLS and testing)
+   - Confirm backend returns expected 200 or configured healthy code.
+   Warnings:
+   - If backend is listening on localhost only (127.0.0.1), the App Gateway will not reach it.
+
+6. Action: Check NSG/UDR and subnet settings
+   Details:
+   - Validate NSG inbound rules allow probe/source IPs from Application Gateway SUBNET (App Gateway uses a dynamic range; ensure AppGw subnet can reach backend subnet, or allow the backend to accept traffic from the AppGw subnet).
+   - Check effective route for backend VM: az network nic show-effective-route-table or use Portal > VM > Networking > Effective routes.
+   - Ensure no UDR is forcing traffic to appliance that blocks health probes.
+   Warnings:
+   - Modifying NSG or UDR may impact broader traffic — coordinate with network owners.
+
+7. Action: Validate backend service binding and firewall
+   Details:
+   - On backend instance, ensure application is bound to 0.0.0.0 or the NIC private IP rather than 127.0.0.1.
+   - If using Web App / App Service, confirm the app service is healthy and inbound restrictions (access restrictions) are not blocking App Gateway.
+   - Check OS firewall (iptables/ufw/Windows Firewall) to allow probe ports.
+   Warnings:
+   - Restarting services may briefly interrupt traffic.
+
+8. Action: Review SSL/TLS settings for HTTPS backends
+   Details:
+   - Check certificate validity on backend if App Gateway uses HTTPS.
+   - If backend uses SNI, ensure App Gateway HTTP settings include appropriate host header override or SNI hostname.
+   - For mutual TLS (client certs), confirm App Gateway is configured correctly (App Gateway does not support client certificate authentication to backends; use a different pattern if required).
+   Warnings:
+   - Never add a private CA root cert to App Gateway in production without change control.
+
+9. Action: Review Application Gateway logs and metrics
+   Details:
+   - Application Gateway access logs, performance logs, and firewall logs (if WAF enabled) in Log Analytics.
+   - Check metrics: UnhealthyHostCount, BackendConnectionFailed, BackendResponseStatus (502/503).
+   - Azure CLI example to query logs may be via az monitor or Kusto queries in Log Analytics.
+   Warnings:
+   - Log ingestion delay may be up to several minutes.
+
+10. Action: Apply corrective changes and re-evaluate health
+    Details:
+    - Update probe path, host header, HTTP settings, NSG rule, or backend binding as identified.
+    - Restart backend service if necessary.
+    - After changes, rerun backend-health and validate results.
+    Warnings:
+    - If multiple changes are made, change one at a time to isolate cause.
+
+VERIFICATION STEPS:
+- Backend health shows Healthy for all instances in: az network application-gateway backend-health show --resource-group <RG> --name <AppGwName>
+- Application Gateway metrics show UnhealthyHostCount = 0 and backend 5xx rate returns to baseline.
+- From an external client or curl test via Application Gateway frontend IP/hostname, verify requests return expected 200 within normal latency.
+- Log Analytics: Access logs no longer show elevated 502/503 backend codes during a 10-minute observation window.
+- If autoscaling or dynamic backend changes are used, confirm new instances are detected as Healthy by probes.
+
+TROUBLESHOOTING:
+Issue: Probe returns 400 or 404 while direct curl to backend returns 200
+Solution: Likely Host header mismatch or probe path incorrect. Ensure probe host is set correctly or pick host name from backend HTTP settings. Verify path exists and returns expected status codes for anonymous requests.
+
+Issue: Backend shows Unhealthy only intermittently
+Solution: Check backend service resource exhaustion (thread pool, connection limits). Inspect application logs and backend CPU/memory. Check connection draining and idle timeouts in HTTP settings; consider increasing timeouts or scale out backend.
+
+Issue: HTTPS backends show TLS handshake failures in logs
+Solution: Confirm backend certificate chain is valid and trusted by Azure. Ensure SNI hostname is set in HTTP settings if backend requires SNI. For self-signed certs, replace with cert from trusted CA or use internal PKI trusted by gateway (requires careful change control).
+
+Issue: Backend reachable from jumpbox but App Gateway reports Unhealthy
+Solution: Check NSG rules specifically allowing traffic from App Gateway subnet. Verify routes and ensure no UDR sends traffic to a firewall that drops probes. Confirm probe IPs and backend ports match.
+
+Issue: App Service backend marked Unhealthy after scaling
+Solution: App Gateway may need time to register new instances; ensure probe path is available on startup and add a warm-up endpoint if necessary. Consider enabling connection draining or graceful startup.
+
+ESCALATION:
+Condition: Backend health remains Unhealthy after following all resolution steps and 30 minutes of observation OR changes involve critical production impact requiring cross-team approval.
+Contact: Network Team Lead — Dana Park <dana.park@faketech.example>
+Escalation Path:
+- Level 1: On-call Support Engineer (primary troubleshooting; escalate if no progress within 30 minutes)
+- Level 2: Network Team Lead (Dana Park) — coordinate NSG/UDR or infra changes
+- Level 3: Platform/Cloud Infrastructure (owner of the App Service/VM scale set)
+- Level 4: Microsoft Azure Support (open support request via Azure Portal with collected diagnostics: App Gateway diagnostics, backend logs, packet captures from jumpbox)
+Notes:
+- When escalating externally, include timestamps, resource ids, probe configs, and sanitized logs. Do not share customer PII.
+
+RELATED DOCUMENTATION:
+- Title: Azure Application Gateway Backend Health Overview
+  URL: https://docs-fake.example/azure/appgw/backend-health
+- Title: Configuring Probes and HTTP Settings for Application Gateway
+  URL: https://kb-fake.example/azure/appgw/probes-http-settings
+- Title: Troubleshooting 502/503 from Application Gateway
+  URL: https://kb-fake.example/azure/appgw/troubleshoot-502-503
+- Title: Diagnosing Network Security Group and Route Issues
+  URL: https://docs-fake.example/network/nsg-udr/troubleshoot
+
+TAGS: azure, application-gateway, backend-health, probes, network
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2024-07-12T09:00:00+00:00 | Author: Morgan Hale | Changes: Initial draft focusing on probe and HTTP settings.
+Version: 1.4 | Date: 2024-11-03T14:22:00+00:00 | Author: Morgan Hale | Changes: Added NSG/UDR checks and jumpbox testing steps.
+Version: 1.7 | Date: 2025-06-19T08:15:00+00:00 | Author: Morgan Hale | Changes: Added TLS/SNI guidance and Log Analytics verification steps.
+Version: 1.9 | Date: 2025-11-28T03:12:00+00:00 | Author: Morgan Hale | Changes: Clarified escalation path, added estimated resolution time, updated commands for Azure CLI and verification checklist.

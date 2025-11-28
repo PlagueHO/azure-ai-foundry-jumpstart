@@ -1,0 +1,205 @@
+{
+  "sop_id": "3443f781-aa1e-40b4-8ad5-3faae3bf929c",
+  "version": "1.7",
+  "created_at": "2025-11-28T02:33:24.973463+00:00",
+  "last_updated": "2025-11-28T02:45:00+00:00",
+  "title": "Recover and Redeploy Azure VM Failing to Start (Provisioning/Boot Failures)",
+  "problem_category": "cloud",
+  "complexity": "medium",
+  "system_context": "Azure Virtual Machines",
+  "severity": "high",
+  "status": "review",
+  "approval_level": "cto",
+  "author": {
+    "name": "Ava M. Rios",
+    "email": "ava.rios+3443f781@example.com"
+  },
+  "approver": {
+    "name": null,
+    "email": null,
+    "approved_at": null
+  },
+  "problem_description": "One or more Azure Virtual Machines report a provisioning or boot failure state (stuck at Starting/Provisioning, shows failed extensions, unreachable over network). Affected VMs may fail to initialize OS services, not respond to RDP/SSH, or show repeated reboots. Root causes include corrupted OS disk, failed VM agent/extension, misapplied VM size/quota changes, broken NIC/NSG rules, or underlying host issues. This SOP covers diagnosis, in-place remediation, and safe redeploy/repair workflows.",
+  "symptoms": [
+    "VM status in Azure Portal shows 'Provisioning failed', 'Stuck at Starting', or 'Unresponsive'",
+    "Unable to SSH/RDP to VM, network probes time out",
+    "VM Agent reported as 'Not ready' or extension status 'Failed' in Instance View",
+    "Boot Diagnostics screenshot shows kernel panic, blue screen, or init failures",
+    "Serial console returns kernel messages or hangs during init"
+  ],
+  "prerequisites": [
+    "Owner or Contributor access to the Azure subscription / resource group where the VM resides",
+    "Reader or higher on storage account containing boot diagnostics logs (if separate)",
+    "Backup or snapshot of OS disk exists OR permission to create new managed disk snapshots",
+    "Incident ticket created and attached to case number in the ticketing system"
+  ],
+  "required_tools": [
+    "Azure Portal account",
+    "Azure CLI (recommended az version >= 2.40.0) or Azure PowerShell",
+    "SSH or RDP client depending on OS",
+    "Access to the cloud-infra-runbook storage location for temporary rescue scripts",
+    "Ability to create/attach managed disks and start temporary 'rescue' VMs"
+  ],
+  "estimated_resolution_time": "30-90 minutes (varies with disk size and snapshot operations)",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Initial assessment",
+      "details": "Open the VM blade in Azure Portal. Record VM name, resource group, subscription, size, OS type, and current 'Status' and 'Instance view'. Note any extension failures and the time window of failure. Attach the VM to the incident ticket.",
+      "warnings": null
+    },
+    {
+      "step_number": 2,
+      "action": "Check instance view and boot diagnostics",
+      "details": "Run Azure CLI to collect instance state: az vm get-instance-view -g <resource-group> -n <vm-name> --output json. Check 'vmAgent' and 'extensions' sections for errors. Download boot diagnostics screenshot and serial log (if enabled) from the portal or via az: az vm boot-diagnostics get-boot-log -g <rg> -n <vm> --output bootlog.txt (if supported in the environment). Save logs to the incident folder.",
+      "warnings": "Boot diagnostics must be enabled and the storage account accessible."
+    },
+    {
+      "step_number": 3,
+      "action": "Attempt non-invasive recoveries",
+      "details": "If extensions are failing but VM is otherwise responsive, try restarting the VM agent / extensions: az vm extension set --publisher Microsoft.Azure.Extensions --name VMAccessForLinux (or VMAccessAgent for Windows) --resource-group <rg> --vm-name <vm> --settings '{}' or run the platform RunCommand: for Linux: az vm run-command invoke -g <rg> -n <vm> --command-id RunShellScript --scripts 'sudo systemctl restart waagent || sudo systemctl restart azure-agent'. For Windows use RunPowerShellScript to restart the WindowsAzureGuestAgent service.",
+      "warnings": "RunCommand requires a running VM and working VM Agent; it will fail if the agent is not responsive."
+    },
+    {
+      "step_number": 4,
+      "action": "Test network configuration",
+      "details": "From Portal, validate NIC and NSG attached to the VM. Confirm effective security rules: az network nic show-effective-nsg -g <rg> -n <nic-name>. Ensure the NIC has correct IP and is not in an unexpected subnet. Check route table and peering. Temporarily open management access from your IP to allow SSH/RDP as needed.",
+      "warnings": "Avoid leaving broad network access open longer than necessary; document temporary rules applied."
+    },
+    {
+      "step_number": 5,
+      "action": "Use Serial Console for low-level diagnostics",
+      "details": "If the VM has Boot Diagnostics and Serial Console enabled, open Serial Console in Portal. Inspect boot output for kernel panic, filesystem errors, or other OS-level failures. For Linux, check for systemd failures; for Windows, look for boot loader or kernel stop codes.",
+      "warnings": "Serial console access requires subscription-level permission and will show sensitive system outputs; redact and store logs in the incident folder."
+    },
+    {
+      "step_number": 6,
+      "action": "Deallocate and redeploy VM (safe host-level move)",
+      "details": "If underlying host is suspected or VM stuck in Starting, deallocate and redeploy the VM: az vm deallocate -g <rg> -n <vm> then az vm redeploy -g <rg> -n <vm>. Redeploy moves the VM to a new host while preserving disks and configuration.",
+      "warnings": "Redeploy will cause downtime. Ensure maintenance window or notify stakeholders."
+    },
+    {
+      "step_number": 7,
+      "action": "Create snapshot of OS disk before disk-level repairs",
+      "details": "If boot diagnostics indicate disk corruption, snapshot the OS disk. Identify OS disk: az vm show -g <rg> -n <vm> --query 'storageProfile.osDisk.managedDisk.id' -o tsv. Create snapshot: az snapshot create -g <rg> -n <vm>-osdisk-snap --source <osdisk-id>. Store snapshot details in the incident ticket.",
+      "warnings": "Do not attempt writes to the original disk before snapshot to prevent further corruption."
+    },
+    {
+      "step_number": 8,
+      "action": "Attach disk to a temporary 'rescue' VM for offline repair",
+      "details": "Create a small rescue VM in same region/availability zone. Detach the original OS disk (or create a managed disk from snapshot) and attach as data disk: az disk create --resource-group <rg> --name <repair-disk> --source <snapshot-id>. Then az vm disk attach -g <rg> --vm-name <rescue-vm> --disk <repair-disk>. For Linux, run fsck on unmounted partitions; for Windows, run chkdsk /f on the attached volume.",
+      "warnings": "Do not run fsck/chkdsk on a mounted root filesystem. Ensure rescue VM OS is compatible with disk filesystem."
+    },
+    {
+      "step_number": 9,
+      "action": "Repair common OS issues",
+      "details": "Linux: mount partitions, inspect /etc/fstab for bad entries, chroot if necessary and reinstall missing initramfs / grub units. Commands example (on rescue VM): sudo mkdir /mnt/recover && sudo mount /dev/sdc1 /mnt/recover && sudo chroot /mnt/recover && update-initramfs -u && grub-install /dev/sdc. Windows: attach disk and run chkdsk, check BCD with bcdedit and repair using bootrec /fixmbr /fixboot /rebuildbcd from Windows PE if needed.",
+      "warnings": "Operations modifying bootloader are destructive if done incorrectly; prefer snapshot backup."
+    },
+    {
+      "step_number": 10,
+      "action": "Reattach repaired disk and start VM",
+      "details": "Detach the repaired disk from the rescue VM, reattach as the OS disk for the original VM (or create a new VM from the repaired disk). Start VM: az vm start -g <rg> -n <vm>. Monitor serial console and instance view for successful boot.",
+      "warnings": "If a new VM is created from the repaired disk, update NIC, DNS, and any identity bindings as required."
+    },
+    {
+      "step_number": 11,
+      "action": "If OS cannot be repaired, redeploy workload to new VM",
+      "details": "If disk repair fails or data integrity is compromised, provision a new VM with same configuration, attach latest data disks/snapshots, restore application configuration from backups, and update DNS/load balancer to point traffic to the new VM.",
+      "warnings": "Follow DR/restore procedures and coordinate with application owners for validation."
+    },
+    {
+      "step_number": 12,
+      "action": "Post-recovery validation and cleanup",
+      "details": "After VM is healthy, confirm VM Agent and extensions are healthy (az vm get-instance-view). Remove temporary NSG rules, delete rescue VM and interim disks (after confirmed backups). Document root cause, steps taken, time to resolution, and lessons learned in the incident ticket.",
+      "warnings": "Do not delete snapshots/disk copies until a retention period agreed by stakeholders has passed."
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm VM 'Status' is 'Running' and 'Provisioning State' is 'Succeeded' in the Azure Portal and via CLI: az vm get-instance-view -g <rg> -n <vm> --query 'instanceView.statuses' -o json"
+    },
+    {
+      "step": "Successful remote connectivity: SSH (ssh user@ip) for Linux or RDP connection for Windows using documented credentials or managed identity test."
+    },
+    {
+      "step": "Confirm VM Agent and all required extensions report 'Provisioning succeeded' in instance view and extension logs show last successful operation."
+    },
+    {
+      "step": "Application-level sanity check: application responds to health probe (HTTP 200, service-specific checks) and dependent services show nominal metrics for 10 minutes."
+    },
+    {
+      "step": "Confirm monitoring alerts are cleared and any temporary NSG or RBAC changes have been reverted."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "VM Agent not running, blocking RunCommand and extensions",
+      "solution": "If serial console or boot logs indicate VM Agent crashed, attach disk to rescue VM and reinstall the agent package (Linux: waagent/waagent2; Windows: Windows Azure Guest Agent) into the OS image, then reattach disk and boot VM."
+    },
+    {
+      "issue": "Boot diagnostics disabled and serial console inaccessible",
+      "solution": "If boot diagnostics were not enabled prior to failure, create a managed snapshot of the disk (if possible) and attach to a rescue VM to inspect logs; update cloud policy to require boot diagnostics for all critical VMs going forward."
+    },
+    {
+      "issue": "Redeploy fails or VM moves back to failed state",
+      "solution": "Collect host-level failure details from activity log and subscription health; escalate to platform operations if redeploy repeatedly fails (possible hypervisor/hardware issue)."
+    },
+    {
+      "issue": "Disk snapshot creation fails due to quota or capacity",
+      "solution": "Check subscription quota for standard SSD/Premium disks using az vm list-usage -l <location>. Request quota increase or free space by cleaning up old snapshots as temporary measure."
+    },
+    {
+      "issue": "Application config depends on ephemeral host data (lost after rebuild)",
+      "solution": "If application stored state on ephemeral OS disk, follow restore runbook from backups. Document requirement to move state to durable storage (Azure Files, Blob, or managed disk) for future resilience."
+    }
+  ],
+  "escalation": {
+    "condition": "If VM cannot be recovered after steps 1-10, or evidence of platform/hardware failure exists, or there is suspected data loss or compliance impact.",
+    "contact": "cloud-infra-escalation@example.com (primary); on-call platform engineer via on-call rotation documented in the internal roster",
+    "escalation_path": "1) Notify cloud-infra team with full logs and snapshot IDs. 2) If unresolved after 30 minutes, escalate to Cloud Platform Manager. 3) If unresolved after 60 minutes or data loss suspected, escalate to Director of Cloud Operations. 4) For business-critical outages impacting production SLAs, escalate to CTO."
+  },
+  "related_documentation": [
+    {
+      "title": "Internal: Azure VM Rescue Runbook (Rescue VM procedures and examples)",
+      "url": "https://intranet.example.com/runbooks/azure-vm-rescue"
+    },
+    {
+      "title": "Internal: Boot Diagnostics and Serial Console Configuration",
+      "url": "https://intranet.example.com/docs/azure-boot-diagnostics-serial-console"
+    },
+    {
+      "title": "KB: Common Causes of Azure VM Boot Failures",
+      "url": "https://kb.example.com/articles/azure-vm-boot-failures"
+    }
+  ],
+  "tags": [
+    "azure",
+    "vm",
+    "boot",
+    "redeploy",
+    "diagnostics",
+    "os-disk",
+    "rescue"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2024-12-02T09:30:00+00:00",
+      "author": "Ava M. Rios",
+      "changes": "Initial draft covering basic diagnostics and redeploy steps."
+    },
+    {
+      "version": "1.5",
+      "date": "2025-07-15T14:10:00+00:00",
+      "author": "Ava M. Rios",
+      "changes": "Added Azure CLI examples, snapshot/repair workflow, and rescue VM section. Clarified agent and extension troubleshooting."
+    },
+    {
+      "version": "1.7",
+      "date": "2025-11-28T02:45:00+00:00",
+      "author": "Ava M. Rios",
+      "changes": "Minor clarifications to escalation path, added verification and cleanup steps, updated estimated resolution time and formatting improvements."
+    }
+  ]
+}

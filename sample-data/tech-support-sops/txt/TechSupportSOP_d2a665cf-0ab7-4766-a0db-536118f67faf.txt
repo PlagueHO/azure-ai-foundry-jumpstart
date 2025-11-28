@@ -1,0 +1,144 @@
+SOP ID: d2a665cf-0ab7-4766-a0db-536118f67faf
+Version: 1.9
+Created At: 2025-11-28T02:48:35.561632+00:00
+Last Updated: 2025-11-28T03:12:00+00:00
+Title: Repair Windows Update Agent Service Failing to Start on Windows Server (2016/2019/2022)
+Problem Category: general
+Complexity: medium
+System Context: Windows Server
+Severity: medium
+Status: draft
+Approval Level: director
+Author: Carmen Reed <carmen.reed@fictional-it.example.corp>
+
+PROBLEM DESCRIPTION:
+Windows Server instances report that the Windows Update Agent (wuauserv) or dependent services fail to start, updates remain in "Downloading" or "Installing" indefinitely, or the system reports error codes (e.g., 0x80070424, 0x8024402f) when attempting to scan or apply updates. This SOP describes verified steps to repair the Windows Update service and common component corruption on Windows Server 2016/2019/2022.
+
+SYMPTOMS:
+- Windows Update service (wuauserv) will not start or stops immediately.
+- Windows Update console shows "Checking for updates" indefinitely or returns errors.
+- Get-WindowsUpdateLog shows repeated errors related to Windows Update Agent.
+- Event Viewer: System/Application logs show Event IDs tied to Service Control Manager, BITS, or CryptoAPI failures.
+- Updates fail to install with errors 0x80070424, 0x8024402f, 0x80071a91, or 0x800f081f.
+
+PREREQUISITES:
+- Confirm this SOP applies to the affected server OS version (2016/2019/2022).
+- Record recent update KB numbers and any change windows.
+- Ensure a full system backup or VM snapshot is available and can be reverted.
+- Notify stakeholders of potential temporary restart/downtime.
+
+REQUIRED TOOLS:
+- Administrative account with local Administrator rights (domain or local).
+- Remote Desktop (RDP) and/or console access to the server.
+- PowerShell (Run as Administrator), cmd.exe.
+- Event Viewer, Services.msc.
+- DISM and SFC (built-in).
+- Optional: Windows Server ISO accessible as a mount for /Source if required.
+- Access to internal update sources (WSUS or WSUS proxy) and network connectivity to update endpoints.
+
+ESTIMATED RESOLUTION TIME: 30–75 minutes (may be longer if DISM requires external source or corruption is severe)
+
+RESOLUTION STEPS:
+1. Action: Gather initial diagnostics
+   Details: Login with admin credentials. Open Event Viewer -> Windows Logs -> System and Application; filter for errors in the last 24 hours for sources: Service Control Manager, WindowsUpdateClient, BITS, CryptSvc. Record Event IDs and error messages. Run: sc query wuauserv && sc query bits
+   Warnings: Do not modify services yet. Collect logs for escalation if needed.
+
+2. Action: Check Windows Update service dependencies and stop services
+   Details: In elevated PowerShell:
+     net stop wuauserv
+     net stop bits
+     net stop cryptsvc
+     net stop msiserver
+   If a service fails to stop, take note of error. Use tasklist /svc or Process Explorer to locate process holding service handles.
+   Warnings: Stopping these services will interrupt ongoing update operations.
+
+3. Action: Rename update component folders
+   Details: In elevated cmd or PowerShell:
+     ren C:\Windows\SoftwareDistribution SoftwareDistribution.old
+     ren C:\Windows\System32\catroot2 catroot2.old
+   If renaming fails due to file locks, ensure services from step 2 are stopped and retry.
+
+4. Action: Re-register core Windows Update DLLs (if service registration appears corrupted)
+   Details: Execute as admin (cmd):
+     cd /d %windir%\system32
+     regsvr32 /s %windir%\system32\wups2.dll
+     regsvr32 /s %windir%\system32\wuaueng.dll
+     regsvr32 /s %windir%\system32\wuwebv.dll
+   Warnings: Some DLLs are version-specific; errors from regsvr32 can be normal if a DLL doesn’t export DllRegisterServer.
+
+5. Action: Repair image and system files
+   Details: Run DISM and SFC:
+     DISM /Online /Cleanup-Image /RestoreHealth /LimitAccess
+     If DISM returns source errors, mount a matching Windows Server ISO and run:
+     DISM /Online /Cleanup-Image /RestoreHealth /Source:wim:X:\sources\install.wim:1 /LimitAccess
+     Then run: sfc /scannow
+   Warnings: Using an incorrect source image may lead to partial repairs. Use same build/edition and language image.
+
+6. Action: Reset Windows Update components via script
+   Details: Run the Microsoft-style reset commands (simplified):
+     net stop wuauserv
+     net stop bits
+     rd /s /q C:\Windows\SoftwareDistribution
+     rd /s /q C:\Windows\System32\catroot2
+     net start cryptsvc
+     net start bits
+     net start wuauserv
+   Warnings: This removes update cache history; retained installed updates remain.
+
+7. Action: Check network/WSUS configuration
+   Details: If server uses WSUS, verify Group Policy or registry entries:
+     Get-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" -ErrorAction SilentlyContinue
+     Confirm server can reach the WSUS URL (Test-NetConnection <wsus-host>:8530). If proxy is used, validate WinHTTP proxy: netsh winhttp show proxy
+   Warnings: Do not change WSUS server unless authorized.
+
+8. Action: Trigger update scan and monitor
+   Details: Use PowerShell/command:
+     wuauclt.exe /detectnow
+     or on newer OS: UsoClient StartScan (run as admin)
+     Monitor WindowsUpdate.log by running Get-WindowsUpdateLog (PowerShell) and observe Event Viewer for new entries for 10–15 minutes.
+   Warnings: Some commands (UsoClient) require elevated session and may be spoofed by third-party tools; use only on target.
+
+9. Action: Reboot if required and re-verify
+   Details: If services remain unstable, schedule a reboot outside peak hours: shutdown /r /t 120
+   Warnings: Rebooting production servers requires stakeholder approval.
+
+VERIFICATION STEPS:
+- Confirm services are running: sc query wuauserv, sc query bits, sc query cryptsvc -> STATE: RUNNING.
+- Confirm Windows Update completes a successful scan: Event Viewer -> Applications and Services Logs -> Microsoft -> Windows -> WindowsUpdateClient -> Operational shows successful scan entries within last 15 minutes.
+- Confirm Get-WindowsUpdateLog shows no persistent errors related to agent startup.
+- Confirm Client can list/receive updates (if allowed) by running Windows Update GUI, PowerShell module (Get-WindowsUpdate) or checking Control Panel -> Windows Update -> Check for updates.
+- If using WSUS, ensure the server is checking in to the WSUS server as expected (WSUS console reports client check-ins).
+
+TROUBLESHOOTING:
+Issue: DISM fails with "source files could not be found"
+Solution: Mount a matching Windows Server ISO, determine index number (DISM /Get-WimInfo /WimFile:X:\sources\install.wim), then run DISM /RestoreHealth with /Source pointing at the correct wim index. If ISO not available, obtain from internal image repository.
+
+Issue: Service starts but immediately stops with Event ID 7000/7009
+Solution: Check service-specific permissions and registry keys under HKLM\SYSTEM\CurrentControlSet\Services\<servicename>. Compare ImagePath and required files. Ensure the account has "Log on as a service" if a non-default account is used.
+
+Issue: WSUS client policies appear to block updates
+Solution: Validate group policy application with gpresult /h gpresult.html and check Windows Update policy settings. If misconfigured, route to Group Policy team to correct.
+
+ESCALATION:
+Condition: After following all steps, wuauserv still fails to remain running, DISM/SFC report unrecoverable corruption, or Event Viewer shows repeated cryptography subsystem errors.
+Contact: Senior Windows Infrastructure Engineer — Alex Moreno <alex.moreno@fictional-it.example.corp>
+Escalation Path: 
+- Level 1 (you): Attempt SOP steps and collect logs (Event Viewer, DISM logs: C:\Windows\Logs\DISM, CBS logs: C:\Windows\Logs\CBS, WindowsUpdate.log).
+- Level 2: If unresolved after 2 hours of investigation, open ticket to Windows Infrastructure Team with collected logs and snapshot ID.
+- Level 3 (director approval required for hotfix or image rebuild): Engage Director of Infrastructure (Approval Level: director) for approval to redeploy VM from known-good image or perform offline recovery.
+
+RELATED DOCUMENTATION:
+- Title: Internal Windows Update Recovery Playbook
+  URL: https://intranet.fictional-it.example.corp/kb/windows-update-recovery
+- Title: DISM and SFC Repair Guide (Internal)
+  URL: https://intranet.fictional-it.example.corp/kb/dism-sfc-repair
+- Title: WSUS Client Troubleshooting Checklist
+  URL: https://intranet.fictional-it.example.corp/kb/wsus-client-checklist
+
+TAGS: windows-update, windows-server, troubleshooting
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2024-07-01T09:15:00+00:00 | Author: Carmen Reed | Changes: Initial draft focused on basic reset of update components.
+Version: 1.5 | Date: 2025-02-14T14:42:00+00:00 | Author: Carmen Reed | Changes: Added DISM with source image guidance and catroot2 handling.
+Version: 1.8 | Date: 2025-10-02T11:00:00+00:00 | Author: Carmen Reed | Changes: Included WSUS network verification and WinHTTP proxy checks.
+Version: 1.9 | Date: 2025-11-28T03:12:00+00:00 | Author: Carmen Reed | Changes: Updated verification steps for modern Scan triggers (UsoClient), clarified escalation path and added explicit log collection guidance.

@@ -1,0 +1,152 @@
+SOP ID: 5c52b619-ad42-4c3f-98e0-08f4e283929c
+Version: 1.7
+Created At: 2025-11-28T02:50:57.985213+00:00
+Last Updated: 2025-11-28T03:05:00+00:00
+Title: Recover Azure Application Gateway — Backend Unreachable / Persistent 502-504 Errors
+Problem Category: network
+Complexity: medium
+System Context: Azure Application Gateway
+Severity: critical
+Status: published
+Approval Level: cto
+Author: Jordan Meyers <jordan.meyers@acmecloud.local>
+Approver: Priya Nair <priya.nair@acmecloud.local>
+Approved At: 2025-11-28T03:05:00+00:00
+
+PROBLEM DESCRIPTION:
+A production Azure Application Gateway (v2 SKU) is returning persistent 502/503/504 responses and backend health shows hosts as "Unhealthy" or "Unknown", despite backend VMs/containers responding to requests when hit directly. Symptoms usually appear after network changes (UDR, NSG change, vNet peering update), TLS or certificate updates, or when an Application Gateway configuration has been recently edited (HTTP settings, custom probes, path-based rules). This SOP walks an on-call engineer through validated checks and corrective actions to restore backend connectivity while minimizing production impact.
+
+SYMPTOMS:
+- Application Gateway returns 502/503/504 to client traffic.
+- Backend health in Azure Portal shows Unhealthy / Unknown for one or more backend pool members.
+- WAF logs show backend connection failures or probe failures.
+- Azure Monitor metric UnhealthyHostCount > 0 and increased BackendConnectionErrors.
+- Direct curl/wget to backend IP/hostname from inside the backend vNet succeeds.
+- Recent changes in NSG, UDR, vNet peering, or DNS entries within last 24 hours.
+
+PREREQUISITES:
+- On-call engineer with Network/Cloud privileges and change windows permission (if needed).
+- Change control approved if applying inbound/outbound network or listener changes in production.
+- Awareness of application owner and maintenance window if rollback or restart is required.
+
+REQUIRED TOOLS:
+- Azure Portal access with Contributor or Network Contributor role to subscription/resource group.
+- Azure CLI (az) configured with an account that has the same privileges.
+- Access to Log Analytics workspace used by App Gateway diagnostics.
+- SSH/RDP access to a bastion/jump host inside the affected vNet for in-network diagnostics.
+- Access to application owners (Slack/Teams/Email) and on-call network pager.
+
+ESTIMATED RESOLUTION TIME: 30–90 minutes (depends on root cause and whether Azure Support escalation is required)
+
+RESOLUTION STEPS:
+1. Action: Confirm scope and impact
+   Details: Check Azure Monitor alerts and Application Gateway metrics to confirm start time and scope (which listeners/sites impacted, all zones or single zone). Identify if this is global (all backends) or scoped to a specific backend pool or path.
+   Warnings: Do not make changes until you've identified the blast radius and informed stakeholders.
+
+2. Action: Check Backend Health blade
+   Details: In Azure Portal > Application Gateway > Backend health. Note probe statuses, HTTP response codes from health probe, and last probe timestamp. If probe says "Failed" record the failure code (connection timed out, 403, 5xx).
+   Warnings: Health shows what the gateway sees — it may differ from what internal curl sees.
+
+3. Action: Validate Application Gateway HTTP settings and probe configuration
+   Details: Verify HTTP settings for the affected backend pool:
+     - Ensure correct backend port.
+     - Verify protocol (HTTP vs HTTPS). If HTTPS, ensure the AppGW has the correct Trusted Root CA or set to pick SNI host header.
+     - Check "Override with new host name" or custom host header matches backend expectations.
+     - Verify probe path (e.g., /health) and probe host header. If backend requires Host header or specific cookie, probe must match.
+     - Probe timeout and interval settings—if too aggressive increase timeout temporarily.
+   Warnings: Changing HTTP settings can alter live traffic behavior; prefer probe/test-only changes first.
+
+4. Action: Test probe from inside vNet
+   Details: From a bastion/jump VM inside the same vNet (or peered vNet), run:
+     - curl -v -I http://<backend-ip-or-hostname>:<port><probe-path> -H "Host: <expected-host>"
+     - If HTTPS: curl -v --resolve <host>:<port>:<backend-ip> https://<host><probe-path> --cacert <ca.pem> (or --insecure for test only)
+   Warnings: Do not post certificate private keys; perform TLS tests carefully.
+
+5. Action: Check NSG and effective routes for gateway subnet and backend NICs
+   Details:
+     - Validate no NSG rules block outbound traffic from AppGW subnet to backend subnet ports (80/443 or app port).
+     - Using Network Watcher, run effective security rules and effective routes for Application Gateway subnet and backend NICs.
+     - Look for UDRs with next hop "VirtualAppliance" (could blackhole traffic) or route 0.0.0.0/0 to on-prem that drops AppGW traffic.
+   Commands (Azure CLI examples):
+     - az network watcher show-effective-routes --resource-group RG --vm-name jump-vm
+     - az network nsg list-effective --resource-group RG --name <nsg-name> (use Portal -> Network Watcher if CLI not available)
+   Warnings: Editing NSGs or UDRs in prod may disrupt other services—coordinate changes.
+
+6. Action: Verify vNet peering and DNS resolution
+   Details:
+     - Confirm peering is established and "Allow forwarded traffic" and "Allow gateway transit" flags are properly set if used.
+     - Confirm DNS used by AppGW resolves backend hostnames to expected internal IPs. From bastion: nslookup <backend-host> <internal-dns-ip>.
+     - If private endpoints or Private DNS zones are in use, ensure correct zone links exist.
+   Warnings: Adding or changing DNS zones can take time to propagate.
+
+7. Action: Inspect logs — access, WAF, and diagnostics
+   Details:
+     - Query Log Analytics for ApplicationGatewayAccessLog, ApplicationGatewayFirewallLog, and ApplicationGatewayPerformanceLog for probe failures and backend connection errors.
+     - Look for repeated 502/504 messages, connection reset, or TLS handshake failures.
+   Example Kusto: ApplicationGatewayAccessLog | where TimeGenerated > ago(1h) | summarize count() by BackendStatusCode
+   Warnings: Logs can be large — filter by time and backend pool to limit noise.
+
+8. Action: If probe host header mismatch or TLS SNI issue found, update probe to match backend
+   Details:
+     - Edit the custom probe to set correct host header (either host name from backend certificate or backend expected Host).
+     - If backend requires client certs for health probe, configure appropriate TLS settings (note: AppGW health probes do not support client certs; work with app to allow a probe endpoint).
+   Warnings: Changing probe host header will immediately affect backend health determination.
+
+9. Action: Temporarily enable a simple HTTP probe path if HTTPS probe fails
+   Details:
+     - Configure a minimal HTTP endpoint (e.g., /appgw-probe-ok) on backend that returns 200 and allows AppGW to validate connectivity. Update custom probe to use this path on port 80 temporarily to restore health while diagnosing TLS issues.
+   Warnings: This reduces probe fidelity — ensure endpoint is secured and monitored.
+
+10. Action: Restart or redeploy Application Gateway (last resort)
+    Details:
+      - If configuration is correct, logs show intermittent failures, and routes/NSGs are correct, perform a controlled restart of the Application Gateway (stop/start) or scale out to force reconfiguration.
+      - Use Azure Portal or CLI: az network application-gateway stop/start (or use "Restart" if provided for your AppGW SKU).
+    Warnings: Stop/start will cause a brief service interruption; schedule or notify stakeholders. Avoid during peak traffic unless critical.
+
+VERIFICATION STEPS:
+- Backend Health shows "Healthy" for all impacted instances in the portal.
+- Azure Monitor metrics: UnhealthyHostCount = 0 and BackendConnectionErrors decrease to baseline.
+- ApplicationGatewayAccessLog shows 2xx/3xx for backendStatusCode for probe and requests.
+- End-to-end client requests succeed and 502/503/504 errors decrease to baseline over a 15–30 minute window.
+- Confirm no UDR or NSG reverts are required and that change was documented.
+
+TROUBLESHOOTING:
+Issue: Probe returns 403 or 404 even though application is healthy.
+Solution: Probe path or method incorrect; backend requires authentication or Host header mismatch. Create a dedicated unauthenticated probe endpoint (/appgw-health) and update probe. Ensure AppGW host header matches backend expected host.
+
+Issue: TLS handshake failures in WAF logs; backend certificate is valid when checked externally.
+Solution: Verify SNI sent by probe and that HTTP settings have "Pick host name from backend target" or custom host header set to certificate's CN/SAN. If backend uses Client TLS (mutual TLS), AppGW does not support client certificates for probes — implement an unauthenticated health endpoint.
+
+Issue: AppGW shows healthy but client requests still fail with 502.
+Solution: Check rewrite rules or listener mismatches (e.g., listener expects HTTPS but HTTP traffic arrives). Verify backend response headers and Cookie-based affinity settings. Use tcpdump on backend or app logs to find connection resets.
+
+Issue: After UDR change, traffic is blackholed.
+Solution: Inspect effective routes for AppGW subnet and backend subnets. Remove or correct UDR pointing 0.0.0.0/0 to a virtual appliance that does not handle AppGW traffic, or add more specific routes as needed.
+
+ESCALATION:
+Condition: Issue not resolved within 90 minutes, or a root cause indicates platform-level outage (Azure service disruption) or you require vendor-level support.
+Contact: 
+- On-call Network Engineer: network-oncall@acmecloud.local
+- Cloud Infra Lead (Pager): cloud-lead@acmecloud.local (Pager: +1-555-0102) — fictitious pager
+- Application Owner: contact details in runbook (check application registry)
+Escalation Path:
+1) Notify on-call network and application owner immediately via Teams/Slack and email with incident ID, timeline, and actions taken.
+2) If internal escalation fails or logs indicate platform issue, open Azure Support request (Severity A) with subscription ID, resource IDs, correlation IDs from logs, and sample request IDs.
+3) If Azure support cannot resolve within SLA, escalate to Cloud Infra Lead and CTO with full incident packet (logs, screenshots, commands run, change timeline).
+
+RELATED DOCUMENTATION:
+- Title: Application Gateway Troubleshooting Playbook
+  URL: https://kb.acmecloud.local/azure/appgw/troubleshoot
+- Title: Network Watcher — Effective Routes & NSG Diagnostics
+  URL: https://kb.acmecloud.local/network/watchereffective
+- Title: AppGW WAF Diagnostic Queries (Log Analytics)
+  URL: https://kb.acmecloud.local/azure/appgw/waf-logs
+- Title: Internal DNS & Private Zone Management
+  URL: https://kb.acmecloud.local/dns/private-zones
+
+TAGS: azure, application-gateway, networking, troubleshooting
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2024-07-12T09:20:00+00:00 | Author: Jordan Meyers | Changes: Initial SOP created for common AppGW backend health issues.
+Version: 1.5 | Date: 2025-06-02T14:10:00+00:00 | Author: Jordan Meyers | Changes: Added detailed NSG/UDR checks, CLI command examples, and temporary HTTP probe workaround.
+Version: 1.7 | Date: 2025-11-28T03:05:00+00:00 | Author: Jordan Meyers | Changes: Added escalation path, verification steps, and expanded WAF/log analytics guidance; updated approval metadata.

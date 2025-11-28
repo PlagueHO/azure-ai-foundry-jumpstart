@@ -1,0 +1,209 @@
+sop_id: c57f5723-4d6d-45a0-bb9d-61c65aee9e76
+version: 1.6
+created_at: 2025-11-28 02:19:46.061553+00:00
+last_updated: 2025-11-28 02:19:46.061553+00:00
+title: "AKS Container Insights Missing Metrics \u2014 Diagnostic and Remediation"
+problem_category: general
+complexity: medium
+system_context: Azure Kubernetes Service Monitoring
+severity: high
+status: draft
+approval_level: team_lead
+author:
+  name: Aisha Rowan
+  email: aisha.rowan@ops.example-corp.internal
+approver:
+  name: ''
+  email: ''
+  approved_at: null
+problem_description: "Container insights (Azure Monitor for containers) or custom\
+  \ monitoring pipelines are not receiving node / pod / container metrics from one\
+  \ or more AKS clusters. Symptoms can include stale dashboards, missing node CPU/memory\
+  \ metrics, missing pod-level metrics in Prometheus adapters, and alerts that fire\
+  \ for \u201Cno data\u201D. Common root causes include agent pod crash loops (omsagent/azuremonitor-containers),\
+  \ network policies or NSGs blocking telemetry egress, misconfigured managed identity\
+  \ / RBAC for Log Analytics ingestion, metrics-server / kubelet TLS issues, or recent\
+  \ cluster upgrades where daemonset rollout failed.\n"
+symptoms:
+- Dashboards in Azure Monitor or Grafana show 'No data' for node/pod metrics
+- kubectl top nodes / pods returns empty or 'unable to fetch metrics'
+- omsagent / azuremonitor-containers daemonset pods in kube-system are CrashLoopBackOff
+  or NotReady
+- Prometheus metrics endpoint returns 404 or empty scrape for cAdvisor endpoints
+- Alerts with 'Data missing' or extended periods of 'NoData' in alert history
+prerequisites:
+- Read access to AKS cluster (kubectl configured for the cluster)
+- Azure subscription contributor or monitoring role to view Log Analytics and Monitor
+- Access to support runbooks and ability to restart kube-system pods
+- Change window or approval for disruptive actions (restart daemonsets, node reboots)
+  if required
+required_tools:
+- kubectl v1.24+ configured to target the impacted cluster
+- az CLI v2.50+ with logged-in account that has required subscription access
+- Access to Azure Portal and the Log Analytics workspace for the cluster
+- 'kubectl plugins: metrics-server client, optionally kubelet-certs inspection tooling'
+estimated_resolution_time: 30-90 minutes
+resolution_steps:
+- step_number: 1
+  action: Validate scope and reproduce symptom
+  details: 'Confirm which clusters and namespaces are affected. Run kubectl top nodes
+    and kubectl top pods; check Azure Monitor dashboards and Grafana. Record timestamp
+    of last successful metric in dashboards to correlate with events.
+
+    '
+  warnings: ''
+- step_number: 2
+  action: Inspect monitoring agent pods in kube-system
+  details: 'kubectl get pods -n kube-system -l app=azure-monitor -o wide or kubectl
+    get daemonset -n kube-system Identify agent pods (named azuremonitor-containers,
+    omsagent, or fluentd) and check status: kubectl describe pod <pod-name> -n kube-system
+    kubectl logs <pod-name> -n kube-system --previous
+
+    '
+  warnings: Do not delete pods yet; gather logs first to preserve crash logs.
+- step_number: 3
+  action: Check daemonset rollout and node scheduling
+  details: 'Ensure daemonset has an instance on every schedulable node: kubectl get
+    daemonset azuremonitor-containers -n kube-system -o jsonpath=''{.status}'' Verify
+    nodes are Ready: kubectl get nodes If daemonset desired vs available mismatch
+    exists, inspect node taints, tolerations, and imagePull issues.
+
+    '
+  warnings: ''
+- step_number: 4
+  action: Examine agent logs for ingestion or auth errors
+  details: 'Look for messages referencing authentication, workspace ID, ingestion
+    failures, TLS errors, or rate limiting: kubectl logs <agent-pod> -n kube-system
+    | egrep -i ''auth|token|workspace|ingest|tls|certificate|509|rate limit|quota''
+    Cross-check with Log Analytics workspace ingestion metrics in Azure Portal (if
+    accessible) for recent errors.
+
+    '
+  warnings: ''
+- step_number: 5
+  action: Validate managed identity / workspace configuration
+  details: 'If cluster uses MSI or managed identity for monitoring, verify the identity
+    is present and has contributor/monitoring ingestion permissions: az aks show -g
+    <rg> -n <cluster> --query addonProfiles.omsagent Validate workspaceId configured
+    in daemonset env vars or secrets: kubectl get secret -n kube-system <oms-secret>
+    -o yaml
+
+    '
+  warnings: Changes to identity or workspace may require coordination with cloud admin.
+- step_number: 6
+  action: Restart monitoring daemonset in a controlled manner
+  details: 'If logs indicate transient errors or corrupted state, restart pods in
+    a rolling fashion: kubectl rollout restart daemonset/azuremonitor-containers -n
+    kube-system Monitor pod startup and logs after restart. If multiple clusters affected,
+    do one at a time.
+
+    '
+  warnings: Restarting monitoring agents may temporarily increase alert noise. Avoid
+    simultaneous restarts across many clusters in production without coordination.
+- step_number: 7
+  action: Check network egress and NSG / Cilium / Calico policies
+  details: 'Verify nodes can reach Azure Monitor endpoints (e.g., ingestion endpoint
+    for workspace). From a node: kubectl debug node/<node-name> --image=radial/busyboxplus:curl
+    -- chroot /host curl -v https://<workspace-ingest-endpoint> Inspect CNI network
+    policies or NSG rules that might block egress on TCP/443.
+
+    '
+  warnings: ''
+- step_number: 8
+  action: Validate kubelet and metrics-server connectivity
+  details: 'Ensure kubelet can serve metrics and metrics-server is healthy: kubectl
+    get deployment metrics-server -n kube-system kubectl logs -n kube-system deployment/metrics-server
+    If metrics-server reports kubelet TLS errors, check kubelet serving certs and
+    api access: kubectl get --raw /apis/metrics.k8s.io/v1beta1/nodes
+
+    '
+  warnings: Modifying kubelet or TLS certificates is high risk; escalate to platform
+    if needed.
+- step_number: 9
+  action: Re-provision monitoring addon if persistent
+  details: 'If daemonset reinstall is required, re-enable the AKS monitoring addon
+    via az CLI: az aks disable-addons --addons monitoring -g <rg> -n <cluster> Wait
+    5-10 minutes, then: az aks enable-addons --addons monitoring -g <rg> -n <cluster>
+    --workspace-resource-id <workspace-id> Confirm resources recreated in kube-system
+    and Log Analytics linkage restored.
+
+    '
+  warnings: Disabling/enabling addon can be disruptive; perform during maintenance
+    window when possible.
+- step_number: 10
+  action: Collect final evidence and update ticket
+  details: 'After remediation, collect pod logs, daemonset status, metrics snapshots,
+    and timestamps of resolution. Update incident ticket with actions taken and remediation
+    steps to prevent recurrence.
+
+    '
+  warnings: ''
+verification_steps:
+- Run kubectl top nodes and kubectl top pods and confirm CPU/memory values are returned.
+- 'Verify agent daemonset reports desired==available and all pods are Ready: kubectl
+  get daemonset azuremonitor-containers -n kube-system -o wide'
+- 'Confirm new telemetry is appearing in Azure Monitor / Log Analytics in the workspace:
+  check ''ContainerInsights'' table or relevant workspace tables for recent entries.'
+- Confirm dashboards and alerts that previously showed 'No data' now show fresh datapoints
+  within 5-10 minutes.
+- If Prometheus adapter is used, confirm metrics.k8s.io and custom metrics endpoints
+  respond with non-empty payloads.
+troubleshooting:
+- issue: Reloaded agents but metrics still not appearing
+  solution: Check Log Analytics ingestion throttling or workspace quotas. Inspect
+    workspace ingestion metrics in Portal and raise a case with Azure support if throttling
+    is observed. Also review time skew between cluster and workspace.
+- issue: Agent pods CrashLoopBackOff with 'certificate expired' in logs
+  solution: Collect certificate expiration details and follow internal cert rotation
+    runbook. If kubelet certs expired, escalate to platform and coordinate rollover
+    using kubeadm/AKS-managed cert rotation guidance.
+- issue: kubectl top returns 'unable to fetch metrics'
+  solution: Verify metrics-server is running and has cluster role bindings. Check
+    metrics-server flags for insecure-skip-tls-verify or proper kubelet endpoints.
+    If kubelet auth is failing, check node kubelet configuration and API server flags.
+- issue: Network policies block egress to Azure Monitor
+  solution: Temporarily relax CNI policies or add explicit egress rule to allow workspace
+    ingestion endpoint and port 443. Validate via curl from a host network pod before
+    applying wide-scoped changes.
+escalation:
+  condition: Issue persists after completing all resolution steps OR agent logs show
+    workspace authentication errors tied to subscription/identity changes
+  contact: Platform Team (platform-oncall@example-corp.internal) and Cloud Ops (cloud-ops@example-corp.internal)
+  escalation_path: '1) Assign to Platform Team on-call (Level 2). If no timely response
+    within 30 minutes, 2) Escalate to Cloud Ops Manager with full log bundle and az
+    support request ID. 3) If Azure service outage suspected, open an Azure Support
+    ticket and include workspace id, cluster resource id, and diagnostic logs.
+
+    '
+related_documentation:
+- title: AKS Monitoring - Internal Runbook
+  url: https://kb.internal.example-corp.com/aks/monitoring/runbook
+- title: Azure Monitor for Containers troubleshooting
+  url: https://docs.internal.example-corp.com/azure/monitoring/containers/troubleshoot
+- title: Network Egress Requirements for Azure Monitor
+  url: https://network.internal.example-corp.com/azure/monitor-egress
+- title: Kubelet and Metrics-server TLS troubleshooting
+  url: https://kb.internal.example-corp.com/k8s/kubelet-metrics-tls
+tags:
+- AKS
+- monitoring
+- azure-monitor
+- container-insights
+- metrics
+version_history:
+- version: '1.0'
+  date: 2024-10-12 09:15:00+00:00
+  author: Aisha Rowan
+  changes: Initial draft covering common causes and basic remediation for missing
+    AKS metrics.
+- version: '1.3'
+  date: 2025-03-04 14:30:00+00:00
+  author: Diego Maren
+  changes: Added steps for managed identity checks and NSG/CNI network egress tests;
+    clarified metrics-server verification.
+- version: '1.6'
+  date: 2025-11-28 02:19:46.061553+00:00
+  author: Aisha Rowan
+  changes: Expanded verification and troubleshooting sections, introduced controlled
+    daemonset restart guidance and escalation path; updated examples to current az/kubectl
+    command syntax.

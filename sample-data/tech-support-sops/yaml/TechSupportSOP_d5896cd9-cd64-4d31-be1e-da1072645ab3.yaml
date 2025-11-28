@@ -1,0 +1,231 @@
+sop_id: d5896cd9-cd64-4d31-be1e-da1072645ab3
+version: 1.3
+created_at: 2025-11-28 02:19:46.047064+00:00
+last_updated: 2025-11-28 02:19:46.047064+00:00
+title: Restore AKS Monitoring Ingestion (Prometheus / Azure Monitor / Log Analytics)
+problem_category: general
+complexity: medium
+system_context: Azure Kubernetes Service Monitoring
+severity: medium
+status: review
+approval_level: director
+author:
+  name: Ava Mercer
+  email: ava.mercer@acme-support.example.com
+approver:
+  name: null
+  email: null
+  approved_at: null
+problem_description: 'One or more AKS monitoring pipelines have stopped ingesting
+  metrics and/or logs into the expected backends (Prometheus, Azure Monitor / Log
+  Analytics). This leads to missing dashboard data and untriggered alerts. Root causes
+  are commonly: monitoring agent crash, RBAC/identity expiry, diagnostic setting misconfiguration,
+  network egress blocking, or Azure workspace throttling.
+
+  '
+symptoms:
+- Grafana/Prometheus dashboards show 'no data' for cluster metrics (CPU, memory, pod
+  counts) for >= 10 minutes.
+- Alerts based on Log Analytics or Prometheus rules are not firing despite known incidents.
+- kubectl top nodes/pods returns empty or error.
+- Azure Monitor diagnostic setting shows 'disabled' or missing workspace association.
+- Monitoring pods (metrics-server, kube-state-metrics, prometheus-operator, fluent-bit/azuremonitor
+  agents) CrashLoopBackOff or not present.
+prerequisites:
+- Cluster admin (kubeconfig) for the affected AKS cluster with permission to view/patch
+  deployments in kube-system and monitoring namespaces.
+- Azure subscription contributor or monitoring-reader role + permissions to view and
+  update diagnostic settings and Log Analytics workspace.
+- Helm access if components were installed via Helm (helm v3+).
+- Access to corporate VPN or jump-host with egress to Azure public endpoints if required.
+required_tools:
+- Azure CLI (az) v2.XX or later, logged in with an account that has access to the
+  subscription.
+- kubectl v1.2X configured to use the affected cluster kubeconfig.
+- Helm v3 (if redeploying charts).
+- Browser access to Grafana / Prometheus UI and Azure Portal (for diagnostics).
+- Text editor / ticketing system to record changes and incident timeline.
+estimated_resolution_time: 30-60 minutes
+resolution_steps:
+- step_number: 1
+  action: Confirm scope and impact.
+  details: '- Identify affected cluster(s) and monitoring namespace(s) (common: kube-system,
+    monitoring, prometheus).
+
+    - Note the time window of missing data and open an incident ticket with timestamps.
+
+    - Record current resource group and Log Analytics workspace IDs for the cluster.
+
+    '
+  warnings: Do not restart production pods before informing stakeholders when high-impact
+    services are monitored.
+- step_number: 2
+  action: Check Azure diagnostic settings and Log Analytics workspace ingestion.
+  details: '- Run: az monitor diagnostic-settings list --resource /subscriptions/<SUB>/resourceGroups/<RG>/providers/Microsoft.ContainerService/managedClusters/<CLUSTER>
+    --query ''[].{name:name,workspaceId:workspaceId}''
+
+    - Confirm a diagnostic setting exists and workspaceId matches expected workspace.
+
+    - In Azure Portal -> Monitor -> Diagnostic settings, confirm ''Send to Log Analytics''
+    is enabled and recent ingestion statistics (if available).
+
+    - If missing, note workspace resource ID for later reattachment.
+
+    '
+  warnings: Do not delete diagnostic settings unless you plan to immediately recreate
+    them with correct workspace.
+- step_number: 3
+  action: Inspect monitoring pods in-cluster.
+  details: '- kubectl get pods -A -l ''app in (metrics-server,kube-state-metrics,prometheus,fluent-bit,azuremonitor-containers)''
+
+    - For any non-Running pod: kubectl describe pod <pod> -n <ns> and kubectl logs
+    <pod> -n <ns> (include previous logs: --previous).
+
+    - Common failure messages to look for: OOMKilled, CrashLoopBackOff, ImagePullBackOff,
+    RBAC Forbidden, TLS handshake errors, or authentication token expiry.
+
+    '
+  warnings: Collect logs to incident storage before restarting pods if debugging team
+    requests them.
+- step_number: 4
+  action: Check RBAC and managed identity credentials.
+  details: "- If using managed identity or service principal for Log Analytics ingestion,\
+    \ validate secret/credential expiry:\n  - For ServicePrincipal: az ad sp credential\
+    \ list --id <appId>\n  - For Managed Identity: confirm AKS node pool identity\
+    \ mapping and role assignment exists:\n    az role assignment list --assignee\
+    \ <identityPrincipalId> --scope /subscriptions/<SUB>/resourceGroups/<RG>/providers/Microsoft.OperationalInsights/workspaces/<WORKSPACE>\n\
+    - Confirm monitoring components have correct ClusterRoleBindings for scrapes (prometheus,\
+    \ kube-state-metrics).\n"
+  warnings: Do not rotate production credentials without coordinating downtime windows
+    if the rotation impacts other systems.
+- step_number: 5
+  action: Verify network egress & firewall rules to Azure ingestion endpoints.
+  details: "- Ensure nodes/pods can reach Log Analytics ingestion endpoint and Prometheus\
+    \ remote write endpoints:\n  - Example curl test (from a node or debug pod): kubectl\
+    \ run curl-debug --image=radial/busyboxplus:curl -i --rm --restart=Never -- /bin/sh\
+    \ -c \"curl -v https://<workspace-id>.ods.opinsights.azure.com:443/\"\n- Check\
+    \ any NetworkPolicies, Calico rules, or NSGs blocking egress to azure endpoints.\
+    \ Use az network nsg list-effective-rules if NSGs exist on the node resource group.\n"
+  warnings: Avoid broad NSG changes during peak hours; prefer temporary test allowances.
+- step_number: 6
+  action: Restart or redeploy failing monitoring components.
+  details: "- For simple pod restart: kubectl rollout restart deployment/<deployment-name>\
+    \ -n <ns>\n- If image or config issues detected, helm upgrade --install <release>\
+    \ <chart> -n <ns> --values <values.yaml> with corrected values (example for kube-state-metrics\
+    \ or prometheus-operator).\n- If fluent-bit or azuremonitor agent is corrupted,\
+    \ reapply manifests from the validated internal repository:\n  kubectl apply -f\
+    \ https://internal.repo.company.com/aks-monitoring/fluent-bit/v2.1/manifest.yaml\n"
+  warnings: When redeploying operators, confirm compatibility matrix with AKS version
+    to avoid version skew issues.
+- step_number: 7
+  action: Recreate or update diagnostic setting if necessary.
+  details: "- Create/patch the diagnostic setting to point to Log Analytics:\n  az\
+    \ monitor diagnostic-settings create --name AKS-Metrics-Logs --resource /subscriptions/<SUB>/resourceGroups/<RG>/providers/Microsoft.ContainerService/managedClusters/<CLUSTER>\
+    \ --workspace <WORKSPACE_RESOURCE_ID> --logs '[{\"category\":\"kube-audit\",\"\
+    enabled\":true}]' --metrics '[{\"category\":\"AllMetrics\",\"enabled\":true}]'\n\
+    - Wait 5-10 minutes and check that new records appear in the workspace.\n"
+  warnings: Ensure the workspace is in the same region or supported configuration;
+    cross-region retention may have cost/latency implications.
+- step_number: 8
+  action: Force a metrics scrape and verify Prometheus targets.
+  details: '- Prometheus: visit Prometheus UI -> Status -> Targets and confirm endpounts
+    are UP.
+
+    - To force a scrape test: kubectl exec -n monitoring <prometheus-pod> -- promtool
+    tsdb analyze /prometheus
+
+    - For kubelet metrics, port-forward to the kubelet metrics endpoint and curl:
+    kubectl port-forward -n kube-system <kube-proxy-pod> 10250:10250; curl -k https://127.0.0.1:10250/metrics
+
+    '
+  warnings: Port-forward commands should be executed from a secured admin workstation
+    and closed after use.
+- step_number: 9
+  action: Validate ingestion in dashboards and alerting engines.
+  details: "- Confirm Log Analytics has new entries: Run a Kusto query (example):\n\
+    \  Heartbeat | where TimeGenerated > ago(15m) | top 10 by TimeGenerated\n- Confirm\
+    \ Grafana panels show metric data for the last 15 minutes and Prometheus alert\
+    \ rules evaluate OK.\n- Check alerting history for re-fired alerts to verify pipeline\
+    \ reopened.\n"
+  warnings: Some dashboards aggregate at 1m/5m resolution; allow up to 10 minutes
+    for metrics to repopulate.
+verification_steps:
+- Prometheus UI -> Status -> Targets shows >95% of cluster scrape targets UP and recently
+  scraped (within last scrape interval).
+- Grafana and internal dashboards display updated metrics within the last 10 minutes
+  for pods, nodes, and control plane components.
+- Log Analytics query returns new rows for Heartbeat, ContainerLog, and ContainerInsights
+  tables for the cluster within the last 15 minutes.
+- No monitoring pods remain in CrashLoopBackOff, OOMKilled, or ImagePullBackOff after
+  restarts/redeploys.
+- Alert engine (Prometheus Alertmanager / Azure Monitor alert rules) evaluates and
+  triggers a test alert where applicable.
+troubleshooting:
+- issue: Pod shows CrashLoopBackOff with RBAC forbidden errors.
+  solution: 'Inspect ClusterRole and ClusterRoleBinding for the service account used
+    by the component. Recreate missing ClusterRoleBinding or update role definitions.
+    Example: kubectl create clusterrolebinding prom-sa-binding --clusterrole=prometheus
+    --serviceaccount=monitoring:prom-sa'
+- issue: Diagnostic settings cannot be created due to permission denied.
+  solution: Confirm the az account used has Microsoft.Insights/* permissions or Workspaces
+    Contributor role on the Log Analytics workspace. Escalate to cloud admin to grant
+    role if missing.
+- issue: Fluent-bit/azuremonitor agent logs show TLS handshake or certificate errors.
+  solution: Validate system clock on nodes (NTP); check secret/certificate expiry
+    stored in kube-system. If using custom CA, ensure agents have CA bundle mounted.
+- issue: NetworkPolicy or NSG blocks egress to Azure ingestion endpoints causing partial
+    ingestion.
+  solution: Temporarily allow outbound to Azure Monitor endpoints from monitoring
+    namespace/node pool CIDRs and validate ingestion. Implement least-privilege rules
+    afterward.
+- issue: Workspace ingestion throttled or hitting limits.
+  solution: Check workspace ingestion metrics in Azure Monitor; consider increasing
+    ingest capacity or implementing sampling/filters in fluent-bit to reduce volume.
+    Contact Azure support if workspace throttling persists.
+escalation:
+  condition: Monitoring ingestion is not restored within 60 minutes OR more than 1
+    hour of metrics/logs are permanently missing for production clusters.
+  contact: On-call SRE (pager) -> Monitoring Team Lead -> Director, followed by Azure
+    Support if required.
+  escalation_path: '1) Page on-call SRE through the standard incident pager with incident
+    ID and steps already attempted.
+
+    2) If no response in 15 minutes, notify Monitoring Team Lead via email and direct
+    call.
+
+    3) If still unresolved after 60 minutes, escalate to Director of Cloud Operations
+    and open an Azure Support ticket referencing the subscription ID and workspace
+    ID. Include collected diagnostics (pod logs, az diagnostic-settings output, kubelet
+    metrics).
+
+    '
+related_documentation:
+- title: AKS internal monitoring runbook
+  url: https://kb.internal.example.com/aks/monitoring-runbook
+- title: Azure Monitor Diagnostic Settings (internal summary)
+  url: https://kb.internal.example.com/azure/diagnostic-settings
+- title: Prometheus Operator troubleshooting guide
+  url: https://kb.internal.example.com/prometheus/operator-troubleshooting
+- title: Azure Log Analytics querying cheat sheet
+  url: https://kb.internal.example.com/azure/log-analytics-queries
+tags:
+- AKS
+- monitoring
+- Prometheus
+- AzureMonitor
+- LogAnalytics
+version_history:
+- version: '1.0'
+  date: 2025-06-12 09:15:00+00:00
+  author: Ava Mercer
+  changes: Initial SOP created covering common AKS monitoring ingestion failures.
+- version: '1.2'
+  date: 2025-09-03 14:40:00+00:00
+  author: Ava Mercer
+  changes: Added network egress checks and sample curl tests; clarified RBAC checks
+    for managed identities.
+- version: '1.3'
+  date: 2025-11-28 02:19:46.047064+00:00
+  author: Ava Mercer
+  changes: Minor edits to restart procedures and verification steps; standardized
+    example CLI commands and expanded escalation path.

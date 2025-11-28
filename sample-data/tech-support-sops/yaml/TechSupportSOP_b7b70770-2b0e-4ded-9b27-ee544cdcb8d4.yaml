@@ -1,0 +1,221 @@
+sop_id: b7b70770-2b0e-4ded-9b27-ee544cdcb8d4
+version: 1.6
+created_at: 2025-11-28 02:08:50.558573+00:00
+last_updated: 2025-11-28 02:15:00+00:00
+title: Microsoft 365 authentication failures affecting Exchange Online and SharePoint
+  access
+problem_category: general
+complexity: medium
+system_context: Microsoft 365
+severity: critical
+status: published
+approval_level: director
+author:
+  name: Jordan Reed
+  email: jordan.reed@m365-support.example.com
+approver:
+  name: Priya Nambiar
+  email: priya.nambiar@it-directors.example.com
+  approved_at: 2025-11-28 03:00:00+00:00
+problem_description: 'Multiple tenants report that end users intermittently cannot
+  sign in to Microsoft 365 services (Exchange Online, SharePoint, Teams). Failures
+  present as "authentication failed" or infinite sign-in loops in web clients and
+  Office desktop apps. Root causes commonly include Conditional Access policy misconfiguration,
+  expired federation/AD FS certificates, OAuth token/service principal issues, or
+  transient Azure AD service health degradation. This SOP guides tech support to triage,
+  mitigate, and resolve tenant-level authentication failures.
+
+  '
+symptoms:
+- Users are repeatedly prompted to sign in and are unable to access email or SharePoint
+- Office desktop apps show 'need to sign in' but credentials are accepted and immediately
+  rejected
+- Single Sign-On (SSO) with AD FS or third-party IdP intermittently fails
+- Service health shows degraded authentication or identity services for the tenant
+prerequisites:
+- Global Administrator or Privileged Role Administrator access to the affected Microsoft
+  365 tenant
+- A support engineer with training in Azure AD, Exchange Online, and network authentication
+  concepts
+- Time window for tenant maintenance if certificate or policy changes are required
+required_tools:
+- Access to Microsoft 365 Admin Center (admin.microsoft.com)
+- Azure Portal (portal.azure.com) and Azure Active Directory blade
+- Microsoft Graph PowerShell (Connect-MgGraph) or AzureAD modules installed
+- Exchange Online PowerShell module (ExchangeOnlineManagement)
+- 'Network tools: nslookup, traceroute/mtr, and tcpdump or network capture capability'
+- Access to service health dashboard and tenant audit logs
+estimated_resolution_time: 30-90 minutes
+resolution_steps:
+- step_number: 1
+  action: Confirm scope and impact
+  details: 'Validate how many users and which services are affected. Determine whether
+    the issue is tenant-wide or limited to specific user groups, locations, or apps.
+    Ask the customer for recent change history (configuration, certificate renewals,
+    Conditional Access edits) and the approximate first observed time.
+
+    '
+- step_number: 2
+  action: Check Microsoft 365 service health and recent incidents
+  details: 'Login to admin.microsoft.com -> Health -> Service health (or Azure Portal
+    -> Service Health). Look for incidents affecting Azure AD, authentication, Exchange
+    Online, or SharePoint in the same timeframe. Note incident IDs and estimated restoration
+    times if present.
+
+    '
+  warnings: If a Microsoft service incident is declared, follow Microsoft SLA/communications;
+    do not make tenant-wide changes that may complicate diagnosis.
+- step_number: 3
+  action: Gather sign-in logs and failed sign-in samples
+  details: 'Connect to Microsoft Graph PowerShell: Connect-MgGraph -Scopes ''AuditLog.Read.All'',''User.Read.All''
+    Run sign-in queries for affected users and timeframe: - Get-MgAuditLogSignIn -Filter
+    "createdDateTime ge 2025-11-27T00:00:00Z and userPrincipalName eq ''user@tenant.example.com''"
+    Capture failureReason, conditionalAccessStatus, authenticationMethodsUsed, and
+    clientAppUsed fields.
+
+    '
+  warnings: Do not share full PII in external communication; redact userPrincipalName
+    when escalating externally.
+- step_number: 4
+  action: Validate Conditional Access policies
+  details: 'In Azure AD -> Security -> Conditional Access, identify policies applying
+    to affected users/apps. Use ''What If'' tool to simulate policy application for
+    impacted user(s) and apps (e.g., Exchange Online, SharePoint). If a recently changed
+    policy blocks legacy auth or requires an unavailable MFA method, disable or modify
+    the policy in a controlled manner.
+
+    '
+  warnings: When changing Conditional Access, apply one change at a time and document
+    precisely; prefer disabling a single suspect policy rather than global changes.
+- step_number: 5
+  action: Check federation/IdP health (AD FS or third-party)
+  details: 'If tenant uses federation, validate AD FS service health: - Check AD FS
+    server event logs for token-signing or token-decryption certificate errors. -
+    Confirm federation metadata is accessible (e.g., https://sts.contoso.com/adfs/.well-known/openid-configuration).
+    - Validate token-signing and token-decryption certificates are not expired and
+    are trusted by Azure AD (compare thumbprints). For third-party IdP, verify connectivity
+    and token issuance by initiating a test SSO from an affected user.
+
+    '
+  warnings: If certificate replacement is required, schedule immediate controlled
+    rollover; do not remove old cert until new cert is fully propagated.
+- step_number: 6
+  action: Inspect service principal and app registrations for OAuth issues
+  details: 'In Azure AD -> App registrations and Enterprise applications, locate Microsoft
+    365 service principals (e.g., Exchange Online). Confirm service principals are
+    enabled, not disabled, and delegated permissions are intact. Check for recent
+    consent revocations or anomalous changes. Use PowerShell to refresh tokens: Revoke-AzureADUserAllRefreshToken
+    (or equivalent) for a test user to force re-authentication after configuration
+    fixes.
+
+    '
+  warnings: Token revocation will force re-authentication for users; schedule during
+    low impact windows if mass revocation is required.
+- step_number: 7
+  action: Run client and network checks
+  details: 'From affected user''s network location, run: - nslookup login.microsoftonline.com
+    - curl -v https://login.microsoftonline.com/common/.well-known/openid-configuration
+    - tcpdump or packet capture for TLS handshake failures to Microsoft identity endpoints
+    (443). Confirm no network device (proxy/firewall/SSL inspection) is modifying
+    or blocking authentication traffic.
+
+    '
+  warnings: Obtain customer permission before capturing network traffic; redact sensitive
+    tokens from captures.
+- step_number: 8
+  action: Apply targeted mitigations
+  details: 'Based on findings: - If Conditional Access is blocking, temporarily exclude
+    the impacted user group or app and monitor. - If AD FS cert expired, perform expedited
+    certificate rollover and update federation metadata in Azure AD (Update-MsolFederatedDomain
+    or Set-MgDomainFederationConfiguration). - If service principal misconfiguration,
+    restore permissions and re-consent if necessary. - If network device is altering
+    traffic, advise bypass for identity endpoints or whitelist login.microsoftonline.com
+    and related endpoints.
+
+    '
+  warnings: Document all changes and time windows; coordinate with tenant security
+    owners for certificate and policy modifications.
+- step_number: 9
+  action: Verify and monitor
+  details: 'After applying changes, ask affected users to sign out of browsers and
+    Office apps and sign in again. Confirm successful sign-ins in Azure AD sign-in
+    logs and check for reduced failure counts over the next 30-60 minutes.
+
+    '
+  warnings: If full remediation requires reboot of AD FS servers or multi-hour propagation,
+    keep the tenant informed about expected timelines.
+verification_steps:
+- step: Confirm previously failing users can sign in via web and desktop Office clients
+    without repeated prompts
+- step: Validate successful sign-in records in Azure AD sign-in logs for the affected
+    user(s) and services
+- step: Check Service Health shows no ongoing identity/authentication incident impacting
+    the tenant
+- step: For federated tenants, perform a full SSO test from an external network and
+    verify token issuance from IdP
+troubleshooting:
+- issue: Some users still experience token loop after remediation
+  solution: Instruct users to clear browser cookies for Microsoft domains, run 'Office
+    Sign-in Troubleshooter' (corporate tool), and remove saved credentials from Windows
+    Credential Manager. Force token refresh by running Revoke-AzureADUserAllRefreshToken
+    for an affected account.
+- issue: Conditional Access What-If shows policy applying unexpectedly
+  solution: Check policy assignment scope (include/exclude groups), named locations
+    (IP ranges), and client app exclusions for legacy auth. Temporarily exclude the
+    impacted user/group and re-evaluate.
+- issue: AD FS shows 'token-decryption' or 'token-signing' errors
+  solution: Verify certificate validity and thumbprints, ensure private key is exportable
+    and accessible to AD FS service account, and perform certificate rollover following
+    vendor guidance. Update federation metadata immediately after the rollover.
+- issue: Network inspection appliances drop or modify authentication traffic
+  solution: Work with network team to disable HTTPS interception for Microsoft identity
+    endpoints, or whitelist login.microsoftonline.com and associated URLs. Validate
+    TLS 1.2+ negotiation and valid SNI headers.
+escalation:
+  condition: Issue not resolved within 90 minutes, cannot identify root cause from
+    tenant diagnostics, or a Microsoft service incident is suspected
+  contact: Escalate to Microsoft Premier/Support via tenant support ticket and provide
+    collected diagnostics (sign-in logs, service health IDs, packet captures).
+  escalation_path: '1) Open tenant support ticket (admin.microsoft.com -> Support
+    -> New service request) with severity ''A'' for critical authentication outage.
+    2) Provide sign-in log extracts, Conditional Access policy list, AD FS logs (if
+    applicable), and network captures. 3) If Microsoft support engagement does not
+    resolve within SLA, escalate to Director of Identity (on-call) and prepare to
+    perform emergency changes (certificate rollover, policy rollback) with customer
+    approval.
+
+    '
+related_documentation:
+- title: Azure AD Sign-in troubleshooting guide
+  url: https://kb.example.com/m365/azure-ad-signin-troubleshoot
+- title: Conditional Access What If simulation and remediation
+  url: https://kb.example.com/m365/conditional-access-whatif
+- title: Federation certificate rollover checklist
+  url: https://kb.example.com/m365/adfs-cert-rollover
+- title: Exchange Online and AD authentication interactions
+  url: https://kb.example.com/m365/exchange-auth-interactions
+tags:
+- azure-ad
+- authentication
+- exchange-online
+- conditional-access
+- adfs
+version_history:
+- version: '1.0'
+  date: 2024-12-10 09:15:00+00:00
+  author: Jordan Reed
+  changes: Initial draft covering common authentication failure scenarios and basic
+    checks.
+- version: '1.3'
+  date: 2025-05-02 14:40:00+00:00
+  author: Jordan Reed
+  changes: Added Conditional Access What-If guidance and token revocation steps.
+- version: '1.5'
+  date: 2025-10-07 11:20:00+00:00
+  author: Aisha Mensah
+  changes: Expanded federation certificate rollover steps and network capture guidance.
+- version: '1.6'
+  date: 2025-11-28 02:15:00+00:00
+  author: Jordan Reed
+  changes: Updated escalation path and added Service Health triage step; editorial
+    updates and approval.

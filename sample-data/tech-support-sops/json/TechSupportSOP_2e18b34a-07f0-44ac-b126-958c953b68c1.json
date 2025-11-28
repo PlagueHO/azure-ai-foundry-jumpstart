@@ -1,0 +1,187 @@
+{
+  "sop_id": "2e18b34a-07f0-44ac-b126-958c953b68c1",
+  "version": "1.5",
+  "created_at": "2025-11-28T02:47:14.342753+00:00",
+  "last_updated": "2025-11-28T02:47:14.342753+00:00",
+  "title": "Replace failed physical disk in Azure Stack HCI node and restore Storage Spaces Direct resiliency",
+  "problem_category": "hardware",
+  "complexity": "medium",
+  "system_context": "Azure Stack HCI",
+  "severity": "medium",
+  "status": "draft",
+  "approval_level": "manager",
+  "author": {
+    "name": "Alyssa Park",
+    "email": "alyssa.park+docs@example-corp.test"
+  },
+  "approver": {
+    "name": "",
+    "email": "",
+    "approved_at": null
+  },
+  "problem_description": "One or more physical disks in a node participating in an Azure Stack HCI Storage Spaces Direct (S2D) pool have failed or exhibit degraded health. This causes resiliency warnings in the cluster, degraded storage performance, or reduced number of available copies for CSVs. The SOP covers identification, safe removal, physical replacement, and rebalancing of the S2D pool to restore redundancy.",
+  "symptoms": [
+    "Cluster reports 'Warning' or 'Degraded' in Windows Admin Center or Failover Cluster Manager",
+    "Get-PhysicalDisk shows OperationalStatus as 'Failed' or HealthStatus as 'Warning/Critical'",
+    "StorageSpaceDirect reports reduced copy count for one or more volumes",
+    "CSV or VM I/O errors under load; increased latency",
+    "Events in System/Application logs referencing disk or PCIe/ NVMe controller errors"
+  ],
+  "prerequisites": [
+    "Administrative access to the cluster (local administrator on nodes and Cluster Administrator role)",
+    "Change window with notifications to application owners; workloads can be live-migrated if necessary",
+    "Documented spare/compatible replacement drive available (same interface and similar capacity/firmware)",
+    "Cluster nodes up-to-date on the baseline firmware/drivers recommended by the cluster owner"
+  ],
+  "required_tools": [
+    "Windows Admin Center and/or remote PowerShell with FailoverClusters and Storage modules",
+    "Remote console (iLO, iDRAC, IMM) or physical access to server for disk replacement",
+    "Vendor-provided drive trays and anti-static tools",
+    "Log collection destination with at least 5 GB free",
+    "Access to vendor RMA portal and serial numbers of replaced media"
+  ],
+  "estimated_resolution_time": "45-120 minutes (dependent on rebuild time; data resync may take several hours to days depending on capacity and load)",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Confirm cluster health and identify the failed disk",
+      "details": "From a management workstation, open Windows Admin Center or connect via PowerShell to any cluster node. Run the following checks to identify the disk and affected node:\n- Get-Cluster | Select-Object Name, OperationalStatus\n- Get-ClusterNode | ft Name, State\n- Get-PhysicalDisk | Select-Object FriendlyName, DeviceId, OperationalStatus, HealthStatus, CanPool\nNote the FriendlyName and DeviceId of any disk where OperationalStatus is 'Failed' or HealthStatus is 'Warning'/'Critical'. Collect the node name where the disk is attached.",
+      "warnings": "Do not reboot the node or take storage offline yet. Capturing current state is critical for escalation and vendor support."
+    },
+    {
+      "step_number": 2,
+      "action": "Collect diagnostic logs",
+      "details": "Collect cluster and storage logs before making changes:\n- Get-ClusterLog -Destination C:\\Temp\\ClusterLogs -TimeSpan 24:00:00\n- Export event logs around the time of the failure (System/Application) to C:\\Temp\\EventLogs\n- Get-PhysicalDisk | Select-Object FriendlyName, DeviceId, SerialNumber, OperationalStatus, HealthStatus | Export-Csv C:\\Temp\\PhysicalDiskReport.csv\nStore these artifacts to a central support share (e.g., \\\\support-share\\hci-logs\\<cluster-name>\\timestamp).",
+      "warnings": "Ensure logs do not contain customer PII before sharing externally."
+    },
+    {
+      "step_number": 3,
+      "action": "Place the node into maintenance mode for safe removal",
+      "details": "If the cluster supports node-level maintenance mode, put the node in maintenance to prevent automatic failovers or rebalancing while you prepare for removal. Example (PowerShell):\n- Suspend-ClusterNode -Name <node-name> -Drain\nConfirm no critical roles remain pinned to the node.",
+      "warnings": "If Suspend-ClusterNode is not recognized in your environment, use the vendor's recommended maintenance procedure. Do not force node removal without draining roles."
+    },
+    {
+      "step_number": 4,
+      "action": "Retire the failed disk from the pool",
+      "details": "Mark the disk as retired so S2D reallocates data and avoids writing to it. Example commands:\n- Get-PhysicalDisk -DeviceId <DeviceId> | Set-PhysicalDisk -Usage Retired\n- Confirm: Get-PhysicalDisk -DeviceId <DeviceId> | Select FriendlyName, OperationalStatus, Usage\nWait for storage jobs to start migrating data off the retired disk.",
+      "warnings": "Do not remove the media until the disk state has been changed and the cluster has started a repair/migration job."
+    },
+    {
+      "step_number": 5,
+      "action": "Monitor repair/migration progress",
+      "details": "Check the repair job status; monitor rebalancing to ensure data is relocating away from the failed media:\n- Get-StorageJob | Select-Object JobId, Status, PercentComplete, Description\n- Get-ClusterSharedVolume -Name * | ft Name, State, AllocationUnitSize\nAllow this process to progress to a healthy state or at least ensure the disk is emptied of active stripes.",
+      "warnings": "Resync can be I/O intensive; schedule outside peak hours if possible. If PercentComplete stalls for more than 60 minutes with active I/O, escalate."
+    },
+    {
+      "step_number": 6,
+      "action": "Physically replace the disk",
+      "details": "Once the cluster indicates the disk no longer hosts active data (or is in a retired/maintenance state), perform the physical removal and replacement:\n- For hot-swap: pull the drive tray, replace with new compatible drive, ensure drive is seated and enclosure LEDs show OK.\n- For non-hot-swap: follow vendor procedure to power down node (if required) and replace drive.\nRecord the serial number of the new drive and the removed drive for RMA.",
+      "warnings": "Follow ESD precautions. If controller indicates multiple contiguous disk errors, stop and escalate to hardware vendor before further replacements."
+    },
+    {
+      "step_number": 7,
+      "action": "Bring the new drive online and add to the pool",
+      "details": "After physical installation, confirm OS sees the new device and add it back to the S2D pool:\n- Get-PhysicalDisk | Where-Object { $_.OperationalStatus -ne 'Unknown' } | ft FriendlyName, DeviceId\n- Initialize the disk for use (if required) and set Usage to Auto-Select/Auto-Pool or the equivalent for your environment: Set-PhysicalDisk -DeviceId <newDeviceId> -Usage Auto-Select\n- Confirm: Get-PhysicalDisk -DeviceId <newDeviceId> | Select FriendlyName, OperationalStatus, Usage\nThe cluster should automatically start using the new disk and begin rebalancing.",
+      "warnings": "Do not manually create volumes on the raw disk. Let the S2D pool manage allocation."
+    },
+    {
+      "step_number": 8,
+      "action": "Verify rebalancing and restore normal state",
+      "details": "Monitor rebalancing and ensure resiliency is restored:\n- Get-StorageJob | Select JobId, Status, PercentComplete\n- (Fictional) Get-ClusterStorageHealth -Cluster <cluster-name> (or use implemented monitoring views in WAC) and expect 'Healthy' or no degraded copy warnings.\n- Check CSV health and copy count: Get-ClusterSharedVolume -Name * | Select Name, VolumeInfo, Health\nOnce complete, exit maintenance mode:\n- Resume-ClusterNode -Name <node-name>",
+      "warnings": "Do not mark the node as fully ready for production until storage reports restored copy counts and no ongoing repair jobs."
+    },
+    {
+      "step_number": 9,
+      "action": "Post-replacement verification and cleanup",
+      "details": "Run a final set of checks and archive logs:\n- Get-PhysicalDisk | Select FriendlyName, DeviceId, OperationalStatus, HealthStatus\n- Get-ClusterLog -Destination C:\\Temp\\ClusterLogsPostReplace\n- Validate VM and application connectivity and performance against known baselines\nDocument the replacement (date/time, serial numbers, root cause, and RMA ticket if opened).",
+      "warnings": "If any residual drives still show 'Warning' consider replacing them as part of a coordinated maintenance window."
+    },
+    {
+      "step_number": 10,
+      "action": "Close the incident and notify stakeholders",
+      "details": "Record the actions taken, attach pre/post logs and timeline in the ticketing system, and notify application owners that the cluster is back to normal state.",
+      "warnings": "Include the RMA number and retention instructions for failed media if required by company policy."
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm Get-PhysicalDisk shows all disks OperationalStatus='OK' and HealthStatus='Healthy' for the replaced node"
+    },
+    {
+      "step": "Verify cluster reports 'Healthy' in Windows Admin Center or 'No Warning' in Failover Cluster Manager"
+    },
+    {
+      "step": "Ensure no active Storage Jobs are in error and any repair jobs complete: Get-StorageJob returns Status='Completed' or 'Running' with progress"
+    },
+    {
+      "step": "Validate CSV copy count restored to expected redundancy level for each CSV"
+    },
+    {
+      "step": "Run a short I/O test against a test VM or a non-production CSV to validate latency and throughput meet baseline"
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Repair job stalls or PercentComplete stops progressing",
+      "solution": "Check for competing I/O on the node (third-party backup, antivirus scans). Throttle or reschedule those jobs. If I/O is not the cause, collect Get-StorageJob output and cluster logs and escalate to storage software support. Consider temporarily moving some CSVs off the node to lower load."
+    },
+    {
+      "issue": "New disk not recognized by OS after hot-swap",
+      "solution": "Verify the drive cage backplane and controller LED state in the BMC console. Re-seat the drive tray. If still not present, update the node's storage controller firmware to the vendor-recommended version and retry. If the drive still fails, swap in a different known-good spare."
+    },
+    {
+      "issue": "Multiple disks failing on same controller",
+      "solution": "Do not continue replacing multiple drives without vendor involvement. Collect controller logs, backplane status, and schedule an immediate hardware escalation with vendor support; mark the node out of service if necessary."
+    },
+    {
+      "issue": "Cluster enters 'Forced Quorum' or nodes report disagreement after removal",
+      "solution": "Verify cluster membership with Get-ClusterNode and review recent administrative actions. If quorum is at risk, follow the cluster quorum restoration procedure and open an escalation to senior SRE if unsure."
+    }
+  ],
+  "escalation": {
+    "condition": "Any of the following: repair job fails to progress after 60 minutes, more than one drive in a single enclosure shows failed, new drive not recognized after physical reseat, controller/backplane errors observed, or vendor-level RMA required.",
+    "contact": "Hardware Support Team (level 2) via Slack #hw-support, email hw-support@example-corp.test, or phone +1-800-555-0100 (fictional). If vendor RMA needed, open ticket with hardware vendor and include cluster logs.",
+    "escalation_path": "1) Attempt Level 2 replacements and troubleshooting. 2) If unresolved within 1 hour or multiple devices affected, escalate to Hardware Vendor Support with collected logs and serial numbers. 3) If vendor requires cluster changes or node isolation, coordinate with Manager (approval required) and schedule a node outage if needed."
+  },
+  "related_documentation": [
+    {
+      "title": "Azure Stack HCI: Storage Spaces Direct maintenance checklist (internal)",
+      "url": "https://intra.example-corp.test/docs/hci/s2d-maintenance-checklist"
+    },
+    {
+      "title": "Vendor drive replacement and RMA procedure",
+      "url": "https://vendor.example-hardware.test/support/rma-procedure"
+    },
+    {
+      "title": "Collecting cluster diagnostics for support",
+      "url": "https://intra.example-corp.test/docs/hci/collect-cluster-logs"
+    }
+  ],
+  "tags": [
+    "azure-stack-hci",
+    "storage-spaces-direct",
+    "disk-replace",
+    "hardware",
+    "maintenance"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2025-09-15T10:00:00+00:00",
+      "author": "Alyssa Park",
+      "changes": "Initial draft capturing standard disk replacement flow and high-level checks."
+    },
+    {
+      "version": "1.3",
+      "date": "2025-10-30T14:22:00+00:00",
+      "author": "Alyssa Park",
+      "changes": "Added explicit log collection steps and post-replacement verification tests; included guidance for hot-swap vs non-hot-swap replacements."
+    },
+    {
+      "version": "1.5",
+      "date": "2025-11-28T02:47:14.342753+00:00",
+      "author": "Alyssa Park",
+      "changes": "Refined monitoring commands, expanded troubleshooting scenarios and escalation path; updated estimated resolution time and added maintenance mode steps."
+    }
+  ]
+}

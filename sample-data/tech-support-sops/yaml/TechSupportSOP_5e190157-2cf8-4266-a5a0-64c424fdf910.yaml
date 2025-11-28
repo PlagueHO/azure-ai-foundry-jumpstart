@@ -1,0 +1,221 @@
+sop_id: 5e190157-2cf8-4266-a5a0-64c424fdf910
+version: '1.0'
+created_at: '2025-11-28T02:05:54.420755+00:00'
+last_updated: '2025-11-28T02:05:54.420755+00:00'
+title: AKS cross-node pod-to-pod connectivity failures after CNI upgrade
+problem_category: network
+complexity: medium
+system_context: Azure Kubernetes Service
+severity: high
+status: review
+approval_level: team_lead
+author:
+  name: Riley Park
+  email: riley.park.devops@example.local
+approver: {}
+problem_description: 'Intermittent or persistent pod-to-pod connectivity failures
+  observed on an AKS cluster following a planned or automatic CNI/kube-proxy upgrade.
+  Affected pods on different nodes cannot establish TCP/UDP sessions even though pod
+  IPs are assigned and DNS resolves. Root causes seen in similar incidents include
+  mismatched Azure CNI agent versions, missing IP forwarding on Azure NICs, incorrect
+  User Defined Routes (UDR), Azure Network Security Group (NSG) rules blocking east-west
+  traffic, or kube-proxy running in an unexpected mode (iptables vs ipvs) after the
+  upgrade.
+
+  '
+symptoms:
+- Pods on different nodes cannot connect (TCP timeouts) though pods report IP addresses.
+- Service endpoints appear healthy but service connections hang or reset.
+- Kube-proxy or azure CNI daemonset logs contain errors about programming routes or
+  iptables.
+- Intermittent connectivity where ping succeeds briefly then fails.
+- Metrics show spike in kube-proxy errors or cni-plugin failures after upgrade window.
+prerequisites:
+- Cluster admin or Azure subscription contributor access to the AKS cluster and resource
+  group.
+- Ability to cordon/drain nodes and restart systemd services on nodes if required.
+- Backup of critical manifests (DaemonSets, ConfigMaps) and current cluster state
+  snapshot.
+required_tools:
+- kubectl (v1.25+ recommended for this cluster API version)
+- az CLI (logged in and subscribed to target subscription)
+- SSH access to cluster nodes (bastion or jump host) for system-level checks
+- Access to Azure Portal or Azure Resource Manager APIs to inspect NICs, NSGs, and
+  route tables
+estimated_resolution_time: 30-90 minutes
+resolution_steps:
+- step_number: 1
+  action: Confirm scope and impact
+  details: 'Use kubectl to identify affected namespaces/pods and whether the issue
+    is cross-node only. - kubectl get pods -A -o wide | grep -E ''CrashLoopBackOff|Unknown|Error''
+    to find symptomatic pods. - kubectl exec -n <ns> <pod-A> -- ip -4 addr show &&
+    kubectl exec -n <ns> <pod-B> -- ip -4 addr show Note pod IPs and node names for
+    both endpoints.
+
+    '
+  warnings: "Do not make changes yet \u2014 this step is read-only to scope impact."
+- step_number: 2
+  action: Verify service vs pod connectivity
+  details: 'From a pod on the same node and a pod on a different node perform connectivity
+    tests: - kubectl exec -n <ns> <pod-A> -- curl -sv --connect-timeout 5 http://<pod-B-IP>:<port>
+    - kubectl exec -n <ns> <pod-A> -- ping -c 4 <pod-B-IP> If intra-node works but
+    cross-node fails, proceed with CNI and node networking checks.
+
+    '
+  warnings: Curl/ping may be blocked by application policies; use TCP tools appropriate
+    for the app.
+- step_number: 3
+  action: Inspect kube-proxy mode and logs
+  details: 'Check kube-proxy daemonset configuration and logs to confirm iptables/ipvs
+    and error messages: - kubectl -n kube-system get ds kube-proxy -o yaml | grep
+    mode -A3 - kubectl -n kube-system logs -l k8s-app=kube-proxy --tail=200 Look for
+    errors about programming services or invalid proxymode after upgrade.
+
+    '
+  warnings: "Do not delete the kube-proxy pods yet \u2014 changes will be coordinated\
+    \ in later steps."
+- step_number: 4
+  action: Check Azure CNI and node-level logs
+  details: 'On nodes hosting affected pods, inspect the CNI plugin and kubelet logs:
+    - ssh to node -> sudo journalctl -u kubelet -n 200 - sudo journalctl -u azure-cni
+    -n 200 or check /var/log/azurecni.log Look for ''ENI attach/detach'', ''failed
+    to program route'', or IPAM allocation errors.
+
+    '
+  warnings: Log file names vary by CNI version; confirm daemon name in node's /var/log.
+- step_number: 5
+  action: Verify node networking state
+  details: 'On each affected node: - ip route show - ip neigh show - sysctl net.ipv4.ip_forward
+    (should be 1) - sudo iptables -t nat -L -n -v | grep KUBE-SERVICES For Azure CNI,
+    ensure host routing includes routes for pod CIDR ranges pointing to azure0/eth
+    interfaces.
+
+    '
+  warnings: Making iptables or sysctl changes without coordination can disrupt traffic;
+    follow change windows.
+- step_number: 6
+  action: Check Azure NIC IP forwarding and effective security rules
+  details: 'Using az CLI, confirm NIC IP forwarding and NSG rules: - az network nic
+    show -g <rg> -n <nic-name> --query "enableIpForwarding" - az network nic list-effective-nsg
+    -g <rg> -n <nic-name> Ensure enableIpForwarding is true on node NICs when using
+    Azure CNI routed mode and that NSGs allow intra-subnet traffic on required ports/protocols.
+
+    '
+  warnings: "Changing NSGs impacts cluster security \u2014 coordinate before edits."
+- step_number: 7
+  action: Inspect User Defined Routes (UDRs) and route propagation
+  details: 'List route tables associated with the subnet and review routes: - az network
+    route-table route list -g <rg> --route-table-name <rt-name> Ensure no UDRs direct
+    pod CIDR traffic to an on-prem device or null route. Check effective routes for
+    the subnet in Azure portal or: - az network vnet subnet show --resource-group
+    <rg> --vnet-name <vnet> --name <subnet> --query "routeTable"
+
+    '
+  warnings: Do not delete UDRs unless you confirm they are misapplied to AKS subnets.
+- step_number: 8
+  action: Restart CNI and kube-proxy DaemonSets gracefully
+  details: 'If logs point to CNI or kube-proxy failures, rollout restart daemonsets:
+    - kubectl -n kube-system rollout restart daemonset azure-cni (or appropriate CNI
+    name) - kubectl -n kube-system rollout restart daemonset kube-proxy After restart,
+    monitor pod logs and node routes. If daemonset names differ, use kubectl get ds
+    -n kube-system.
+
+    '
+  warnings: A restart will transiently disrupt pod network on each node during restart;
+    coordinate with app owners.
+- step_number: 9
+  action: Isolate and remediate at node level (cordon/drain and recreate)
+  details: 'If a single node shows corrupted routing state, cordon and drain it, then
+    reboot or restart kubelet after recreating network state: - kubectl cordon <node>
+    - kubectl drain <node> --ignore-daemonsets --delete-local-data - ssh node -> sudo
+    systemctl restart kubelet && sudo systemctl restart azure-cni - kubectl uncordon
+    <node> after node is healthy
+
+    '
+  warnings: Draining will evict workloads; confirm deployments are tolerant to disruption
+    and schedule during maintenance windows when possible.
+- step_number: 10
+  action: If NIC ipForwarding was false, enable and validate
+  details: 'When using Azure routed CNI, NIC must have IP forwarding enabled. To set:
+    - az network nic update -g <rg> -n <nic-name> --set enableIpForwarding=true After
+    enabling, reapply CNI node configuration by restarting the CNI daemonset.
+
+    '
+  warnings: Changing NIC properties may require node reboot for the change to take
+    full effect.
+- step_number: 11
+  action: Validate and redeploy affected pods
+  details: 'Delete a failing pod to allow Kubernetes to reschedule it on a healthy
+    node: - kubectl delete pod -n <ns> <pod-name> Then re-run connectivity tests from
+    Step 2 to confirm cross-node connectivity is restored.
+
+    '
+  warnings: Confirm application readiness/liveness probes to avoid cascading restarts.
+verification_steps:
+- 'Confirm pod-to-pod TCP/UDP connections succeed across nodes: kubectl exec from
+  podA to podB and validate application-level response.'
+- kubectl get pods -A -o wide reports pods in Running state on nodes with RESTARTS
+  within expected range.
+- 'No persistent kube-proxy or CNI errors in logs: kubectl -n kube-system logs -l
+  k8s-app=kube-proxy --tail=200 and CNI logs show steady state.'
+- 'Azure NICs for affected nodes report enableIpForwarding: az network nic show --query
+  enableIpForwarding == true.'
+- Subnet effective routes do not contain unexpected blackhole or on-prem next hops
+  for pod CIDR ranges.
+troubleshooting:
+- issue: kube-proxy shows 'failed to sync services' after restart
+  solution: 'Check kube-apiserver connectivity and certificate rotation. If kube-proxy
+    cannot reach API server, verify node time drift, kubeconfig on kube-proxy pods,
+    and API server endpoints. Temporary fix: restart kube-proxy and ensure kube-proxy
+    service account token is valid.
+
+    '
+- issue: CNI plugin crashes with 'IP already allocated' or 'IPAM allocation failed'
+  solution: 'Inspect IPAM state on Azure (allocated IPs, duplicate allocations). Consider
+    restarting CNI daemonset to force reconciliation. If duplicates persist, cordon
+    node and reboot, or scale down and back up node to refresh NIC attachments.
+
+    '
+- issue: NSG rules blocking east-west traffic
+  solution: 'Review effective NSG rules for nodes and subnets. Temporarily allow intra-subnet
+    traffic (TCP/UDP, ICMP) to validate. If NSG is managed by another team, open change
+    request to permit required ports permanently.
+
+    '
+- issue: Route table contains on-prem next hop due to UDR
+  solution: 'Work with network team to exclude AKS subnets from the UDR or add more
+    specific routes for pod CIDRs pointing to ''None'' or proper next-hop.
+
+    '
+escalation:
+  condition: Unable to restore cross-node pod connectivity after completing all resolution
+    steps, or widespread impact across >30% of nodes.
+  contact: Network Engineering Team (network-eng@example.local), AKS Platform Lead
+    (aks-platform@example.local)
+  escalation_path: '1) Notify Network Engineering with incident summary, affected
+    cluster, steps taken, and latest logs. 2) If the network team identifies Azure
+    platform-related root cause, open a paid Azure Support ticket (Severity A) including
+    debug logs (az support create). 3) Provide access to cluster audit logs and temporary
+    read-only Azure subscription access as requested by teams.
+
+    '
+related_documentation:
+- title: AKS Azure CNI troubleshooting guide (internal)
+  url: https://kb.internal.example.local/aks/azure-cni-troubleshoot
+- title: Azure NIC and IP forwarding reference
+  url: https://docs.example.local/azure/networking/nic-ip-forwarding
+- title: Kube-proxy modes and diagnostics
+  url: https://kb.internal.example.local/k8s/kube-proxy-modes
+tags:
+- AKS
+- Azure CNI
+- kube-proxy
+- networking
+- pod-connectivity
+version_history:
+- version: '1.0'
+  date: '2025-11-28T02:05:54.420755+00:00'
+  author: Riley Park
+  changes: Initial draft covering common root causes for cross-node pod connectivity
+    failures after CNI or kube-proxy upgrades. Includes verification and escalation
+    paths.

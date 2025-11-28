@@ -1,0 +1,176 @@
+{
+  "sop_id": "86ffc671-7804-4d4d-a7a2-8ed8f0d2b602",
+  "version": "1.0",
+  "created_at": "2025-11-28T02:33:24.987920+00:00",
+  "last_updated": "2025-11-28T02:33:24.987920+00:00",
+  "title": "Recover Unresponsive Azure Virtual Machine with Stuck Provisioning/Agent Failure",
+  "problem_category": "cloud",
+  "complexity": "medium",
+  "system_context": "Azure Virtual Machines",
+  "severity": "critical",
+  "status": "draft",
+  "approval_level": "director",
+  "author": {
+    "name": "Morgan Hale",
+    "email": "morgan.hale@example-corp.com"
+  },
+  "approver": {
+    "name": "Aisha Grant",
+    "email": "aisha.grant@example-corp.com"
+  },
+  "problem_description": "One or more Azure Virtual Machines are unresponsive (no SSH/RDP, VM Agent stuck in 'Provisioning' or 'NotReady') and standard reboot cycles do not restore guest agent functionality. Symptoms indicate a stuck VM Agent or corrupted guest disk state preventing normal extension execution and health reporting. Because affected services are critical, rapid recovery with minimal data loss is required.",
+  "symptoms": [
+    "Azure Portal shows VM provisioning state as 'Running' but 'Guest agent' is not reporting or VM shows 'Provisioning failed' for extensions",
+    "Cannot SSH/RDP into the machine; connection times out or authentication hangs",
+    "az vm get-instance-view reports extensions stuck in 'Provisioning' or 'Failed' and PowerState is 'VM running' but serial console logs show repeated agent boot errors",
+    "Boot diagnostics show kernel oops or cloud-init errors (Linux) or VMAgent plugin errors (Windows)",
+    "Automated health probes for services on the VM are failing"
+  ],
+  "prerequisites": [
+    "Subscription-level Contributor or higher on the Azure subscription hosting the VM",
+    "Resource Group Owner or Virtual Machine Contributor on the target VM",
+    "Access to the team's incident management/tracking system to log actions",
+    "At least one recovery VM in the same region and VNet (or permissions to create one)",
+    "Knowledge of application-specific configuration and backup/SLA requirements"
+  ],
+  "required_tools": [
+    "Azure CLI (az) v2.50+ configured with the incident responder's account",
+    "Access to Azure Portal and serial console (if enabled)",
+    "SSH client (for Linux) and RDP client (for Windows)",
+    "Azure Storage access for diagnostic retrieval (SAS or role-based access)",
+    "Text editor and command-line tools on recovery VM for disk mount and log analysis"
+  ],
+  "estimated_resolution_time": "30-60 minutes",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Initial assessment and data collection",
+      "details": "Record VM name, resource group, subscription ID and time of detection. Capture az vm get-instance-view --name <vm> --resource-group <rg> output and az vm show --name <vm> --resource-group <rg> to collect statuses. Capture boot diagnostics logs: az vm boot-diagnostics get-boot-log --name <vm> --resource-group <rg> and download screenshots from the Azure Portal. Log all collected artifacts to the incident ticket.",
+      "warnings": "Do not restart or modify disks before creating required snapshots if the application has strict RPOs."
+    },
+    {
+      "step_number": 2,
+      "action": "Check and attempt soft recovery via Run Command",
+      "details": "Use Azure Run Command to inspect guest agent state without rebooting the VM. For Linux: az vm run-command invoke --command-id RunShellScript --name <vm> --resource-group <rg> --scripts \"sudo systemctl status waagent || sudo systemctl status walinuxagent; sudo journalctl -u waagent -n 200\". For Windows: az vm run-command invoke --command-id RunPowerShellScript --name <vm> --resource-group <rg> --scripts \"Get-Service -Name WindowsAzureGuestAgent; Get-Content 'C:\\WindowsAzure\\Logs\\WaAppAgent.log' -Tail 200\". If Run Command returns useful logs, search for clear agent errors (missing certs, permission denied, disk I/O errors).",
+      "warnings": "Run Command execution may be throttled on subscription; do not run repeated heavy diagnostics that may generate noise in logs."
+    },
+    {
+      "step_number": 3,
+      "action": "Attempt controlled guest agent restart",
+      "details": "If Run Command shows agent present but unhealthy, attempt a controlled service restart via Run Command. Linux: az vm run-command invoke --command-id RunShellScript --name <vm> --resource-group <rg> --scripts \"sudo systemctl restart waagent && sleep 10 && sudo systemctl status waagent --no-pager\". Windows: az vm run-command invoke --command-id RunPowerShellScript --name <vm> --resource-group <rg> --scripts \"Restart-Service WindowsAzureGuestAgent -Force; Start-Sleep -Seconds 10; Get-Service WindowsAzureGuestAgent\".",
+      "warnings": "Service restart may not succeed if underlying disk or OS is in read-only mode."
+    },
+    {
+      "step_number": 4,
+      "action": "If agent restart fails: enable serial console and capture kernel/boot messages",
+      "details": "Use Serial Console in the Azure Portal (or az vm boot-diagnostics get-boot-log) to capture live boot logs and kernel messages. For Linux, look for fsck, read-only filesystems, or initramfs drops. For Windows, capture the plugin and agent boot logs under C:\\WindowsAzure\\Logs or from the boot diagnostics log output.",
+      "warnings": "Serial console access requires appropriate RBAC and that boot diagnostics are enabled. Do not attempt interactive fixes without snapshotting disks first if filesystems appear damaged."
+    },
+    {
+      "step_number": 5,
+      "action": "Create snapshot(s) of OS and data disks for recovery and forensic analysis",
+      "details": "Identify attached disks: az vm show --name <vm> --resource-group <rg> --query storageProfile.dataDisks. Create snapshots: az snapshot create --resource-group <rg> --name <vm>-osdisk-snap-<timestamp> --source /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Compute/disks/<osdisk>. Repeat for data disks. Tag snapshots with incident ID and responder name.",
+      "warnings": "Snapshots may incur storage costs. Do not delete snapshots until incident closure and postmortem."
+    },
+    {
+      "step_number": 6,
+      "action": "Perform offline disk attach to a recovery VM for investigation and repair",
+      "details": "Create or use an existing recovery VM in the same region and VNet. Create new managed disks from snapshots: az disk create --resource-group <rg> --name <vm>-osdisk-recovery --source <snapshot-id>. Attach the recovered disk to the recovery VM in read-only mode where possible. Mount the disk and inspect logs: /var/log/waagent.log, /var/log/cloud-init.log, /etc/fstab for Linux; C:\\WindowsAzure\\Logs and the Event Viewer for Windows. Apply safe repairs (e.g., repair broken packages, fix fstab, correct permissions) if non-destructive.",
+      "warnings": "Avoid writing directly to the original disk snapshot. Prefer making a writable copy if you must modify files; keep original snapshot immutable for audit."
+    },
+    {
+      "step_number": 7,
+      "action": "If repair successful in offline mode, prepare replacement disk and swap on original VM",
+      "details": "If changes fixed the agent or boot configuration, create a new managed disk from the repaired disk: az disk create --resource-group <rg> --name <vm>-osdisk-fixed --source <repaired-disk-id>. Deallocate the original VM: az vm deallocate --name <vm> --resource-group <rg>. Update VM to use the fixed disk: az vm update --resource-group <rg> --name <vm> --set storageProfile.osDisk.managedDisk.id=/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Compute/disks/<vm>-osdisk-fixed. Start the VM: az vm start --name <vm> --resource-group <rg>.",
+      "warnings": "Switching disks will result in a short downtime. Ensure application owners are notified before swap."
+    },
+    {
+      "step_number": 8,
+      "action": "Alternative: redeploy VM while preserving disks",
+      "details": "If disk-level repair is not feasible, redeploying the VM can clear host-level issues. az vm redeploy --name <vm> --resource-group <rg>. Redeploy recreates the compute on a new host and keeps disks intact. After redeploy, monitor agent and extension states.",
+      "warnings": "Redeploy may not fix OS-level corruption; only use if the problem appears host-locked or after snapshotting disks."
+    },
+    {
+      "step_number": 9,
+      "action": "Final validation and enable monitoring",
+      "details": "After VM is back up, verify Azure VM Agent and extensions report healthy: az vm get-instance-view --name <vm> --resource-group <rg> and confirm instanceView.statuses shows PowerState/running and provisionStatus is 'Succeeded'. Validate SSH/RDP access, application-level checks, and synthetic probe success. Re-enable or verify boot diagnostics and auto-heal policies.",
+      "warnings": "If you performed disk swaps, ensure backups are reconfigured to target the correct disk resources."
+    },
+    {
+      "step_number": 10,
+      "action": "Document actions and close incident",
+      "details": "Record all steps taken, attach logs/snapshots created, and notify stakeholders. Schedule a post-incident review to identify root cause, needed automation (e.g., proactive agent health alerts), and any process gaps.",
+      "warnings": "Do not delete snapshots or recovery disks until postmortem and QA sign-off."
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Verify VM shows PowerState 'VM running' and instanceView provisioningStatus 'Succeeded' using az vm get-instance-view."
+    },
+    {
+      "step": "Confirm Azure VM Agent is healthy: for Linux check sudo systemctl status walinuxagent; for Windows check Get-Service WindowsAzureGuestAgent and plugin statuses."
+    },
+    {
+      "step": "Confirm SSH or RDP connectivity to the VM from a known-good jump host and validate application-level health endpoints."
+    },
+    {
+      "step": "Confirm boot diagnostics screenshots and serial console show normal boot sequence and no repeated agent errors."
+    },
+    {
+      "step": "Verify automated monitoring/alerts return to normal and log a confirmation entry in the incident ticket."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Run Command fails with timeout or 'VM not reachable' errors",
+      "solution": "Confirm Run Command feature is not blocked by NSG policies. If run-command fails, rely on boot diagnostics and snapshot approach (create disk snapshots and attach to recovery VM). Verify subscription-level service health in the region."
+    },
+    {
+      "issue": "Filesystem is mounted read-only and prevents agent writes",
+      "solution": "Attach a snapshot of the disk to a recovery VM, run fsck (Linux) on the unmounted partition, check for disk errors. If hardware-level corruption suspected, escalate to storage team and preserve snapshots."
+    },
+    {
+      "issue": "Extensions repeatedly fail with 'Unauthorized' or certificate errors",
+      "solution": "Check Azure AD service principal or Managed Identity permissions if used by extensions. Re-install extension from the Portal: Remove extension -> az vm extension delete -> az vm extension set with correct publisher and type. Ensure time drift isn't causing cert validation failures."
+    },
+    {
+      "issue": "Redeploy not resolving the issue",
+      "solution": "Proceed to disk-level offline analysis. If redeploy fails similarly, this indicates OS or disk corruption; prioritize snapshot and offline repair or build a replacement VM and restore application/data from snapshots/backups."
+    }
+  ],
+  "escalation": {
+    "condition": "If recovery cannot be completed within 2 hours or if disk snapshots show signs of persistent corruption (I/O errors), or business SLA at risk.",
+    "contact": "Cloud Platform Director on-call: cloud-ops-oncall@example-corp.com; Pager: +1-555-0102 (internal pager routing).",
+    "escalation_path": "1) Notify Cloud Platform on-call and attach incident ticket and snapshot IDs. 2) If on-call cannot resolve within 30 minutes, escalate to Director of Cloud Operations. 3) If data corruption suspected, engage Storage Engineering and Security (for forensic preservation). 4) For customer-impacting outages, notify Account Manager and Product/Service owners per incident communication plan."
+  },
+  "related_documentation": [
+    {
+      "title": "KB: Recovering Azure VM when VM Agent is Unresponsive",
+      "url": "https://kb.example-corp.com/cloud/azure/recover-vm-agent-unresponsive"
+    },
+    {
+      "title": "Run Command and Boot Diagnostics troubleshooting guide",
+      "url": "https://kb.example-corp.com/cloud/azure/run-command-boot-diagnostics"
+    },
+    {
+      "title": "Incident Playbook: Disk Snapshot and Offline Repair",
+      "url": "https://kb.example-corp.com/ops/playbooks/disk-snapshot-offline-repair"
+    }
+  ],
+  "tags": [
+    "azure",
+    "vm",
+    "provisioning-agent",
+    "boot-diagnostics",
+    "disk-snapshot",
+    "recovery"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2025-11-28T02:33:24.987920+00:00",
+      "author": "Morgan Hale",
+      "changes": "Initial draft created. Includes end-to-end recovery steps for stuck provisioning/agent issues, snapshot and offline repair workflow, verification and escalation procedures."
+    }
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "sop_id": "8bbd3dac-2ac4-429f-b5ad-c392854024c9",
+  "version": "1.4",
+  "created_at": "2025-11-28T02:46:07.597859+00:00",
+  "last_updated": "2025-11-28T03:15:00+00:00",
+  "title": "Azure Key Vault \u2014 Responding to Suspected Compromised Access Policy or Exposed Key/Secret",
+  "problem_category": "security",
+  "complexity": "medium",
+  "system_context": "Azure Key Vault",
+  "severity": "medium",
+  "status": "draft",
+  "approval_level": "team_lead",
+  "author": {
+    "name": "Rina Patel",
+    "email": "rina.patel@example.com"
+  },
+  "approver": {
+    "name": null,
+    "email": null,
+    "approved_at": null
+  },
+  "problem_description": "This SOP describes the procedure to respond when an Azure Key Vault access policy appears to have been altered without authorization or when a key/secret stored in Key Vault is suspected to have been exposed. The goal is to contain the exposure, rotate impacted keys/secrets, restore secure access policies, and verify no continued unauthorized access. This document assumes a single vault or small set of vaults under investigation. For confirmed broad compromise, follow the incident response playbook and engage SecOps.",
+  "symptoms": [
+    "Unexpected access-policy changes in the portal or via audit logs",
+    "Unfamiliar principal IDs listed in Key Vault access policies",
+    "Alerts from SIEM or monitoring indicating secret read or key operations outside normal windows",
+    "Application failures due to credential rotation or disabled keys",
+    "Audit logs showing export or 'get' operations on secrets/keys by unknown service principals"
+  ],
+  "prerequisites": [
+    "You must have Subscription Owner or Key Vault Contributor permissions, and privileges to update Azure AD service principal credentials",
+    "Key Vault must have diagnostic logging enabled (recommended) or logs available in Log Analytics/Blob Storage",
+    "Knowledge of the expected list of service principals, managed identities, and application owners that access the vault",
+    "Soft-delete and purge protection status awareness for the vaults (recommended enabled)"
+  ],
+  "required_tools": [
+    "Azure CLI (az) latest stable release with logged-in az account",
+    "Azure PowerShell (Az module) optional",
+    "Access to Azure Portal and Azure AD admin center",
+    "Access to SIEM/Log Analytics workspace containing Key Vault diagnostics",
+    "Ticketing system and contact information for application owners and SecOps"
+  ],
+  "estimated_resolution_time": "30-90 minutes (depends on number of affected applications and approvals required)",
+  "resolution_steps": [
+    {
+      "step_number": 1,
+      "action": "Isolate and preserve evidence",
+      "details": "Immediately preserve Key Vault diagnostic logs and export relevant resource activity logs to a secure location. Note the time window of suspicious activity and record principal IDs (objectId/appId) associated with suspicious operations.",
+      "warnings": "Do not delete logs or purge the vault. Evidence may be needed for investigation/audit."
+    },
+    {
+      "step_number": 2,
+      "action": "Identify the scope of changed access policies",
+      "details": "Run the following Azure CLI to list current vault access policies and audit entries: az keyvault show --name <vault-name> --query properties.accessPolicies; az monitor activity-log list --resource-id /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.KeyVault/vaults/<vault-name> --start-time <ISO-8601> --end-time <ISO-8601>. Correlate accessPolicy principalIds with known service principals and managed identities.",
+      "warnings": "If RBAC on Key Vault is enabled, list role assignments: az role assignment list --scope /subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.KeyVault/vaults/<vault-name>."
+    },
+    {
+      "step_number": 3,
+      "action": "Temporarily disable suspicious principals",
+      "details": "If a specific service principal or managed identity is untrusted, disable or rotate its credentials. For service principals: az ad sp credential reset --id <appId> --credential-description \"rotated-after-suspected-exposure\". For Azure AD accounts, work with IdP admins to disable sign-in. For managed identities, remove role assignments or access policies.",
+      "warnings": "Removing or disabling principals may cause application outages; coordinate with app owners if possible."
+    },
+    {
+      "step_number": 4,
+      "action": "Harden access to the vault",
+      "details": "If the vault allows broad network access, restrict firewall and virtual network rules: az keyvault update --name <vault-name> --resource-group <rg> --set properties.networkAcls.defaultAction=Deny. Enable only necessary IPs or service endpoints. If using access policies, temporarily replace broad policies with minimal required ones: az keyvault set-policy --name <vault-name> --object-id <owner-objectId> --key-permissions get list --secret-permissions get list",
+      "warnings": "Network restrictions may block CI/CD systems or application nodes; ensure owners are informed before tightening."
+    },
+    {
+      "step_number": 5,
+      "action": "Rotate compromised secrets/keys/certificates",
+      "details": "For secrets: create a new secret value and update dependent applications. Example: az keyvault secret set --vault-name <vault-name> --name prod-db-conn --value '<new-connection-string>'. For keys: create a new key version or new key name: az keyvault key create --vault-name <vault-name> --name api-key-v2 --kty RSA --size 2048. Disable old key versions: az keyvault key update --vault-name <vault-name> --name api-key --set attributes.enabled=false",
+      "warnings": "Do not purge old versions until dependent applications are confirmed to use rotated values."
+    },
+    {
+      "step_number": 6,
+      "action": "Update application credentials and redeploy",
+      "details": "Coordinate with application owners to update configuration (App Service, AKS secrets, Key Vault references). Validate that deployment pipelines fetch new secrets and that no copies of old secrets remain in plaintext in CI logs or storage.",
+      "warnings": "Ensure deployments use managed identities or service principals with rotated credentials to avoid reuse of compromised secrets."
+    },
+    {
+      "step_number": 7,
+      "action": "Enable or confirm defensive settings",
+      "details": "Confirm soft-delete and purge protection are enabled: az keyvault show --name <vault-name> --query properties.enablePurgeProtection and properties.enableSoftDelete. If not enabled and organizational policy allows, enable purge protection to prevent immediate deletion in case of follow-up malicious attempts.",
+      "warnings": "Enabling purge protection is irreversible for the retention period; ensure you understand retention implications."
+    },
+    {
+      "step_number": 8,
+      "action": "Restore intended access model and document changes",
+      "details": "Re-apply the minimal, approved access policies or RBAC role assignments that align with the expected principals list. Use role assignments for tenant-wide RBAC where possible instead of legacy access policies. Document each change (who, what, why, timestamp) and attach to the incident ticket.",
+      "warnings": "Avoid reintroducing any principals that were disabled until fully verified."
+    },
+    {
+      "step_number": 9,
+      "action": "Perform post-rotation verification and monitoring",
+      "details": "Verify that all applications function with new credentials and that there are no further suspicious Key Vault operations. Increase monitoring/alerting thresholds for 72 hours to catch re-attempts. Use queries in Log Analytics: AzureDiagnostics | where ResourceType == \"VAULTS\" and OperationName contains \"Secret\" and TimeGenerated > ago(72h)",
+      "warnings": "Keep a communications channel open with app owners for quick rollback if unforeseen issues arise."
+    },
+    {
+      "step_number": 10,
+      "action": "Close out and follow incident reporting",
+      "details": "If exposure is confirmed, close the technical steps in this SOP, attach forensic evidence, and follow corporate incident response and legal reporting requirements. Include timeline and remediation actions.",
+      "warnings": "If regulatory data was exposed, do not delete evidence; escalate to Legal/Compliance per policy."
+    }
+  ],
+  "verification_steps": [
+    {
+      "step": "Confirm no unauthorized principals remain in access policy or RBAC role assignments and compare against a known-good list."
+    },
+    {
+      "step": "Validate applications are using the rotated secrets/keys by checking application logs and successful authentication flows."
+    },
+    {
+      "step": "Search Key Vault diagnostics for 'Get' operations on rotated objects after rotation time; there should be no successful accesses by the compromised principal."
+    },
+    {
+      "step": "Confirm that firewall rules and network ACLs applied to the vault prevent access from unexpected IP ranges."
+    }
+  ],
+  "troubleshooting": [
+    {
+      "issue": "Unable to update access policies via az CLI (permission denied)",
+      "solution": "Verify whether the vault is using Azure RBAC instead of access policies. If RBAC is enabled, use role assignments (az role assignment create) or contact a subscription owner to perform the update."
+    },
+    {
+      "issue": "Applications fail after secret rotation",
+      "solution": "Check that application configuration was updated to reference the new secret name/version. Ensure managed identity/service principal used by the app has correct access and that caches (e.g., in-memory or local secret stores) were cleared or refreshed."
+    },
+    {
+      "issue": "Soft-delete or purge protection was not enabled and a secret/key was deleted",
+      "solution": "If soft-delete wasn't enabled, check backups and application logs for last-used values. Escalate to SecOps and Legal as necessary. For the future, ensure vaults are provisioned with soft-delete and purge protection enabled via policy."
+    },
+    {
+      "issue": "Cannot identify which application corresponds to a service principal objectId",
+      "solution": "Use Azure AD queries to map objectId to appId/name: az ad sp show --id <objectId> or use the Azure Portal Enterprise Applications view. If missing, check provisioning logs or ask the app inventory owner."
+    }
+  ],
+  "escalation": {
+    "condition": "Any confirmed external compromise, evidence of data exfiltration, inability to contain the event, regulatory data exposure, or if the remediation requires tenant-global credential rotations.",
+    "contact": "Security Incident Response Team (SIRT) \u2014 sirt@example.com; On-call SecOps Pager: +1-555-0100 (fictional).",
+    "escalation_path": "1) Notify team lead and SIRT. 2) Open an incident in the incident management system and attach preserved logs. 3) If tenant-wide credential reset is required, coordinate with Identity Team to reset federated credentials and notify CTO if impact is high. 4) Engage Legal/Compliance for regulatory notifications."
+  },
+  "related_documentation": [
+    {
+      "title": "Key Vault Access Policy vs Azure RBAC - internal guidance",
+      "url": "https://kb.example.com/azure/keyvault/access-models"
+    },
+    {
+      "title": "Incident Response Playbook \u2014 Secrets Exposure",
+      "url": "https://secops.example.com/playbooks/secrets-exposure"
+    },
+    {
+      "title": "How to rotate keys and secrets in Azure Key Vault (internal runbook)",
+      "url": "https://runbooks.example.com/azure/keyvault/rotate-secrets"
+    }
+  ],
+  "tags": [
+    "azure",
+    "keyvault",
+    "security",
+    "rotation",
+    "incident-response"
+  ],
+  "version_history": [
+    {
+      "version": "1.0",
+      "date": "2025-08-12T09:00:00+00:00",
+      "author": "Rina Patel",
+      "changes": "Initial draft covering basic rotation and access policy restore steps."
+    },
+    {
+      "version": "1.2",
+      "date": "2025-10-05T14:30:00+00:00",
+      "author": "Rina Patel",
+      "changes": "Added troubleshooting entries and improved CLI examples for service principal rotation."
+    },
+    {
+      "version": "1.4",
+      "date": "2025-11-28T03:15:00+00:00",
+      "author": "Rina Patel",
+      "changes": "Expanded containment and network hardening steps; clarified verification queries and escalation contacts."
+    }
+  ]
+}

@@ -205,9 +205,10 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
             "azure_open_ai": PromptExecutionSettings(
                 service_id="azure_open_ai",
                 extension_data={
-                    "max_tokens": max_tokens,
-                    "temperature": temperature,
-                    "top_p": top_p,
+                    "max_completion_tokens": max_tokens,
+                    # Note: Some models (like gpt-5-mini) only support default temperature/top_p
+                    # "temperature": temperature,
+                    # "top_p": top_p,
                 }
             )
         }
@@ -237,13 +238,20 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
                 kernel_function,  # type: ignore
                 **kwargs
             )
+            # Extract content from SK FunctionResult
+            # Result is a FunctionResult with a .value containing list of ChatMessageContent
+            if hasattr(result, 'value') and result.value:
+                # result.value is a list of ChatMessageContent objects
+                if isinstance(result.value, list) and result.value:
+                    # Get the content from the first message
+                    first_message = result.value[0]
+                    if hasattr(first_message, 'content'):
+                        return str(first_message.content)
+                return str(result.value)
             return str(result)
 
-        def _sync_runner(**kwargs: Any) -> str:
-            """Synchronous façade executed inside ``asyncio.to_thread``."""
-            return asyncio.run(_async_runner(**kwargs))
-
-        return _sync_runner
+        # Return the async function directly instead of wrapping it
+        return _async_runner
 
     # --------------------------------------------------------------------- #
     # Public façades                                                        #
@@ -375,9 +383,12 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
                 plugin_name=self.tool.toolName,
                 prompt_description=f"{self.tool.toolName} generator",
                 input_variables=[{"name": "index", "description": "record ordinal"}],
-                max_tokens=2048,
+                # Reasoning models like gpt-5-mini use reasoning_tokens which count
+                # against the limit, so we need a much higher limit
+                max_tokens=16000,
             )
-            raw_output: str = await asyncio.to_thread(prompt_fn, index=index)
+            # Call the async function directly (no longer wrapped in sync runner)
+            raw_output: str = await prompt_fn(index=index)
             processed = self.tool.post_process(raw_output, output_format)
 
             await asyncio.to_thread(

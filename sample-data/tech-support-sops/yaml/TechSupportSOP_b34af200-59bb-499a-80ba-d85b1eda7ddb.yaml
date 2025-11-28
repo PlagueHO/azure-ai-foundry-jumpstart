@@ -1,0 +1,249 @@
+sop_id: b34af200-59bb-499a-80ba-d85b1eda7ddb
+version: 1.8
+created_at: 2025-11-28 02:43:33.338853+00:00
+last_updated: 2025-11-28 04:10:00+00:00
+title: Microsoft Teams desktop client intermittent SSO / authentication loop (Windows)
+problem_category: application
+complexity: medium
+system_context: Microsoft Teams
+severity: medium
+status: approved
+approval_level: team_lead
+author:
+  name: Morgan Hale
+  email: morgan.hale@faketechco.com
+approver:
+  name: Priya Desai
+  email: priya.desai@faketechco.com
+  approved_at: 2025-11-28 03:58:12+00:00
+problem_description: 'Users report intermittent failures signing into the Microsoft
+  Teams desktop client on Windows after SSO/credential rotation or conditional access
+  changes.
+
+  Symptoms include a persistent login loop ("Signing in..." never completes), Teams
+  authenticating briefly then returning to the sign-in screen, or Teams launching
+  with "You''re missing required organization" or "There was a problem signing you
+  in" errors.
+
+  Underlying causes observed in past incidents: stale cached tokens, local Teams credential
+  store corruption, broken DeviceAuth/TokenBroker flow, incorrect proxy interception
+  of ADAL/MSAL traffic, or Azure AD conditional access misconfiguration. This SOP
+  describes safe local remediation steps and guidance for escalating to Identity/Platform
+  teams.
+
+  '
+symptoms:
+- Teams stuck on 'Signing in...' or returns to login screen repeatedly
+- Teams shows 'There was a problem signing you in' or 'You're missing required organization'
+- Instant sign-out after sign-in; account briefly visible then disappears
+- Unable to join meetings with 'not signed in' even though presence shows signed-in
+  on web
+prerequisites:
+- User must be available to provide time for troubleshooting (estimated 15-45 minutes)
+- Technician Windows account with local admin access on the affected device
+- Recent known-good working account to validate network vs account scope
+- Confirmation there is no active org-wide outage (check status pages)
+required_tools:
+- Access to the user's device (RDP/remote support session or in-person)
+- Local admin credentials
+- Teams installer (x64) for reinstall: https://downloads.faketechco.com/teams/teams_windows_x64.msi
+- Access to corporate proxy/firewall logs or ability to bypass proxy
+- Internal ticketing system to attach logs and escalate
+- Zipped Teams logs produced by Ctrl+Alt+Shift+1 (or %TEMP%\Teams Diagnostics)
+estimated_resolution_time: 15-45 minutes
+resolution_steps:
+- step_number: 1
+  action: Verify service health and scope
+  details: '1) Check corporate status page and Microsoft 365 Service Health for reported
+    Teams/Azure AD incidents.
+
+    2) Ask the user whether this issue affects only their device or multiple devices.
+
+    3) If multiple users are impacted in same region, open an incident with Platform/CloudOps
+    instead of proceeding locally.
+
+    '
+  warnings: Do not proceed with local remediation if a confirmed org-wide outage is
+    in progress.
+- step_number: 2
+  action: Collect basic diagnostics
+  details: '1) Have user reproduce the issue while you are connected.
+
+    2) Collect screenshot(s) of the error and note exact error text.
+
+    3) Collect Teams client version: open Teams -> Settings -> About -> Version.
+
+    4) Instruct user to press Ctrl+Alt+Shift+1 to generate a diagnostics zip (saved
+    to Downloads).
+
+    5) Record machine name, OS build (winver), and time of failure.
+
+    '
+  warnings: Ensure the diagnostics zip is attached to the ticket and redacted for
+    PII before sharing externally.
+- step_number: 3
+  action: Check Windows authentication stores and account bindings
+  details: '1) Open Settings -> Accounts -> Access work or school. If corporate account
+    is listed, select it and click Disconnect, then Reconnect after step 6.
+
+    2) Open Credential Manager -> Windows Credentials and remove any entries containing
+    "MicrosoftOffice15_Data:ADAL" or "Microsoft_Teams" or entries that reference the
+    corporate AD tenant.
+
+    3) If device uses "Company Portal" / Intune, ensure device is still registered
+    (Intune Company Portal shows device as compliant).
+
+    '
+  warnings: Disconnecting Access work or school will temporarily remove device SSO
+    bindings; advise the user and ensure they are ready.
+- step_number: 4
+  action: Clear Teams cache and local app data
+  details: "1) Ensure Teams is fully closed: right-click Teams in system tray -> Quit,\
+    \ and verify no Teams.exe / Squirrel / GPU processes in Task Manager.\n2) Open\
+    \ File Explorer and delete the following folders (for the signed-in user):\n \
+    \  - %appdata%\\Microsoft\\Teams\\Application Cache\\Cache\n   - %appdata%\\Microsoft\\\
+    Teams\\Blob_storage\n   - %appdata%\\Microsoft\\Teams\\Cache\n   - %appdata%\\\
+    Microsoft\\Teams\\databases\n   - %appdata%\\Microsoft\\Teams\\IndexedDB\n   -\
+    \ %appdata%\\Microsoft\\Teams\\Local Storage\n   - %appdata%\\Microsoft\\Teams\\\
+    tmp\n3) After deletion, restart the machine or proceed to step 5.\n"
+  warnings: Deleting data will remove local cache and may require the user to re-download
+    channel history; do not delete user documents outside Teams folders.
+- step_number: 5
+  action: Reset Teams authentication tokens (TokenBroker and browser cookies)
+  details: "1) On Windows 10/11, stop the \"User Device Registration\" and \"Workstation\"\
+    \ flows by signing out of browsers used for SSO. Close Edge/Chrome.\n2) In Edge/Chrome,\
+    \ clear cookies for login.microsoftonline.com and login.windows.net for enterprise\
+    \ profiles only.\n3) If using Windows 10/11 Web Account Manager (WAM), run:\n\
+    \   - Open Powershell (Admin) and run: \"Get-Process -Name Teams -ErrorAction\
+    \ SilentlyContinue | Stop-Process -Force\"\n4) Have user re-open Teams and attempt\
+    \ sign-in.\n"
+  warnings: Clearing browser cookies will sign the user out of other web sessions;
+    warn user in advance.
+- step_number: 6
+  action: Re-register device and re-establish SSO (if step 3 disconnected Access work
+    or school)
+  details: '1) Settings -> Accounts -> Access work or school -> Connect -> Sign in
+    with corporate credentials and complete any MFA flows.
+
+    2) If device is Azure AD joined, confirm Join status: Settings -> Accounts ->
+    Access work or school shows ''Connected to <org>''.
+
+    3) If Intune is required, ensure Company Portal enrollment completes before attempting
+    Teams sign-in.
+
+    '
+  warnings: Ensure MFA device is available for any conditional access prompts during
+    re-registration.
+- step_number: 7
+  action: Reinstall Teams (if cache reset did not help)
+  details: '1) Uninstall Microsoft Teams from Control Panel (or Settings -> Apps).
+
+    2) Remove leftover folders: %localappdata%\Microsoft\Teams and %appdata%\Microsoft\Teams
+    if present.
+
+    3) Install the latest corporate MSI from: https://downloads.faketechco.com/teams/teams_windows_x64.msi
+
+    4) Launch Teams and attempt sign-in.
+
+    '
+  warnings: Do not install .exe installers if company policy mandates MSI deployment;
+    follow Software Distribution team guidance.
+- step_number: 8
+  action: Validate network and proxy interception
+  details: '1) On the client, run: netsh winhttp show proxy to verify system proxy
+    configuration.
+
+    2) If a corporate TLS-intercepting proxy is in place, confirm it has exemptions
+    for login.microsoftonline.com and *.microsoftonline.com.
+
+    3) Temporarily connect the device to a trusted network (e.g., mobile hotspot)
+    to rule out proxy/firewall interference. Attempt sign-in while connected to the
+    alternate network.
+
+    '
+  warnings: Do not use untrusted public networks for sensitive logins unless approved
+    by Security.
+- step_number: 9
+  action: Collect advanced logs and escalate if necessary
+  details: '1) If problem persists, collect the diagnostics zip (from Ctrl+Alt+Shift+1),
+    the Windows Event Viewer logs (Application and System) for the timeframe, and
+    output of "netsh winhttp show proxy" and "ipconfig /all".
+
+    2) Redact any PII and attach logs to the ticket.
+
+    3) Escalate to Identity team with the collected artifacts (see escalation section).
+
+    '
+  warnings: Do not post raw logs to public forums; use internal ticketing only.
+verification_steps:
+- step: User can sign in to Teams desktop client and presence updates show correctly.
+- step: User can join or start a test meeting without being prompted to sign in again.
+- step: Teams client version opens to Home and displays chat history for past 30 minutes.
+- step: SSO works on both Teams desktop and Teams web (in an Incognito/private session)
+    showing the same account and tenant.
+troubleshooting:
+- issue: After clearing cache, Teams still loops on 'Signing in...'
+  solution: Confirm Access work or school account was entirely disconnected and rejoined.
+    If device is Azure AD Joined, re-run dsregcmd /status to confirm device state
+    and run dsregcmd /join if required (run as admin).
+- issue: User can sign into Teams web but not desktop
+  solution: Check WAM vs ADAL mismatch. Ensure the desktop client is up-to-date; re-install
+    using the enterprise MSI and clear WAM tokens as described in steps 4-6.
+- issue: Conditional Access blocks sign-in (MFA prompt repeatedly appears or is denied)
+  solution: Validate Conditional Access policies in Identity portal. If policy expects
+    device compliance, confirm Intune/Company Portal enrollment. Escalate to Identity
+    with device compliance state and conditional access evaluation logs.
+- issue: Corporate proxy TLS interception causing ADAL/MSAL token exchange to fail
+  solution: Bypass proxy temporarily or create traffic capture with Fiddler/Proxy
+    team to confirm 401/403 responses from login endpoints. Ask Network team to whitelist
+    Microsoft identity endpoints from TLS interception.
+escalation:
+  condition: Local remediation completed (all steps run) but issue persists OR multiple
+    users/tenant-wide impact detected.
+  contact: Identity & Access Management Team (id-access@faketechco.com), Platform
+    On-call (platform-oncall@faketechco.com)
+  escalation_path: '1) Attach diagnostics zip, dsregcmd /status output, netsh proxy
+    output, and a short timeline of user actions to the ticket.
+
+    2) Open an internal high-priority ticket to Identity & Platform; include sample
+    userUPN (no PII in public notes) and tenant ID only.
+
+    3) Identity team to provide conditional access evaluation and correlation with
+    Azure AD sign-in logs.
+
+    4) If Identity identifies a service-side issue, Platform/CloudOps will open a
+    service incident and coordinate with Microsoft support.
+
+    '
+related_documentation:
+- title: 'Internal KB: Teams SSO troubleshooting checklist'
+  url: https://kb.faketechco.com/teams/sso-troubleshoot
+- title: 'Guide: dsregcmd and device registration checks'
+  url: https://kb.faketechco.com/identity/device-registration
+- title: 'Network: Whitelisting Microsoft Identity endpoints'
+  url: https://network.faketechco.com/guides/msid-whitelist
+tags:
+- microsoft-teams
+- sso
+- azure-ad
+- authentication
+- windows
+version_history:
+- version: '1.0'
+  date: 2024-09-12 09:15:00+00:00
+  author: Morgan Hale
+  changes: Initial draft covering cache clearing and basic remediation.
+- version: '1.3'
+  date: 2024-12-03 14:22:00+00:00
+  author: Morgan Hale
+  changes: Added dsregcmd guidance and Access work or school reconnection steps.
+- version: '1.6'
+  date: 2025-06-18 11:05:00+00:00
+  author: Priya Desai
+  changes: Expanded proxy/network checks and added verification steps for web/desktop
+    parity.
+- version: '1.8'
+  date: 2025-11-28 04:10:00+00:00
+  author: Morgan Hale
+  changes: Minor clarifications, added explicit log collection checklist and escalation
+    contacts.

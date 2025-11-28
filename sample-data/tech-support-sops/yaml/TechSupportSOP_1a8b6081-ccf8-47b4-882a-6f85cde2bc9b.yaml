@@ -1,0 +1,203 @@
+sop_id: 1a8b6081-ccf8-47b4-882a-6f85cde2bc9b
+version: 1.0
+created_at: 2025-11-28 02:08:50.563964+00:00
+last_updated: 2025-11-28 02:08:50.563964+00:00
+title: Microsoft 365 Intermittent Authentication Prompts and Mailbox Sync Failures
+problem_category: general
+complexity: medium
+system_context: Microsoft 365
+severity: high
+status: archived
+approval_level: cto
+author:
+  name: Samira Holt
+  email: samira.holt@contoso-support.example
+approver:
+  name: Mateo Alvarez
+  email: mateo.alvarez@contoso-support.example
+  approved_at: 2025-11-28 02:20:00+00:00
+problem_description: 'Users intermittently receive repeated authentication prompts
+  in Outlook (Windows/Mac), Teams, and web apps, or report that new messages are not
+  syncing to clients despite being visible in the Exchange Online mailbox. Issue is
+  tenant-wide for a subset (~10-25%) of users and correlates with conditional access
+  and device registration changes. Root causes previously observed include Azure AD
+  token cache corruption, stale device objects in Azure AD, conditional access policy
+  evaluation loops, and Exchange Online throttling anomalies. This SOP provides step-by-step
+  investigation and remediation to restore normal authentication and mailbox sync
+  behavior.
+
+  '
+symptoms:
+- Users prompted for credentials multiple times per day in Outlook desktop
+- New mail not appearing in Outlook but visible in OWA
+- Teams shows "Sign in required" intermittently while web session remains active
+- Sign-in logs indicate 401/invalid_grant or MFA challenge loops for affected users
+- AAD device status shows "Not Registered" for devices that are enrolled
+prerequisites:
+- Global administrator or delegated role that includes Azure AD, Exchange Online,
+  and Intune access
+- Access to tenant sign-in logs, conditional access policies, and Exchange Online
+  admin center
+- Consent to run diagnostic remote tools or PowerShell sessions with affected users
+  (if required)
+required_tools:
+- Azure AD portal and sign-in logs access
+- Exchange Online PowerShell (ExchangeOnlineManagement module)
+- Microsoft Support and Recovery Assistant (MSRA) or equivalent diagnostic tool
+- Intune/Azure AD endpoint management portal access
+- Local admin access on affected workstation (for cache clearing and credential manager)
+estimated_resolution_time: 30-90 minutes per affected user group
+resolution_steps:
+- step_number: 1
+  action: Confirm scope and collect data
+  details: 'Identify the list of affected users and clients. Collect timestamps, device
+    IDs, client versions (Outlook build, Teams build), and any error messages. Pull
+    Azure AD sign-in logs for a 24-48h window for an affected user to find correlated
+    401/invalid_grant, MFA loop, or device registration failures.
+
+    '
+  warnings: Collect only metadata; do not expose or record PII such as mailbox content.
+- step_number: 2
+  action: Check Microsoft 365 service health
+  details: 'Verify tenant-level incidents in the Microsoft 365 Admin Center > Service
+    health. If a platform-wide incident is reported that matches the symptoms, follow
+    the incident guidance rather than proceeding with local remediation.
+
+    '
+  warnings: If platform incident exists, log the incident ID in the ticket.
+- step_number: 3
+  action: Validate conditional access and sign-in risk policies
+  details: 'Review Conditional Access policies that target affected users or device
+    platforms. Temporarily disable or exclude a single test user from suspect policies
+    to verify whether policy evaluation is causing repeated challenge prompts.
+
+    '
+  warnings: Do not broadly disable conditional access; use targeted exclusions for
+    testing.
+- step_number: 4
+  action: Inspect device registration and compliance
+  details: 'In Azure AD > Devices, search for the affected device IDs. If a device
+    shows stale or duplicate entries, retire the stale device record. In Intune, confirm
+    device compliance status. For a single test device, remove and re-enroll the device
+    to clear stale registration.
+
+    '
+  warnings: Removing a device from Azure AD will remove access if Hybrid Join or management
+    is dependent.
+- step_number: 5
+  action: Clear local credential caches and re-authenticate
+  details: "On the affected workstation: - Sign out of all Microsoft 365 apps. - For\
+    \ Windows: clear credentials in Windows Credential Manager (target entries with\
+    \ MicrosoftOffice16/Office15/Adal or MSAL prefixes),\n  delete %localappdata%\\\
+    Microsoft\\Office\\16.0\\Licensing and neighbor caches if present, and restart.\n\
+    - For macOS: remove saved accounts in Keychain related to Office identities and\
+    \ restart. - Re-launch Outlook/Teams and prompt user to re-authenticate using\
+    \ the corporate SSO flow.\n"
+  warnings: Advise user that cached offline content may be re-indexed; schedule outside
+    business-critical time if possible.
+- step_number: 6
+  action: Reconnect Exchange Online PowerShell and check mailbox status
+  details: 'From admin workstation, connect with ExchangeOnlineManagement: - Connect-ExchangeOnline
+    -UserPrincipalName admin@contoso-example.com - Run Test-ActiveSyncConnectivity
+    for mobile scenarios or Get-MailboxStatistics -Identity affected@contoso-example.com
+    Check for throttling, message delivery delays, or corruption indicators.
+
+    '
+  warnings: Use least-privilege admin account for troubleshooting when possible.
+- step_number: 7
+  action: Renew user refresh/token and remove stale device grants
+  details: 'Use Azure AD PowerShell or portal to revoke refresh tokens for a single
+    user to force re-issue: - In Azure AD portal: Users > select user > Authentication
+    methods / Revoke sessions - Alternatively: Revoke-AzureADUserAllRefreshToken (followed
+    by sign-in validation) After revocation, instruct user to sign in again and complete
+    MFA if required.
+
+    '
+  warnings: Revoking tokens may disconnect active sessions (Teams calls, etc.); schedule
+    with user.
+- step_number: 8
+  action: Monitor sign-in log for success and token issuance
+  details: 'After re-authentication, monitor Azure AD sign-in logs for the user to
+    confirm successful token issuance (claims: access_token/refresh_token issued)
+    and absence of repeated 401/invalid_grant entries.
+
+    '
+  warnings: Allow 5-10 minutes for log propagation.
+- step_number: 9
+  action: Escalate to platform support if tenant-level anomalies persist
+  details: 'If after the above steps affected users continue to see prompts and mailbox
+    sync failures, gather correlation IDs, full sign-in log export, and mailbox diagnostic
+    logs and open a ticket with Microsoft Support referencing tenant ID and collected
+    artifacts.
+
+    '
+  warnings: Ensure collected logs do not contain message body or PII beyond metadata.
+verification_steps:
+- step: Confirm affected users can sign into Outlook/Teams/OWA without repeated prompts
+    for a minimum of 24 hours
+- step: Confirm new mail arrives in Outlook desktop within expected sync window (under
+    5 minutes for cached mode) and appears in OWA concurrently
+- step: Verify Azure AD sign-in logs show successful token issuance and no repeated
+    401/invalid_grant entries for test users
+- step: Confirm targeted conditional access policies evaluate as expected in "What
+    If" tool for affected user/device
+troubleshooting:
+- issue: Conditional Access policy incorrectly blocking legacy auth clients
+  solution: 'Use the Conditional Access "What if" tool for a sample user and device.
+    Temporarily exclude legacy auth clients or create a targeted exception for a test
+    user. Update policy to block legacy auth via tenant-level controls and legacy
+    auth conditional access exclusions.
+
+    '
+- issue: Duplicate or stale Azure AD device objects causing SSO failures
+  solution: 'Identify duplicate device objects in Azure AD, retire the stale object,
+    and re-register the device. If hybrid-joined, run dsregcmd /status on the client
+    and re-run join commands per hybrid guidance.
+
+    '
+- issue: Persistent MFA loop after token revocation
+  solution: 'Verify the user''s MFA configuration in Azure AD, ensure there are no
+    conflicting authentication methods, and if present, temporarily reset MFA registration.
+    If using custom SSO, verify ADFS/SAML claims mapping for compatibility.
+
+    '
+- issue: Exchange throttling or transient delivery errors
+  solution: 'Check Exchange Online throttling logs via Get-MailboxStatistics and ServiceHealth.
+    If throttling is suspected, isolate heavy clients, reduce sync frequency temporarily,
+    and engage Microsoft Support to raise tenant throttling thresholds if justified.
+
+    '
+escalation:
+  condition: 'Issue persists after completing all resolution steps for multiple representative
+    users, or you observe tenant-wide token issuance failures, platform incidents,
+    or unknown error codes in sign-in logs.
+
+    '
+  contact: Built-in Microsoft Support via admin portal; internal escalation to Cloud
+    Operations
+  escalation_path: '1. Open Microsoft Support ticket with Tenant ID, correlation IDs,
+    sign-in log export, and a reproduction plan. 2. Notify Cloud Operations lead (cloud-ops-lead@contoso-support.example)
+    with ticket reference. 3. If MS Support identifies platform bug, request a Severity
+    A internal escalation and coordinate with CTO for executive visibility.
+
+    '
+related_documentation:
+- title: Azure AD Sign-in Diagnostics (internal playbook)
+  url: https://intranet.contoso-support.example/docs/azure-ad-signin-diagnostics
+- title: Exchange Online Connectivity and Mailbox Troubleshooting
+  url: https://intranet.contoso-support.example/docs/exo-mailbox-connectivity
+- title: Conditional Access Policy Troubleshooting Guide
+  url: https://intranet.contoso-support.example/docs/conditional-access-troubleshooting
+tags:
+- microsoft-365
+- authentication
+- outlook
+- azure-ad
+- exchange-online
+version_history:
+- version: 1.0
+  date: 2025-11-28 02:08:50.563964+00:00
+  author: Samira Holt
+  changes: "Initial creation \u2014 tenant-level intermittent authentication prompts\
+    \ and mailbox sync SOP, includes diagnostic and remediation steps, verification,\
+    \ and escalation path."

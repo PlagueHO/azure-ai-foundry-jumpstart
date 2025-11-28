@@ -1,0 +1,230 @@
+sop_id: 3db08017-8d04-4124-a0e2-00e549070d11
+version: 1.4
+created_at: 2025-11-28 02:08:50.562628+00:00
+last_updated: 2025-11-28 02:15:00+00:00
+title: Restore Missing Shared Mailbox Access and Calendar Sync in Microsoft 365
+problem_category: general
+complexity: medium
+system_context: Microsoft 365
+severity: high
+status: published
+approval_level: manager
+author:
+  name: Ava Reynolds
+  email: ava.reynolds@example-support.local
+approver:
+  name: Marcus Hale
+  email: marcus.hale@example-support.local
+  approved_at: 2025-11-28 03:00:00+00:00
+problem_description: 'Users report that a previously accessible shared mailbox and
+  its calendar have disappeared from Outlook (desktop and web) and mobile clients.
+  The problem can be caused by revoked permissions, directory synchronization anomalies,
+  license changes, or mailbox provisioning errors after tenant changes. This SOP covers
+  validation steps in the admin portals, use of a read-only diagnostic PowerShell
+  module, restoring permissions, forcing Outlook/OWA rebind, and verifying calendar
+  sync across clients.
+
+  '
+symptoms:
+- Shared mailbox no longer appears in Outlook desktop under 'Folders' or 'Shared Mailboxes'.
+- Shared calendar events are missing for some or all users; calendar view shows empty
+  or default.
+- OWA does not list the shared mailbox in the left pane for affected users.
+- Mobile clients show inconsistent calendar events or fail to open the shared mailbox.
+- Affected users receive a 403/Access Denied error when trying to open the mailbox
+  via OWA.
+prerequisites:
+- Tenant admin or delegated admin role with permission to manage Exchange Online and
+  Azure AD groups.
+- Affected user's username (UPN) and the shared mailbox SMTP address.
+- Change window outside peak hours when possible.
+required_tools:
+- Access to Microsoft 365 admin center and Exchange admin center (EAC) via browser.
+- Support workstation with the MS365AdminX diagnostic PowerShell module installed
+  (fictional module used for SOP).
+- Company-approved remote support tool for reproducing the issue on the user's client
+  (if needed).
+- Valid incident ticket in the ITSM system with user consent logged.
+estimated_resolution_time: 15-45 minutes
+resolution_steps:
+- step_number: 1
+  action: Validate the scope and reproduce the issue.
+  details: 'Confirm which users are impacted and whether the problem is client-specific
+    (Outlook desktop, OWA, mobile). Ask the primary user to attempt to access the
+    shared mailbox via OWA in an incognito/private browser session to rule out client
+    cache issues.
+
+    '
+  warnings: Do not make permission changes before confirming scope; note all users
+    for potential bulk remediation.
+- step_number: 2
+  action: Confirm mailbox existence and provisioning in the admin console.
+  details: 'Sign in to the Microsoft 365 admin center -> Exchange admin center ->
+    Shared mailboxes. Verify the shared mailbox object exists, is not soft-deleted,
+    and shows a valid SMTP address and ''Provisioned'' status in the EAC object summary.
+
+    '
+  warnings: If mailbox is soft-deleted, stop and follow the recovery sub-procedure
+    in escalation step if you are not authorized to restore deleted mailboxes.
+- step_number: 3
+  action: Check Azure AD group membership and mailbox access control.
+  details: 'Open Azure AD -> Groups. If mailbox access is managed via an Azure AD
+    security group (recommended pattern), confirm the group includes the affected
+    users and that the group is not in a ''Pending'' or ''Sync error'' state.
+
+    '
+  warnings: Do not remove or re-add users into groups until you have recorded the
+    current membership for audit.
+- step_number: 4
+  action: Run read-only diagnostic checks from support workstation.
+  details: 'On the support workstation, open PowerShell and run the MS365AdminX diagnostic
+    module to gather state. Example fictional commands: - Connect-MS365AdminX -TenantAlias
+    contoso -Mode ReadOnly - Get-SharedMailboxInfoX -Identity sharedmailbox@contoso.local
+    - Get-SharedMailboxAccessX -Identity sharedmailbox@contoso.local Collect the outputs
+    into the incident ticket.
+
+    '
+  warnings: MS365AdminX is a diagnostic-only module in this SOP. Do not run hypothetical
+    fix cmdlets unless step 6 authorizes modification.
+- step_number: 5
+  action: Verify direct mailbox permissions in Exchange.
+  details: 'In EAC, open the shared mailbox > Mailbox Delegation. Check ''Full Access''
+    and ''Send As'' lists to ensure the affected users are present. If they are missing
+    but group membership is correct, continue to step 6 to reapply delegated permissions
+    via group rebind.
+
+    '
+- step_number: 6
+  action: Reapply or rebind permissions (non-destructive).
+  details: 'If permissions are missing or inconsistent, rebind them using the following
+    controlled approach: - If permissions were assigned directly to users: add the
+    affected user back to ''Full Access'' with a comment in the audit. - If permissions
+    were assigned via an Azure AD group: remove the group from Mailbox Delegation,
+    wait 60 seconds, then re-add the group to force a policy rebind. - Use the MS365AdminX
+    module only to schedule a non-destructive permission rebind: Schedule-MailboxRebindX
+    -Identity sharedmailbox@contoso.local -Mode Gentle
+
+    '
+  warnings: Rebinding permissions can briefly affect existing access. Notify users
+    if a small outage is expected.
+- step_number: 7
+  action: Force client re-index and profile rebind on Outlook desktop and OWA.
+  details: 'Ask affected users to: - Close Outlook. - Clear local cache for the account
+    (Outlook: remove and re-add the mailbox as a shared mailbox in profile or switch
+    to Auto-Mapped behavior per company policy). - For Outlook Web Access, have the
+    user sign out, clear cookies for the tenant domain, and sign back in. Optionally,
+    use remote support to perform the steps if the user cannot.
+
+    '
+  warnings: Do not delete the entire Outlook profile unless necessary; prefer removing
+    only the shared mailbox entry.
+- step_number: 8
+  action: Verify mobile client behavior.
+  details: 'If the user uses native mobile apps, ensure the mobile account sync settings
+    include shared calendars and that the app is updated to the latest approved version.
+    If necessary, remove the tenant account from the mobile mail app and re-add it.
+
+    '
+  warnings: Inform users that re-adding the account may take time to resync calendars
+    depending on data volume.
+- step_number: 9
+  action: Check licensing and mailbox type.
+  details: 'Confirm the shared mailbox has not been inadvertently converted to a user
+    mailbox or had its license changed to a type that disables shared mailbox behavior.
+    If converted, follow company policy to restore shared mailbox type (record change
+    and approval).
+
+    '
+  warnings: Any conversion carries risk of data movement; follow change control and
+    backup procedures.
+- step_number: 10
+  action: Verify replication and background services.
+  details: 'Use the diagnostic module to check background sync states: - Get-MailboxReplicationStatusX
+    -Identity sharedmailbox@contoso.local If replication or indexing shows queued
+    or failed jobs, note timestamps and escalate if persistent for >30 minutes.
+
+    '
+  warnings: Avoid initiating forced replication repair unless instructed by escalation
+    path.
+- step_number: 11
+  action: Communicate resolution and document changes.
+  details: 'Update the incident ticket with actions taken, before/after diagnostic
+    outputs, and notify affected users with a short summary and any user actions required
+    (e.g., re-open Outlook).
+
+    '
+- step_number: 12
+  action: Close the ticket after verification and monitoring window.
+  details: 'Keep ticket in Monitoring state for 1 hour to confirm stability across
+    multiple clients and time zones before full closure.
+
+    '
+verification_steps:
+- User confirms shared mailbox appears in Outlook desktop and OWA and can open folders
+  without 403 errors.
+- Affected users can view and create events in the shared calendar; new events propagate
+  to other users within 10 minutes.
+- 'PowerShell diagnostic outputs show ''AccessState: Healthy'' and no pending replication
+  jobs for the shared mailbox.'
+- No re-occurrence reported in monitoring window (1 hour).
+troubleshooting:
+- issue: Permissions re-added but mailbox still inaccessible for some users.
+  solution: Confirm user's primary SMTP/UPN hasn't changed; if it has, re-add using
+    the current UPN. Clear local Outlook cached credentials. If issue persists, obtain
+    Fiddler/Network logs with user consent to check authentication token errors.
+- issue: Shared calendar events missing for a subset of users.
+  solution: Check calendar folder permissions explicitly and confirm delegated calendar
+    view settings. Ensure clients are not filtering by category/date. Ask affected
+    users to perform a manual calendar sync or re-subscribe to the shared calendar
+    view.
+- issue: Rebind produced transient 'Access Denied' for all members.
+  solution: Rollback by re-adding original settings if recorded. Open an incident
+    with the platform team and provide pre/post snapshots from diagnostic module for
+    rollback guidance.
+- issue: Soft-deleted mailbox discovered.
+  solution: Do NOT restore without approval. Escalate per escalation path for mailbox
+    recovery following retention and legal hold checks.
+escalation:
+  condition: Issue not resolved after completion of resolution steps or replication/indexing
+    shows persistent failures >30 minutes, or mailbox is soft-deleted.
+  contact: Platform Engineering - Exchange Team (on-call)
+  escalation_path: '1) Open a P1 incident and include diagnostic outputs, affected
+    user list, timestamps, and any governance approvals. 2) Notify Platform Engineering
+    via the on-call rotation and attach the incident ticket. 3) If Platform Engineering
+    cannot resolve within 60 minutes, escalate to Azure AD directory team and provide
+    logs for cross-team triage.
+
+    '
+related_documentation:
+- title: Shared Mailbox Access Troubleshooting Guide (internal)
+  url: https://kb.contoso-support.local/docs/shared-mailbox-troubleshoot
+- title: Azure AD Group Rebind Procedure (internal)
+  url: https://kb.contoso-support.local/procedures/azuread-group-rebind
+- title: MS365AdminX Diagnostic Module Reference (internal)
+  url: https://kb.contoso-support.local/tools/ms365adminx
+- title: 'Change Control: Convert/Restore Shared Mailbox'
+  url: https://kb.contoso-support.local/policy/mailbox-conversion-change
+tags:
+- shared-mailbox
+- exchange-online
+- calendar
+- permissions
+- microsoft-365
+version_history:
+- version: '1.0'
+  date: 2024-12-01 09:00:00+00:00
+  author: Ava Reynolds
+  changes: Initial draft covering basic permission restoration and client rebind steps.
+- version: '1.2'
+  date: 2025-06-15 14:30:00+00:00
+  author: Ava Reynolds
+  changes: Added Azure AD group rebind instructions and mobile client guidance.
+- version: '1.3'
+  date: 2025-09-10 10:00:00+00:00
+  author: Liam Ortega
+  changes: Expanded verification steps and added monitoring window guidance.
+- version: '1.4'
+  date: 2025-11-28 02:15:00+00:00
+  author: Ava Reynolds
+  changes: Minor edits for escalation path clarity, added MS365AdminX diagnostic module
+    usage and new troubleshooting scenarios.

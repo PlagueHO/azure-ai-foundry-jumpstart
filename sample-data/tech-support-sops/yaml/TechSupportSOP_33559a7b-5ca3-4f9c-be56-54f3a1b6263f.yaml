@@ -1,0 +1,244 @@
+sop_id: 33559a7b-5ca3-4f9c-be56-54f3a1b6263f
+version: 1.4
+created_at: '2025-11-28T02:24:55.375419+00:00'
+last_updated: '2025-11-28T02:48:00+00:00'
+title: Azure AD intermittent authentication failures for federated and hybrid users
+problem_category: authentication
+complexity: medium
+system_context: Azure Active Directory
+severity: medium
+status: published
+approval_level: manager
+author:
+  name: Jordan Reyes
+  email: jordan.reyes@example.com
+approver:
+  name: Priya Malhotra
+  email: priya.malhotra@example.com
+  approved_at: '2025-11-28T02:45:12+00:00'
+problem_description: 'Multiple users report intermittent sign-in failures to cloud
+  and federated applications.
+
+  Symptoms occur for both hosted (Azure AD managed) and hybrid (federated via AD FS
+  or Ping-like systems)
+
+  accounts. Failures appear as 401/invalid_grant in application logs or "We couldn''t
+  sign you in" in the portal,
+
+  often with a short window of normal activity. Investigation indicates a pattern
+  consistent with:
+
+  - Conditional Access policy evaluation anomalies
+
+  - Token issuance/refresh failures for OAuth2/OIDC flows
+
+  - Azure AD Connect sync delays for recently-changed credentials for hybrid users
+
+  This SOP guides frontline tech support through triage, remediation, and verification
+  steps
+
+  specifically for Azure Active Directory in enterprise environments.
+
+  '
+symptoms:
+- Users intermittently receive "We couldn't sign you in" or "Invalid username or password"
+  for cloud apps
+- MFA prompts loop or fail during OAuth/OIDC sign-in flows
+- Sign-in logs show "AADSTS700082: The refresh token has expired" or "AADSTS50076"
+    entries
+- Correlation IDs in client apps that map to Azure AD sign-in log entries with PolicyEvaluationErrors
+- Application logs returning 401 with no clear user credential failure
+prerequisites:
+- You are a member of the Azure AD Global Administrator, or have delegated Identity
+  Admin role to perform diagnostics
+- Access to the Azure Portal and Azure AD sign-in logs
+- Access to the Azure AD Connect server (if hybrid) or access to the federation provider
+  admin console
+- Change window scheduled for any changes that affect multiple users
+required_tools:
+- Azure Portal (portal.azure.com) with appropriate admin rights
+- Azure AD PowerShell (AzureAD or Microsoft.Graph modules) installed locally
+- Access to organization's SIEM or Log Analytics workspace where sign-in logs are
+  forwarded
+- Administrative access to Azure AD Connect server or federation appliance
+- Ticketing system access to document findings (e.g., ServiceNow)
+estimated_resolution_time: 15-90 minutes (depending on root cause and hybrid/federation
+  complexity)
+resolution_steps:
+- step_number: 1
+  action: Gather incident metadata
+  details: '- Record affected usernames, timestamps (UTC), application IDs, and any
+    displayed error messages.
+
+    - Note the client IPs and device types if available. Collect the correlation ID
+    from the client application message if present.
+
+    '
+  warnings: Do not request user passwords. Work with user to reproduce with logging
+    enabled.
+- step_number: 2
+  action: Query Azure AD Sign-in logs
+  details: '- In Azure Portal -> Azure Active Directory -> Sign-ins, filter by timestamp
+    and affected user(s).
+
+    - Look for matching correlation IDs and review Conditional Access result, MFA
+    details, and authentication methods.
+
+    - Export matching events for attachment to ticket.
+
+    '
+  warnings: Sign-in logs can take a few minutes to populate; if logs missing, wait
+    10 minutes and retry.
+- step_number: 3
+  action: Identify common failure type
+  details: '- If logs show "ConditionalAccessFailed" or "required claim not present",
+    proceed to Conditional Access review (step 4).
+
+    - If logs show token-related errors (AADSTS700082, AADSTS50126), proceed to token
+    and credential checks (step 5).
+
+    - If logs indicate "Invalid federated username" or "Passive auth error" for federated
+    accounts, proceed to federation checks (step 6).
+
+    '
+  warnings: ''
+- step_number: 4
+  action: Review Conditional Access policies
+  details: '- In Azure AD -> Security -> Conditional Access, identify policies applied
+    to affected users/apps.
+
+    - Check policy evaluation result in sign-in event (Grant controls, Session controls).
+
+    - Temporarily set impacted policy to report-only (if change approved) or create
+    a scoped exception for a single test user.
+
+    - Re-run test sign-in for a scoped user to confirm policy as root cause.
+
+    '
+  warnings: Changing CA policies affects security posture. Obtain manager approval
+    before permanent changes; use report-only when possible.
+- step_number: 5
+  action: Token and credential validation
+  details: "- For managed accounts, verify password/hash sync status on Azure AD Connect\
+    \ server:\n  - Run: Start-ADSyncSyncCycle -PolicyType Delta (PowerShell on Azure\
+    \ AD Connect host).\n  - Check Azure AD Connect Health > Synchronization Service\
+    \ Manager for recent errors.\n- For OAuth/OIDC apps, check application token lifetime\
+    \ settings and refresh token usage.\n- If refresh tokens expired (AADSTS700082),\
+    \ advise user to perform a full sign-out and browser cache clear, then sign-in\
+    \ again.\n"
+  warnings: Do not perform password resets unless ownership validated and documented.
+- step_number: 6
+  action: Federation and AD FS checks (for federated tenants)
+  details: "- On the federation service, verify the token-signing certificate validity\
+    \ and chain. Confirm no thumbprint mismatch in Azure AD:\n  - In Azure Portal\
+    \ -> Azure AD -> Custom domain -> Federated domain settings, compare certificate\
+    \ thumbprints.\n- Check AD FS / IdP service health and event logs for 401/500\
+    \ errors at the timestamps collected.\n- If certificate is expired or mismatched,\
+    \ follow federation owner runbook to renew and publish new token-signing certificate\
+    \ (do not rotate without maintenance window).\n"
+  warnings: Certificate rotation should be performed during a planned maintenance
+    window; improper rotation can cause mass outage.
+- step_number: 7
+  action: MFA and authentication methods validation
+  details: '- In Azure AD -> Authentication methods, confirm affected users have valid
+    MFA methods and not flagged as unable to verify.
+
+    - In sign-in log, check MFA requirement result; if MFA is failing for many users,
+    consider temporarily excluding a test user from MFA policy.
+
+    - For hardware token or FIDO2 flows, verify device registration status.
+
+    '
+  warnings: Temporary MFA policy exclusions reduce security; document and revert changes
+    immediately after testing.
+- step_number: 8
+  action: Perform a controlled remediation test
+  details: '- For a single test user, apply the minimal remediation (e.g., clear browser,
+    re-register MFA, force sync) and have user reproduce failure.
+
+    - If resolved, expand remediation to affected cohort in small batches and monitor.
+
+    '
+  warnings: Never apply bulk resets (password or MFA) without change control approval.
+- step_number: 9
+  action: Apply remediations and monitor
+  details: '- Apply validated fix (policy change, certificate update, sync fix) during
+    change window as needed.
+
+    - Monitor sign-in logs and user reports for 60-90 minutes after change.
+
+    '
+  warnings: If behavior worsens, immediately roll back change using documented rollback
+    plan.
+verification_steps:
+- step: Confirm users can sign in to previously-failing applications without error
+    (use 3-5 representative users)
+- step: Verify sign-in logs show "Success" with expected Conditional Access evaluation
+    and no token errors for affected users
+- step: Check MFA prompts complete and do not loop; validate refresh token issuance
+    in application logs (if available)
+- step: For hybrid accounts, confirm Azure AD Connect sync jobs show no errors for
+    2 consecutive cycles
+- step: Document actions and communicate status back to affected users and ticket
+troubleshooting:
+- issue: Delayed sign-in logs (events not visible in portal)
+  solution: Wait 10 minutes and refresh; if still missing, check Diagnostic settings
+    to ensure sign-in logs are streaming to Log Analytics or storage account. Verify
+    log ingestion pipelines and permissions.
+- issue: Token errors persist after MFA re-registration
+  solution: Confirm device clock skew is within acceptable range (<5 minutes) for
+    client devices; advise user to sync device time or try on a corporate-managed
+    device.
+- issue: Federation certificate appears valid but thumbprints mismatch
+  solution: Re-run metadata fetch from IdP to Azure AD and validate federation metadata
+    URL configuration. If mismatch persists, contact federation owner to re-export
+    correct certificate and update Azure AD trust.
+- issue: Azure AD Connect reports "stopped" or "unable to sync"
+  solution: Restart the Microsoft Azure AD Sync service on the Connect server, check
+    event logs for connectivity/auth errors, and validate service account password
+    expiry.
+escalation:
+  condition: Unable to identify root cause after steps 1-9, or remediation attempts
+    cause degradation affecting >10% of users or critical business apps
+  contact: Identity Engineering Manager and Platform Owner
+  escalation_path: '1. Open a high-priority ticket in ServiceNow with collected logs,
+    correlation IDs, sign-in log exports, and steps attempted.
+
+    2. Page Identity Engineering Manager (pager / on-call) and provide ticket link.
+
+    3. If Identity Engineering cannot resolve within 60 minutes and outage impacts
+    production, escalate to Microsoft Premier Support with the same packet and request
+    a support case (include tenant ID and correlation IDs).
+
+    '
+related_documentation:
+- title: Azure AD sign-in diagnostics runbook (internal)
+  url: https://kb.corp-example.com/azuread/runbooks/signin-diagnostics
+- title: Conditional Access policy change control guidance (internal)
+  url: https://kb.corp-example.com/security/conditional-access-change-control
+- title: Federation certificate rotation checklist (internal)
+  url: https://kb.corp-example.com/identity/federation/cert-rotation
+- title: Microsoft Graph API sign-in log reference (external-style)
+  url: https://docs.corp-example.com/msgraph/signins
+tags:
+- azure-ad
+- authentication
+- conditional-access
+- federation
+- azure-ad-connect
+version_history:
+- version: '1.0'
+  date: '2025-07-10T09:15:00+00:00'
+  author: Jordan Reyes
+  changes: Initial SOP created for intermittent Azure AD authentication failures focused
+    on token and conditional access causes.
+- version: '1.1'
+  date: '2025-09-02T13:40:00+00:00'
+  author: Jordan Reyes
+  changes: Added federation certificate troubleshooting and Azure AD Connect sync
+    verification steps.
+- version: '1.4'
+  date: '2025-11-28T02:24:55.375419+00:00'
+  author: Jordan Reyes
+  changes: Updated verification steps, expanded escalation path to include Microsoft
+    support packet requirements, editorial updates for clarity.

@@ -1,0 +1,168 @@
+SOP ID: bda6d630-c631-42f0-a49b-336a80638b9f
+Version: 1.0
+Created At: 2025-11-28T02:55:31.678017+00:00
+Last Updated: 2025-11-28T03:10:00+00:00
+Title: Investigate and Restore Missing or Delayed Azure Monitor Logs and Metrics
+Problem Category: cloud
+Complexity: medium
+System Context: Azure Monitor
+Severity: low
+Status: draft
+Approval Level: manager
+Author: Jordan Reyes <jordan.reyes@example.com>
+Approver: Maya Patel <maya.patel@example.com>
+
+PROBLEM DESCRIPTION:
+Azure Monitor is not ingesting or displaying expected metrics/logs for one or more Azure resources (VMs, App Services, storage accounts, AKS nodes, etc.). The issue can present as missing recent log entries in Log Analytics, delayed metrics in Metrics Explorer, or resource insights showing stale "Last Heartbeat" times. This SOP walks through investigative checks and corrective actions to restore ingestion for common causes (misconfigured diagnostic settings, agent/DCR issues, network restrictions, workspace limits, or permission problems).
+
+SYMPTOMS:
+- No recent entries for a resource in Log Analytics (LogSearch returns no rows for recent timeframe).
+- Metrics Explorer shows no new datapoints or delayed datapoints.
+- VM/VMSS "Last Heartbeat" older than expected in VM Insights.
+- Diagnostic settings appear present but target workspace shows no ingestion.
+- Alerts based on recent activity do not trigger.
+
+PREREQUISITES:
+- You have Monitoring Contributor or Owner permissions on the affected subscription/resource and Reader access to the Log Analytics workspace.
+- You have access to the Azure subscription in the Azure Portal and Azure CLI (az) / PowerShell.
+- Affected resource names, resource IDs, and the target Log Analytics workspace ID/name are known.
+
+REQUIRED TOOLS:
+- Azure Portal access
+- Azure CLI (az) v2.50+ or Azure PowerShell modules
+- SSH or RDP to the affected VM or a jump host for connectivity tests (if network checks required)
+- Kusto Query (Log Analytics) access for verification queries
+- Internal incident tracker (e.g., service desk ticket number for escalation reference)
+
+ESTIMATED RESOLUTION TIME: 20–60 minutes (depends on reconfiguration and ingestion propagation delays)
+
+RESOLUTION STEPS:
+1. Action: Confirm scope and recent symptoms
+   Details:
+   - Record the resource(s) impacted (resource ID, resource group).
+   - Note the last timestamp when logs/metrics were seen.
+   - Determine whether the issue is isolated or widespread (single resource, resource group, subscription, or entire workspace).
+   Warnings:
+   - Do not make global workspace changes until isolating scope.
+
+2. Action: Check Azure Monitor service status and Incidents
+   Details:
+   - In Azure Portal, navigate to Service Health -> History and check for any active platform incidents affecting Azure Monitor or the region.
+   - Verify there are no active degraded-service advisories.
+   Warnings:
+   - If there is an active Azure service incident, follow the outage playbook and do not modify ingestion configurations.
+
+3. Action: Validate Diagnostic Settings and DCR assignment
+   Details:
+   - For classic diagnostic settings:
+     - CLI: az monitor diagnostic-settings list --resource "<resource-id>" --out table
+     - Confirm presence of a diagnostic setting sending logs/metrics to the expected Log Analytics workspace, Event Hub, or Storage.
+   - For resources using Data Collection Rules (DCR) / Azure Monitor Agent:
+     - CLI: az monitor data-collection rule list --resource-group "<rg>" --out table
+     - CLI: az monitor data-collection rule association list --resource "<resource-id>"
+   - If diagnostic settings are missing or target incorrect workspace, re-create or update them (see step 6).
+   Warnings:
+   - Changing diagnostic settings will start/stop data flow—notify stakeholders if expected.
+
+4. Action: Check Log Analytics workspace ingestion and limits
+   Details:
+   - In Portal: Log Analytics Workspace -> Usage and estimated costs -> check daily ingestion value and any exceeded quotas.
+   - CLI: az monitor log-analytics workspace show --workspace-name "<name>" --resource-group "<rg>"
+   - Confirm retention period and that workspace is not soft-deleted, locked, or in a different subscription/account that won’t accept data.
+   Warnings:
+   - Do not purge workspace unless authorized.
+
+5. Action: Verify agent/extension and connectivity on hosts (for VM/VMSS)
+   Details:
+   - Check VM extension status:
+     - az vm extension list --resource-group "<rg>" --vm-name "<vmname>" --out table
+     - Look for AzureMonitorAgent or LogAnalytics extensions and their ProvisioningState (Succeeded vs Failed).
+   - For AMA/Log Analytics agent connection:
+     - On Windows: use Test-NetConnection to the workspace ingestion endpoint (refer to workspace ingestion endpoint from workspace properties).
+       Example: Test-NetConnection -ComputerName <workspace-ingestion-endpoint> -Port 443
+     - On Linux: curl -v https://<workspace-ingestion-endpoint>/health or use tcping to port 443.
+   - Check agent logs on the host:
+     - Linux: /var/opt/microsoft/azuremonitoragent/log/*.log or /var/opt/microsoft/omsagent/*
+     - Windows: C:\ProgramData\AzureMonitorAgent\Logs\ or C:\ProgramData\Microsoft\Azure\Diagnostics\Logs\
+   Warnings:
+   - If diagnostics require elevated access, coordinate with owner. Avoid uninstalling agents unless instructed.
+
+6. Action: Re-apply or create diagnostic setting to the correct workspace
+   Details:
+   - Example CLI to create/update diagnostic setting:
+     - az monitor diagnostic-settings create --resource "<resource-id>" --workspace "<workspace-id>" --name "diag-auto-repair" --logs '[{"category":"Administrative","enabled":true},{"category":"AuditEvent","enabled":true}]' --metrics '[{"category":"AllMetrics","enabled":true}]'
+   - For DCR/AMA:
+     - Ensure the DCR exists and is associated: az monitor data-collection rule set --name "<dcr-name>" --resource-group "<rg>" --data-collection-rule "@dcr.json"
+     - Associate DCR: az monitor data-collection rule association create --resource "<resource-id>" --rule-name "<dcr-name>"
+   Warnings:
+   - Use the correct workspace ID; sending to the wrong workspace is a common mistake.
+
+7. Action: Validate RBAC and policy
+   Details:
+   - Ensure the service principal/managed identity used by the agent has appropriate permissions on the workspace (Log Analytics Contributor or equivalent).
+   - CLI to check effective permissions: az role assignment list --assignee "<principal-id>" --scope "/subscriptions/<sub>/resourcegroups/<rg>/providers/Microsoft.OperationalInsights/workspaces/<workspace>"
+   - Check Azure Policy for any policies that deny creation of diagnostic settings or DCRs: az policy assignment list --query "[?contains(displayName,'Diagnostic')||contains(displayName,'Monitoring')]" --out table
+   Warnings:
+   - Avoid granting broad permissions; follow least-privilege.
+
+8. Action: Restart agent/extension if applicable
+   Details:
+   - If extension shows a transient failure and agent logs indicate transient errors, restart agent service:
+     - Windows: Restart-Service -Name AzureMonitorWindowsAgent (confirm actual service name in logs) or restart extension from Portal.
+     - Linux: sudo systemctl restart azuremonitoragent or sudo systemctl restart omsagent (match installed agent).
+   Warnings:
+   - Restarting agents may cause a short collection gap; perform during low-impact windows for production.
+
+9. Action: Apply transient fixes and wait for ingestion
+   Details:
+   - After configuration changes, allow 5–20 minutes for the pipeline to propagate (ingestion latency depends on service).
+   - Monitor workspace ingestion and logs for the resource.
+   Warnings:
+   - Report delays > 30 minutes to escalation.
+
+VERIFICATION STEPS:
+- Run a Kusto query against the workspace for the resource over the last 15 minutes:
+  - Example: AzureDiagnostics | where ResourceId == "/subscriptions/<sub>/resourceGroups/<rg>/providers/<resource-provider>/<resource-name>" | where TimeGenerated >= ago(15m) | limit 50
+- Check Metrics Explorer for the resource and confirm new datapoints within the last 10 minutes.
+- Confirm VM/VMSS "Last Heartbeat" shows a recent timestamp (Portal -> VM -> Insights).
+- Verify diagnostic setting shows as configured and last updated time reflects your change (Portal or az monitor diagnostic-settings list).
+- Check workspace ingestion metrics (Portal -> Log Analytics -> Usage) to see incremental ingestion.
+
+TROUBLESHOOTING:
+Issue: Diagnostic settings exist but logs not arriving.
+Solution: Confirm workspace ID exactly matches configured workspace and that the forwarding destination (Event Hub / Storage) is healthy. Recreate diagnostic setting using CLI and validate association with DCR if AMA is in use.
+
+Issue: Agent extension repeatedly fails to provision.
+Solution: Inspect extension error details via az vm extension show and agent logs. If extension shows a corrupt state, remove and reinstall extension. Ensure VM has outbound connectivity to workspace ingestion endpoints (443) and that proxy settings are correct.
+
+Issue: Ingestion throttling or workspace quota exceeded.
+Solution: Review workspace usage and adjust retention or ingestion limits, implement ingestion sampling rules, or create a new workspace. If aggressive ingestion spikes are expected, contact capacity planning to scale.
+
+Issue: Private Endpoint/Private Link prevents ingestion.
+Solution: Verify private DNS resolution and firewall/NVA rules allow traffic to workspace ingestion endpoint. If using Private Link for workspace, ensure DCR/agents are configured to use the private endpoint IPs.
+
+Issue: Permissions preventing diagnostic setting creation.
+Solution: Confirm you have Microsoft.Insights/diagnosticSettings/* permissions on the resource. If not, request Monitoring Contributor role on the resource or workspace.
+
+ESCALATION:
+Condition: The issue persists after completing all resolution steps and verification steps, or multiple critical resources across subscriptions are affected, or platform service incident is suspected.
+Contact: Cloud Monitoring Team (monitoring-team@example.com) and Pager: +1-555-0102 (internal pager)
+Escalation Path:
+- Tier 1 on-call (Monitoring Team) —> allow 60 minutes for response
+- If unresolved after 60 minutes or multiple resources impacted —> Team Lead (maya.patel@example.com)
+- If unresolved after 2 hours or suspected platform outage —> Cloud Operations Manager and open Azure Support ticket (Severity based on business impact)
+
+RELATED DOCUMENTATION:
+- Title: Internal KB — Azure Monitor Diagnostic Settings Troubleshooting
+  URL: https://kb.internal.example.com/azure-monitor/diagnostic-settings-troubleshoot
+- Title: Internal Guide — Data Collection Rules and Azure Monitor Agent (AMA)
+  URL: https://docs.internal.example.com/azure/monitor/dcr-ama
+- Title: Workspace Connectivity Checklist for Private Link Scenarios
+  URL: https://kb.internal.example.com/azure-monitor/private-link-connectivity
+- Title: Example Kusto Queries for Validating Ingestion
+  URL: https://kb.internal.example.com/azure-monitor/kusto-queries
+
+TAGS: azure, azure-monitor, logs, diagnostic-settings, monitoring
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2025-11-28T03:10:00+00:00 | Author: Jordan Reyes | Changes: Initial draft — baseline SOP for investigating and restoring missing/delayed Azure Monitor logs and metrics.

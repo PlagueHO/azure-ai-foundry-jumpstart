@@ -1,0 +1,147 @@
+SOP ID: 67cac2b1-96c1-4aa4-86e4-bb169f0a6c2e
+Version: 1.0
+Created At: 2025-11-28T02:55:31.676012+00:00
+Last Updated: 2025-11-28T02:55:31.676012+00:00
+Title: Troubleshoot missing or delayed metrics in Azure Monitor (Metric Explorer / Metric Series)
+Problem Category: cloud
+Complexity: medium
+System Context: Azure Monitor
+Severity: low
+Status: published
+Approval Level: team_lead
+Author: Maya R. Chen <maya.chen@cloudops.examplecorp.local>
+Approver: Jordan Lee <jordan.lee@cloudops.examplecorp.local>
+Approved At: 2025-11-28T03:30:00+00:00
+
+PROBLEM DESCRIPTION:
+Intermittent or persistent absence of metric data in Azure Monitor Metric Explorer or missing metric series for specific Azure resources (for example, App Services, Virtual Machines, Storage Accounts, or custom metric namespaces). Symptoms include zero datapoints in Metric Explorer for recent intervals, metric charts that do not update, alerts not firing due to missing metrics, or metrics visible in one region/portal view but not another. This SOP guides front-line Cloud Support to validate, diagnose, and restore metric visibility using Portal checks, CLI/API verification, agents and diagnostic settings, and common Azure misconfigurations.
+
+SYMPTOMS:
+- Metric Explorer shows "No data" for expected time range.
+- Metric series list missing expected metrics/namespace (e.g., "Requests", "CPU Percentage", "CustomMetricName").
+- Alerts based on metrics are unresolved and show "Insufficient data".
+- Metrics appear in Log Analytics tables (if diagnostic settings configured) but not in Metric Explorer.
+- Metric ingestion delay exceeding expected latency (>15 minutes for standard metrics).
+
+PREREQUISITES:
+- Dispatcher ticket or incident record in tracking system with incident ID.
+- Knowledge of the affected subscription ID, resource ID(s), resource type, time range when issue began.
+- Access to the affected Azure tenant and subscription with at least Monitoring Reader + Contributor roles for diagnostic changes.
+- Confirmation that the issue is non-production-impacting (severity low) before making non-disruptive changes.
+
+REQUIRED TOOLS:
+- Azure Portal access (https://portal.azure.examplecorp.local or company gateway to Azure Portal).
+- Azure CLI v2.40+ installed and authenticated (az login) on a trusted workstation.
+- Ability to run REST API calls (curl or Postman) against Azure Monitor endpoints.
+- Access to company knowledge base and support runbooks.
+- Internal chat (Slack/MS Teams) for rapid coordination.
+
+ESTIMATED RESOLUTION TIME: 15-45 minutes (typical); up to 2 hours if agent redeploy or Microsoft Support engagement required.
+
+RESOLUTION STEPS:
+1. Action: Confirm scope and collect basic telemetry
+   Details: Record subscription ID, resource ID, resource type, time window when metrics went missing, and any recent changes (deployments, updates, configuration changes). Note whether multiple resources or single resource affected.
+   Warnings: Do not change resource tags or delete diagnostic settings during data collection.
+
+2. Action: Check Metric Explorer and time range
+   Details: In Azure Portal > Monitor > Metrics, select the exact resource and metric namespace. Verify time range and granularity (e.g., last 1 hour, 1-minute granularity) and aggregation (Average/Total). Expand "Metric Namespace" dropdown to ensure correct namespace selected.
+   Warnings: Portal filters (subscription directory or resource group scope) can hide resources; confirm correct directory and subscription are selected.
+
+3. Action: Validate metrics via Azure CLI
+   Details: Run:
+      az monitor metrics list --resource /subscriptions/{subId}/resourceGroups/{rg}/providers/{provider}/{resourceName} --metric "Percentage CPU" --interval PT5M --top 1
+   Inspect the returned JSON timestamps and values. Also run az monitor metrics list-definitions to confirm available metric names and namespaces:
+      az monitor metrics list-definitions --resource /subscriptions/{subId}/...
+   Warnings: Replace placeholders with the correct resource ID; long queries without --interval default to larger windows.
+
+4. Action: Confirm resource provider registration
+   Details: Some metric namespaces require Microsoft.Insights and resource-specific providers (e.g., Microsoft.Web, Microsoft.Compute) to be registered. Use:
+      az provider show --namespace Microsoft.Insights --query "registrationState"
+      az provider show --namespace Microsoft.Web --query "registrationState"
+   Ensure they report "Registered".
+   Warnings: Do not attempt to unregister providers. Registering a provider may take several minutes.
+
+5. Action: Verify monitoring agents and extensions
+   Details: For resources requiring agents (e.g., VMs using Azure Monitor Agent (AMA) for custom metrics), verify extension/agent health. For VMs:
+      az vmss extension list --resource-group {rg} --vmss-name {name}
+   Or check VM > Extensions in Portal. Confirm AMA or Log Analytics agent is running and connected.
+   Warnings: Do not uninstall agents unless instructed by a senior engineer.
+
+6. Action: Check Diagnostic Settings and Metric Export targets
+   Details: In resource > Diagnostic settings, confirm there is a diagnostic setting sending metrics to the expected destination (Log Analytics, Storage, Event Hub) or that platform metrics are enabled. If metrics are being routed away from Metrics (rare), confirm a duplicate route isn't causing lookup confusion.
+   Warnings: Enabling diagnostic settings with high retention or to Event Hub may incur costs; follow cost approval for storage retention changes.
+
+7. Action: Query the Metrics REST API for raw series
+   Details: Use OAuth2 Bearer token and call:
+      GET https://management.azure.com/{resourceId}/providers/microsoft.insights/metrics?timespan={start}/{end}&metricnames={metricName}&interval=PT5M&api-version=2018-01-01
+   Compare series timestamps to CLI/Portal results for discrepancies.
+   Warnings: Ensure API version matches expected capabilities for custom metrics.
+
+8. Action: Check for metric namespace or dimension changes
+   Details: Confirm whether the metric was renamed, or dimensions changed. Query list-definitions and inspect "dimensions" and "unit" fields. Coordinate with app owners about deployments that may have changed emitted metric names.
+   Warnings: Metric renames are not backwards compatible; alert rule updates may be required.
+
+9. Action: Reproduce with a synthetic test (non-destructive)
+   Details: If feasible, trigger a low-impact synthetic event to produce a metric datapoint (e.g., a single HTTP request to test endpoint for App Service or a small load on test VM). Observe if the metric appears within expected latency.
+   Warnings: Only perform synthetic tests on non-production endpoints or during approved maintenance windows.
+
+10. Action: If metrics available in Log Analytics but not in Metric Explorer
+    Details: Verify if metrics are logged as custom logs rather than native metrics. Use Log Analytics query to confirm presence:
+       // Example KQL
+       AzureDiagnostics
+       | where ResourceId == "/subscriptions/{subId}/resourceGroups/{rg}/providers/{provider}/{resourceName}"
+       | where Category == "Metrics"
+    If metrics are present in logs but not metric store, open a ticket with Microsoft Support including sample JSON payloads, times, and the metric REST API responses.
+    Warnings: Moving logs to metrics or creating metric alerts from logs requires Alert Rule conversion; consult app owner.
+
+11. Action: Restart monitoring components as a last non-invasive step
+    Details: For agent-based issues, restart the monitoring agent service on the VM (az vm run-command invoke with script to restart service). For App Service, consider restarting the Web App only if low impact:
+       az webapp restart --name {appName} --resource-group {rg}
+    Warnings: Restarting compute or App Service will cause brief downtime; obtain approval for production resources.
+
+12. Action: Document findings and update ticket
+    Details: Record all commands run, outputs captured (sanitized), time ranges, and whether metrics reappeared. If no resolution, prepare artefacts for escalation (CLI/REST outputs, screenshots, resource diagnostic setting details).
+    Warnings: Do not include secrets or bearer tokens in ticket attachments.
+
+VERIFICATION STEPS:
+- Confirm Metric Explorer displays datapoints for the specified metric across the expected time range (last 15 minutes and last 24 hours).
+- Use az monitor metrics list to verify at least one datapoint is returned for the targeted metric and timestamp.
+- Verify any alert rules tied to the metric evaluate successfully (use "Test alert" or wait for next evaluation cycle).
+- If synthetic test was used, confirm the synthetic datapoint is present and shows expected dimensions/values.
+- Update incident ticket with timestamps and finalize once monitored for at least 30 minutes with stable metric ingestion.
+
+TROUBLESHOOTING:
+Issue: Metrics are present in REST API but not in Portal Metric Explorer
+Solution: Clear browser cache and try an incognito session; confirm subscription/directory filters in portal. If persists, compare API returned "timeseries" array to portal selections; open a Microsoft Support ticket if mismatch persists.
+
+Issue: Agent shows disconnected or unhealthy
+Solution: Restart the agent service on the VM, validate network connectivity to Log Analytics ingestion endpoints, and ensure workspace ID/key are correct. Reinstall the agent if service restart fails and document before/after.
+
+Issue: Metric definitions list missing expected metric
+Solution: Check whether resource provider registration is complete and that the resource type supports the metric. Confirm recent platform changes or feature flags with product owners; escalate to platform engineering or Microsoft Support for platform-side fixes.
+
+Issue: Alerts still show "Insufficient data" after metrics return
+Solution: Force re-evaluation if supported, or temporarily disable/reenable the alert rule to prompt immediate re-evaluation. Confirm alert rule aggregation window aligns with metric granularity.
+
+ESCALATION:
+Condition: After completing all steps, metrics are still not available for the affected resource(s) for >2 hours OR: metrics are critical to production workflows and missing for >30 minutes.
+Contact: Cloud Ops Team Lead: jordan.lee@cloudops.examplecorp.local, on-call Cloud Engineer via internal pager, and open Microsoft Support ticket via Partner Portal.
+Escalation Path:
+- Level 1: Front-line Cloud Support documents all outputs, notifies Team Lead, and attempts Steps 1–12.
+- Level 2: Team Lead reviews findings, runs cross-subscription checks, and attempts agent re-deploy or configuration rollbacks.
+- Level 3: Cloud Platform Engineer escalates to Microsoft Support with full diagnostics pack (CLI/REST dumps, diagnostic settings export, timestamps). Include requestid in Microsoft Support ticket and request engineering review for metric ingestion pipeline.
+
+RELATED DOCUMENTATION:
+- Title: Troubleshooting Azure Monitor Metrics — internal runbook
+  URL: https://kb.internal.examplecorp.com/azure-monitor/troubleshoot-metrics
+- Title: Agent Health and Recovery Procedures (Azure Monitor Agent)
+  URL: https://kb.internal.examplecorp.com/agents/ama-recovery
+- Title: Escalation Guide — Microsoft Azure Support Contacts
+  URL: https://support.internal.examplecorp.com/azure/escalation-paths
+- Title: Metric REST API Reference (internal summary)
+  URL: https://docs.internal.examplecorp.com/azure-monitor/metrics-api-summary
+
+TAGS: azure-monitor, metrics, troubleshooting
+
+VERSION HISTORY:
+Version: 1.0 | Date: 2025-11-28T02:55:31.676012+00:00 | Author: Maya R. Chen | Changes: Initial published SOP covering steps to diagnose and recover missing or delayed metrics in Azure Monitor, including CLI/REST verification, agent checks, and escalation path.
