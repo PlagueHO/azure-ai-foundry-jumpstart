@@ -114,7 +114,40 @@ python -m data_generator \
   --out-dir ./sample-data/healthcare-records
 ```
 
-### 4.4 Financial-Transaction (`financial-transaction`)
+### 4.4 Healthcare-Clinical-Policy (`healthcare-clinical-policy`)
+
+Generate realistic clinical healthcare policy documents including care pathways, treatment protocols, and clinical guidelines.
+
+| Flag               | Required | Description                                                                                                              | Default            |
+|--------------------|----------|--------------------------------------------------------------------------------------------------------------------------|--------------------|
+| `--specialty`      | N        | Clinical specialty for the policy (e.g. Cardiology, Emergency Medicine, Oncology, Pediatrics, Surgery, Internal Medicine) | `General Medicine` |
+| `--policy-type`    | N        | Type of policy: clinical-pathway, treatment-protocol, diagnostic-guideline, medication-management, infection-control, patient-safety, quality-assurance | `clinical-pathway` |
+| `--complexity`     | N        | Complexity level: simple, medium, complex                                                                                 | `medium`           |
+
+Example:
+
+```bash
+python -m data_generator \
+  --scenario healthcare-clinical-policy \
+  --count 10 \
+  --specialty Cardiology \
+  --policy-type clinical-pathway \
+  --complexity complex \
+  --output-format yaml \
+  --out-dir ./sample-data/healthcare-clinical-policies
+```
+
+```bash
+python -m data_generator \
+  --scenario healthcare-clinical-policy \
+  --count 5 \
+  --specialty "Emergency Medicine" \
+  --policy-type treatment-protocol \
+  --output-format json \
+  --out-dir ./sample-data/healthcare-clinical-policies
+```
+
+### 4.5 Financial-Transaction (`financial-transaction`)
 
 Generate synthetic bank-account statements with ≥50 transactions.
 
@@ -137,7 +170,7 @@ python -m data_generator \
   --out-dir ./data/financial
 ```
 
-### 4.5 Insurance-Claim (`insurance-claim`)
+### 4.6 Insurance-Claim (`insurance-claim`)
 
 Generate synthetic insurance-claim documents.
 
@@ -158,7 +191,7 @@ python -m data_generator \
   --out-dir ./sample-data/insurance-claims
 ```
 
-### 4.6 Legal-Contract (`legal-contract`)
+### 4.7 Legal-Contract (`legal-contract`)
 
 Generates synthetic legal contracts, including NDAs, service agreements, and negotiation histories.
 
@@ -175,7 +208,7 @@ data_generator generate --tool legal-contract --num-records 10 --contract-type N
 data_generator generate --tool legal-contract --num-records 5 --contract-type "Service Agreement" --complexity complex --output-file service_agreements.jsonl
 ```
 
-### 4.7 Tech-Support-SOP (`tech-support-sop`)
+### 4.8 Tech-Support-SOP (`tech-support-sop`)
 
 Generate synthetic standard operating procedure (SOP) documents for fixing common tech support problems.
 

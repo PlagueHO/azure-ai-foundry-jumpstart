@@ -6,6 +6,7 @@ synthetic data for different domains including financial, healthcare, retail,
 and support interactions.
 """
 
+from .healthcare_clinical_policy import HealthcareClinicalPolicyTool
 from .customer_support_chat_log import CustomerSupportChatLogTool
 from .ecommerce_order_history import EcommerceOrderHistoryTool
 from .financial_transaction import FinancialTransactionTool
@@ -21,6 +22,7 @@ from .tech_support_sop import TechSupportSOPTool
 from .travel_booking import TravelBookingTool
 
 __all__ = [
+    "HealthcareClinicalPolicyTool",
     "CustomerSupportChatLogTool",
     "EcommerceOrderHistoryTool",
     "TechSupportTool",

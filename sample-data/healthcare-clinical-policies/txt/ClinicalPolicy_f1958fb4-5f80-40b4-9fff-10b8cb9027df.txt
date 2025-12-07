@@ -1,0 +1,52 @@
+Policy ID: f1958fb4-5f80-40b4-9fff-10b8cb9027df
+Version: 4.3
+Created At: 2025-12-06T23:05:13.733801+00:00
+Last Updated: 2025-12-06T23:05:13.733801+00:00
+Title: Cardiology Diagnostic Guideline Policy
+Specialty: Cardiology
+Policy Type: diagnostic-guideline
+Complexity: medium
+Approval Status: approved
+Evidence Level: Level IV - Case Series
+Review Frequency: Every 2 years
+Effective Date: 2025-12-06T23:05:13.733801+00:00
+Next Review Date: 2026-12-31T00:00:00+00:00
+
+AUTHOR:
+Name: Dr. Johnson Taylor
+Title: Clinical Director
+Department: Cardiology Department
+Email: clinical.director@hospital-595.example.com
+
+APPROVERS:
+- Name: Dr. Garcia Robinson | Title: Chief Medical Officer | Department: Medical Executive Committee | Approved At: 2025-12-06T23:05:13.733801+00:00
+
+PURPOSE:
+To provide evidence-based guidance for diagnostic guideline in Cardiology practice to ensure optimal patient outcomes and standardized care delivery.
+
+SCOPE:
+Patient Populations:
+- Adult patients presenting with cardiology conditions
+- Patients requiring diagnostic guideline intervention
+
+Clinical Settings:
+- Emergency Department
+- Inpatient Ward
+- Outpatient Clinic
+
+Exclusion Criteria:
+- Pediatric patients under 18 years
+- Patients with multiple comorbidities requiring specialized care
+
+BACKGROUND:
+Clinical Rationale: Current evidence supports standardized approaches to diagnostic guideline in Cardiology to improve patient safety and clinical outcomes.
+Epidemiology: Approximately 47% of cardiology cases require this type of intervention annually.
+Current Evidence Summary: Multiple Level II studies demonstrate efficacy of standardized protocols in reducing adverse events and improving patient satisfaction.
+
+CARE PATHWAY:
+
+Phase 1: Initial Assessment (Within 30 minutes of presentation)
+Description: Comprehensive patient evaluation and risk stratification
+
+Phase 2: Treatment Planning (Within 2 hours of initial assessment)
+Description: Development of individualized treatment approach

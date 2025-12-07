@@ -1,0 +1,52 @@
+Policy ID: 7a01d973-96ee-47fc-9f0c-9492422eab1c
+Version: 5.7
+Created At: 2025-12-06T23:05:13.901927+00:00
+Last Updated: 2025-12-06T23:05:13.901927+00:00
+Title: Internal Medicine Treatment Protocol Policy
+Specialty: Internal Medicine
+Policy Type: treatment-protocol
+Complexity: medium
+Approval Status: under_review
+Evidence Level: Level II - Randomized Controlled Trial
+Review Frequency: Every 2 years
+Effective Date: 2025-12-06T23:05:13.901927+00:00
+Next Review Date: 2026-12-31T00:00:00+00:00
+
+AUTHOR:
+Name: Dr. Johnson Thomas
+Title: Clinical Director
+Department: Internal Medicine Department
+Email: clinical.director@hospital-621.example.com
+
+APPROVERS:
+- Name: Dr. Garcia Martinez | Title: Chief Medical Officer | Department: Medical Executive Committee | Approved At: 2025-12-06T23:05:13.901927+00:00
+
+PURPOSE:
+To provide evidence-based guidance for treatment protocol in Internal Medicine practice to ensure optimal patient outcomes and standardized care delivery.
+
+SCOPE:
+Patient Populations:
+- Adult patients presenting with internal medicine conditions
+- Patients requiring treatment protocol intervention
+
+Clinical Settings:
+- Emergency Department
+- Inpatient Ward
+- Outpatient Clinic
+
+Exclusion Criteria:
+- Pediatric patients under 18 years
+- Patients with multiple comorbidities requiring specialized care
+
+BACKGROUND:
+Clinical Rationale: Current evidence supports standardized approaches to treatment protocol in Internal Medicine to improve patient safety and clinical outcomes.
+Epidemiology: Approximately 25% of internal medicine cases require this type of intervention annually.
+Current Evidence Summary: Multiple Level II studies demonstrate efficacy of standardized protocols in reducing adverse events and improving patient satisfaction.
+
+CARE PATHWAY:
+
+Phase 1: Initial Assessment (Within 30 minutes of presentation)
+Description: Comprehensive patient evaluation and risk stratification
+
+Phase 2: Treatment Planning (Within 2 hours of initial assessment)
+Description: Development of individualized treatment approach
