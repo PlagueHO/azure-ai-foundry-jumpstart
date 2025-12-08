@@ -95,7 +95,7 @@
             "args": [
                 "-NoProfile",
                 "-Command",
-                "bicep build .\\infra\\main.bicep; Get-ChildItem -Path .\\infra -Filter 'main.bicep' -Recurse | ForEach-Object { if ($_.FullName -ne (Resolve-Path '.\\infra\\main.bicep').Path) { bicep build $_.FullName } }"
+                "az bicep build --file ./infra/main.bicep; Get-ChildItem -Path ./infra -Filter 'main.bicep' -Recurse | ForEach-Object { if ($_.FullName -ne (Resolve-Path './infra/main.bicep').Path) { az bicep build --file $_.FullName } }"
             ],
             "group": {
                 "kind": "build",

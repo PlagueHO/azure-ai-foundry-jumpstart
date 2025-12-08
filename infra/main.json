@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "655608177609794110"
+      "templateHash": "17445375849251166107"
     }
   },
   "parameters": {
@@ -111,7 +111,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Deploy an Azure Bastion Host to the virtual network. This is required for private endpoint access to the AI Foundry Hub and AI Services. Defaults to false."
+        "description": "Deploy an Azure Bastion Host to the virtual network. This is required for private endpoint access to the AI Services. Defaults to false."
       }
     },
     "disableApiKeys": {
@@ -576,10 +576,8 @@
     "networkDefaultAction": "[if(parameters('azureNetworkIsolation'), 'Deny', 'Allow')]",
     "sampleDataContainersArray": "[variables('$fxv#1')]",
     "openAiSampleModels": "[variables('$fxv#2')]",
-    "sampleDataContainerCount": "[length(variables('sampleDataContainersArray'))]",
     "projectsFromJson": "[variables('$fxv#3')]",
     "effectiveProjectList": "[if(parameters('aiFoundryProjectDeploy'), if(parameters('aiFoundryProjectsFromJson'), variables('projectsFromJson'), createArray(createObject('Name', parameters('aiFoundryProjectName'), 'FriendlyName', parameters('aiFoundryProjectFriendlyName'), 'Description', parameters('aiFoundryProjectDescription')))), createArray())]",
-    "projectCount": "[length(variables('effectiveProjectList'))]",
     "subnets": [
       {
         "name": "Default",
@@ -620,13 +618,6 @@
     }
   },
   "resources": {
-    "azureMachineLearningServicePrincipal": {
-      "import": "microsoftGraphV1",
-      "type": "Microsoft.Graph/servicePrincipals@v1.0",
-      "properties": {
-        "appId": "0736f41a-0425-4b46-bdb5-1563eff02385"
-      }
-    },
     "resourceGroup": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -655,8 +646,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "8848252521954758698"
+              "version": "0.39.26.7824",
+              "templateHash": "16016723996074961877"
             },
             "name": "Resource Groups",
             "description": "This module deploys a Resource Group."
@@ -810,7 +801,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Resources/resourceGroups@2021-04-01#properties/tags"
+                  "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
                 },
                 "description": "Optional. Tags of the storage account resource."
               },
@@ -829,7 +820,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "location": "[parameters('location')]",
               "properties": {
                 "mode": "Incremental",
@@ -848,7 +839,7 @@
             },
             "resourceGroup": {
               "type": "Microsoft.Resources/resourceGroups",
-              "apiVersion": "2021-04-01",
+              "apiVersion": "2025-04-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -858,7 +849,7 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('{0}-RG-Lock', uniqueString(deployment().name, parameters('location')))]",
+              "name": "[format('{0}-RG-Lock', uniqueString(subscription().id, parameters('location')))]",
               "resourceGroup": "[parameters('name')]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -880,8 +871,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.5.1644",
-                      "templateHash": "15152717549103930153"
+                      "version": "0.39.26.7824",
+                      "templateHash": "4527672396498924055"
                     }
                   },
                   "definitions": {
@@ -947,7 +938,7 @@
               "condition": "[not(empty(coalesce(parameters('roleAssignments'), createArray())))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('{0}-RG-RoleAssignments', uniqueString(deployment().name, parameters('location')))]",
+              "name": "[format('{0}-RG-RoleAssignments', uniqueString(subscription().id, parameters('location')))]",
               "resourceGroup": "[parameters('name')]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -966,8 +957,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.5.1644",
-                      "templateHash": "13403722769849471903"
+                      "version": "0.39.26.7824",
+                      "templateHash": "336316490653552562"
                     }
                   },
                   "definitions": {
@@ -1121,7 +1112,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+              "value": "[reference('resourceGroup', '2025-04-01', 'full').location]"
             }
           }
         }
@@ -1156,7 +1147,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "2393936870312139377"
+              "templateHash": "10435319847223617109"
             },
             "name": "Log Analytics Workspaces",
             "description": "This module deploys a Log Analytics Workspace."
@@ -2265,12 +2256,20 @@
                 "description": "Optional. The workspace daily quota for ingestion."
               }
             },
+            "defaultDataCollectionRuleResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The resource ID of the default Data Collection Rule to use for this workspace. Note: the default DCR is not applicable on workspace creation and the workspace must be listed as a destination in the DCR."
+              }
+            },
             "publicNetworkAccessForIngestion": {
               "type": "string",
               "defaultValue": "Enabled",
               "allowedValues": [
                 "Enabled",
-                "Disabled"
+                "Disabled",
+                "SecuredByPerimeter"
               ],
               "metadata": {
                 "description": "Optional. The network access type for accessing Log Analytics ingestion."
@@ -2281,7 +2280,8 @@
               "defaultValue": "Enabled",
               "allowedValues": [
                 "Enabled",
-                "Disabled"
+                "Disabled",
+                "SecuredByPerimeter"
               ],
               "metadata": {
                 "description": "Optional. The network access type for accessing Log Analytics query."
@@ -2390,7 +2390,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.operationalinsights-workspace.{0}.{1}', replace('0.13.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.operationalinsights-workspace.{0}.{1}', replace('0.14.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2408,7 +2408,7 @@
             },
             "logAnalyticsWorkspace": {
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2025-02-01",
+              "apiVersion": "2025-07-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2431,7 +2431,8 @@
                 "publicNetworkAccessForIngestion": "[parameters('publicNetworkAccessForIngestion')]",
                 "publicNetworkAccessForQuery": "[parameters('publicNetworkAccessForQuery')]",
                 "forceCmkForQuery": "[parameters('forceCmkForQuery')]",
-                "replication": "[parameters('replication')]"
+                "replication": "[parameters('replication')]",
+                "defaultDataCollectionRuleResourceId": "[parameters('defaultDataCollectionRuleResourceId')]"
               },
               "identity": "[variables('identity')]"
             },
@@ -2479,7 +2480,7 @@
             "logAnalyticsWorkspace_sentinelOnboarding": {
               "condition": "[and(not(empty(filter(coalesce(parameters('gallerySolutions'), createArray()), lambda('item', startsWith(lambdaVariables('item').name, 'SecurityInsights'))))), parameters('onboardWorkspaceToSentinel'))]",
               "type": "Microsoft.SecurityInsights/onboardingStates",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2025-09-01",
               "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('name'))]",
               "name": "default",
               "properties": {},
@@ -2530,7 +2531,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('{0}-LAW-StorageInsightsConfig-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "name": "[format('{0}-LAW-StorageInsightsConfig-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -2678,7 +2679,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('{0}-LAW-LinkedService-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "name": "[format('{0}-LAW-LinkedService-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -2803,7 +2804,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('{0}-LAW-LinkedStorageAccount-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "name": "[format('{0}-LAW-LinkedStorageAccount-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -2915,7 +2916,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('{0}-LAW-SavedSearch-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "name": "[format('{0}-LAW-SavedSearch-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -2926,7 +2927,7 @@
                     "value": "[parameters('name')]"
                   },
                   "name": {
-                    "value": "[format('{0}{1}', coalesce(parameters('savedSearches'), createArray())[copyIndex()].name, uniqueString(deployment().name))]"
+                    "value": "[format('{0}{1}', coalesce(parameters('savedSearches'), createArray())[copyIndex()].name, uniqueString(subscription().id, resourceGroup().id))]"
                   },
                   "etag": {
                     "value": "[tryGet(coalesce(parameters('savedSearches'), createArray())[copyIndex()], 'etag')]"
@@ -3096,7 +3097,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('{0}-LAW-DataExport-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "name": "[format('{0}-LAW-DataExport-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -3259,7 +3260,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('{0}-LAW-DataSource-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "name": "[format('{0}-LAW-DataSource-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -3507,7 +3508,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('{0}-LAW-Table-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "name": "[format('{0}-LAW-Table-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -3975,7 +3976,7 @@
               "condition": "[not(empty(parameters('gallerySolutions')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('{0}-LAW-Solution-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "name": "[format('{0}-LAW-Solution-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -4190,7 +4191,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('logAnalyticsWorkspace', '2025-02-01', 'full').location]"
+              "value": "[reference('logAnalyticsWorkspace', '2025-07-01', 'full').location]"
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
@@ -4198,21 +4199,21 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[tryGet(tryGet(reference('logAnalyticsWorkspace', '2025-02-01', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(reference('logAnalyticsWorkspace', '2025-07-01', 'full'), 'identity'), 'principalId')]"
             },
             "primarySharedKey": {
               "type": "securestring",
               "metadata": {
                 "description": "The primary shared key of the log analytics workspace."
               },
-              "value": "[listKeys('logAnalyticsWorkspace', '2025-02-01').primarySharedKey]"
+              "value": "[listKeys('logAnalyticsWorkspace', '2025-07-01').primarySharedKey]"
             },
             "secondarySharedKey": {
               "type": "securestring",
               "metadata": {
                 "description": "The secondary shared key of the log analytics workspace."
               },
-              "value": "[listKeys('logAnalyticsWorkspace', '2025-02-01').secondarySharedKey]"
+              "value": "[listKeys('logAnalyticsWorkspace', '2025-07-01').secondarySharedKey]"
             }
           }
         }
@@ -4252,8 +4253,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "13842668180838264807"
+              "version": "0.39.26.7824",
+              "templateHash": "17358780145253914698"
             },
             "name": "Application Insights",
             "description": "This component deploys an Application Insights instance."
@@ -4663,7 +4664,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Insights/components@2020-10-01#properties/tags"
+                  "source": "Microsoft.Insights/components@2020-02-02#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -4712,7 +4713,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.insights-component.{0}.{1}', replace('0.7.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.insights-component.{0}.{1}', replace('0.7.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -4852,8 +4853,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "9567302051678045750"
+                      "version": "0.39.26.7824",
+                      "templateHash": "5059808225314360251"
                     },
                     "name": "Application Insights Linked Storage Account",
                     "description": "This component deploys an Application Insights Linked Storage Account."
@@ -5010,8 +5011,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "2664911502866882749"
+              "version": "0.39.26.7824",
+              "templateHash": "15393147213974991892"
             },
             "name": "Virtual Networks",
             "description": "This module deploys a Virtual Network (vNet)."
@@ -5702,7 +5703,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.7.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.7.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -5820,8 +5821,8 @@
                 "batchSize": 1
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-subnet-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-subnet-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -5890,8 +5891,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "4996741504223307485"
+                      "version": "0.39.26.7824",
+                      "templateHash": "11087937906182478872"
                     },
                     "name": "Virtual Network Subnets",
                     "description": "This module deploys a Virtual Network Subnet."
@@ -6147,7 +6148,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-virtualnetworksubnet.{0}.{1}', replace('0.1.3', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-virtualnetworksubnet.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -6277,8 +6278,8 @@
                 "count": "[length(coalesce(parameters('peerings'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -6316,8 +6317,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "13145570087766698031"
+                      "version": "0.39.26.7824",
+                      "templateHash": "4173704498931603856"
                     },
                     "name": "Virtual Network Peerings",
                     "description": "This module deploys a Virtual Network Peering."
@@ -6432,8 +6433,8 @@
               },
               "condition": "[coalesce(tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringEnabled'), false())]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
               "subscriptionId": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[2]]",
               "resourceGroup": "[split(coalesce(parameters('peerings'), createArray())[copyIndex()].remoteVirtualNetworkResourceId, '/')[4]]",
               "properties": {
@@ -6473,8 +6474,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "13145570087766698031"
+                      "version": "0.39.26.7824",
+                      "templateHash": "4173704498931603856"
                     },
                     "name": "Virtual Network Peerings",
                     "description": "This module deploys a Virtual Network Peering."
@@ -23598,8 +23599,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "12408271338021957846"
+              "version": "0.39.26.7824",
+              "templateHash": "8444048237705693390"
             },
             "name": "Storage Accounts",
             "description": "This module deploys a Storage Account."
@@ -25807,7 +25808,8 @@
               "nullable": true,
               "allowedValues": [
                 "Enabled",
-                "Disabled"
+                "Disabled",
+                "SecuredByPerimeter"
               ],
               "metadata": {
                 "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set."
@@ -25941,7 +25943,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.29.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.30.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -26745,8 +26747,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "6960218931054567030"
+                      "version": "0.39.26.7824",
+                      "templateHash": "4538661605890101674"
                     },
                     "name": "Storage Account Management Policies",
                     "description": "This module deploys a Storage Account Management Policy."
@@ -26857,8 +26859,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "9436518181019837288"
+                      "version": "0.39.26.7824",
+                      "templateHash": "17421429164012186211"
                     },
                     "name": "Storage Account Local Users",
                     "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
@@ -27095,8 +27097,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "16519807023802262557"
+                      "version": "0.39.26.7824",
+                      "templateHash": "4804748808287128942"
                     },
                     "name": "Storage Account blob Services",
                     "description": "This module deploys a Storage Account Blob Service."
@@ -27765,8 +27767,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "18247497253572624333"
+                              "version": "0.39.26.7824",
+                              "templateHash": "4737601268768949442"
                             },
                             "name": "Storage Account Blob Containers",
                             "description": "This module deploys a Storage Account Blob Container."
@@ -28107,8 +28109,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.38.33.27573",
-                                      "templateHash": "1872120962131123050"
+                                      "version": "0.39.26.7824",
+                                      "templateHash": "9416359146780945405"
                                     },
                                     "name": "Storage Account Blob Container Immutability Policies",
                                     "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -28290,8 +28292,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "18014560633119842738"
+                      "version": "0.39.26.7824",
+                      "templateHash": "8847095544204825048"
                     },
                     "name": "Storage Account File Share Services",
                     "description": "This module deploys a Storage Account File Share Service."
@@ -28802,8 +28804,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "6562391216093407918"
+                              "version": "0.39.26.7824",
+                              "templateHash": "1953115828549574279"
                             },
                             "name": "Storage Account File Shares",
                             "description": "This module deploys a Storage Account File Share."
@@ -29264,8 +29266,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "14320740623684459446"
+                      "version": "0.39.26.7824",
+                      "templateHash": "762865197442503763"
                     },
                     "name": "Storage Account Queue Services",
                     "description": "This module deploys a Storage Account Queue Service."
@@ -29696,8 +29698,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "17820569818642693530"
+                              "version": "0.39.26.7824",
+                              "templateHash": "2653192815476217627"
                             },
                             "name": "Storage Account Queues",
                             "description": "This module deploys a Storage Account Queue."
@@ -29969,8 +29971,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "15397070691540239144"
+                      "version": "0.39.26.7824",
+                      "templateHash": "17140438874562378925"
                     },
                     "name": "Storage Account Table Services",
                     "description": "This module deploys a Storage Account Table Service."
@@ -30388,8 +30390,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "2494851345252564065"
+                              "version": "0.39.26.7824",
+                              "templateHash": "11466809443516053137"
                             },
                             "name": "Storage Account Table",
                             "description": "This module deploys a Storage Account Table."
@@ -30642,8 +30644,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "15162266628501794465"
+                      "version": "0.39.26.7824",
+                      "templateHash": "13614544361780789643"
                     }
                   },
                   "definitions": {
@@ -30796,8 +30798,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "7981342209922290627"
+                      "version": "0.39.26.7824",
+                      "templateHash": "3528396711847214833"
                     },
                     "name": "Storage Account Object Replication Policy",
                     "description": "This module deploys a Storage Account Object Replication Policy for both the source account and destination account."
@@ -30950,8 +30952,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "13231340475360081313"
+                              "version": "0.39.26.7824",
+                              "templateHash": "4325417308313318683"
                             },
                             "name": "Storage Account Object Replication Policy",
                             "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."
@@ -31167,8 +31169,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.33.27573",
-                              "templateHash": "13231340475360081313"
+                              "version": "0.39.26.7824",
+                              "templateHash": "4325417308313318683"
                             },
                             "name": "Storage Account Object Replication Policy",
                             "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."
@@ -31519,11 +31521,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "7271141991604652704"
+              "templateHash": "11446855404387907315"
             },
             "name": "Storage Account Role Assignments",
-            "description": "This module assigns roles to a storage account.",
-            "owner": "Azure/module-maintainers"
+            "description": "Creates role assignments on an Azure Storage Account."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -34092,8 +34093,9 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "15929980981391592571"
+              "templateHash": "9527362946316057502"
             },
+            "name": "Azure AI Search Role Assignments",
             "description": "Creates role assignments on an Azure AI Search service."
           },
           "definitions": {
@@ -34166,14 +34168,17 @@
                 }
               },
               "metadata": {
-                "description": "An AVM-aligned type for a role assignment.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-                }
+                "__bicep_export!": true
               }
             }
           },
           "parameters": {
+            "azureAiSearchName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Azure AI Search service to assign roles to."
+              }
+            },
             "roleAssignments": {
               "type": "array",
               "items": {
@@ -34182,12 +34187,6 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
-              }
-            },
-            "azureAiSearchName": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the Azure AI Search service to set the role assignments on."
               }
             }
           },
@@ -34207,6 +34206,7 @@
               "Search Index Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8ebe5a00-799e-43f5-93ac-243d3dce84a7')]",
               "Search Index Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1407120a-92aa-4202-b7e9-c0e197c71c8f')]",
               "Search Service Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7ca78c08-252a-4471-8644-bb5ff32d4ba0')]",
+              "Search Service Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1407120a-92aa-4202-b7e9-c0e197c71c8f')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
             }
           },
@@ -34234,6 +34234,28 @@
                 "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
                 "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
                 "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              }
+            }
+          },
+          "outputs": {
+            "roleAssignmentResourceIds": {
+              "type": "array",
+              "metadata": {
+                "description": "The resource IDs of the role assignments."
+              },
+              "copy": {
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]",
+                "input": "[extensionResourceId(resourceId('Microsoft.Search/searchServices', parameters('azureAiSearchName')), 'Microsoft.Authorization/roleAssignments', coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Search/searchServices', parameters('azureAiSearchName')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId)))]"
+              }
+            },
+            "roleAssignmentNames": {
+              "type": "array",
+              "metadata": {
+                "description": "The names of the role assignments."
+              },
+              "copy": {
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]",
+                "input": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Search/searchServices', parameters('azureAiSearchName')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]"
               }
             }
           }
@@ -39843,7 +39865,7 @@
             "value": "[variables('aiFoundryServiceName')]"
           },
           "roleAssignments": {
-            "value": "[flatten(createArray(if(parameters('azureAiSearchDeploy'), createArray(createObject('roleDefinitionIdOrName', 'Cognitive Services Contributor', 'principalType', 'ServicePrincipal', 'principalId', tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value')), createObject('roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor', 'principalType', 'ServicePrincipal', 'principalId', tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value'))), createArray()), if(not(empty(parameters('principalId'))), createArray(createObject('roleDefinitionIdOrName', 'Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Reader', 'principalType', 'ServicePrincipal', 'principalId', reference('azureMachineLearningServicePrincipal').id)), createArray())))]"
+            "value": "[flatten(createArray(if(parameters('azureAiSearchDeploy'), createArray(createObject('roleDefinitionIdOrName', 'Cognitive Services Contributor', 'principalType', 'ServicePrincipal', 'principalId', tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value')), createObject('roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor', 'principalType', 'ServicePrincipal', 'principalId', tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value'))), createArray()), if(not(empty(parameters('principalId'))), createArray(createObject('roleDefinitionIdOrName', 'Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId'))), createArray())))]"
           }
         },
         "template": {
@@ -39854,8 +39876,9 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "6695109490365502353"
+              "templateHash": "15510587216720670036"
             },
+            "name": "Azure AI Foundry Role Assignments",
             "description": "Creates role assignments on an Azure AI Foundry account."
           },
           "definitions": {
@@ -39928,14 +39951,17 @@
                 }
               },
               "metadata": {
-                "description": "An AVM-aligned type for a role assignment.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-                }
+                "__bicep_export!": true
               }
             }
           },
           "parameters": {
+            "azureAiFoundryName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Azure AI Foundry account to assign roles to."
+              }
+            },
             "roleAssignments": {
               "type": "array",
               "items": {
@@ -39944,12 +39970,6 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
-              }
-            },
-            "azureAiFoundryName": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the Azure AI Foundry account to set the role assignments on."
               }
             }
           },
@@ -40019,13 +40039,34 @@
                 "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               }
             }
+          },
+          "outputs": {
+            "roleAssignmentResourceIds": {
+              "type": "array",
+              "metadata": {
+                "description": "The resource IDs of the role assignments."
+              },
+              "copy": {
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]",
+                "input": "[extensionResourceId(resourceId('Microsoft.CognitiveServices/accounts', parameters('azureAiFoundryName')), 'Microsoft.Authorization/roleAssignments', coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('azureAiFoundryName')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId)))]"
+              }
+            },
+            "roleAssignmentNames": {
+              "type": "array",
+              "metadata": {
+                "description": "The names of the role assignments."
+              },
+              "copy": {
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]",
+                "input": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('azureAiFoundryName')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]"
+              }
+            }
           }
         }
       },
       "dependsOn": [
         "aiFoundryService",
         "aiSearchService",
-        "azureMachineLearningServicePrincipal",
         "resourceGroup"
       ]
     },
@@ -40073,8 +40114,9 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "15929980981391592571"
+              "templateHash": "9527362946316057502"
             },
+            "name": "Azure AI Search Role Assignments",
             "description": "Creates role assignments on an Azure AI Search service."
           },
           "definitions": {
@@ -40147,14 +40189,17 @@
                 }
               },
               "metadata": {
-                "description": "An AVM-aligned type for a role assignment.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-                }
+                "__bicep_export!": true
               }
             }
           },
           "parameters": {
+            "azureAiSearchName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Azure AI Search service to assign roles to."
+              }
+            },
             "roleAssignments": {
               "type": "array",
               "items": {
@@ -40163,12 +40208,6 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
-              }
-            },
-            "azureAiSearchName": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the Azure AI Search service to set the role assignments on."
               }
             }
           },
@@ -40188,6 +40227,7 @@
               "Search Index Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8ebe5a00-799e-43f5-93ac-243d3dce84a7')]",
               "Search Index Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1407120a-92aa-4202-b7e9-c0e197c71c8f')]",
               "Search Service Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7ca78c08-252a-4471-8644-bb5ff32d4ba0')]",
+              "Search Service Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1407120a-92aa-4202-b7e9-c0e197c71c8f')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
             }
           },
@@ -40215,6 +40255,28 @@
                 "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
                 "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
                 "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              }
+            }
+          },
+          "outputs": {
+            "roleAssignmentResourceIds": {
+              "type": "array",
+              "metadata": {
+                "description": "The resource IDs of the role assignments."
+              },
+              "copy": {
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]",
+                "input": "[extensionResourceId(resourceId('Microsoft.Search/searchServices', parameters('azureAiSearchName')), 'Microsoft.Authorization/roleAssignments', coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Search/searchServices', parameters('azureAiSearchName')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId)))]"
+              }
+            },
+            "roleAssignmentNames": {
+              "type": "array",
+              "metadata": {
+                "description": "The names of the role assignments."
+              },
+              "copy": {
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]",
+                "input": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Search/searchServices', parameters('azureAiSearchName')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]"
               }
             }
           }
@@ -40259,8 +40321,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "8154163068428418954"
+              "version": "0.39.26.7824",
+              "templateHash": "1210394124185833155"
             },
             "name": "Bastion Hosts",
             "description": "This module deploys a Bastion Host."
@@ -41042,7 +41104,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-bastionhost.{0}.{1}', replace('0.8.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-bastionhost.{0}.{1}', replace('0.8.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -41144,8 +41206,8 @@
             "publicIPAddress": {
               "condition": "[and(and(empty(parameters('bastionSubnetPublicIpResourceId')), not(equals(parameters('skuName'), 'Developer'))), not(parameters('enablePrivateOnlyBastion')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-Bastion-PIP', uniqueString(deployment().name, parameters('location')))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-Bastion-PIP', uniqueString(subscription().id, resourceGroup().id, parameters('location')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"

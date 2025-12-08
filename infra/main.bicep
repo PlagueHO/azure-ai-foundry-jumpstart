@@ -131,9 +131,6 @@ var sampleDataContainers = [for name in sampleDataContainersArray: {
 // Load sample OpenAI models from JSON file
 var openAiSampleModels = loadJsonContent('./sample-openai-models.json')
 
-// Build a Cartesian product index across projects and sample-data containers
-var sampleDataContainerCount = length(sampleDataContainersArray)
-
 // Transform IP allow list for networkAcls
 var aiFoundryIpRules = [for ip in aiFoundryIpAllowList: {
   value: ip
@@ -176,10 +173,8 @@ var aiFoundryServiceProjects = [for project in effectiveProjectList: {
   ] : []
 }]
 
-var projectCount = length(effectiveProjectList)
-
 // ---------- RESOURCE GROUP ----------
-module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.2' = {
+module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.3' = {
   name: 'resource-group-deployment-${location}'
   params: {
     name: effectiveResourceGroupName
@@ -189,7 +184,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.2' = {
 }
 
 // ---------- MONITORING RESOURCES ----------
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.13.0' = {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.14.1' = {
   name: 'logAnalytics-workspace-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -200,7 +195,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
   }
 }
 
-module applicationInsights 'br/public:avm/res/insights/component:0.7.0' = {
+module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = {
   name: 'application-insights-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -252,7 +247,7 @@ var subnets = [
   }
 ]
 
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.1' = if (azureNetworkIsolation) {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.2' = if (azureNetworkIsolation) {
   name: 'virtualNetwork'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -357,7 +352,7 @@ module aiServicesAiDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = 
 }
 
 // ---------- STORAGE ACCOUNT SAMPLE DATA (OPTIONAL) ----------
-module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.29.0' = if (deploySampleData) {
+module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.30.0' = if (deploySampleData) {
   name: 'sample-data-storage-account-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
@@ -739,7 +734,7 @@ module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.
   }
 ]
 
-module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (bastionHostDeploy && azureNetworkIsolation) {
+module bastionHost 'br/public:avm/res/network/bastion-host:0.8.1' = if (bastionHostDeploy && azureNetworkIsolation) {
   name: 'bastion-host-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
