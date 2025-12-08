@@ -206,7 +206,8 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
                 service_id="azure_open_ai",
                 extension_data={
                     "max_completion_tokens": max_tokens,
-                    # Note: Some models (like gpt-5-mini) only support default temperature/top_p
+                    # Note: Some models (like gpt-5-mini) only support default
+                    # temperature/top_p
                     # "temperature": temperature,
                     # "top_p": top_p,
                 }
@@ -239,7 +240,8 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
                 **kwargs
             )
             # Extract content from SK FunctionResult
-            # Result is a FunctionResult with a .value containing list of ChatMessageContent
+            # Result is a FunctionResult with a .value containing list of
+            # ChatMessageContent
             if hasattr(result, 'value') and result.value:
                 # result.value is a list of ChatMessageContent objects
                 if isinstance(result.value, list) and result.value:

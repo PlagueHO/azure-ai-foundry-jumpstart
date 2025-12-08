@@ -30,13 +30,13 @@ load_dotenv()
 def get_env_var(name: str) -> str:
     """
     Get an environment variable value with validation.
-    
+
     Args:
         name: The name of the environment variable to retrieve.
-        
+
     Returns:
         The value of the environment variable.
-        
+
     Raises:
         OSError: If the environment variable is not set.
     """
@@ -57,7 +57,7 @@ AGENT_ID = get_env_var("AZURE_AI_AGENT_ID")
 async def main():
     """
     Main function to run the tech support agent with interactive chat.
-    
+
     Creates an Azure AI Agent client, retrieves an existing agent, and runs
     an interactive chat loop for tech support conversations.
     """

@@ -24,7 +24,7 @@ from azure.identity import DefaultAzureCredential
 def parse_arguments():
     """
     Parse command-line arguments for the home loan agent.
-    
+
     Returns:
         argparse.Namespace: Parsed command-line arguments containing question and interactive mode settings.
     """
@@ -49,10 +49,10 @@ def parse_arguments():
 def initialize_client():
     """
     Initialize and test the Azure AI Project client.
-    
+
     Returns:
         AIProjectClient: Initialized Azure AI Project client ready for use.
-        
+
     Raises:
         SystemExit: If connection fails or required environment variables are missing.
     """
@@ -91,10 +91,10 @@ def initialize_client():
 def create_agent(project_client):
     """
     Create and setup the home loan agent with required files and tools.
-    
+
     Args:
         project_client: Azure AI Project client instance.
-        
+
     Returns:
         The created agent instance with file search and code interpreter tools.
     """
@@ -190,10 +190,10 @@ Follow up after application submissions to assist with documentation or next ste
 def create_thread(project_client):
     """
     Create a new conversation thread for agent interactions.
-    
+
     Args:
         project_client: Azure AI Project client instance.
-        
+
     Returns:
         The created thread instance.
     """
@@ -205,7 +205,7 @@ def create_thread(project_client):
 def delete_thread(project_client, thread):
     """
     Delete a conversation thread and clean up resources.
-    
+
     Args:
         project_client: Azure AI Project client instance.
         thread: The thread instance to delete.
@@ -221,7 +221,7 @@ def delete_thread(project_client, thread):
 def cleanup_agent(project_client, agent, resources):
     """
     Clean up agent and associated resources like vector stores and files.
-    
+
     Args:
         project_client: Azure AI Project client instance.
         agent: The agent instance to delete.
@@ -246,7 +246,7 @@ def cleanup_agent(project_client, agent, resources):
 def ask_question(project_client, agent, question, thread):
     """
     Ask a question to the agent using a specific thread.
-    
+
     Args:
         project_client: Azure AI Project client instance.
         agent: The agent instance to query.
@@ -321,7 +321,7 @@ def ask_question(project_client, agent, question, thread):
 def process_question(project_client, question):
     """
     Process a single question with complete agent lifecycle management.
-    
+
     Args:
         project_client: Azure AI Project client instance.
         question: The question string to process.
@@ -346,7 +346,7 @@ def process_question(project_client, question):
 def interactive_mode(project_client):
     """
     Run the agent in interactive mode for multiple questions.
-    
+
     Args:
         project_client: Azure AI Project client instance.
     """
@@ -389,7 +389,7 @@ def interactive_mode(project_client):
 def main():
     """
     Main entry point for the home loan agent application.
-    
+
     Parses command-line arguments and runs either interactive mode or processes a single question.
     """
     args = parse_arguments()

@@ -181,7 +181,8 @@ class HealthcareClinicalPolicyTool(DataGeneratorTool):
     ) -> str:
         """
         Construct the full system-prompt string for the requested output format.
-        All variable data is pre-baked so the kernel only receives the index placeholder.
+        All variable data is pre-baked so the kernel only receives the index
+        placeholder.
         """
         # Normalize output format for text variations
         fmt = output_format.lower()
@@ -369,7 +370,8 @@ class HealthcareClinicalPolicyTool(DataGeneratorTool):
             '  "specialty": "(echo above)",\n'
             '  "policy_type": "(echo above)",\n'
             '  "complexity": "simple|medium|complex",\n'
-            '  "approval_status": "draft|under_review|approved|active|superseded|archived",\n'
+            '  "approval_status": "draft|under_review|approved|active|'
+            'superseded|archived",\n'
             '  "evidence_level": "(echo above)",\n'
             '  "review_frequency": "(echo above)",\n'
             '  "effective_date": "ISO 8601",\n'
@@ -619,9 +621,11 @@ class HealthcareClinicalPolicyTool(DataGeneratorTool):
             "    - element\n"
             "  Timing: text\n\n"
             "REFERENCES:\n"
-            "- Citation: text | Evidence Level: text | URL: fictional but realistic URL (optional)\n\n"
+            "- Citation: text | Evidence Level: text | URL: fictional but "
+            "realistic URL (optional)\n\n"
             "RELATED POLICIES:\n"
-            "- Policy Title: text | Policy ID: fictional ID | Relationship: text\n\n"
+            "- Policy Title: text | Policy ID: fictional ID | "
+            "Relationship: text\n\n"
             "APPENDICES:\n"
             "- Title: text\n"
             "  Content: text\n\n"
