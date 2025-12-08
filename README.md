@@ -84,7 +84,7 @@ This section will create Azure resources and deploy the solution from your local
    ```
 
 > [!NOTE]
-> This will deploy the Azure AI Foundry hub and project with public endpoints. You can access the Azure AI Foundry hub and project from the public internet. This is recommended for demonstration and testing purposes or when there is no requirement for network isolation.
+> This will deploy the Azure AI Foundry service with public endpoints. You can access the Azure AI Foundry service from the public internet. This is recommended for demonstration and testing purposes or when there is no requirement for network isolation.
 
 1. Run `azd up` to provision and deploy the application
 
@@ -113,7 +113,7 @@ This section will create Azure resources and deploy the solution from your local
    ```
 
 > [!NOTE]
-> This will deploy the Azure AI Foundry hub and project with public endpoints. You can access the Azure AI Foundry hub and project from the public internet. This is recommended for demonstration and testing purposes or when there is no requirement for network isolation.
+> This will deploy the Azure AI Foundry service with public endpoints. You can access the Azure AI Foundry service from the public internet. This is recommended for demonstration and testing purposes or when there is no requirement for network isolation.
 
 1. Run `azd up` to provision and deploy the application
 
@@ -131,9 +131,6 @@ azd env set DEPLOY_SAMPLE_OPENAI_MODELS true
 azd env set DEPLOY_SAMPLE_DATA true
 azd env set AZURE_CONTAINER_REGISTRY_DEPLOY false
 azd env set AZURE_AI_SEARCH_DEPLOY false
-azd env set AZURE_AI_FOUNDRY_HUB_DEPLOY true # Deploys an Azure AI Foundry hub to support older Hub-based projects
-azd env set AZURE_AI_FOUNDRY_HUB_DESCRIPTION "Sandbox hub for PoC work" # Only when AZURE_AI_FOUNDRY_PROJECT_MODE is set to Hub
-azd env set AZURE_AI_FOUNDRY_HUB_FRIENDLY_NAME "My AI Hub" # Only when AZURE_AI_FOUNDRY_PROJECT_MODE is set to Hub
 azd env set AZURE_AI_FOUNDRY_PROJECT_DEPLOY true # Deploy projects (sample or single)
 azd env set AZURE_AI_FOUNDRY_PROJECT_NAME "my-ai-project"
 azd env set AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION "This is my first AI project."
@@ -153,10 +150,10 @@ Click on the Deploy to Azure button to deploy the Azure resources for this solut
 
 ## Next Steps
 
-After the deployment is complete, you can access the Azure AI Foundry hub using the URL provided in the output of the deployment or going to [https://ai.azure.com/](https://ai.azure.com/). You can also access the Azure AI Foundry hub using the Azure portal by navigating to the resource group created during the deployment.
+After the deployment is complete, you can access the Azure AI Foundry service using the URL provided in the output of the deployment or going to [https://ai.azure.com/](https://ai.azure.com/). You can also access the Azure AI Foundry service using the Azure portal by navigating to the resource group created during the deployment.
 
 > [!IMPORTANT]
-> If you deployed the solution accelerator with network isolation, you will need to use a VPN or Azure Bastion to access the Azure AI Foundry hub and project. The Azure AI Foundry hub and project are not accessible from the public internet.
+> If you deployed the solution accelerator with network isolation, you will need to use a VPN or Azure Bastion to access the Azure AI Foundry service and project. The Azure AI Foundry service and project are not accessible from the public internet.
 
 ## Deleting the Deployment
 
@@ -191,13 +188,13 @@ The following diagrams illustrate the architecture of the solution accelerator. 
 
 ### With Network Isolation
 
-The following diagram illustrates the architecture of the solution accelerator with network isolation when deploying an Azure AI Foundry project environment as well as including an optional Azure AI Foundry Hub deployment.
+The following diagram illustrates the architecture of the solution accelerator with network isolation when deploying an Azure AI Foundry project environment.
 
 [![Azure AI Foundry Jumpstart Solution Accelerator with Network Isolation](docs/images/azure-ai-foundry-jumpstart-zero-trust.svg)](docs/images/azure-ai-foundry-jumpstart-zero-trust.svg)
 
 ### Without Network Isolation
 
-The following diagram illustrates the architecture of the solution accelerator without network isolation when deploying an Azure AI Foundry project environment as well as including an optional Azure AI Foundry Hub deployment.
+The following diagram illustrates the architecture of the solution accelerator without network isolation when deploying an Azure AI Foundry project environment.
 
 [![Azure AI Foundry Jumpstart Solution Accelerator without network isolation](docs/images/azure-ai-foundry-jumpstart-public.svg)](docs/images/azure-ai-foundry-jumpstart-public.svg)
 

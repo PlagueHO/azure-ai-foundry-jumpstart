@@ -43,7 +43,6 @@
     "diagnosticSettings",
     "ipAllowlist",
     "effectiveContainerRegistryResourceId",
-    "aiFoundryHubDeploy",
     "azureNetworkIsolation",
     "deploySampleData",
     "containerRegistryDeploy",
