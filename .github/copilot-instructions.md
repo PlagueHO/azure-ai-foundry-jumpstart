@@ -1,9 +1,9 @@
-This is a Azure Developer Console (AZ CLI) solution accelerator for deploying an Azure AI Foundry environment and dependent resurces.
+This is a Azure Developer Console (AZ CLI) solution accelerator for deploying an Azure AI Foundry environment and dependent resources.
 
 ## Glossary
 
-- Azure AI Foundry is the new name of the Azure AI Services resource (Microsoft.CognitiveServices/accounts) and provides a single resource for AI capabilities, including project management.
-- Azure AI Foundry Hub is a resource (Microsoft.MachineLearningServices/workspaces) that is considered legacy, but can be used in combination with Azure AI Foundry resource.
+- Azure AI Foundry refers to the Azure AI Services resource (Microsoft.CognitiveServices/accounts) which provides a single resource for AI capabilities, including project management.
+- Projects are deployed directly to the AI Services resource (Microsoft.CognitiveServices/accounts/projects).
 
 ## Key principles
 The key principles you should adopt when suggesting Bicep code is:

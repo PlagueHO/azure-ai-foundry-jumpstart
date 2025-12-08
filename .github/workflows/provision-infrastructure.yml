@@ -29,10 +29,6 @@ on:
         required: false
         type: string
         default: 'false'
-      AZURE_AI_FOUNDRY_HUB_DEPLOY:
-        description: "Whether to deploy the Azure AI Foundry Hub"
-        required: true
-        type: string
 
     secrets:
       AZURE_TENANT_ID:
@@ -56,7 +52,6 @@ jobs:
       AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
       AZURE_NETWORK_ISOLATION: ${{ inputs.AZURE_NETWORK_ISOLATION }}
       DEPLOY_SAMPLE_OPENAI_MODELS: ${{ inputs.DEPLOY_SAMPLE_OPENAI_MODELS }}
-      AZURE_AI_FOUNDRY_HUB_DEPLOY: ${{ inputs.AZURE_AI_FOUNDRY_HUB_DEPLOY }}
       AZURE_PRINCIPAL_ID_TYPE: 'ServicePrincipal'
 
     environment: ${{ inputs.ENVIRONMENT }}

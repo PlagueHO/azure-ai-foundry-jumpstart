@@ -7,23 +7,11 @@ This solution accelerator leverages a range of Azure services and technologies t
 - **Azure AI Foundry Service (Formerly known as Azure AI Services)**
   Provides access to Azure AI Services and Foundry based projects.
 
-- **Azure AI Foundry Hub & Projects** *(Optional)*
-  Central workspace for managing AI resources, projects, and collaboration. Not required for Foundry Project Mode. Provided for backward compatibility.
-
 - **Azure AI Search** *(Optional, but recommended)*
   Enterprise-grade search service for AI-powered indexing and retrieval. Can be excluded from deployment if not required.
 
 - **Azure Storage Account for Samples** *(Optional - when Samples are deployed)*
   Secure storage for sample datasets.
-
-- **Azure Storage Account for Hub** *(Optional - when Hub is deployed)*
-  Secure storage for Azure AI Foundry Hub resources, including datasets etc.
-
-- **Azure Key Vault** *(Optional - when Hub is deployed)*  
-  Securely manages secrets, keys, and certificates.
-
-- **Azure Container Registry** *(Optional - when Hub is deployed)*  
-  Stores and manages container images for AI workloads. You may use an existing registry, deploy a new one, or skip entirely.
 
 - **Azure Virtual Network (VNet) & Subnets** *(Optional - when Network Isolation is enabled)*
   Provides network isolation and secure communication between resources.

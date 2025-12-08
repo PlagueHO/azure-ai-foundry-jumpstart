@@ -1,4 +1,3 @@
-
 metadata name = 'Cognitive Services'
 metadata description = '''
 This module deploys a Cognitive Service account.
