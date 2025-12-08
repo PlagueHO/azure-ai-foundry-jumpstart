@@ -13,7 +13,8 @@ git config --global core.fileMode false
 
 # Install Python development dependencies
 echo "🐍 Installing Python development dependencies..."
-pip3 install -r ./requirements-dev.txt
+# Install for Python 3.13 (the default interpreter that supports all dependencies)
+python3 -m pip install -r ./requirements-dev.txt
 
 # Ensure Node.js tools are properly sourced and available
 echo "🔧 Setting up Node.js environment..."

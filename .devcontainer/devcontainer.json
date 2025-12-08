@@ -47,7 +47,10 @@
                 "ms-dotnettools.vscode-dotnet-runtime",
                 "ms-toolsai.prompty",
                 "ms-semantic-kernel.semantic-kernel"
-            ]
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/python/current/bin/python3"
+            }
         }
     },
     "forwardPorts": [
