@@ -58,7 +58,7 @@ param principalIdType string = 'User'
 @sys.description('Enable network isolation. When false no virtual network, private endpoint or private DNS resources are created and all services expose public endpoints')
 param azureNetworkIsolation bool = true
 
-@sys.description('Deploy an Azure Bastion Host to the virtual network. This is required for private endpoint access to the AI Foundry Hub and AI Services. Defaults to false.')
+@sys.description('Deploy an Azure Bastion Host to the virtual network. This is required for private endpoint access to the AI Services. Defaults to false.')
 param bastionHostDeploy bool = false
 
 @sys.description('Disable API key authentication for AI Services and AI Search. Defaults to false.')
@@ -223,7 +223,7 @@ var subnets = [
     privateLinkServiceNetworkPolicies: 'Disabled'
   }
   {
-    // AiServices Subnet (AI Foundry Hub, AI Search, AI Services private endpoints)
+    // AiServices Subnet (AI Search, AI Services private endpoints)
     name: 'AiServices'
     addressPrefix: '10.0.1.0/24'
     privateEndpointNetworkPolicies: 'Disabled'
@@ -508,12 +508,6 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.11.1' = if (az
   }
 }
 
-// The Service Principal of the Azure Machine Learning service.
-// This is used to assign the Reader role for AI Search and AI Services and used by the AI Foundry Hub
-resource azureMachineLearningServicePrincipal 'Microsoft.Graph/servicePrincipals@v1.0' = {
-  appId: '0736f41a-0425-4b46-bdb5-1563eff02385' // Azure Machine Learning service principal
-}
-
 // Role assignments (only when Search exists)
 var aiSearchRoleAssignmentsArray = azureAiSearchDeploy ? [
   {
@@ -558,7 +552,7 @@ module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = if (azure
 
 // ---------- AI FOUNDRY/AI SERVICES ----------
 // Deploy AI Foundry (Cognitive Services) resource with projects (Stage 2)
-// Projects are deployed directly into the AI Services resource when not using Hub mode
+// Projects are deployed directly into the AI Services resource
 // Prepare connections for the AI Foundry Account
 var aiFoundryServiceConnections = concat(azureAiSearchDeploy ? [
   {
@@ -613,7 +607,7 @@ module aiFoundryService './cognitive-services/accounts/main.bicep' = {
     location: location
     customSubDomainName: aiFoundryCustomSubDomainName
     disableLocalAuth: disableApiKeys
-    allowProjectManagement: true // Even if a Hub is deployed we will still allow project management in the AI Services account
+    allowProjectManagement: true
     diagnosticSettings: [
       {
         name: 'send-to-log-analytics'
@@ -701,11 +695,6 @@ var aiFoundryRoleAssignmentsArray = [
       roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
       principalType: principalIdType
       principalId: principalId
-    }
-    {
-      roleDefinitionIdOrName: 'Reader'
-      principalType: 'ServicePrincipal'
-      principalId: azureMachineLearningServicePrincipal.id
     }
   ] : [])
 ]
