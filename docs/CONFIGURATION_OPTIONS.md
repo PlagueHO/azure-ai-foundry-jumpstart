@@ -16,7 +16,7 @@ The configuration options are grouped into the following categories:
 
 These options control the creation of sample data and configuration in the Azure AI Foundry hub.
 
-### DEPLOY_SAMPLE_OPENAI_MODELS
+### DEPLOY_SAMPLE_MODELS
 
 Deploy seme common OpenAI models into the Azure OpenAI Service connected to the Azure AI Foundry Hub.
 Default: `true`.
@@ -41,10 +41,10 @@ This will deploy the following models into the Azure OpenAI Service. If the mode
 | gpt-realtime-mini      | 2025-08-28 | Global Standard | 100K |
 | text-embedding-3-large | 1          | Global Standard | 150K |
 
-The list of models, versions, quota and TPM are defined in the [infra/sample-openai-models.json](../infra/sample-openai-models.json) file. If you wish to define an alternate models, you can edit this file or alternatively set the [AZURE_OPENAI_MODELS](#azure-openai-models) environment variable.
+The list of models, versions, quota and TPM are defined in the [infra/sample-model-deployments.json](../infra/sample-model-deployments.json) file. If you wish to define alternate models, you can edit this file.
 
 ```powershell
-azd env set DEPLOY_SAMPLE_OPENAI_MODELS false
+azd env set DEPLOY_SAMPLE_MODELS false
 ```
 
 ### DEPLOY_SAMPLE_DATA

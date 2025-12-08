@@ -24,8 +24,8 @@ on:
         required: false
         type: string
         default: 'false'
-      DEPLOY_SAMPLE_OPENAI_MODELS:
-        description: "Whether to deploy the sample OpenAI models"
+      DEPLOY_SAMPLE_MODELS:
+        description: "Whether to deploy the sample model deployments"
         required: false
         type: string
         default: 'false'
@@ -74,5 +74,5 @@ jobs:
               "location": "${{ inputs.AZURE_LOCATION }}",
               "environmentName": "${{ inputs.AZURE_ENV_NAME }}",
               "azureNetworkIsolation": "${{ inputs.AZURE_NETWORK_ISOLATION }}",
-              "deploySampleOpenAIModels": "${{ inputs.DEPLOY_SAMPLE_OPENAI_MODELS }}"
+              "deploySampleModels": "${{ inputs.DEPLOY_SAMPLE_MODELS }}"
             }

@@ -71,7 +71,7 @@ azd up
 
 # Configure before deployment
 azd env set AZURE_NETWORK_ISOLATION false  # public endpoints
-azd env set DEPLOY_SAMPLE_OPENAI_MODELS true
+azd env set DEPLOY_SAMPLE_MODELS true
 azd env set AZURE_AI_FOUNDRY_PROJECT_DEPLOY true
 
 # Teardown

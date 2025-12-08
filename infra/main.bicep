@@ -64,8 +64,8 @@ param bastionHostDeploy bool = false
 @sys.description('Disable API key authentication for AI Services and AI Search. Defaults to false.')
 param disableApiKeys bool = false
 
-@sys.description('Deploy the sample OpenAI model deployments listed in ./sample-openai-models.json. Defaults to false')
-param deploySampleOpenAiModels bool = false
+@sys.description('Deploy the sample model deployments listed in ./sample-model-deployments.json. Defaults to false')
+param deploySampleModels bool = false
 
 @sys.description('Deploy sample data containers into the Azure Storage Account. Defaults to false.')
 param deploySampleData bool = false
@@ -129,7 +129,7 @@ var sampleDataContainers = [for name in sampleDataContainersArray: {
 }]
 
 // Load sample OpenAI models from JSON file
-var openAiSampleModels = loadJsonContent('./sample-openai-models.json')
+var sampleModelDeployments = loadJsonContent('./sample-model-deployments.json')
 
 // Transform IP allow list for networkAcls
 var aiFoundryIpRules = [for ip in aiFoundryIpAllowList: {
@@ -655,7 +655,7 @@ module aiFoundryService './cognitive-services/accounts/main.bicep' = {
     restrictOutboundNetworkAccess: azureNetworkIsolation
     publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
     sku: 'S0'
-    deployments: deploySampleOpenAiModels ? openAiSampleModels : []
+    deployments: deploySampleModels ? sampleModelDeployments : []
     connections: aiFoundryServiceConnections
     projects: aiFoundryServiceProjects
     tags: tags

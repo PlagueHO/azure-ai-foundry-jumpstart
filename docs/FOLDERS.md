@@ -25,7 +25,7 @@ This document describes the folder structure of the Azure AI Foundry Jumpstart S
     - `main.bicep`, `main.bicepparam`: Main Bicep templates and parameters.
     - `bicepconfig.json`: Bicep configuration.
     - `abbreviations.json`: Abbreviations used in Bicep modules.
-    - `sample-openai-models.json`: List of OpenAI models to deploy.
+    - `sample-model-deployments.json`: List of model deployments to deploy (includes OpenAI and other AI models).
     - **core/**: Core Bicep modules (e.g., AI, security).
     - **types/**: Custom Bicep type definitions (e.g., for AI resources).
 - **sample-data/**

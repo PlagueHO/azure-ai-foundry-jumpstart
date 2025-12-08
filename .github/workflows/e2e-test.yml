@@ -23,8 +23,8 @@ on:
         description: "Whether to deploy the application resources in a network isolated environment"
         required: true
         type: string
-      DEPLOY_SAMPLE_OPENAI_MODELS:
-        description: "Whether to deploy the sample OpenAI models"
+      DEPLOY_SAMPLE_MODELS:
+        description: "Whether to deploy the sample model deployments"
         required: true
         type: string
 
@@ -48,7 +48,7 @@ jobs:
       AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
       AZURE_ENV_NAME: ${{ inputs.AZURE_ENV_NAME }}
       AZURE_NETWORK_ISOLATION: ${{ inputs.AZURE_NETWORK_ISOLATION }}
-      DEPLOY_SAMPLE_OPENAI_MODELS: ${{ inputs.DEPLOY_SAMPLE_OPENAI_MODELS }}
+      DEPLOY_SAMPLE_MODELS: ${{ inputs.DEPLOY_SAMPLE_MODELS }}
     secrets:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
@@ -63,7 +63,7 @@ jobs:
       AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
       AZURE_ENV_NAME: ${{ inputs.AZURE_ENV_NAME }}
       AZURE_NETWORK_ISOLATION: ${{ inputs.AZURE_NETWORK_ISOLATION }}
-      DEPLOY_SAMPLE_OPENAI_MODELS: ${{ inputs.DEPLOY_SAMPLE_OPENAI_MODELS }}
+      DEPLOY_SAMPLE_MODELS: ${{ inputs.DEPLOY_SAMPLE_MODELS }}
     secrets:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}

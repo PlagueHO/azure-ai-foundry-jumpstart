@@ -85,10 +85,10 @@ strategy:
     include:
       - name: public
         AZURE_NETWORK_ISOLATION: 'false'
-        DEPLOY_SAMPLE_OPENAI_MODELS: 'true'
+        DEPLOY_SAMPLE_MODELS: 'true'
       - name: isolated
         AZURE_NETWORK_ISOLATION: 'true'
-        DEPLOY_SAMPLE_OPENAI_MODELS: 'false'
+        DEPLOY_SAMPLE_MODELS: 'false'
 ```
 
 ## 5. Rationale & Context
@@ -119,10 +119,10 @@ jobs:
         include:
           - name: public
             AZURE_NETWORK_ISOLATION: 'false'
-            DEPLOY_SAMPLE_OPENAI_MODELS: 'true'
+            DEPLOY_SAMPLE_MODELS: 'true'
           - name: isolated
             AZURE_NETWORK_ISOLATION: 'true'
-            DEPLOY_SAMPLE_OPENAI_MODELS: 'false'
+            DEPLOY_SAMPLE_MODELS: 'false'
 ```
 
 ## 7. Validation Criteria

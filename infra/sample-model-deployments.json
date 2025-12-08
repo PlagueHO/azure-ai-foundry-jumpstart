@@ -152,7 +152,7 @@
     "name": "gpt-realtime",
     "sku": {
       "name": "GlobalStandard",
-      "capacity": 100
+      "capacity": 10
     }
   },
   {
@@ -164,7 +164,7 @@
     "name": "gpt-realtime-mini",
     "sku": {
       "name": "GlobalStandard",
-      "capacity": 100
+      "capacity": 20
     }
   },
   {

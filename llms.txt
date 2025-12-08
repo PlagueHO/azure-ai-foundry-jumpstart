@@ -38,7 +38,7 @@ azure-ai-foundry-jumpstart/
 │   ├── main.json
 │   ├── sample-ai-foundry-projects.json
 │   ├── sample-data-containers.json
-│   ├── sample-openai-models.json
+│   ├── sample-model-deployments.json
 │   ├── cognitive-services/  # CognitiveServices modules for Project mode
 │   │   └── accounts/
 │   ├── core/            # Core AVM modules

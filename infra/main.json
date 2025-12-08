@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "17445375849251166107"
+      "templateHash": "2620333483396730348"
     }
   },
   "parameters": {
@@ -121,11 +121,11 @@
         "description": "Disable API key authentication for AI Services and AI Search. Defaults to false."
       }
     },
-    "deploySampleOpenAiModels": {
+    "deploySampleModels": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Deploy the sample OpenAI model deployments listed in ./sample-openai-models.json. Defaults to false"
+        "description": "Deploy the sample model deployments listed in ./sample-model-deployments.json. Defaults to false"
       }
     },
     "deploySampleData": {
@@ -513,7 +513,7 @@
         "name": "gpt-realtime",
         "sku": {
           "name": "GlobalStandard",
-          "capacity": 100
+          "capacity": 10
         }
       },
       {
@@ -525,7 +525,7 @@
         "name": "gpt-realtime-mini",
         "sku": {
           "name": "GlobalStandard",
-          "capacity": 100
+          "capacity": 20
         }
       },
       {
@@ -575,7 +575,7 @@
     "bastionHostName": "[format('{0}{1}', variables('abbrs').networkBastionHosts, parameters('environmentName'))]",
     "networkDefaultAction": "[if(parameters('azureNetworkIsolation'), 'Deny', 'Allow')]",
     "sampleDataContainersArray": "[variables('$fxv#1')]",
-    "openAiSampleModels": "[variables('$fxv#2')]",
+    "sampleModelDeployments": "[variables('$fxv#2')]",
     "projectsFromJson": "[variables('$fxv#3')]",
     "effectiveProjectList": "[if(parameters('aiFoundryProjectDeploy'), if(parameters('aiFoundryProjectsFromJson'), variables('projectsFromJson'), createArray(createObject('Name', parameters('aiFoundryProjectName'), 'FriendlyName', parameters('aiFoundryProjectFriendlyName'), 'Description', parameters('aiFoundryProjectDescription')))), createArray())]",
     "subnets": [
@@ -34329,7 +34329,7 @@
           "sku": {
             "value": "S0"
           },
-          "deployments": "[if(parameters('deploySampleOpenAiModels'), createObject('value', variables('openAiSampleModels')), createObject('value', createArray()))]",
+          "deployments": "[if(parameters('deploySampleModels'), createObject('value', variables('sampleModelDeployments')), createObject('value', createArray()))]",
           "connections": {
             "value": "[concat(if(parameters('azureAiSearchDeploy'), createArray(createObject('category', 'CognitiveSearch', 'connectionProperties', createObject('authType', 'AAD'), 'metadata', createObject('Type', 'azure_ai_search', 'ApiType', 'Azure', 'ApiVersion', '2024-05-01-preview', 'DeploymentApiVersion', '2023-11-01', 'Location', parameters('location'), 'ResourceId', reference('aiSearchService').outputs.resourceId.value), 'name', replace(variables('aiSearchServiceName'), '-', ''), 'target', reference('aiSearchService').outputs.endpoint.value, 'isSharedToAll', true())), createArray()), if(parameters('deploySampleData'), createArray(createObject('category', 'AzureBlob', 'connectionProperties', createObject('authType', 'AAD'), 'metadata', createObject('Type', 'azure_storage_account', 'ApiType', 'Azure', 'ApiVersion', '2023-10-01', 'DeploymentApiVersion', '2023-10-01', 'Location', parameters('location'), 'ResourceId', reference('sampleDataStorageAccount').outputs.resourceId.value, 'AccountName', variables('sampleDataStorageAccountName'), 'ContainerName', 'default'), 'name', replace(variables('sampleDataStorageAccountName'), '-', ''), 'target', reference('sampleDataStorageAccount').outputs.primaryBlobEndpoint.value, 'isSharedToAll', true())), createArray()))]"
           },
