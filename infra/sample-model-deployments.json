@@ -159,7 +159,7 @@
     "model": {
       "format": "OpenAI",
       "name": "gpt-realtime-mini",
-      "version": "2025-08-28"
+      "version": "2025-10-06"
     },
     "name": "gpt-realtime-mini",
     "sku": {
