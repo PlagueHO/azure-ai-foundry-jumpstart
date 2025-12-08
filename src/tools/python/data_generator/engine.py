@@ -242,7 +242,7 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
             # Extract content from SK FunctionResult
             # Result is a FunctionResult with a .value containing list of
             # ChatMessageContent
-            if hasattr(result, 'value') and result.value:
+            if result is not None and hasattr(result, 'value') and result.value:
                 # result.value is a list of ChatMessageContent objects
                 if isinstance(result.value, list) and result.value:
                     # Get the content from the first message
@@ -250,10 +250,10 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
                     if hasattr(first_message, 'content'):
                         return str(first_message.content)
                 return str(result.value)
-            return str(result)
+            return str(result) if result is not None else ""
 
         # Return the async function directly instead of wrapping it
-        return _async_runner
+        return _async_runner  # type: ignore[return-value]
 
     # --------------------------------------------------------------------- #
     # Public façades                                                        #
@@ -390,7 +390,7 @@ class DataGenerator:  # pylint: disable=too-many-instance-attributes
                 max_tokens=16000,
             )
             # Call the async function directly (no longer wrapped in sync runner)
-            raw_output: str = await prompt_fn(index=index)
+            raw_output: str = await prompt_fn(index=index)  # type: ignore[misc]
             processed = self.tool.post_process(raw_output, output_format)
 
             await asyncio.to_thread(
