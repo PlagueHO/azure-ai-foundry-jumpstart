@@ -22,16 +22,8 @@ It automates the deployment of the services using the same approach as the instr
 
 > [!IMPORTANT]
 > Zero-trust with network isolation is the default configuration for this solution accelerator. But you can choose to deploy the resources without a virtual network and public endpoints if you prefer. See the [Configuration Options](#configuration-options) section for more details.
-> When deployed with zero-trust, the Azure AI Foundry hub and project are not accessible from the public internet. You will need to use a VPN or Azure Bastion to access the Azure AI Foundry environment.
+> When deployed with zero-trust, the Azure AI Foundry environment is not accessible from the public internet. You will need to use a VPN or Azure Bastion to access it.
 
-## Project Modes
-
-This solution can deploy Foundry with and without support for Azure AI Foundry Hubs. By default, the solution accelerator deploys the Azure AI Foundry without an Azure AI Foundry Hub with projects being added to the AI Foundry resource. If you want to use the Hub-based project mode, you can enable it in the configuration.
-
-> [!NOTE]
-> It is recommended to use the Foundry project mode for new projects as it simplifies the resource requirements and is the newer approach. Deployment of a Foundry Hub is provided for backward compatibility with existing projects and is not recommended for new projects. Hub deployment support may be removed from this solution accelerator in the future.
-
-For more information on the project modes, see the [The AI Foundry document](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry#which-type-of-project-do-i-need).
 
 ## Requirements
 
@@ -46,17 +38,18 @@ Before you begin, ensure you have the following prerequisites in place:
 
 There are several features of the solution accelerator that are worth highlighting:
 
-- **Project modes**: Support for both traditional Hub-based and streamlined Foundry project deployments. See [Project Modes](docs/DEPLOYMENT_MODES.md) for details.
-- **Hybrid project mode**: Support for a hybrid deployment where both Azure AI Foundry Hub and AI Foundry service with Project Mode are deployed, allowing for both Hub-based and AI Foundry based projects to be created.
 - **Zero-trust**: Support for deploying a zero-trust environment (network isolation).
 - **Managed identities**: Use of managed identities for Azure resources to authenticate to each other. API keys are not used and can optionally be disabled.
 - **Azure Verified Modules**: Use of Bicep [Azure verified modules](https://aka.ms/avm) to deploy the resources where possible.
-- **Hub deployment and supporting resources**: Deployment of an Azure AI Hub and required supporting resources when using the Hub-based project mode.
-- **Project deployment**: Optional deployment of [Azure AI Foundry projects during](https://learn.microsoft.com/azure/ai-foundry/concepts/ai-resources#organize-work-in-projects-for-customization) using the selected project mode.
+- **Project deployment**: Optional deployment of [Azure AI Foundry projects](https://learn.microsoft.com/azure/ai-foundry/concepts/ai-resources#organize-work-in-projects-for-customization) to the AI Services resource.
 - **Diagnostic settings**: Diagnostic settings are configured for all resources to send logs to a Log Analytics workspace.
 - **Model deployment**: Optionally deploy a selection of current AI models, speeding up getting started.
 - **Sample data deployment**: Optionally upload sample data to an additional sample data storage account help you get started with Azure AI Foundry.
 - **Sample data creation**: Data generation tool to create custom synthetic data for using with Azure AI Foundry.
+
+> [!WARNING]
+> **Hub Mode Deprecated** - As of December 2025, Azure AI Foundry Hub mode support has been removed from this solution accelerator. The solution now deploys only AI Services-based projects (Microsoft.CognitiveServices/accounts), which is the recommended approach. The Hub mode (Microsoft.MachineLearningServices/workspaces) required additional supporting resources (Key Vault, Storage Account, Container Registry) and is no longer necessary for Azure AI Foundry deployments. If you need Hub mode support, please use a previous version of this repository.
+
 
 ## Deploying
 

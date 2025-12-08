@@ -21,9 +21,8 @@ Deployment behavior can be tailored using environment variables, including:
 - **Sample Data and Model Deployment**: Toggle deployment of sample OpenAI models and sample data containers.
 - **Network Isolation**: Enable or disable VNet isolation and configure IP allow lists.
 - **API Key Management**: Optionally disable API keys for Azure AI services.
-- **Resource Sizing and Selection**: Choose SKUs for Azure AI Search and control deployment of optional infrastructure like Bastion and Container Registry.
-- **Access Control**: Specify principal IDs and types for hub access.
-- **Security Enhancements**: Enable Key Vault purge protection.
+- **Resource Sizing and Selection**: Choose SKUs for Azure AI Search and control deployment of optional infrastructure like Bastion.
+- **Access Control**: Specify principal IDs and types for Azure AI Foundry access.
 
 For a full list of configuration options, see [CONFIGURATION_OPTIONS.md](../CONFIGURATION_OPTIONS.md).
 

@@ -7,7 +7,6 @@ The solution accelerator supports two primary architectural approaches:
 1. **With Network Isolation**: All resources deployed with private endpoints and network isolation
 2. **Without Network Isolation**: All resources deployed with public endpoints
 
-Both architectural approaches can optionally include an Azure AI Foundry Hub for enhanced ML workspace capabilities. See [Project Modes](PROJECT_MODES.md) for detailed configuration options and use cases.
 
 ## Core Architecture Components
 
@@ -27,11 +26,7 @@ These resources are deployed based on configuration:
 
 | Resource | When Deployed | Purpose | AVM Reference |
 |----------|---------------|---------|---------------|
-| Azure AI Foundry Hub | `AZURE_AI_FOUNDRY_HUB_DEPLOY=true` | Enhanced ML workspace capabilities | [avm/res/machine-learning-services/workspace](https://github.com/Azure/bicep-registry-modules/tree/main/modules/machine-learning-services/workspace) |
-| Azure Storage Account | Hub deployment | Required for ML workspace functionality | [avm/res/storage/storage-account](https://github.com/Azure/bicep-registry-modules/tree/main/modules/storage/storage-account) |
-| Azure Key Vault | Hub deployment | Secure secret management for ML workspaces | [avm/res/key-vault/vault](https://github.com/Azure/bicep-registry-modules/tree/main/modules/key-vault/vault) |
 | Azure AI Search | `AZURE_AI_SEARCH_DEPLOY=true` | Search and indexing capabilities | [avm/res/search/search-service](https://github.com/Azure/bicep-registry-modules/tree/main/modules/search/search-service) |
-| Azure Container Registry | `AZURE_CONTAINER_REGISTRY_DEPLOY=true` | Container image management | [avm/res/container-registry/registry](https://github.com/Azure/bicep-registry-modules/tree/main/modules/container-registry/registry) |
 | Sample Data Storage | `DEPLOY_SAMPLE_DATA=true` | Dedicated storage for sample data | [avm/res/storage/storage-account](https://github.com/Azure/bicep-registry-modules/tree/main/modules/storage/storage-account) |
 
 ## Architecture with Network Isolation
@@ -60,11 +55,7 @@ The following diagram illustrates the architecture when network isolation is ena
 
 | Resource | Condition | Deployment Details | AVM Reference |
 |----------|-----------|-------------------|---------------|
-| Azure AI Foundry Hub | `AZURE_AI_FOUNDRY_HUB_DEPLOY=true` | Deployed with private endpoint (PE) | [avm/res/machine-learning-services/workspace](https://github.com/Azure/bicep-registry-modules/tree/main/modules/machine-learning-services/workspace) |
-| Azure Storage Account | Hub deployment | Deployed with private endpoint (PE) | [avm/res/storage/storage-account](https://github.com/Azure/bicep-registry-modules/tree/main/modules/storage/storage-account) |
-| Azure Key Vault | Hub deployment | Deployed with private endpoint (PE) | [avm/res/key-vault/vault](https://github.com/Azure/bicep-registry-modules/tree/main/modules/key-vault/vault) |
 | Azure AI Search | `AZURE_AI_SEARCH_DEPLOY=true` | Deployed with private endpoint (PE) | [avm/res/search/search-service](https://github.com/Azure/bicep-registry-modules/tree/main/modules/search/search-service) |
-| Azure Container Registry | `AZURE_CONTAINER_REGISTRY_DEPLOY=true` | Deployed with private endpoint (PE) | [avm/res/container-registry/registry](https://github.com/Azure/bicep-registry-modules/tree/main/modules/container-registry/registry) |
 | Sample Data Storage | `DEPLOY_SAMPLE_DATA=true` | Deployed with private endpoint (PE) | [avm/res/storage/storage-account](https://github.com/Azure/bicep-registry-modules/tree/main/modules/storage/storage-account) |
 | Azure Bastion Host | `AZURE_BASTION_HOST_DEPLOY=true` | Required for private endpoint access | [avm/res/network/bastion-host](https://github.com/Azure/bicep-registry-modules/tree/main/modules/network/bastion-host) |
 
@@ -94,11 +85,7 @@ The following diagram illustrates the architecture when network isolation is dis
 
 | Resource | Condition | Deployment Details | AVM Reference |
 |----------|-----------|-------------------|---------------|
-| Azure AI Foundry Hub | `AZURE_AI_FOUNDRY_HUB_DEPLOY=true` | Public endpoint enabled | [avm/res/machine-learning-services/workspace](https://github.com/Azure/bicep-registry-modules/tree/main/modules/machine-learning-services/workspace) |
-| Azure Storage Account | Hub deployment | Public endpoint enabled | [avm/res/storage/storage-account](https://github.com/Azure/bicep-registry-modules/tree/main/modules/storage/storage-account) |
-| Azure Key Vault | Hub deployment | Public endpoint enabled | [avm/res/key-vault/vault](https://github.com/Azure/bicep-registry-modules/tree/main/modules/key-vault/vault) |
 | Azure AI Search | `AZURE_AI_SEARCH_DEPLOY=true` | Public endpoint enabled | [avm/res/search/search-service](https://github.com/Azure/bicep-registry-modules/tree/main/modules/search/search-service) |
-| Azure Container Registry | `AZURE_CONTAINER_REGISTRY_DEPLOY=true` | Public endpoint enabled | [avm/res/container-registry/registry](https://github.com/Azure/bicep-registry-modules/tree/main/modules/container-registry/registry) |
 | Sample Data Storage | `DEPLOY_SAMPLE_DATA=true` | Public endpoint enabled | [avm/res/storage/storage-account](https://github.com/Azure/bicep-registry-modules/tree/main/modules/storage/storage-account) |
 
 ## Network Topology (Network Isolation Mode)
@@ -112,13 +99,11 @@ The virtual network is segmented into multiple subnets to enable granular networ
 | Subnet              | Address‑Prefix    | Purpose                                                    |
 |---------------------|------------------|-------------------------------------------------------------|
 | `Default`           | 10.0.0.0/24      | Reserved for future use (not used)                          |
-| `AiServices`        | 10.0.1.0/24      | AI Foundry Hub, AI Search & AI Services private endpoints   |
-| `Data`              | 10.0.2.0/24      | Key Vault, Storage private endpoints (when Hub is deployed) |
+| `AiServices`        | 10.0.1.0/24      | AI Search & AI Services private endpoints   |
+| `Data`              | 10.0.2.0/24      | Sample Data Storage private endpoints (when sample data is enabled) |
 | `Management`        | 10.0.3.0/24      | Reserved for future management endpoints (currently unused) |
 | `AzureBastionSubnet`| 10.0.255.0/27    | Bastion gateway (optional)                                  |
 
-> **Note:** The `Management` subnet is currently empty and reserved for future use (e.g., private endpoints for monitoring or management).
-> The `Data` subnet is only used when the Hub is deployed since Key Vault and Storage Account are Hub dependencies.
 
 All private endpoints are placed in their dedicated subnets, isolating traffic and enabling granular NSG rules if required.
 
@@ -132,13 +117,10 @@ flowchart RL
         subgraph VNet["10.0.0.0/16 – Virtual Network"]
             direction RL
             subgraph S1["AiServices (10.0.1.0/24)"]
-                PE_Hub["PE: AI Foundry Hub (Optional)"]    
                 PE_Services["PE: AI Services"]
                 PE_Search["PE: AI Search (Optional)"]
             end
-            subgraph S2["Data (10.0.2.0/24) - Hub dependencies"]
-                PE_AKV["PE: Key Vault (Hub only)"]
-                PE_Storage["PE: Storage (Hub only)"]
+            subgraph S2["Data (10.0.2.0/24)"]
                 PE_SampleStorage["PE: Sample Storage (Optional)"]
             end
             subgraph S3["Management (10.0.3.0/24)"]
@@ -154,58 +136,35 @@ flowchart RL
 
     LA ---|Diagnostic Settings| PE_Search
     LA ---|Diagnostic Settings| PE_Services
-    LA ---|Diagnostic Settings| PE_Hub
-    LA ---|Diagnostic Settings| PE_Storage
     LA ---|Diagnostic Settings| PE_SampleStorage
     LA ---|Diagnostic Settings| Bastion
     AI --- LA
 ```
 
-## Hub vs. AI Services Projects
-
-The solution supports deploying projects to either the AI Foundry resource directly or to the optional Hub:
-
-| Aspect | Hub Projects | AI Services Projects |
-|--------|--------------|---------------------|
-| **Resource Type** | `Microsoft.MachineLearningServices/workspaces` with `kind: 'Project'` | `Microsoft.CognitiveServices/accounts/projects` |
-| **Dependencies** | Requires Hub, Storage, Key Vault | Only requires AI Services resource |
-| **Capabilities** | Full ML workspace features | AI Foundry focused capabilities |
-| **Network Complexity** | Higher (Hub + dependencies) | Lower (AI Services only) |
-| **Cost** | Higher due to Hub dependencies | Lower, optimized resource count |
-| **Configuration** | `AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY=true` | `AZURE_AI_FOUNDRY_PROJECT_DEPLOY=true` (with Hub disabled) |
+> **Note:** The `Management` subnet is currently empty and reserved for future use (e.g., private endpoints for monitoring or management).
 
 ## Configuration Examples
 
-### Minimal AI Services Only
+### Minimal Deployment (Public Endpoints)
 
 ```bash
-azd env set AZURE_AI_FOUNDRY_HUB_DEPLOY false
 azd env set AZURE_AI_FOUNDRY_PROJECT_DEPLOY true
 azd env set AZURE_NETWORK_ISOLATION false
 ```
 
-**Result**: AI Services with projects, no Hub, public endpoints.
+**Result**: AI Services with projects, public endpoints.
 
-### Full Hub with Network Isolation
-
-```bash
-azd env set AZURE_AI_FOUNDRY_HUB_DEPLOY true
-azd env set AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY true
-azd env set AZURE_NETWORK_ISOLATION true
-```
-
-**Result**: AI Services + Hub + Hub projects, private endpoints, full ML capabilities.
-
-### Hybrid Configuration
+### Full Deployment with Network Isolation
 
 ```bash
-azd env set AZURE_AI_FOUNDRY_HUB_DEPLOY true
-azd env set AZURE_AI_FOUNDRY_HUB_PROJECT_DEPLOY false
 azd env set AZURE_AI_FOUNDRY_PROJECT_DEPLOY true
+azd env set AZURE_AI_SEARCH_DEPLOY true
+azd env set DEPLOY_SAMPLE_DATA true
 azd env set AZURE_NETWORK_ISOLATION true
+azd env set AZURE_BASTION_HOST_DEPLOY true
 ```
 
-**Result**: AI Services + Hub + AI Services projects, private endpoints.
+**Result**: AI Services + AI Search + Sample Data, private endpoints, Bastion access.
 
 ## Security & Best Practices
 
@@ -215,4 +174,4 @@ azd env set AZURE_NETWORK_ISOLATION true
 4. **Azure Verified Modules** – All resources are deployed using [Azure Verified Modules (AVM)](https://aka.ms/avm).
 5. **Network Isolation** – When enabled, all PaaS services use private endpoints and disable public access.
 6. **Zero Trust** – Network isolation deployment follows Microsoft's Zero Trust security model and Secure Future Initiative.
-7. **Flexible Architecture** – Choose between simple AI Services-only deployment or full Hub capabilities based on requirements.
+

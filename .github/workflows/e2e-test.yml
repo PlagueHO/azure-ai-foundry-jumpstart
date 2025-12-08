@@ -27,10 +27,6 @@ on:
         description: "Whether to deploy the sample OpenAI models"
         required: true
         type: string
-      AZURE_AI_FOUNDRY_HUB_DEPLOY:
-        description: "Whether to deploy the Azure AI Foundry Hub"
-        required: true
-        type: string
 
     secrets:
       AZURE_TENANT_ID:

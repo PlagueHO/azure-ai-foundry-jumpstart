@@ -8,10 +8,6 @@ echo "Starting sample data upload script..."
 # Get environment variables from azd
 deploy_sample_data=$(azd env get-value DEPLOY_SAMPLE_DATA)
 storage_account_name=$(azd env get-value AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_NAME)
-if [ -z "$storage_account_name" ]; then
-    # Fallback to foundry storage account for backward compatibility
-    storage_account_name=$(azd env get-value AZURE_STORAGE_ACCOUNT_NAME)
-fi
 resource_group_name=$(azd env get-value AZURE_RESOURCE_GROUP)
 azure_network_isolation=$(azd env get-value AZURE_NETWORK_ISOLATION)
 
@@ -21,7 +17,7 @@ if [ "$deploy_sample_data" != "true" ]; then
 fi
 
 if [ -z "$storage_account_name" ]; then
-    echo "Error: Sample data storage account name not found. Ensure 'azd env get-value AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_NAME' or 'azd env get-value AZURE_STORAGE_ACCOUNT_NAME' works." >&2
+    echo "Error: Sample data storage account name not found. Ensure 'azd env get-value AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_NAME' works." >&2
     exit 1
 fi
 

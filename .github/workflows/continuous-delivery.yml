@@ -38,17 +38,7 @@ jobs:
           - name: project-public
             AZURE_NETWORK_ISOLATION: 'false'
             DEPLOY_SAMPLE_OPENAI_MODELS: 'true'
-            AZURE_AI_FOUNDRY_HUB_DEPLOY: 'false'
           - name: project-isolated
-            AZURE_NETWORK_ISOLATION: 'true'
-            DEPLOY_SAMPLE_OPENAI_MODELS: 'false'
-            AZURE_AI_FOUNDRY_HUB_DEPLOY: 'false'
-          - name: hub-public
-            AZURE_AI_FOUNDRY_HUB_DEPLOY: 'true'
-            AZURE_NETWORK_ISOLATION: 'false'
-            DEPLOY_SAMPLE_OPENAI_MODELS: 'true'
-          - name: hub-isolated
-            AZURE_AI_FOUNDRY_HUB_DEPLOY: 'true'
             AZURE_NETWORK_ISOLATION: 'true'
             DEPLOY_SAMPLE_OPENAI_MODELS: 'false'
 
@@ -61,7 +51,6 @@ jobs:
       AZURE_ENV_NAME: ${{ format('aifj-{0}-{1}', matrix.name, github.run_id) }}
       AZURE_NETWORK_ISOLATION: ${{ matrix.AZURE_NETWORK_ISOLATION }}
       DEPLOY_SAMPLE_OPENAI_MODELS: ${{ matrix.DEPLOY_SAMPLE_OPENAI_MODELS }}
-      AZURE_AI_FOUNDRY_HUB_DEPLOY: ${{ matrix.AZURE_AI_FOUNDRY_HUB_DEPLOY }}
     secrets:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
