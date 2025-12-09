@@ -26,30 +26,6 @@
   {
     "model": {
       "format": "OpenAI",
-      "name": "gpt-5.1-codex",
-      "version": "2025-11-13"
-    },
-    "name": "gpt-5.1-codex",
-    "sku": {
-      "name": "GlobalStandard",
-      "capacity": 50
-    }
-  },
-  {
-    "model": {
-      "format": "OpenAI",
-      "name": "gpt-5.1-codex-max",
-      "version": "2025-12-04"
-    },
-    "name": "gpt-5.1-codex-max",
-    "sku": {
-      "name": "GlobalStandard",
-      "capacity": 50
-    }
-  },
-  {
-    "model": {
-      "format": "OpenAI",
       "name": "gpt-5.1-codex-mini",
       "version": "2025-11-13"
     },
