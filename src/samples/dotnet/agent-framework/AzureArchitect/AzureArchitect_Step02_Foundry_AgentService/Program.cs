@@ -2,12 +2,13 @@
 
 // This sample shows how to create and use a simple AI agent with Azure Foundry Agents as the backend.
 
-using Azure.AI.Agents.Persistent;
+using Azure.AI.Projects;
+using Azure.AI.Projects.OpenAI;
 using Azure.Identity;
 using Microsoft.Agents.AI;
 
-var endpoint = Environment.GetEnvironmentVariable("AZURE_FOUNDRY_PROJECT_ENDPOINT") ?? throw new InvalidOperationException("AZURE_FOUNDRY_PROJECT_ENDPOINT is not set.");
-var deploymentName = Environment.GetEnvironmentVariable("AZURE_FOUNDRY_PROJECT_DEPLOYMENT_NAME") ?? "gpt-4-1";
+string endpoint = Environment.GetEnvironmentVariable("AZURE_FOUNDRY_PROJECT_ENDPOINT") ?? throw new InvalidOperationException("AZURE_FOUNDRY_PROJECT_ENDPOINT is not set.");
+string deploymentName = Environment.GetEnvironmentVariable("AZURE_FOUNDRY_PROJECT_DEPLOYMENT_NAME") ?? "gpt-4o-mini";
 
 const string ArchitectName = "AzureArchitect";
 const string ArchitectInstructions = """
@@ -18,38 +19,37 @@ You always review the latest Azure best practices and patterns to ensure your re
 - keep responses concise and to the point
 """;
 
-// Get a client to create/retrieve server side agents with.
-var persistentAgentsClient = new PersistentAgentsClient(endpoint, new AzureCliCredential());
+// Get a client to create/retrieve/delete server side agents with Azure Foundry Agents.
+AIProjectClient aiProjectClient = new(new Uri(endpoint), new AzureCliCredential());
 
-// You can create a server side persistent agent with the Azure.AI.Agents.Persistent SDK.
-var agentMetadata = await persistentAgentsClient.Administration.CreateAgentAsync(
-    model: deploymentName,
-    name: ArchitectName + " 1",
-    instructions: ArchitectInstructions);
+// Define the agent you want to create. (Prompt Agent in this case)
+AgentVersionCreationOptions options = new(new PromptAgentDefinition(model: deploymentName) {
+    Instructions = ArchitectInstructions
+    });
 
-// You can retrieve an already created server side persistent agent as an AIAgent.
-AIAgent agent1 = await persistentAgentsClient.GetAIAgentAsync(agentMetadata.Value.Id);
+// Azure.AI.Agents SDK creates and manages agent by name and versions.
+// You can create a server side agent version with the Azure.AI.Agents SDK client below.
+AgentVersion agentVersion = aiProjectClient.Agents.CreateAgentVersion(agentName: ArchitectName, options);
 
-// You can also create a server side persistent agent and return it as an AIAgent directly.
-AIAgent agent2 = await persistentAgentsClient.CreateAIAgentAsync(
-    model: deploymentName,
-    name: ArchitectName + " 2",
-    instructions: ArchitectInstructions);
+// You can retrieve an AIAgent for a already created server side agent version.
+AIAgent architectAgent = aiProjectClient.GetAIAgent(agentVersion);
 
-// Create a thread for agent1 to hold the conversation context.
-AgentThread thread = agent1.GetNewThread();
+// Invoke the agent with streaming support.
+Console.WriteLine("Question: I am building an AI agent in Azure using Microsoft Agent Framework. What Azure services can I use to host it and get 3 9's availability?\n");
+await foreach (AgentRunResponseUpdate update in architectAgent.RunStreamingAsync("I am building an AI agent in Azure using Microsoft Agent Framework. What Azure services can I use to host it and get 3 9's availability?"))
+{
+    Console.Write(update);
+}
 
-Console.WriteLine(await agent1.RunAsync("""
-    I am building an AI agent in Azure using Microsoft Agent Framework.
-    What Azure services can I use to host it and get 3 9's availability?
-    """, thread));
+Console.WriteLine("\n\n-------------------\n");
 
-Console.WriteLine("-------------------");
+Console.WriteLine("Question: I want to use Azure App Service, how do I ensure it is secure?\n");
+await foreach (AgentRunResponseUpdate update in architectAgent.RunStreamingAsync("I want to use Azure App Service, how do I ensure it is secure?"))
+{
+    Console.Write(update);
+}
 
-Console.WriteLine(await agent2.RunAsync("""
-    I want to use Azure App Service, how do I ensure it is secure?
-    """));
+Console.WriteLine("\n");
 
-// Cleanup for sample purposes.
-// await persistentAgentsClient.Administration.DeleteAgentAsync(agent1.Id);
-// await persistentAgentsClient.Administration.DeleteAgentAsync(agent2.Id);
+// Cleanup by agent name removes the agent version created.
+await aiProjectClient.Agents.DeleteAgentAsync(architectAgent.Name);
