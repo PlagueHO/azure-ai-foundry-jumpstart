@@ -26,18 +26,6 @@
   {
     "model": {
       "format": "OpenAI",
-      "name": "gpt-5",
-      "version": "2025-08-07"
-    },
-    "name": "gpt-5",
-    "sku": {
-      "name": "GlobalStandard",
-      "capacity": 50
-    }
-  },
-  {
-    "model": {
-      "format": "OpenAI",
       "name": "gpt-5-chat",
       "version": "2025-08-07"
     },
