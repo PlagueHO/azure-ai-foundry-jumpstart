@@ -20,7 +20,7 @@
     "name": "gpt-5.1-chat",
     "sku": {
       "name": "GlobalStandard",
-      "capacity": 100
+      "capacity": 50
     }
   },
   {
@@ -32,7 +32,7 @@
     "name": "gpt-5.1-codex",
     "sku": {
       "name": "GlobalStandard",
-      "capacity": 100
+      "capacity": 50
     }
   },
   {
@@ -44,7 +44,7 @@
     "name": "gpt-5.1-codex-max",
     "sku": {
       "name": "GlobalStandard",
-      "capacity": 100
+      "capacity": 50
     }
   },
   {
@@ -56,7 +56,7 @@
     "name": "gpt-5.1-codex-mini",
     "sku": {
       "name": "GlobalStandard",
-      "capacity": 100
+      "capacity": 50
     }
   },
   {
@@ -68,7 +68,7 @@
     "name": "gpt-5",
     "sku": {
       "name": "GlobalStandard",
-      "capacity": 100
+      "capacity": 50
     }
   },
   {
@@ -92,7 +92,7 @@
     "name": "gpt-5-mini",
     "sku": {
       "name": "GlobalStandard",
-      "capacity": 100
+      "capacity": 50
     }
   },
   {
