@@ -27,7 +27,7 @@
     "model": {
       "format": "OpenAI",
       "name": "gpt-5.1-codex",
-      "version": "2025-08-07"
+      "version": "2025-11-13"
     },
     "name": "gpt-5.1-codex",
     "sku": {

@@ -218,23 +218,30 @@ var subnets = [
     privateLinkServiceNetworkPolicies: 'Disabled'
   }
   {
-    // AiServices Subnet (AI Search, AI Services private endpoints)
+    // AiServices Subnet (AI Services private endpoints)
     name: 'AiServices'
     addressPrefix: '10.0.1.0/24'
     privateEndpointNetworkPolicies: 'Disabled'
     privateLinkServiceNetworkPolicies: 'Disabled'
   }
   {
-    // Data Subnet (Storage, Key Vault, Container Registry)
-    name: 'Data'
+    // Capability Hosts Subnet (Conversation History, Agent Definitions, File Storage, Vector Search)
+    name: 'CapabilityHosts'
     addressPrefix: '10.0.2.0/24'
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Disabled'
+  }
+  {
+    // Data Subnet (Sample Data Storage Account private endpoint)
+    name: 'Data'
+    addressPrefix: '10.0.3.0/24'
     privateEndpointNetworkPolicies: 'Disabled'
     privateLinkServiceNetworkPolicies: 'Disabled'
   }
   {
     // Management Subnet (Log Analytics, Application Insights) - Not used yet
     name: 'Management'
-    addressPrefix: '10.0.3.0/24'
+    addressPrefix: '10.0.4.0/24'
     privateEndpointNetworkPolicies: 'Disabled'
     privateLinkServiceNetworkPolicies: 'Disabled'
   }
@@ -399,7 +406,7 @@ module sampleDataStorageAccount 'br/public:avm/res/storage/storage-account:0.30.
           ]
         }
         service: 'blob'
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2] // Data subnet
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[3] // Data subnet
         tags: tags
       }
     ] : []
@@ -493,7 +500,7 @@ module aiSearchService 'br/public:avm/res/search/search-service:0.11.1' = if (az
             }
           ]
         }
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1] // AiServices Subnet
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2] // Capability Hosts
         tags: tags
       }
     ] : []
