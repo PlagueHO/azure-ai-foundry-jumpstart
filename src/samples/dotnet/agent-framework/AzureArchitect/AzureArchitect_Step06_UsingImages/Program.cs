@@ -7,6 +7,7 @@
 using System.ComponentModel;
 using Azure.AI.OpenAI;
 using Azure.Identity;
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using ModelContextProtocol.Client;
 using OpenAI;
@@ -49,7 +50,7 @@ var tools = new List<AITool>(await mcpClient.ListToolsAsync().ConfigureAwait(fal
     AIFunctionFactory.Create(CalculateCompositeSlo)
 };
 
-var agent = new AzureOpenAIClient(new Uri(endpoint), new AzureCliCredential())
+AIAgent agent = new AzureOpenAIClient(new Uri(endpoint), new AzureCliCredential())
     .GetChatClient(deploymentName)
     .CreateAIAgent(
         instructions: ReliabilityInstructions,
