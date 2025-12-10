@@ -83,7 +83,7 @@ Default: `true`.
 azd env set AZURE_NETWORK_ISOLATION false
 ```
 
-### AZURE_AI_FOUNDRY_HUB_IP_ALLOW_LIST
+### AZURE_FOUNDRY_HUB_IP_ALLOW_LIST
 
 Comma‑separated list of IPv4 addresses / CIDR ranges permitted when network isolation is enabled.  
 Default: `''` - no public IP addresses are allowed to access the AI Foundry hub.
@@ -91,7 +91,7 @@ Default: `''` - no public IP addresses are allowed to access the AI Foundry hub
 > Note: This setting is only relevant when `AZURE_NETWORK_ISOLATION` is set to `true`.
 
 ```powershell
-azd env set AZURE_AI_FOUNDRY_HUB_IP_ALLOW_LIST "203.0.113.10/32,198.51.100.0/24"
+azd env set AZURE_FOUNDRY_HUB_IP_ALLOW_LIST "203.0.113.10/32,198.51.100.0/24"
 ```
 
 ### AZURE_DISABLE_API_KEYS
@@ -109,17 +109,17 @@ The Microsoft Foundry Jumpstart supports multiple project deployment scenarios b
 
 ### Project Deployment Scenarios
 
-1. **No Projects**: Set `AZURE_AI_FOUNDRY_PROJECT_DEPLOY=false` to deploy only the AI Foundry/AI Services without any projects
-2. **Projects to AI Foundry/AI Services**: Set `AZURE_AI_FOUNDRY_PROJECT_DEPLOY=true` to deploy projects directly to the AI Foundry/AI Services resource.
+1. **No Projects**: Set `AZURE_FOUNDRY_PROJECT_DEPLOY=false` to deploy only the AI Foundry/AI Services without any projects
+2. **Projects to AI Foundry/AI Services**: Set `AZURE_FOUNDRY_PROJECT_DEPLOY=true` to deploy projects directly to the AI Foundry/AI Services resource.
 
 ### Project Sources
 
 The projects that will be deployed can be defined in two ways:
 
-- **Single Project**: Use the `AZURE_AI_FOUNDRY_PROJECT_*` parameters to define a single project
-- **Multiple Projects**: Set `AZURE_AI_FOUNDRY_PROJECTS_FROM_JSON=true` to load project definitions from the `infra/sample-ai-foundry-projects.json` file
+- **Single Project**: Use the `AZURE_FOUNDRY_PROJECT_*` parameters to define a single project
+- **Multiple Projects**: Set `AZURE_FOUNDRY_PROJECTS_FROM_JSON=true` to load project definitions from the `infra/sample-ai-foundry-projects.json` file
 
-### AZURE_AI_FOUNDRY_PROJECT_DEPLOY
+### AZURE_FOUNDRY_PROJECT_DEPLOY
 
 Enable deployment of Projects into the Microsoft Foundry/AI Services resource.
 When set to `false`, no project resources are created in the Microsoft Foundry/AI Services resource.
@@ -127,44 +127,44 @@ When set to `false`, no project resources are created in the Microsoft Foundry/A
 Default: `true`.
 
 ```powershell
-azd env set AZURE_AI_FOUNDRY_PROJECT_DEPLOY false
+azd env set AZURE_FOUNDRY_PROJECT_DEPLOY false
 ```
 
-### AZURE_AI_FOUNDRY_PROJECT_NAME
+### AZURE_FOUNDRY_PROJECT_NAME
 
 The name of the sample Microsoft Foundry Project. This is used in the resource name, so can not contain spaces or special characters.
 Default: `sample-project`.
 
 ```powershell
-azd env set AZURE_AI_FOUNDRY_PROJECT_NAME "my-ai-project"
+azd env set AZURE_FOUNDRY_PROJECT_NAME "my-ai-project"
 ```
 
-### AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME
+### AZURE_FOUNDRY_PROJECT_FRIENDLY_NAME
 
 Friendly display name for the sample Microsoft Foundry Project.
 Default: `Sample Project`.
 
 ```powershell
-azd env set AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME "My AI Project"
+azd env set AZURE_FOUNDRY_PROJECT_FRIENDLY_NAME "My AI Project"
 ```
 
-### AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION
+### AZURE_FOUNDRY_PROJECT_DESCRIPTION
 
 Optional description for the sample Microsoft Foundry Project shown in the Azure portal.
 Default: `A sample project for Microsoft Foundry`.
 
 ```powershell
-azd env set AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION "This is my first AI project."
+azd env set AZURE_FOUNDRY_PROJECT_DESCRIPTION "This is my first AI project."
 ```
 
-### AZURE_AI_FOUNDRY_PROJECTS_FROM_JSON
+### AZURE_FOUNDRY_PROJECTS_FROM_JSON
 
 Use projects defined in infra/sample-ai-foundry-projects.json file instead of the single project parameters.
-When set to `true`, the `AZURE_AI_FOUNDRY_PROJECT_NAME`, `AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME`, and `AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION` parameters are ignored.
+When set to `true`, the `AZURE_FOUNDRY_PROJECT_NAME`, `AZURE_FOUNDRY_PROJECT_FRIENDLY_NAME`, and `AZURE_FOUNDRY_PROJECT_DESCRIPTION` parameters are ignored.
 Default: `false`.
 
 ```powershell
-azd env set AZURE_AI_FOUNDRY_PROJECTS_FROM_JSON true
+azd env set AZURE_FOUNDRY_PROJECTS_FROM_JSON true
 ```
 
 The `infra/sample-ai-foundry-projects.json` file contains an array of project definitions. Each project definition includes the following properties:

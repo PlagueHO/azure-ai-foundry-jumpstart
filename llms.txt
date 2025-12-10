@@ -46,7 +46,7 @@ azure-ai-foundry-jumpstart/
 │   │   └── security/
 │   └── types/           # Custom Bicep types
 │       └── ai/
-│           └── aiFoundryProjectType.bicep
+│           └── foundryProjectType.bicep
 │
 ├── sample-data/         # Example datasets for testing/demo
 │   ├── financial-transactions/
@@ -116,7 +116,7 @@ azure-ai-foundry-jumpstart/
   - `main.bicep`: Entry point for environment deployment.
   - `core/ai/ai-foundry-project-datastore.bicep`: AI project data store module.
   - `core/security/role_aisearch.bicep`, `role_aiservice.bicep`: Security roles.
-  - `types/ai/aiFoundryProjectType.bicep`: Custom Bicep types.
+  - `types/ai/foundryProjectType.bicep`: Custom Bicep types.
 - `sample-data/`: Example datasets for validation and demonstration.
 - `scripts/`: Automation scripts for deployment and data management.
 - `src/`: Source code for CLI tools, data generators, and samples.
