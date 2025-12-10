@@ -24,7 +24,6 @@ It automates the deployment of the Microsoft Foundry services and capabilities, 
 > Zero-trust with network isolation is the default configuration for this solution accelerator. But you can choose to deploy the resources without a virtual network and public endpoints if you prefer. See the [Configuration Options](#configuration-options) section for more details.
 > When deployed with zero-trust, the Microsoft Foundry environment is not accessible from the public internet. You will need to use a VPN or Azure Bastion to access it.
 
-
 ## Requirements
 
 Before you begin, ensure you have the following prerequisites in place:
