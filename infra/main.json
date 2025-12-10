@@ -1,12 +1,115 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
-  "languageVersion": "2.0",
+  "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "2620333483396730348"
+      "version": "0.36.268.17113",
+      "templateHash": "11050172300280766675"
+    }
+  },
+  "definitions": {
+    "deploymentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of cognitive service account deployment."
+          }
+        },
+        "model": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of Cognitive Services account deployment model."
+              }
+            },
+            "format": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The format of Cognitive Services account deployment model."
+              }
+            },
+            "version": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The version of Cognitive Services account deployment model."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. Properties of Cognitive Services account deployment model."
+          }
+        },
+        "sku": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the resource model definition representing SKU."
+              }
+            },
+            "capacity": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The capacity of the resource model definition representing SKU."
+              }
+            },
+            "tier": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The tier of the resource model definition representing SKU."
+              }
+            },
+            "size": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The size of the resource model definition representing SKU."
+              }
+            },
+            "family": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The family of the resource model definition representing SKU."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource model definition representing SKU."
+          }
+        },
+        "raiPolicyName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of RAI policy."
+          }
+        },
+        "versionUpgradeOption": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version upgrade option."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a cognitive services account deployment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "cognitive-services/accounts/main.bicep"
+        }
+      }
     }
   },
   "parameters": {
@@ -128,6 +231,16 @@
         "description": "Deploy the sample model deployments listed in ./sample-model-deployments.json. Defaults to false"
       }
     },
+    "deploySampleModelsList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/deploymentType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Override the sample model deployments. When empty, loads from ./sample-model-deployments.json. When provided, uses the custom array instead."
+      }
+    },
     "deploySampleData": {
       "type": "bool",
       "defaultValue": false,
@@ -139,13 +252,13 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Deploy AI Foundry projects to the AI Foundry resource. Set to false to skip creation of Microsoft Foundry projects to the AI Foundry resource. Defaults to false."
+        "description": "Deploy Foundry projects to the Foundry resource. Set to false to skip creation of Microsoft Foundry projects to the Foundry resource. Defaults to false."
       }
     },
     "foundryProjectName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the AI Foundry project to create."
+        "description": "The name of the Foundry project to create."
       }
     },
     "foundryProjectDescription": {
@@ -375,22 +488,10 @@
       {
         "model": {
           "format": "OpenAI",
-          "name": "gpt-5-mini",
-          "version": "2025-08-07"
+          "name": "gpt-5.1-chat",
+          "version": "2025-11-13"
         },
-        "name": "gpt-5-mini",
-        "sku": {
-          "name": "GlobalStandard",
-          "capacity": 20
-        }
-      },
-      {
-        "model": {
-          "format": "OpenAI",
-          "name": "gpt-5-nano",
-          "version": "2025-08-07"
-        },
-        "name": "gpt-5-nano",
+        "name": "gpt-5.1-chat",
         "sku": {
           "name": "GlobalStandard",
           "capacity": 50
@@ -411,10 +512,10 @@
       {
         "model": {
           "format": "OpenAI",
-          "name": "gpt-4.1",
-          "version": "2025-04-14"
+          "name": "gpt-5-mini",
+          "version": "2025-08-07"
         },
-        "name": "gpt-4-1",
+        "name": "gpt-5-mini",
         "sku": {
           "name": "GlobalStandard",
           "capacity": 50
@@ -423,85 +524,13 @@
       {
         "model": {
           "format": "OpenAI",
-          "name": "gpt-4.1-mini",
-          "version": "2025-04-14"
+          "name": "gpt-5-nano",
+          "version": "2025-08-07"
         },
-        "name": "gpt-4-1-mini",
-        "sku": {
-          "name": "GlobalStandard",
-          "capacity": 100
-        }
-      },
-      {
-        "model": {
-          "format": "OpenAI",
-          "name": "gpt-4.1-nano",
-          "version": "2025-04-14"
-        },
-        "name": "gpt-4-1-nano",
-        "sku": {
-          "name": "GlobalStandard",
-          "capacity": 200
-        }
-      },
-      {
-        "model": {
-          "format": "OpenAI",
-          "name": "gpt-4o",
-          "version": "2024-11-20"
-        },
-        "name": "gpt-4o",
+        "name": "gpt-5-nano",
         "sku": {
           "name": "GlobalStandard",
           "capacity": 50
-        }
-      },
-      {
-        "model": {
-          "format": "OpenAI",
-          "name": "gpt-4o-transcribe",
-          "version": "2025-03-20"
-        },
-        "name": "gpt-4o-transcribe",
-        "sku": {
-          "name": "GlobalStandard",
-          "capacity": 100
-        }
-      },
-      {
-        "model": {
-          "format": "OpenAI",
-          "name": "gpt-4o-mini",
-          "version": "2024-07-18"
-        },
-        "name": "gpt-4o-mini",
-        "sku": {
-          "name": "GlobalStandard",
-          "capacity": 100
-        }
-      },
-      {
-        "model": {
-          "format": "OpenAI",
-          "name": "gpt-4o-mini-transcribe",
-          "version": "2025-03-20"
-        },
-        "name": "gpt-4o-mini-transcribe",
-        "sku": {
-          "name": "GlobalStandard",
-          "capacity": 100
-        }
-      },
-      {
-        "model": {
-          "format": "OpenAI",
-          "name": "o4-mini",
-          "version": "2025-04-16"
-        },
-        "name": "o4-mini",
-        "sku": {
-          "name": "GlobalStandard",
-          "capacity": 20
         }
       },
       {
@@ -520,7 +549,7 @@
         "model": {
           "format": "OpenAI",
           "name": "gpt-realtime-mini",
-          "version": "2025-08-28"
+          "version": "2025-10-06"
         },
         "name": "gpt-realtime-mini",
         "sku": {
@@ -535,6 +564,18 @@
           "version": "1"
         },
         "name": "text-embedding-3-large",
+        "sku": {
+          "name": "GlobalStandard",
+          "capacity": 150
+        }
+      },
+      {
+        "model": {
+          "format": "OpenAI",
+          "name": "text-embedding-3-small",
+          "version": "1"
+        },
+        "name": "text-embedding-3-small",
         "sku": {
           "name": "GlobalStandard",
           "capacity": 150
@@ -575,7 +616,8 @@
     "bastionHostName": "[format('{0}{1}', variables('abbrs').networkBastionHosts, parameters('environmentName'))]",
     "networkDefaultAction": "[if(parameters('azureNetworkIsolation'), 'Deny', 'Allow')]",
     "sampleDataContainersArray": "[variables('$fxv#1')]",
-    "sampleModelDeployments": "[variables('$fxv#2')]",
+    "sampleModelDeploymentsFromFile": "[variables('$fxv#2')]",
+    "sampleModelDeployments": "[if(empty(parameters('deploySampleModelsList')), variables('sampleModelDeploymentsFromFile'), parameters('deploySampleModelsList'))]",
     "projectsFromJson": "[variables('$fxv#3')]",
     "effectiveProjectList": "[if(parameters('foundryProjectDeploy'), if(parameters('foundryProjectsFromJson'), variables('projectsFromJson'), createArray(createObject('Name', parameters('foundryProjectName'), 'FriendlyName', parameters('foundryProjectFriendlyName'), 'Description', parameters('foundryProjectDescription')))), createArray())]",
     "subnets": [
@@ -592,14 +634,20 @@
         "privateLinkServiceNetworkPolicies": "Disabled"
       },
       {
-        "name": "Data",
+        "name": "CapabilityHosts",
         "addressPrefix": "10.0.2.0/24",
         "privateEndpointNetworkPolicies": "Disabled",
         "privateLinkServiceNetworkPolicies": "Disabled"
       },
       {
-        "name": "Management",
+        "name": "Data",
         "addressPrefix": "10.0.3.0/24",
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Disabled"
+      },
+      {
+        "name": "Management",
+        "addressPrefix": "10.0.4.0/24",
         "privateEndpointNetworkPolicies": "Disabled",
         "privateLinkServiceNetworkPolicies": "Disabled"
       },
@@ -620,7 +668,7 @@
   "resources": {
     "resourceGroup": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('resource-group-deployment-{0}', parameters('location'))]",
       "location": "[deployment().location]",
       "properties": {
@@ -1120,7 +1168,7 @@
     },
     "logAnalyticsWorkspace": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "logAnalytics-workspace-deployment",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
@@ -4224,7 +4272,7 @@
     },
     "applicationInsights": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "application-insights-deployment",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
@@ -4974,7 +5022,7 @@
     "virtualNetwork": {
       "condition": "[parameters('azureNetworkIsolation')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "virtualNetwork",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
@@ -6643,7 +6691,7 @@
     "storageBlobPrivateDnsZone": {
       "condition": "[and(parameters('deploySampleData'), parameters('azureNetworkIsolation'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "storage-blobservice-private-dns-zone",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
@@ -10018,7 +10066,7 @@
     "aiSearchPrivateDnsZone": {
       "condition": "[and(parameters('azureNetworkIsolation'), parameters('azureAiSearchDeploy'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "ai-search-private-dns-zone",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
@@ -13393,7 +13441,7 @@
     "aiServicesPrivateDnsZone": {
       "condition": "[parameters('azureNetworkIsolation')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "ai-services-private-dns-zone",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
@@ -16768,7 +16816,7 @@
     "aiServicesOpenAiDnsZone": {
       "condition": "[parameters('azureNetworkIsolation')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "ai-services-openai-dns-zone",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
@@ -20143,7 +20191,7 @@
     "aiServicesAiDnsZone": {
       "condition": "[parameters('azureNetworkIsolation')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "ai-services-ai-dns-zone",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
@@ -23518,7 +23566,7 @@
     "sampleDataStorageAccount": {
       "condition": "[parameters('deploySampleData')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "sample-data-storage-account-deployment",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
@@ -23581,7 +23629,7 @@
               "defaultAction": "[variables('networkDefaultAction')]"
             }
           },
-          "privateEndpoints": "[if(parameters('azureNetworkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('storageBlobPrivateDnsZone').outputs.resourceId.value))), 'service', 'blob', 'subnetResourceId', reference('virtualNetwork').outputs.subnetResourceIds.value[2], 'tags', variables('tags')))), createObject('value', createArray()))]",
+          "privateEndpoints": "[if(parameters('azureNetworkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('storageBlobPrivateDnsZone').outputs.resourceId.value))), 'service', 'blob', 'subnetResourceId', reference('virtualNetwork').outputs.subnetResourceIds.value[3], 'tags', variables('tags')))), createObject('value', createArray()))]",
           "sasExpirationPeriod": {
             "value": "180.00:00:00"
           },
@@ -31497,7 +31545,7 @@
     "sampleDataStorageAccountRoles": {
       "condition": "[parameters('deploySampleData')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "sample-data-storage-account-role-assignments",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
@@ -31520,8 +31568,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "11446855404387907315"
+              "version": "0.36.268.17113",
+              "templateHash": "13764937367365135434"
             },
             "name": "Storage Account Role Assignments",
             "description": "Creates role assignments on an Azure Storage Account."
@@ -31704,15 +31752,15 @@
         }
       },
       "dependsOn": [
-        "foundryService",
         "aiSearchService",
+        "foundryService",
         "resourceGroup"
       ]
     },
     "aiSearchService": {
       "condition": "[parameters('azureAiSearchDeploy')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "ai-search-service-deployment",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
@@ -31764,7 +31812,7 @@
               }
             }
           },
-          "privateEndpoints": "[if(parameters('azureNetworkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('aiSearchPrivateDnsZone').outputs.resourceId.value))), 'subnetResourceId', reference('virtualNetwork').outputs.subnetResourceIds.value[1], 'tags', variables('tags')))), createObject('value', createArray()))]",
+          "privateEndpoints": "[if(parameters('azureNetworkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('aiSearchPrivateDnsZone').outputs.resourceId.value))), 'subnetResourceId', reference('virtualNetwork').outputs.subnetResourceIds.value[2], 'tags', variables('tags')))), createObject('value', createArray()))]",
           "publicNetworkAccess": "[if(parameters('azureNetworkIsolation'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "semanticSearch": {
             "value": "standard"
@@ -34071,7 +34119,7 @@
     "aiSearchRoleAssignments": {
       "condition": "[parameters('azureAiSearchDeploy')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "ai-search-role-assignments",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
@@ -34092,8 +34140,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "9527362946316057502"
+              "version": "0.36.268.17113",
+              "templateHash": "11556664097475594638"
             },
             "name": "Azure AI Search Role Assignments",
             "description": "Creates role assignments on an Azure AI Search service."
@@ -34268,8 +34316,8 @@
     },
     "foundryService": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
-      "name": "ai-foundry-service-deployment",
+      "apiVersion": "2022-09-01",
+      "name": "foundry-service-deployment",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -34347,11 +34395,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "9903994601583151443"
+              "version": "0.36.268.17113",
+              "templateHash": "7448932178108881474"
             },
             "name": "Cognitive Services",
-            "description": "This module deploys a Cognitive Service account.\nThis is a temporary module for deploying Microsoft Foundry Cognitive Services accounts.\nIt is intended to be replaced by the Azure Verified Module (AVM) for Microsoft.CognitiveServices accounts\nonce it supports AI Foundry V2 (projects, connections etc)\nhttps://github.com/Azure/bicep-registry-modules/issues/5390\n"
+            "description": "This module deploys a Cognitive Service account.\nThis is a temporary module for deploying Azure Foundry Cognitive Services accounts.\nIt is intended to be replaced by the Azure Verified Module (AVM) for Microsoft.CognitiveServices accounts\nonce it supports Foundry V2 (projects, connections etc)\nhttps://github.com/Azure/bicep-registry-modules/issues/5390\n"
           },
           "definitions": {
             "privateEndpointOutputType": {
@@ -34645,7 +34693,7 @@
               },
               "metadata": {
                 "__bicep_export!": true,
-                "description": "Defines the properties for an Microsoft Foundry Project."
+                "description": "Defines the properties for an Azure Foundry Project."
               }
             },
             "foundryProjectPropertiesType": {
@@ -34665,7 +34713,7 @@
                 }
               },
               "metadata": {
-                "description": "Defines the nested properties for an Microsoft Foundry Project, corresponding to the \"properties\" object of the Microsoft.CognitiveServices/accounts/projects resource."
+                "description": "Defines the nested properties for an Azure Foundry Project, corresponding to the \"properties\" object of the Microsoft.CognitiveServices/accounts/projects resource."
               }
             },
             "_1.secretSetOutputType": {
@@ -36315,7 +36363,7 @@
               "type": "bool",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Enable/Disable project management feature for AI Foundry."
+                "description": "Optional. Enable/Disable project management feature for Foundry."
               }
             },
             "projects": {
@@ -36571,7 +36619,7 @@
                 "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2025-04-01",
+              "apiVersion": "2022-09-01",
               "name": "[take(format('{0}-cognitiveService-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex()), 64)]",
               "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
               "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
@@ -37330,7 +37378,7 @@
                 "batchSize": 1
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2025-04-01",
+              "apiVersion": "2022-09-01",
               "name": "[format('{0}-cognitiveService-project-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
               "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('projects'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
               "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('projects'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
@@ -37372,11 +37420,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "6160422317037705384"
+                      "version": "0.36.268.17113",
+                      "templateHash": "9599559466462717747"
                     },
                     "name": "Cognitive Services Project",
-                    "description": "This module deploys a Project within a Cognitive Services account.\nIt allows for the creation of a AI Foundry Project with optional managed identities and role assignments.\n"
+                    "description": "This module deploys a Project within a Cognitive Services account.\nIt allows for the creation of a Foundry Project with optional managed identities and role assignments.\n"
                   },
                   "definitions": {
                     "_1.aadAuthTypeWorkspaceConnectionPropertyType": {
@@ -38487,7 +38535,7 @@
                       },
                       "defaultValue": [],
                       "metadata": {
-                        "description": "Optional. Connections to create in the AI Foundry Project."
+                        "description": "Optional. Connections to create in the Foundry Project."
                       }
                     }
                   },
@@ -38679,7 +38727,7 @@
                 "count": "[length(parameters('connections'))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2025-04-01",
+              "apiVersion": "2022-09-01",
               "name": "[concat(take(format('{0}-{1}', parameters('name'), parameters('connections')[copyIndex()].name), 60), '-con')]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -38725,8 +38773,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "11167513953942845336"
+                      "version": "0.36.268.17113",
+                      "templateHash": "14772963606658878972"
                     },
                     "name": "Machine Learning Services Workspaces Connections",
                     "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -39597,7 +39645,7 @@
             "secretsExport": {
               "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2025-04-01",
+              "apiVersion": "2022-09-01",
               "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
               "subscriptionId": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[4]]",
@@ -39621,8 +39669,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "6185906018696066176"
+                      "version": "0.36.268.17113",
+                      "templateHash": "2336553046692823842"
                     }
                   },
                   "definitions": {
@@ -39825,7 +39873,7 @@
                 "$ref": "#/definitions/projectOutputType"
               },
               "metadata": {
-                "description": "The AI Foundry Projects created in the Cognitive Services account."
+                "description": "The Foundry Projects created in the Cognitive Services account."
               },
               "copy": {
                 "count": "[length(coalesce(parameters('projects'), createArray()))]",
@@ -39852,8 +39900,8 @@
     },
     "foundryRoleAssignments": {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
-      "name": "ai-foundry-role-assignments",
+      "apiVersion": "2022-09-01",
+      "name": "foundry-role-assignments",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -39861,7 +39909,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "azureAiFoundryName": {
+          "foundryName": {
             "value": "[variables('foundryServiceName')]"
           },
           "roleAssignments": {
@@ -39875,11 +39923,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "15510587216720670036"
+              "version": "0.36.268.17113",
+              "templateHash": "1105707417960472029"
             },
             "name": "Microsoft Foundry Role Assignments",
-            "description": "Creates role assignments on an Microsoft Foundry account."
+            "description": "Creates role assignments on a Microsoft Foundry account."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -39956,7 +40004,7 @@
             }
           },
           "parameters": {
-            "azureAiFoundryName": {
+            "foundryName": {
               "type": "string",
               "metadata": {
                 "description": "Required. The name of the Microsoft Foundry account to assign roles to."
@@ -40014,11 +40062,11 @@
             }
           },
           "resources": {
-            "azureAiFoundryAccount": {
+            "foundryAccount": {
               "existing": true,
               "type": "Microsoft.CognitiveServices/accounts",
               "apiVersion": "2025-04-01-preview",
-              "name": "[parameters('azureAiFoundryName')]"
+              "name": "[parameters('foundryName')]"
             },
             "foundry_roleAssignments": {
               "copy": {
@@ -40027,8 +40075,8 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.CognitiveServices/accounts/{0}', parameters('azureAiFoundryName'))]",
-              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('azureAiFoundryName')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "scope": "[format('Microsoft.CognitiveServices/accounts/{0}', parameters('foundryName'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('foundryName')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
                 "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
@@ -40048,7 +40096,7 @@
               },
               "copy": {
                 "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]",
-                "input": "[extensionResourceId(resourceId('Microsoft.CognitiveServices/accounts', parameters('azureAiFoundryName')), 'Microsoft.Authorization/roleAssignments', coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('azureAiFoundryName')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId)))]"
+                "input": "[extensionResourceId(resourceId('Microsoft.CognitiveServices/accounts', parameters('foundryName')), 'Microsoft.Authorization/roleAssignments', coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('foundryName')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId)))]"
               }
             },
             "roleAssignmentNames": {
@@ -40058,15 +40106,15 @@
               },
               "copy": {
                 "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]",
-                "input": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('azureAiFoundryName')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]"
+                "input": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('foundryName')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]"
               }
             }
           }
         }
       },
       "dependsOn": [
-        "foundryService",
         "aiSearchService",
+        "foundryService",
         "resourceGroup"
       ]
     },
@@ -40079,8 +40127,8 @@
       },
       "condition": "[and(parameters('foundryProjectDeploy'), parameters('azureAiSearchDeploy'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
-      "name": "[take(format('aifp-aisch-ra-{0}', variables('foundryServiceProjects')[copyIndex()].name), 64)]",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('fp-aisch-ra-{0}', variables('foundryServiceProjects')[copyIndex()].name), 64)]",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -40113,8 +40161,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "9527362946316057502"
+              "version": "0.36.268.17113",
+              "templateHash": "11556664097475594638"
             },
             "name": "Azure AI Search Role Assignments",
             "description": "Creates role assignments on an Azure AI Search service."
@@ -40289,7 +40337,7 @@
     "bastionHost": {
       "condition": "[and(parameters('bastionHostDeploy'), parameters('azureNetworkIsolation'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "bastion-host-deployment",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {

@@ -47,6 +47,44 @@ The list of models, versions, quota and TPM are defined in the [infra/sample-mod
 azd env set DEPLOY_SAMPLE_MODELS false
 ```
 
+### DEPLOY_SAMPLE_MODELS_LIST
+
+Override the sample model deployments with a custom array. When empty, the deployment uses models defined in [infra/sample-model-deployments.json](../infra/sample-model-deployments.json). When provided, uses the custom array instead.
+
+This parameter is useful when you want to:
+- Deploy a different set of models than the defaults
+- Test with specific model versions
+- Use a custom JSON file with model definitions
+
+Default: `[]` (empty array - uses sample-model-deployments.json).
+
+**Note**: This parameter must be set in a `.bicepparam` file rather than as an environment variable, as it requires a strongly-typed array matching the `deploymentType` schema.
+
+Example in `main.bicepparam`:
+
+```bicep
+param deploySampleModelsList = [
+  {
+    name: 'my-custom-gpt-4'
+    model: {
+      format: 'OpenAI'
+      name: 'gpt-4'
+      version: '0613'
+    }
+    sku: {
+      name: 'Standard'
+      capacity: 10
+    }
+  }
+]
+```
+
+Alternatively, you can load from a custom JSON file:
+
+```bicep
+param deploySampleModelsList = loadJsonContent('./my-custom-models.json')
+```
+
 ### DEPLOY_SAMPLE_DATA
 
 Create a dedicated Azure Storage Account for sample data to use with Microsoft Foundry, Foundry IQ and Azure AI Search.

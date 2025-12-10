@@ -1,6 +1,8 @@
 targetScope = 'subscription'
 extension microsoftGraphV1
 
+import { deploymentType } from './cognitive-services/accounts/main.bicep'
+
 @sys.description('Name of the the environment which is used to generate a short unique hash used in all resources.')
 @minLength(1)
 @maxLength(40)
@@ -67,6 +69,9 @@ param disableApiKeys bool = false
 @sys.description('Deploy the sample model deployments listed in ./sample-model-deployments.json. Defaults to false')
 param deploySampleModels bool = false
 
+@sys.description('Override the sample model deployments. When empty, loads from ./sample-model-deployments.json. When provided, uses the custom array instead.')
+param deploySampleModelsList deploymentType[] = []
+
 @sys.description('Deploy sample data containers into the Azure Storage Account. Defaults to false.')
 param deploySampleData bool = false
 
@@ -128,8 +133,9 @@ var sampleDataContainers = [for name in sampleDataContainersArray: {
   publicAccess: 'None'
 }]
 
-// Load sample OpenAI models from JSON file
-var sampleModelDeployments = loadJsonContent('./sample-model-deployments.json')
+// Load sample OpenAI models from JSON file or use override parameter
+var sampleModelDeploymentsFromFile = loadJsonContent('./sample-model-deployments.json')
+var sampleModelDeployments deploymentType[] = empty(deploySampleModelsList) ? sampleModelDeploymentsFromFile : deploySampleModelsList
 
 // Transform IP allow list for networkAcls
 var foundryIpRules = [for ip in foundryIpAllowList: {

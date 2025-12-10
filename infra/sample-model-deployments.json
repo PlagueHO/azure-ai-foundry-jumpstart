@@ -14,18 +14,6 @@
   {
     "model": {
       "format": "OpenAI",
-      "name": "gpt-5.1-chat",
-      "version": "2025-11-13"
-    },
-    "name": "gpt-5.1-chat",
-    "sku": {
-      "name": "GlobalStandard",
-      "capacity": 50
-    }
-  },
-  {
-    "model": {
-      "format": "OpenAI",
       "name": "gpt-5-chat",
       "version": "2025-08-07"
     },
@@ -57,30 +45,6 @@
     "sku": {
       "name": "GlobalStandard",
       "capacity": 50
-    }
-  },
-  {
-    "model": {
-      "format": "OpenAI",
-      "name": "gpt-realtime",
-      "version": "2025-08-28"
-    },
-    "name": "gpt-realtime",
-    "sku": {
-      "name": "GlobalStandard",
-      "capacity": 10
-    }
-  },
-  {
-    "model": {
-      "format": "OpenAI",
-      "name": "gpt-realtime-mini",
-      "version": "2025-10-06"
-    },
-    "name": "gpt-realtime-mini",
-    "sku": {
-      "name": "GlobalStandard",
-      "capacity": 20
     }
   },
   {

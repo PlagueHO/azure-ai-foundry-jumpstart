@@ -30,6 +30,9 @@ param foundryProjectsFromJson = toLower(readEnvironmentVariable('MICROSOFT_FOUND
 
 // Sample data parameters
 param deploySampleModels = toLower(readEnvironmentVariable('DEPLOY_SAMPLE_MODELS', 'true')) == 'true'
+// Override sample model deployments with custom array (defaults to empty, which loads from sample-model-deployments.json)
+// Example: param deploySampleModelsList = loadJsonContent('./my-custom-models.json')
+param deploySampleModelsList = []
 param deploySampleData = toLower(readEnvironmentVariable('DEPLOY_SAMPLE_DATA', 'false')) == 'true'
 
 // Bastion host parameters

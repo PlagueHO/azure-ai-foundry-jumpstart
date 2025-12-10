@@ -1,0 +1,14 @@
+[
+  {
+    "model": {
+      "format": "OpenAI",
+      "name": "gpt-5.1-chat",
+      "version": "2025-11-13"
+    },
+    "name": "gpt-5.1-chat",
+    "sku": {
+      "name": "GlobalStandard",
+      "capacity": 50
+    }
+  }
+]
