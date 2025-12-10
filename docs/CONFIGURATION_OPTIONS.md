@@ -49,7 +49,7 @@ azd env set DEPLOY_SAMPLE_MODELS false
 
 ### DEPLOY_SAMPLE_DATA
 
-Create a dedicated Azure Storage Account for sample data with separation of concerns from the Microsoft Foundry Hub operational storage.
+Create a dedicated Azure Storage Account for sample data to use with Microsoft Foundry, Foundry IQ and Azure AI Search.
 When enabled, sample data containers will be created in the dedicated storage account and datastores will be created in the Microsoft Foundry projects to connect to each container.
 
 > [!IMPORTANT]
