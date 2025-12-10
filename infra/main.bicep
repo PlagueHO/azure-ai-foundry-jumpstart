@@ -23,8 +23,8 @@ param location string
 })
 param resourceGroupName string = 'rg-${environmentName}'
 
-@sys.description('Array of public IPv4 addresses or CIDR ranges that will be added to the Azure AI Foundry allow-list when azureNetworkIsolation is true.')
-param aiFoundryIpAllowList array = []
+@sys.description('Array of public IPv4 addresses or CIDR ranges that will be added to the Microsoft Foundry allow-list when azureNetworkIsolation is true.')
+param foundryIpAllowList array = []
 
 @sys.description('SKU for the Azure AI Search service. Defaults to standard.')
 @allowed([
@@ -70,20 +70,20 @@ param deploySampleModels bool = false
 @sys.description('Deploy sample data containers into the Azure Storage Account. Defaults to false.')
 param deploySampleData bool = false
 
-@sys.description('Deploy AI Foundry projects to the AI Foundry resource. Set to false to skip creation of Azure AI Foundry projects to the AI Foundry resource. Defaults to false.')
-param aiFoundryProjectDeploy bool = false
+@sys.description('Deploy Foundry projects to the Foundry resource. Set to false to skip creation of Microsoft Foundry projects to the Foundry resource. Defaults to false.')
+param foundryProjectDeploy bool = false
 
-@sys.description('The name of the AI Foundry project to create.')
-param aiFoundryProjectName string
+@sys.description('The name of the Foundry project to create.')
+param foundryProjectName string
 
-@sys.description('The description of the Azure AI Foundry project to create.') 
-param aiFoundryProjectDescription string
+@sys.description('The description of the Microsoft Foundry project to create.') 
+param foundryProjectDescription string
 
-@sys.description('The friendly name of the Azure AI Foundry project to create.')
-param aiFoundryProjectFriendlyName string
+@sys.description('The friendly name of the Microsoft Foundry project to create.')
+param foundryProjectFriendlyName string
 
-@sys.description('Use projects defined in sample-ai-foundry-projects.json file instead of the single project parameters. When true, the aiFoundryProject* parameters are ignored. Defaults to false.')
-param aiFoundryProjectsFromJson bool = false
+@sys.description('Use projects defined in sample-foundry-projects.json file instead of the single project parameters. When true, the foundryProject* parameters are ignored. Defaults to false.')
+param foundryProjectsFromJson bool = false
 
 @sys.description('Deploy Azure AI Search and all dependent configuration. Set to false to skip its deployment.')
 param azureAiSearchDeploy bool = true
@@ -116,8 +116,8 @@ var sampleDataStorageAccountName = azureStorageAccountName == 'default'
   ? take(toLower(replace('${abbrs.storageStorageAccounts}${environmentName}sample', '-', '')), 24)
   : take(toLower(replace('${azureStorageAccountName}sample', '-', '')), 24)
 var aiSearchServiceName = '${abbrs.aiSearchSearchServices}${environmentName}'
-var aiFoundryServiceName = '${abbrs.aiFoundryAccounts}${environmentName}'
-var aiFoundryCustomSubDomainName = toLower(replace(environmentName, '-', ''))
+var foundryServiceName = '${abbrs.foundryAccounts}${environmentName}'
+var foundryCustomSubDomainName = toLower(replace(environmentName, '-', ''))
 var bastionHostName = '${abbrs.networkBastionHosts}${environmentName}'
 var networkDefaultAction = azureNetworkIsolation ? 'Deny' : 'Allow'
 
@@ -132,29 +132,29 @@ var sampleDataContainers = [for name in sampleDataContainersArray: {
 var sampleModelDeployments = loadJsonContent('./sample-model-deployments.json')
 
 // Transform IP allow list for networkAcls
-var aiFoundryIpRules = [for ip in aiFoundryIpAllowList: {
+var foundryIpRules = [for ip in foundryIpAllowList: {
   value: ip
 }]
 
 // ---------- PROJECT DEPLOYMENT LOGIC ----------
 // Load projects from JSON file for reference
-var projectsFromJson = loadJsonContent('./sample-ai-foundry-projects.json')
+var projectsFromJson = loadJsonContent('./sample-foundry-projects.json')
 
 // Create the effective list of projects to deploy to AI Services
-var effectiveProjectList = aiFoundryProjectDeploy 
-  ? (aiFoundryProjectsFromJson 
+var effectiveProjectList = foundryProjectDeploy 
+  ? (foundryProjectsFromJson 
       ? projectsFromJson
       : [
           {
-            Name: aiFoundryProjectName
-            FriendlyName: aiFoundryProjectFriendlyName
-            Description: aiFoundryProjectDescription
+            Name: foundryProjectName
+            FriendlyName: foundryProjectFriendlyName
+            Description: foundryProjectDescription
           }
         ])
   : []
 
 // Transform the effective project list for AI Services deployment
-var aiFoundryServiceProjects = [for project in effectiveProjectList: {
+var foundryServiceProjects = [for project in effectiveProjectList: {
   name: replace(project.Name, ' ', '-')
   location: location
   properties: {
@@ -424,11 +424,11 @@ module sampleDataStorageAccountRoles './core/security/role_storageaccount.bicep'
   params: {
     azureStorageAccountName: sampleDataStorageAccountName
     roleAssignments: [
-      // AI Foundry role assignments
+      // Foundry role assignments
       {
         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         principalType: 'ServicePrincipal'
-        principalId: aiFoundryService.outputs.?systemAssignedMIPrincipalId ?? ''
+        principalId: foundryService.outputs.?systemAssignedMIPrincipalId ?? ''
       }
       // AI Search role assignments
       ...(azureAiSearchDeploy ? [
@@ -515,17 +515,17 @@ var aiSearchRoleAssignmentsArray = azureAiSearchDeploy ? [
   {
     roleDefinitionIdOrName: 'Search Index Data Contributor'
     principalType: 'ServicePrincipal'
-    principalId: aiFoundryService.outputs.?systemAssignedMIPrincipalId
+    principalId: foundryService.outputs.?systemAssignedMIPrincipalId
   }
   {
     roleDefinitionIdOrName: 'Search Index Data Reader'
     principalType: 'ServicePrincipal'
-    principalId: aiFoundryService.outputs.?systemAssignedMIPrincipalId
+    principalId: foundryService.outputs.?systemAssignedMIPrincipalId
   }
   {
     roleDefinitionIdOrName: 'Search Service Contributor'
     principalType: 'ServicePrincipal'
-    principalId: aiFoundryService.outputs.?systemAssignedMIPrincipalId
+    principalId: foundryService.outputs.?systemAssignedMIPrincipalId
   }
   // Developer role assignments
   ...(!empty(principalId) ? [
@@ -552,11 +552,11 @@ module aiSearchRoleAssignments './core/security/role_aisearch.bicep' = if (azure
   }
 }
 
-// ---------- AI FOUNDRY/AI SERVICES ----------
-// Deploy AI Foundry (Cognitive Services) resource with projects (Stage 2)
+// ---------- FOUNDRY/AI SERVICES ----------
+// Deploy Foundry (Cognitive Services) resource with projects (Stage 2)
 // Projects are deployed directly into the AI Services resource
-// Prepare connections for the AI Foundry Account
-var aiFoundryServiceConnections = concat(azureAiSearchDeploy ? [
+// Prepare connections for the Foundry Account
+var foundryServiceConnections = concat(azureAiSearchDeploy ? [
   {
     // CognitiveSearch connection
     category: 'CognitiveSearch'
@@ -599,15 +599,15 @@ var aiFoundryServiceConnections = concat(azureAiSearchDeploy ? [
   }
 ] : [])
 
-module aiFoundryService './cognitive-services/accounts/main.bicep' = {
-  name: 'ai-foundry-service-deployment'
+module foundryService './cognitive-services/accounts/main.bicep' = {
+  name: 'foundry-service-deployment'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [resourceGroup]
   params: {
-    name: aiFoundryServiceName
+    name: foundryServiceName
     kind: 'AIServices'
     location: location
-    customSubDomainName: aiFoundryCustomSubDomainName
+    customSubDomainName: foundryCustomSubDomainName
     disableLocalAuth: disableApiKeys
     allowProjectManagement: true
     diagnosticSettings: [
@@ -633,7 +633,7 @@ module aiFoundryService './cognitive-services/accounts/main.bicep' = {
     }
     networkAcls: azureNetworkIsolation ? {
       defaultAction: 'Deny'
-      ipRules: aiFoundryIpRules
+      ipRules: foundryIpRules
       virtualNetworkRules: []
     } : {
       defaultAction: 'Allow'
@@ -663,16 +663,16 @@ module aiFoundryService './cognitive-services/accounts/main.bicep' = {
     publicNetworkAccess: azureNetworkIsolation ? 'Disabled' : 'Enabled'
     sku: 'S0'
     deployments: deploySampleModels ? sampleModelDeployments : []
-    connections: aiFoundryServiceConnections
-    projects: aiFoundryServiceProjects
+    connections: foundryServiceConnections
+    projects: foundryServiceProjects
     tags: tags
   }
 }
 
-// Add role assignments for AI Services using the role_aiservice.bicep module
+// Add role assignments for AI Services using the role_foundry.bicep module
 // This needs to be done after the AI Services account is created to avoid circular dependencies
 // between the AI Services account and the AI Search service.
-var aiFoundryRoleAssignmentsArray = [
+var foundryRoleAssignmentsArray = [
   // search–specific roles only when search is present
   ...(azureAiSearchDeploy ? [
     {
@@ -701,27 +701,27 @@ var aiFoundryRoleAssignmentsArray = [
   ] : [])
 ]
 
-module aiFoundryRoleAssignments './core/security/role_aifoundry.bicep' = {
-  name: 'ai-foundry-role-assignments'
+module foundryRoleAssignments './core/security/role_foundry.bicep' = {
+  name: 'foundry-role-assignments'
   scope: az.resourceGroup(effectiveResourceGroupName)
   dependsOn: [
     resourceGroup
-    aiFoundryService
+    foundryService
   ]
   params: {
-    azureAiFoundryName: aiFoundryServiceName
-    roleAssignments: aiFoundryRoleAssignmentsArray
+    foundryName: foundryServiceName
+    roleAssignments: foundryRoleAssignmentsArray
   }
 }
 
-// ---------- AI FOUNDRY PROJECT ROLE ASSIGNMENTS TO AI SEARCH ----------
-// Add any Search Index Reader and Search Service Contributor roles for each AI Foundry project
+// ---------- FOUNDRY PROJECT ROLE ASSIGNMENTS TO AI SEARCH ----------
+// Add any Search Index Reader and Search Service Contributor roles for each Foundry project
 // to the AI Search Account. This ensures Agents created within a project can access indexes in
 // the AI Search account.
 @batchSize(1)
-module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.bicep' = [
-  for (project,index) in aiFoundryServiceProjects : if (aiFoundryProjectDeploy && azureAiSearchDeploy) {
-    name: take('aifp-aisch-ra-${project.name}',64)
+module foundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.bicep' = [
+  for (project,index) in foundryServiceProjects : if (foundryProjectDeploy && azureAiSearchDeploy) {
+    name: take('fp-aisch-ra-${project.name}',64)
     scope: az.resourceGroup(effectiveResourceGroupName)
     params: {
       azureAiSearchName: aiSearchServiceName
@@ -729,12 +729,12 @@ module aiFoundryProjectToAiSearchRoleAssignments './core/security/role_aisearch.
         {
           roleDefinitionIdOrName: 'Search Index Data Reader'
           principalType: 'ServicePrincipal'
-          principalId: aiFoundryService.outputs.projects[index].?systemAssignedMIPrincipalId ?? ''
+          principalId: foundryService.outputs.projects[index].?systemAssignedMIPrincipalId ?? ''
         }
         {
           roleDefinitionIdOrName: 'Search Service Contributor'
           principalType: 'ServicePrincipal'
-          principalId: aiFoundryService.outputs.projects[index].?systemAssignedMIPrincipalId ?? ''
+          principalId: foundryService.outputs.projects[index].?systemAssignedMIPrincipalId ?? ''
         }
       ]
     }
@@ -780,17 +780,17 @@ output AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_BLOB_ENDPOINT string = deploySampleData
 output AZURE_DISABLE_API_KEYS bool = disableApiKeys
 output AZURE_AI_SEARCH_NAME string = azureAiSearchDeploy ? aiSearchService.outputs.name : ''
 output AZURE_AI_SEARCH_ID   string = azureAiSearchDeploy ? aiSearchService.outputs.resourceId : ''
-output AZURE_AI_FOUNDRY_NAME string = aiFoundryService.outputs.name
-output AZURE_AI_FOUNDRY_ID string = aiFoundryService.outputs.resourceId
-output AZURE_AI_FOUNDRY_ENDPOINT string = aiFoundryService.outputs.endpoint
-output AZURE_AI_FOUNDRY_RESOURCE_ID string = aiFoundryService.outputs.resourceId
+output MICROSOFT_FOUNDRY_NAME string = foundryService.outputs.name
+output MICROSOFT_FOUNDRY_ID string = foundryService.outputs.resourceId
+output MICROSOFT_FOUNDRY_ENDPOINT string = foundryService.outputs.endpoint
+output MICROSOFT_FOUNDRY_RESOURCE_ID string = foundryService.outputs.resourceId
 
-// Output the AI Foundry project
-output AZURE_AI_FOUNDRY_PROJECT_DEPLOY bool = aiFoundryProjectDeploy
-output AZURE_AI_FOUNDRY_PROJECTS_FROM_JSON bool = aiFoundryProjectsFromJson
-output AZURE_AI_FOUNDRY_PROJECT_NAME string = aiFoundryProjectDeploy ? aiFoundryProjectName : ''
-output AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION string = aiFoundryProjectDeploy ? aiFoundryProjectDescription : ''
-output AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME string = aiFoundryProjectDeploy ? aiFoundryProjectFriendlyName : ''
+// Output the Foundry project
+output MICROSOFT_FOUNDRY_PROJECT_DEPLOY bool = foundryProjectDeploy
+output MICROSOFT_FOUNDRY_PROJECTS_FROM_JSON bool = foundryProjectsFromJson
+output MICROSOFT_FOUNDRY_PROJECT_NAME string = foundryProjectDeploy ? foundryProjectName : ''
+output MICROSOFT_FOUNDRY_PROJECT_DESCRIPTION string = foundryProjectDeploy ? foundryProjectDescription : ''
+output MICROSOFT_FOUNDRY_PROJECT_FRIENDLY_NAME string = foundryProjectDeploy ? foundryProjectFriendlyName : ''
 
 // Output the Bastion Host resources
 output AZURE_BASTION_HOST_DEPLOY bool = bastionHostDeploy

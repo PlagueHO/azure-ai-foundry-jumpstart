@@ -1,11 +1,11 @@
 # Initiative Analyzer
 
-Analyzes CSV backlog items against organizational initiatives using Azure AI Foundry to generate markdown reports showing how backlog work supports strategic goals.
+Analyzes CSV backlog items against organizational initiatives using Microsoft Foundry to generate markdown reports showing how backlog work supports strategic goals.
 
 ## Prerequisites
 
 - Python 3.8+
-- Azure AI Foundry project with deployed language model
+- Microsoft Foundry project with deployed language model
 - Azure authentication configured
 
 ## Installation
@@ -19,7 +19,7 @@ pip install -r requirements.txt
 
 Set environment variables:
 
-- `PROJECT_ENDPOINT` (required): Azure AI Foundry project endpoint
+- `PROJECT_ENDPOINT` (required): Microsoft Foundry project endpoint
 - `MODEL_DEPLOYMENT_NAME` (optional): Model name (default: "gpt-4o")
 
 Or create a `.env` file:

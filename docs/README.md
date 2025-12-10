@@ -1,6 +1,6 @@
-# Azure AI Foundry Secure Hub Solution Accelerator Technical Documentation
+# Microsoft Foundry Secure Hub Solution Accelerator Technical Documentation
 
-This folder contains technical documentation and architecture design for the Azure AI Foundry Secure Hub.
+This folder contains technical documentation and architecture design for the Microsoft Foundry Secure Hub.
 
 ## Contents
 

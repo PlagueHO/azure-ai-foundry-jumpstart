@@ -1,10 +1,10 @@
 #!/bin/bash
-# Post-create command script for Azure AI Foundry Jumpstart dev container
+# Post-create command script for Microsoft Foundry Jumpstart dev container
 # This script is executed after the dev container is created
 
 set -e  # Exit on any error
 
-echo "🚀 Running post-create setup for Azure AI Foundry Jumpstart devcontainer..."
+echo "🚀 Running post-create setup for Microsoft Foundry Jumpstart devcontainer..."
 
 # Configure Git settings
 echo "📝 Configuring Git settings..."

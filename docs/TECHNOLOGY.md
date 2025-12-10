@@ -1,10 +1,10 @@
 # Technology Overview
 
-This solution accelerator leverages a range of Azure services and technologies to deliver a secure, scalable, and well-architected Azure AI Foundry environment.
+This solution accelerator leverages a range of Azure services and technologies to deliver a secure, scalable, and well-architected Microsoft Foundry environment.
 
 ## Core Azure Services Deployed
 
-- **Azure AI Foundry Service (Formerly known as Azure AI Services)**
+- **Microsoft Foundry Service (Formerly known as Azure AI Services)**
   Provides access to Azure AI Services and Foundry based projects.
 
 - **Azure AI Search** *(Optional, but recommended)*

@@ -8,7 +8,7 @@ Prerequisites:
 
     AZURE_AI_AGENT_PROJECT_CONNECTION_STRING="eastus2.api.azureml.ms;78700012-09f8-4425-b47f-7e98d215cfeb;rg-techsupport;techsupport-project"
     AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME="gpt-4o"
-    AZURE_AI_AGENT_ID="your-agent-id" (from Azure AI Foundry or Azure Agent Service)
+    AZURE_AI_AGENT_ID="your-agent-id" (from Microsoft Foundry or Azure Agent Service)
 
   - The connection string format is: <endpoint>;<subscription_id>;<resource_group>;<project_name>
   - The model deployment name should match your Azure OpenAI deployment.

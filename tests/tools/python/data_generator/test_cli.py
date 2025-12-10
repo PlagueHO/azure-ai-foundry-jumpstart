@@ -127,7 +127,7 @@ def main(argv=None):
     # ---------------- Phase-2: full parser ----------------------------- #
     parser = argparse.ArgumentParser(
         prog="generate-data",
-        description="Synthetic data generator for Azure AI Foundry Jumpstart.",
+        description="Synthetic data generator for Microsoft Foundry Jumpstart.",
         epilog="\\n\\n".join(tool.examples()),
         formatter_class=argparse.RawTextHelpFormatter,
     )
@@ -297,7 +297,7 @@ def main(argv=None):
     # ---------------- Phase-2: full parser ----------------------------- #
     parser = argparse.ArgumentParser(
         prog="generate-data",
-        description="Synthetic data generator for Azure AI Foundry Jumpstart.",
+        description="Synthetic data generator for Microsoft Foundry Jumpstart.",
         epilog="\\n\\n".join(tool.examples()),
         formatter_class=argparse.RawTextHelpFormatter,
     )
@@ -372,7 +372,7 @@ def main(argv=None):
     # ---------------- Phase-2: full parser ----------------------------- #
     parser = argparse.ArgumentParser(
         prog="generate-data",
-        description="Synthetic data generator for Azure AI Foundry Jumpstart.",
+        description="Synthetic data generator for Microsoft Foundry Jumpstart.",
         epilog="\\n\\n".join(tool.examples()),
         formatter_class=argparse.RawTextHelpFormatter,
     )
@@ -467,7 +467,7 @@ def main(argv=None):
     # ---------------- Phase-2: full parser ----------------------------- #
     parser = argparse.ArgumentParser(
         prog="generate-data",
-        description="Synthetic data generator for Azure AI Foundry Jumpstart.",
+        description="Synthetic data generator for Microsoft Foundry Jumpstart.",
         epilog="\\n\\n".join(tool.examples()),
         formatter_class=argparse.RawTextHelpFormatter,
     )

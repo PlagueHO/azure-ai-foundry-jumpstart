@@ -13,7 +13,7 @@
       "templateHash": "9940039322222733312"
     },
     "name": "Cognitive Services",
-    "description": "This module deploys a Cognitive Service account.\nThis is a temporary module for deploying Azure AI Foundry Cognitive Services accounts.\nIt is intended to be replaced by the Azure Verified Module (AVM) for Microsoft.CognitiveServices accounts\nonce it supports AI Foundry V2 (projects, connections etc)\nhttps://github.com/Azure/bicep-registry-modules/issues/5390\n"
+    "description": "This module deploys a Cognitive Service account.\nThis is a temporary module for deploying Microsoft Foundry Cognitive Services accounts.\nIt is intended to be replaced by the Azure Verified Module (AVM) for Microsoft.CognitiveServices accounts\nonce it supports AI Foundry V2 (projects, connections etc)\nhttps://github.com/Azure/bicep-registry-modules/issues/5390\n"
   },
   "definitions": {
     "privateEndpointOutputType": {
@@ -275,7 +275,7 @@
           }
         },
         "properties": {
-          "$ref": "#/definitions/aiFoundryProjectPropertiesType",
+          "$ref": "#/definitions/foundryProjectPropertiesType",
           "metadata": {
             "description": "Properties of Foundry Project project. This corresponds to the \"properties\" object of the Microsoft.CognitiveServices/accounts/projects resource."
           }
@@ -307,10 +307,10 @@
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "Defines the properties for an Azure AI Foundry Project."
+        "description": "Defines the properties for an Microsoft Foundry Project."
       }
     },
-    "aiFoundryProjectPropertiesType": {
+    "foundryProjectPropertiesType": {
       "type": "object",
       "properties": {
         "displayName": {
@@ -327,7 +327,7 @@
         }
       },
       "metadata": {
-        "description": "Defines the nested properties for an Azure AI Foundry Project, corresponding to the \"properties\" object of the Microsoft.CognitiveServices/accounts/projects resource."
+        "description": "Defines the nested properties for an Microsoft Foundry Project, corresponding to the \"properties\" object of the Microsoft.CognitiveServices/accounts/projects resource."
       }
     },
     "_1.secretSetOutputType": {

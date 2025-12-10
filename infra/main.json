@@ -38,11 +38,11 @@
         "description": "The Azure resource group where new resources will be deployed."
       }
     },
-    "aiFoundryIpAllowList": {
+    "foundryIpAllowList": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Array of public IPv4 addresses or CIDR ranges that will be added to the Azure AI Foundry allow-list when azureNetworkIsolation is true."
+        "description": "Array of public IPv4 addresses or CIDR ranges that will be added to the Microsoft Foundry allow-list when azureNetworkIsolation is true."
       }
     },
     "azureAiSearchSku": {
@@ -135,36 +135,36 @@
         "description": "Deploy sample data containers into the Azure Storage Account. Defaults to false."
       }
     },
-    "aiFoundryProjectDeploy": {
+    "foundryProjectDeploy": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Deploy AI Foundry projects to the AI Foundry resource. Set to false to skip creation of Azure AI Foundry projects to the AI Foundry resource. Defaults to false."
+        "description": "Deploy AI Foundry projects to the AI Foundry resource. Set to false to skip creation of Microsoft Foundry projects to the AI Foundry resource. Defaults to false."
       }
     },
-    "aiFoundryProjectName": {
+    "foundryProjectName": {
       "type": "string",
       "metadata": {
         "description": "The name of the AI Foundry project to create."
       }
     },
-    "aiFoundryProjectDescription": {
+    "foundryProjectDescription": {
       "type": "string",
       "metadata": {
-        "description": "The description of the Azure AI Foundry project to create."
+        "description": "The description of the Microsoft Foundry project to create."
       }
     },
-    "aiFoundryProjectFriendlyName": {
+    "foundryProjectFriendlyName": {
       "type": "string",
       "metadata": {
-        "description": "The friendly name of the Azure AI Foundry project to create."
+        "description": "The friendly name of the Microsoft Foundry project to create."
       }
     },
-    "aiFoundryProjectsFromJson": {
+    "foundryProjectsFromJson": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Use projects defined in sample-ai-foundry-projects.json file instead of the single project parameters. When true, the aiFoundryProject* parameters are ignored. Defaults to false."
+        "description": "Use projects defined in sample-foundry-projects.json file instead of the single project parameters. When true, the foundryProject* parameters are ignored. Defaults to false."
       }
     },
     "azureAiSearchDeploy": {
@@ -195,21 +195,21 @@
         }
       },
       {
-        "name": "aiFoundryIpRules",
-        "count": "[length(parameters('aiFoundryIpAllowList'))]",
+        "name": "foundryIpRules",
+        "count": "[length(parameters('foundryIpAllowList'))]",
         "input": {
-          "value": "[parameters('aiFoundryIpAllowList')[copyIndex('aiFoundryIpRules')]]"
+          "value": "[parameters('foundryIpAllowList')[copyIndex('foundryIpRules')]]"
         }
       },
       {
-        "name": "aiFoundryServiceProjects",
+        "name": "foundryServiceProjects",
         "count": "[length(variables('effectiveProjectList'))]",
         "input": {
-          "name": "[replace(variables('effectiveProjectList')[copyIndex('aiFoundryServiceProjects')].Name, ' ', '-')]",
+          "name": "[replace(variables('effectiveProjectList')[copyIndex('foundryServiceProjects')].Name, ' ', '-')]",
           "location": "[parameters('location')]",
           "properties": {
-            "displayName": "[variables('effectiveProjectList')[copyIndex('aiFoundryServiceProjects')].FriendlyName]",
-            "description": "[variables('effectiveProjectList')[copyIndex('aiFoundryServiceProjects')].Description]"
+            "displayName": "[variables('effectiveProjectList')[copyIndex('foundryServiceProjects')].FriendlyName]",
+            "description": "[variables('effectiveProjectList')[copyIndex('foundryServiceProjects')].Description]"
           },
           "identity": {
             "systemAssigned": true
@@ -220,7 +220,7 @@
     ],
     "$fxv#0": {
       "aiSearchSearchServices": "aisrch-",
-      "aiFoundryAccounts": "aif-",
+      "foundryAccounts": "mf-",
       "analysisServicesServers": "as",
       "apiManagementService": "apim-",
       "appConfigurationStores": "appcs-",
@@ -570,14 +570,14 @@
     "virtualNetworkName": "[format('{0}{1}', variables('abbrs').networkVirtualNetworks, parameters('environmentName'))]",
     "sampleDataStorageAccountName": "[if(equals(parameters('azureStorageAccountName'), 'default'), take(toLower(replace(format('{0}{1}sample', variables('abbrs').storageStorageAccounts, parameters('environmentName')), '-', '')), 24), take(toLower(replace(format('{0}sample', parameters('azureStorageAccountName')), '-', '')), 24))]",
     "aiSearchServiceName": "[format('{0}{1}', variables('abbrs').aiSearchSearchServices, parameters('environmentName'))]",
-    "aiFoundryServiceName": "[format('{0}{1}', variables('abbrs').aiFoundryAccounts, parameters('environmentName'))]",
-    "aiFoundryCustomSubDomainName": "[toLower(replace(parameters('environmentName'), '-', ''))]",
+    "foundryServiceName": "[format('{0}{1}', variables('abbrs').foundryAccounts, parameters('environmentName'))]",
+    "foundryCustomSubDomainName": "[toLower(replace(parameters('environmentName'), '-', ''))]",
     "bastionHostName": "[format('{0}{1}', variables('abbrs').networkBastionHosts, parameters('environmentName'))]",
     "networkDefaultAction": "[if(parameters('azureNetworkIsolation'), 'Deny', 'Allow')]",
     "sampleDataContainersArray": "[variables('$fxv#1')]",
     "sampleModelDeployments": "[variables('$fxv#2')]",
     "projectsFromJson": "[variables('$fxv#3')]",
-    "effectiveProjectList": "[if(parameters('aiFoundryProjectDeploy'), if(parameters('aiFoundryProjectsFromJson'), variables('projectsFromJson'), createArray(createObject('Name', parameters('aiFoundryProjectName'), 'FriendlyName', parameters('aiFoundryProjectFriendlyName'), 'Description', parameters('aiFoundryProjectDescription')))), createArray())]",
+    "effectiveProjectList": "[if(parameters('foundryProjectDeploy'), if(parameters('foundryProjectsFromJson'), variables('projectsFromJson'), createArray(createObject('Name', parameters('foundryProjectName'), 'FriendlyName', parameters('foundryProjectFriendlyName'), 'Description', parameters('foundryProjectDescription')))), createArray())]",
     "subnets": [
       {
         "name": "Default",
@@ -31510,7 +31510,7 @@
             "value": "[variables('sampleDataStorageAccountName')]"
           },
           "roleAssignments": {
-            "value": "[flatten(createArray(createArray(createObject('roleDefinitionIdOrName', 'Storage Blob Data Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiFoundryService').outputs, 'systemAssignedMIPrincipalId'), 'value'), ''))), if(parameters('azureAiSearchDeploy'), createArray(createObject('roleDefinitionIdOrName', 'Storage Blob Data Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value'), ''))), createArray()), if(not(empty(parameters('principalId'))), createArray(createObject('roleDefinitionIdOrName', 'Storage Blob Data Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Storage Blob Data Reader', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Storage Account Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId'))), createArray())))]"
+            "value": "[flatten(createArray(createArray(createObject('roleDefinitionIdOrName', 'Storage Blob Data Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('foundryService').outputs, 'systemAssignedMIPrincipalId'), 'value'), ''))), if(parameters('azureAiSearchDeploy'), createArray(createObject('roleDefinitionIdOrName', 'Storage Blob Data Contributor', 'principalType', 'ServicePrincipal', 'principalId', coalesce(tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value'), ''))), createArray()), if(not(empty(parameters('principalId'))), createArray(createObject('roleDefinitionIdOrName', 'Storage Blob Data Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Storage Blob Data Reader', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Storage Account Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId'))), createArray())))]"
           }
         },
         "template": {
@@ -31704,7 +31704,7 @@
         }
       },
       "dependsOn": [
-        "aiFoundryService",
+        "foundryService",
         "aiSearchService",
         "resourceGroup"
       ]
@@ -34083,7 +34083,7 @@
           "azureAiSearchName": {
             "value": "[variables('aiSearchServiceName')]"
           },
-          "roleAssignments": "[if(parameters('azureAiSearchDeploy'), createObject('value', flatten(createArray(createArray(createObject('roleDefinitionIdOrName', 'Search Index Data Contributor', 'principalType', 'ServicePrincipal', 'principalId', tryGet(tryGet(reference('aiFoundryService').outputs, 'systemAssignedMIPrincipalId'), 'value')), createObject('roleDefinitionIdOrName', 'Search Index Data Reader', 'principalType', 'ServicePrincipal', 'principalId', tryGet(tryGet(reference('aiFoundryService').outputs, 'systemAssignedMIPrincipalId'), 'value')), createObject('roleDefinitionIdOrName', 'Search Service Contributor', 'principalType', 'ServicePrincipal', 'principalId', tryGet(tryGet(reference('aiFoundryService').outputs, 'systemAssignedMIPrincipalId'), 'value'))), if(not(empty(parameters('principalId'))), createArray(createObject('roleDefinitionIdOrName', 'Search Service Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Search Index Data Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId'))), createArray())))), createObject('value', createArray()))]"
+          "roleAssignments": "[if(parameters('azureAiSearchDeploy'), createObject('value', flatten(createArray(createArray(createObject('roleDefinitionIdOrName', 'Search Index Data Contributor', 'principalType', 'ServicePrincipal', 'principalId', tryGet(tryGet(reference('foundryService').outputs, 'systemAssignedMIPrincipalId'), 'value')), createObject('roleDefinitionIdOrName', 'Search Index Data Reader', 'principalType', 'ServicePrincipal', 'principalId', tryGet(tryGet(reference('foundryService').outputs, 'systemAssignedMIPrincipalId'), 'value')), createObject('roleDefinitionIdOrName', 'Search Service Contributor', 'principalType', 'ServicePrincipal', 'principalId', tryGet(tryGet(reference('foundryService').outputs, 'systemAssignedMIPrincipalId'), 'value'))), if(not(empty(parameters('principalId'))), createArray(createObject('roleDefinitionIdOrName', 'Search Service Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Search Index Data Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId'))), createArray())))), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -34262,11 +34262,11 @@
         }
       },
       "dependsOn": [
-        "aiFoundryService",
+        "foundryService",
         "resourceGroup"
       ]
     },
-    "aiFoundryService": {
+    "foundryService": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "ai-foundry-service-deployment",
@@ -34278,7 +34278,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('aiFoundryServiceName')]"
+            "value": "[variables('foundryServiceName')]"
           },
           "kind": {
             "value": "AIServices"
@@ -34287,7 +34287,7 @@
             "value": "[parameters('location')]"
           },
           "customSubDomainName": {
-            "value": "[variables('aiFoundryCustomSubDomainName')]"
+            "value": "[variables('foundryCustomSubDomainName')]"
           },
           "disableLocalAuth": {
             "value": "[parameters('disableApiKeys')]"
@@ -34320,7 +34320,7 @@
               "systemAssigned": true
             }
           },
-          "networkAcls": "[if(parameters('azureNetworkIsolation'), createObject('value', createObject('defaultAction', 'Deny', 'ipRules', variables('aiFoundryIpRules'), 'virtualNetworkRules', createArray())), createObject('value', createObject('defaultAction', 'Allow', 'ipRules', createArray(), 'virtualNetworkRules', createArray())))]",
+          "networkAcls": "[if(parameters('azureNetworkIsolation'), createObject('value', createObject('defaultAction', 'Deny', 'ipRules', variables('foundryIpRules'), 'virtualNetworkRules', createArray())), createObject('value', createObject('defaultAction', 'Allow', 'ipRules', createArray(), 'virtualNetworkRules', createArray())))]",
           "privateEndpoints": "[if(parameters('azureNetworkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('aiServicesPrivateDnsZone').outputs.resourceId.value), createObject('privateDnsZoneResourceId', reference('aiServicesOpenAiDnsZone').outputs.resourceId.value), createObject('privateDnsZoneResourceId', reference('aiServicesAiDnsZone').outputs.resourceId.value))), 'service', 'account', 'subnetResourceId', reference('virtualNetwork').outputs.subnetResourceIds.value[1]))), createObject('value', createArray()))]",
           "restrictOutboundNetworkAccess": {
             "value": "[parameters('azureNetworkIsolation')]"
@@ -34334,7 +34334,7 @@
             "value": "[concat(if(parameters('azureAiSearchDeploy'), createArray(createObject('category', 'CognitiveSearch', 'connectionProperties', createObject('authType', 'AAD'), 'metadata', createObject('Type', 'azure_ai_search', 'ApiType', 'Azure', 'ApiVersion', '2024-05-01-preview', 'DeploymentApiVersion', '2023-11-01', 'Location', parameters('location'), 'ResourceId', reference('aiSearchService').outputs.resourceId.value), 'name', replace(variables('aiSearchServiceName'), '-', ''), 'target', reference('aiSearchService').outputs.endpoint.value, 'isSharedToAll', true())), createArray()), if(parameters('deploySampleData'), createArray(createObject('category', 'AzureBlob', 'connectionProperties', createObject('authType', 'AAD'), 'metadata', createObject('Type', 'azure_storage_account', 'ApiType', 'Azure', 'ApiVersion', '2023-10-01', 'DeploymentApiVersion', '2023-10-01', 'Location', parameters('location'), 'ResourceId', reference('sampleDataStorageAccount').outputs.resourceId.value, 'AccountName', variables('sampleDataStorageAccountName'), 'ContainerName', 'default'), 'name', replace(variables('sampleDataStorageAccountName'), '-', ''), 'target', reference('sampleDataStorageAccount').outputs.primaryBlobEndpoint.value, 'isSharedToAll', true())), createArray()))]"
           },
           "projects": {
-            "value": "[variables('aiFoundryServiceProjects')]"
+            "value": "[variables('foundryServiceProjects')]"
           },
           "tags": {
             "value": "[variables('tags')]"
@@ -34351,7 +34351,7 @@
               "templateHash": "9903994601583151443"
             },
             "name": "Cognitive Services",
-            "description": "This module deploys a Cognitive Service account.\nThis is a temporary module for deploying Azure AI Foundry Cognitive Services accounts.\nIt is intended to be replaced by the Azure Verified Module (AVM) for Microsoft.CognitiveServices accounts\nonce it supports AI Foundry V2 (projects, connections etc)\nhttps://github.com/Azure/bicep-registry-modules/issues/5390\n"
+            "description": "This module deploys a Cognitive Service account.\nThis is a temporary module for deploying Microsoft Foundry Cognitive Services accounts.\nIt is intended to be replaced by the Azure Verified Module (AVM) for Microsoft.CognitiveServices accounts\nonce it supports AI Foundry V2 (projects, connections etc)\nhttps://github.com/Azure/bicep-registry-modules/issues/5390\n"
           },
           "definitions": {
             "privateEndpointOutputType": {
@@ -34613,7 +34613,7 @@
                   }
                 },
                 "properties": {
-                  "$ref": "#/definitions/aiFoundryProjectPropertiesType",
+                  "$ref": "#/definitions/foundryProjectPropertiesType",
                   "metadata": {
                     "description": "Properties of Foundry Project project. This corresponds to the \"properties\" object of the Microsoft.CognitiveServices/accounts/projects resource."
                   }
@@ -34645,10 +34645,10 @@
               },
               "metadata": {
                 "__bicep_export!": true,
-                "description": "Defines the properties for an Azure AI Foundry Project."
+                "description": "Defines the properties for an Microsoft Foundry Project."
               }
             },
-            "aiFoundryProjectPropertiesType": {
+            "foundryProjectPropertiesType": {
               "type": "object",
               "properties": {
                 "displayName": {
@@ -34665,7 +34665,7 @@
                 }
               },
               "metadata": {
-                "description": "Defines the nested properties for an Azure AI Foundry Project, corresponding to the \"properties\" object of the Microsoft.CognitiveServices/accounts/projects resource."
+                "description": "Defines the nested properties for an Microsoft Foundry Project, corresponding to the \"properties\" object of the Microsoft.CognitiveServices/accounts/projects resource."
               }
             },
             "_1.secretSetOutputType": {
@@ -39850,7 +39850,7 @@
         "virtualNetwork"
       ]
     },
-    "aiFoundryRoleAssignments": {
+    "foundryRoleAssignments": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "ai-foundry-role-assignments",
@@ -39862,7 +39862,7 @@
         "mode": "Incremental",
         "parameters": {
           "azureAiFoundryName": {
-            "value": "[variables('aiFoundryServiceName')]"
+            "value": "[variables('foundryServiceName')]"
           },
           "roleAssignments": {
             "value": "[flatten(createArray(if(parameters('azureAiSearchDeploy'), createArray(createObject('roleDefinitionIdOrName', 'Cognitive Services Contributor', 'principalType', 'ServicePrincipal', 'principalId', tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value')), createObject('roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor', 'principalType', 'ServicePrincipal', 'principalId', tryGet(tryGet(reference('aiSearchService').outputs, 'systemAssignedMIPrincipalId'), 'value'))), createArray()), if(not(empty(parameters('principalId'))), createArray(createObject('roleDefinitionIdOrName', 'Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId')), createObject('roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor', 'principalType', parameters('principalIdType'), 'principalId', parameters('principalId'))), createArray())))]"
@@ -39878,8 +39878,8 @@
               "version": "0.39.26.7824",
               "templateHash": "15510587216720670036"
             },
-            "name": "Azure AI Foundry Role Assignments",
-            "description": "Creates role assignments on an Azure AI Foundry account."
+            "name": "Microsoft Foundry Role Assignments",
+            "description": "Creates role assignments on an Microsoft Foundry account."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -39959,7 +39959,7 @@
             "azureAiFoundryName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the Azure AI Foundry account to assign roles to."
+                "description": "Required. The name of the Microsoft Foundry account to assign roles to."
               }
             },
             "roleAssignments": {
@@ -40020,9 +40020,9 @@
               "apiVersion": "2025-04-01-preview",
               "name": "[parameters('azureAiFoundryName')]"
             },
-            "aiFoundry_roleAssignments": {
+            "foundry_roleAssignments": {
               "copy": {
-                "name": "aiFoundry_roleAssignments",
+                "name": "foundry_roleAssignments",
                 "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
               },
               "type": "Microsoft.Authorization/roleAssignments",
@@ -40065,22 +40065,22 @@
         }
       },
       "dependsOn": [
-        "aiFoundryService",
+        "foundryService",
         "aiSearchService",
         "resourceGroup"
       ]
     },
-    "aiFoundryProjectToAiSearchRoleAssignments": {
+    "foundryProjectToAiSearchRoleAssignments": {
       "copy": {
-        "name": "aiFoundryProjectToAiSearchRoleAssignments",
-        "count": "[length(variables('aiFoundryServiceProjects'))]",
+        "name": "foundryProjectToAiSearchRoleAssignments",
+        "count": "[length(variables('foundryServiceProjects'))]",
         "mode": "serial",
         "batchSize": 1
       },
-      "condition": "[and(parameters('aiFoundryProjectDeploy'), parameters('azureAiSearchDeploy'))]",
+      "condition": "[and(parameters('foundryProjectDeploy'), parameters('azureAiSearchDeploy'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[take(format('aifp-aisch-ra-{0}', variables('aiFoundryServiceProjects')[copyIndex()].name), 64)]",
+      "name": "[take(format('aifp-aisch-ra-{0}', variables('foundryServiceProjects')[copyIndex()].name), 64)]",
       "resourceGroup": "[variables('effectiveResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -40096,12 +40096,12 @@
               {
                 "roleDefinitionIdOrName": "Search Index Data Reader",
                 "principalType": "ServicePrincipal",
-                "principalId": "[coalesce(tryGet(reference('aiFoundryService').outputs.projects.value[copyIndex()], 'systemAssignedMIPrincipalId'), '')]"
+                "principalId": "[coalesce(tryGet(reference('foundryService').outputs.projects.value[copyIndex()], 'systemAssignedMIPrincipalId'), '')]"
               },
               {
                 "roleDefinitionIdOrName": "Search Service Contributor",
                 "principalType": "ServicePrincipal",
-                "principalId": "[coalesce(tryGet(reference('aiFoundryService').outputs.projects.value[copyIndex()], 'systemAssignedMIPrincipalId'), '')]"
+                "principalId": "[coalesce(tryGet(reference('foundryService').outputs.projects.value[copyIndex()], 'systemAssignedMIPrincipalId'), '')]"
               }
             ]
           }
@@ -40283,7 +40283,7 @@
         }
       },
       "dependsOn": [
-        "aiFoundryService"
+        "foundryService"
       ]
     },
     "bastionHost": {
@@ -42058,41 +42058,41 @@
       "type": "string",
       "value": "[if(parameters('azureAiSearchDeploy'), reference('aiSearchService').outputs.resourceId.value, '')]"
     },
-    "AZURE_AI_FOUNDRY_NAME": {
+    "MICROSOFT_FOUNDRY_NAME": {
       "type": "string",
-      "value": "[reference('aiFoundryService').outputs.name.value]"
+      "value": "[reference('foundryService').outputs.name.value]"
     },
-    "AZURE_AI_FOUNDRY_ID": {
+    "MICROSOFT_FOUNDRY_ID": {
       "type": "string",
-      "value": "[reference('aiFoundryService').outputs.resourceId.value]"
+      "value": "[reference('foundryService').outputs.resourceId.value]"
     },
-    "AZURE_AI_FOUNDRY_ENDPOINT": {
+    "MICROSOFT_FOUNDRY_ENDPOINT": {
       "type": "string",
-      "value": "[reference('aiFoundryService').outputs.endpoint.value]"
+      "value": "[reference('foundryService').outputs.endpoint.value]"
     },
-    "AZURE_AI_FOUNDRY_RESOURCE_ID": {
+    "MICROSOFT_FOUNDRY_RESOURCE_ID": {
       "type": "string",
-      "value": "[reference('aiFoundryService').outputs.resourceId.value]"
+      "value": "[reference('foundryService').outputs.resourceId.value]"
     },
-    "AZURE_AI_FOUNDRY_PROJECT_DEPLOY": {
+    "MICROSOFT_FOUNDRY_PROJECT_DEPLOY": {
       "type": "bool",
-      "value": "[parameters('aiFoundryProjectDeploy')]"
+      "value": "[parameters('foundryProjectDeploy')]"
     },
-    "AZURE_AI_FOUNDRY_PROJECTS_FROM_JSON": {
+    "MICROSOFT_FOUNDRY_PROJECTS_FROM_JSON": {
       "type": "bool",
-      "value": "[parameters('aiFoundryProjectsFromJson')]"
+      "value": "[parameters('foundryProjectsFromJson')]"
     },
-    "AZURE_AI_FOUNDRY_PROJECT_NAME": {
+    "MICROSOFT_FOUNDRY_PROJECT_NAME": {
       "type": "string",
-      "value": "[if(parameters('aiFoundryProjectDeploy'), parameters('aiFoundryProjectName'), '')]"
+      "value": "[if(parameters('foundryProjectDeploy'), parameters('foundryProjectName'), '')]"
     },
-    "AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION": {
+    "MICROSOFT_FOUNDRY_PROJECT_DESCRIPTION": {
       "type": "string",
-      "value": "[if(parameters('aiFoundryProjectDeploy'), parameters('aiFoundryProjectDescription'), '')]"
+      "value": "[if(parameters('foundryProjectDeploy'), parameters('foundryProjectDescription'), '')]"
     },
-    "AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME": {
+    "MICROSOFT_FOUNDRY_PROJECT_FRIENDLY_NAME": {
       "type": "string",
-      "value": "[if(parameters('aiFoundryProjectDeploy'), parameters('aiFoundryProjectFriendlyName'), '')]"
+      "value": "[if(parameters('foundryProjectDeploy'), parameters('foundryProjectFriendlyName'), '')]"
     },
     "AZURE_BASTION_HOST_DEPLOY": {
       "type": "bool",

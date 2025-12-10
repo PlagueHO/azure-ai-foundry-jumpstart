@@ -17,7 +17,7 @@ This sample demonstrates how to use the Azure AI Projects SDK to create an intel
 ## Prerequisites
 
 - Python 3.8 or later
-- Azure AI Foundry project with a deployed language model (e.g., GPT-4, GPT-4o-mini)
+- Microsoft Foundry project with a deployed language model (e.g., GPT-4, GPT-4o-mini)
 - Access to Azure with appropriate authentication configured
 
 ## Installation
@@ -38,7 +38,7 @@ This sample demonstrates how to use the Azure AI Projects SDK to create an intel
 
 Set the following environment variables:
 
-- `PROJECT_ENDPOINT` (required): Your Azure AI Foundry project endpoint URL in the format `https://<project-name>.<region>.api.azureml.ms`
+- `PROJECT_ENDPOINT` (required): Your Microsoft Foundry project endpoint URL in the format `https://<project-name>.<region>.api.azureml.ms`
 - `MODEL_DEPLOYMENT_NAME` (optional): Name of your deployed language model (defaults to "gpt-4o")
 - `VERBOSE_LOGGING` (optional): Logging verbosity level (defaults to "ERROR")
 
@@ -290,7 +290,7 @@ Valid logging levels: DEBUG, INFO, WARNING, ERROR, CRITICAL (default: ERROR)
 This implementation requires the following key dependencies:
 
 - **Python 3.8+**
-- **azure-ai-projects v1.0.0b12+** - Core Azure AI Foundry SDK
+- **azure-ai-projects v1.0.0b12+** - Core Microsoft Foundry SDK
 - **azure-identity** - DefaultAzureCredential authentication
 - **openai** - Chat completions via Azure OpenAI client
 - **argparse** - Command line argument parsing
@@ -305,6 +305,6 @@ This implementation requires the following key dependencies:
 - Implements conversation memory with token overflow protection
 - Follows Azure SDK security best practices
 - Compatible with tool-capable AI models (GPT-4, GPT-4o, etc.)
-- Supports Azure AI Foundry project deployments
+- Supports Microsoft Foundry project deployments
 - Quiet-by-default logging (ERROR level) with configurable verbosity
 - Extensible design allows easy addition of new analytical tools

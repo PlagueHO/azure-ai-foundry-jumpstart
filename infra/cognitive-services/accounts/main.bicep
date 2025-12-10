@@ -1,9 +1,9 @@
 metadata name = 'Cognitive Services'
 metadata description = '''
 This module deploys a Cognitive Service account.
-This is a temporary module for deploying Azure AI Foundry Cognitive Services accounts.
+This is a temporary module for deploying Azure Foundry Cognitive Services accounts.
 It is intended to be replaced by the Azure Verified Module (AVM) for Microsoft.CognitiveServices accounts
-once it supports AI Foundry V2 (projects, connections etc)
+once it supports Foundry V2 (projects, connections etc)
 https://github.com/Azure/bicep-registry-modules/issues/5390
 '''
 
@@ -138,7 +138,7 @@ param deployments deploymentType[]?
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
-@description('Optional. Enable/Disable project management feature for AI Foundry.')
+@description('Optional. Enable/Disable project management feature for Foundry.')
 param allowProjectManagement bool?
 
 @description('Optional. The Projects to create in the Cognitive Services account.')
@@ -635,7 +635,7 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
-@description('The AI Foundry Projects created in the Cognitive Services account.')
+@description('The Foundry Projects created in the Cognitive Services account.')
 output projects projectOutputType[] = [
   for (project, index) in (projects ?? []): {
     name: cognitiveService_projects[index].outputs.projectResourceName
@@ -753,7 +753,7 @@ type secretsExportConfigurationType = {
 }
 
 @sys.export()
-@sys.description('Defines the properties for an Azure AI Foundry Project.')
+@sys.description('Defines the properties for an Azure Foundry Project.')
 type projectType = {
   @sys.description('The unique name of the Foundry Project. This corresponds to the "name" property of the Microsoft.CognitiveServices/accounts/projects resource.')
   name: string
@@ -762,7 +762,7 @@ type projectType = {
   location: string
 
   @sys.description('Properties of Foundry Project project. This corresponds to the "properties" object of the Microsoft.CognitiveServices/accounts/projects resource.')
-  properties: aiFoundryProjectPropertiesType
+  properties: foundryProjectPropertiesType
 
   @sys.description('Identity for the resource. This corresponds to the "identity" property of the Microsoft.CognitiveServices/accounts/projects resource.')
   identity: managedIdentityAllType?
@@ -774,8 +774,8 @@ type projectType = {
   tags: object?
 }
 
-@sys.description('Defines the nested properties for an Azure AI Foundry Project, corresponding to the "properties" object of the Microsoft.CognitiveServices/accounts/projects resource.')
-type aiFoundryProjectPropertiesType = {
+@sys.description('Defines the nested properties for an Azure Foundry Project, corresponding to the "properties" object of the Microsoft.CognitiveServices/accounts/projects resource.')
+type foundryProjectPropertiesType = {
   @sys.description('The display name for the Foundry Project. This corresponds to the "displayName" property within the "properties" of the Microsoft.CognitiveServices/accounts/projects resource.')
   displayName: string
 

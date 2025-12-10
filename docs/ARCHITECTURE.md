@@ -16,7 +16,7 @@ These resources are deployed in both architectural approaches:
 
 | Resource | Purpose | AVM Reference |
 |----------|---------|---------------|
-| Azure AI Foundry (AI Services) | Core AI capabilities and project management | [avm/res/cognitive-services/account](https://github.com/Azure/bicep-registry-modules/tree/main/modules/cognitive-services/account) |
+| Microsoft Foundry (AI Services) | Core AI capabilities and project management | [avm/res/cognitive-services/account](https://github.com/Azure/bicep-registry-modules/tree/main/modules/cognitive-services/account) |
 | Log Analytics Workspace | Centralized monitoring and diagnostics | [avm/res/operational-insights/workspace](https://github.com/Azure/bicep-registry-modules/tree/main/modules/operational-insights/workspace) |
 | Application Insights | Application monitoring and telemetry | [avm/res/insights/component](https://github.com/Azure/bicep-registry-modules/tree/main/modules/insights/component) |
 
@@ -37,7 +37,7 @@ When network isolation is enabled (`AZURE_NETWORK_ISOLATION=true`), all resource
 
 The following diagram illustrates the architecture when network isolation is enabled:
 
-[![Azure AI Foundry Jumpstart with Network Isolation](images/azure-ai-foundry-jumpstart-zero-trust.svg)](images/azure-ai-foundry-jumpstart-zero-trust.svg)
+[![Microsoft Foundry Jumpstart with Network Isolation](images/microsoft-foundry-jumpstart-zero-trust.svg)](images/microsoft-foundry-jumpstart-zero-trust.svg)
 
 ### Network Isolation Components
 
@@ -45,7 +45,7 @@ The following diagram illustrates the architecture when network isolation is ena
 
 | Resource | Deployment Details | AVM Reference |
 |----------|-------------------|---------------|
-| Azure AI Foundry (AI Services) | Deployed with private endpoint (PE) | [avm/res/cognitive-services/account](https://github.com/Azure/bicep-registry-modules/tree/main/modules/cognitive-services/account) |
+| Microsoft Foundry (AI Services) | Deployed with private endpoint (PE) | [avm/res/cognitive-services/account](https://github.com/Azure/bicep-registry-modules/tree/main/modules/cognitive-services/account) |
 | Log Analytics Workspace | Public endpoint (monitoring services) | [avm/res/operational-insights/workspace](https://github.com/Azure/bicep-registry-modules/tree/main/modules/operational-insights/workspace) |
 | Application Insights | Public endpoint (monitoring services) | [avm/res/insights/component](https://github.com/Azure/bicep-registry-modules/tree/main/modules/insights/component) |
 | Virtual Network | 10.0.0.0/16 with multiple subnets | [avm/res/network/virtual-network](https://github.com/Azure/bicep-registry-modules/tree/main/modules/network/virtual-network) |
@@ -69,7 +69,7 @@ When network isolation is disabled (`AZURE_NETWORK_ISOLATION=false`), all resour
 
 The following diagram illustrates the architecture when network isolation is disabled:
 
-[![Azure AI Foundry Jumpstart without Network Isolation](images/azure-ai-foundry-jumpstart-public.svg)](images/azure-ai-foundry-jumpstart-public.svg)
+[![Microsoft Foundry Jumpstart without Network Isolation](images/microsoft-foundry-jumpstart-public.svg)](images/microsoft-foundry-jumpstart-public.svg)
 
 ### Public Access Components
 
@@ -77,7 +77,7 @@ The following diagram illustrates the architecture when network isolation is dis
 
 | Resource | Deployment Details | AVM Reference |
 |----------|-------------------|---------------|
-| Azure AI Foundry (AI Services) | Public endpoint enabled | [avm/res/cognitive-services/account](https://github.com/Azure/bicep-registry-modules/tree/main/modules/cognitive-services/account) |
+| Microsoft Foundry (AI Services) | Public endpoint enabled | [avm/res/cognitive-services/account](https://github.com/Azure/bicep-registry-modules/tree/main/modules/cognitive-services/account) |
 | Log Analytics Workspace | Public endpoint (monitoring services) | [avm/res/operational-insights/workspace](https://github.com/Azure/bicep-registry-modules/tree/main/modules/operational-insights/workspace) |
 | Application Insights | Public endpoint (monitoring services) | [avm/res/insights/component](https://github.com/Azure/bicep-registry-modules/tree/main/modules/insights/component) |
 
@@ -148,7 +148,7 @@ flowchart RL
 ### Minimal Deployment (Public Endpoints)
 
 ```bash
-azd env set AZURE_AI_FOUNDRY_PROJECT_DEPLOY true
+azd env set MICROSOFT_FOUNDRY_PROJECT_DEPLOY true
 azd env set AZURE_NETWORK_ISOLATION false
 ```
 
@@ -157,7 +157,7 @@ azd env set AZURE_NETWORK_ISOLATION false
 ### Full Deployment with Network Isolation
 
 ```bash
-azd env set AZURE_AI_FOUNDRY_PROJECT_DEPLOY true
+azd env set MICROSOFT_FOUNDRY_PROJECT_DEPLOY true
 azd env set AZURE_AI_SEARCH_DEPLOY true
 azd env set DEPLOY_SAMPLE_DATA true
 azd env set AZURE_NETWORK_ISOLATION true

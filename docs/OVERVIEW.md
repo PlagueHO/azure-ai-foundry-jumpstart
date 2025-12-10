@@ -1,6 +1,6 @@
-# Azure AI Foundry Jumpstart Solution Accelerator – Overview
+# Microsoft Foundry Jumpstart Solution Accelerator – Overview
 
-The Azure AI Foundry Jumpstart Solution Accelerator provides a secure, well-architected, and automated way to deploy an Azure AI Foundry environment and its supporting resources. It is designed to help organizations quickly explore and experiment with Azure AI Foundry capabilities while adhering to Microsoft’s Zero Trust security model and Azure Well-Architected Framework best practices.
+The Microsoft Foundry Jumpstart Solution Accelerator provides a secure, well-architected, and automated way to deploy an Microsoft Foundry environment and its supporting resources. It is designed to help organizations quickly explore and experiment with Microsoft Foundry capabilities while adhering to Microsoft’s Zero Trust security model and Azure Well-Architected Framework best practices.
 
 ## Key Features
 
@@ -22,13 +22,13 @@ Deployment behavior can be tailored using environment variables, including:
 - **Network Isolation**: Enable or disable VNet isolation and configure IP allow lists.
 - **API Key Management**: Optionally disable API keys for Azure AI services.
 - **Resource Sizing and Selection**: Choose SKUs for Azure AI Search and control deployment of optional infrastructure like Bastion.
-- **Access Control**: Specify principal IDs and types for Azure AI Foundry access.
+- **Access Control**: Specify principal IDs and types for Microsoft Foundry access.
 
 For a full list of configuration options, see [CONFIGURATION_OPTIONS.md](../CONFIGURATION_OPTIONS.md).
 
 ## Sample Data Sets
 
-The accelerator includes sample data sets to facilitate testing, demonstrating and learning of Azure AI Foundry capabilities. All data is synthetic and can be generated using the data_generator tool in the [../src/data_generator](../src/data_generator) directory.
+The accelerator includes sample data sets to facilitate testing, demonstrating and learning of Microsoft Foundry capabilities. All data is synthetic and can be generated using the data_generator tool in the [../src/data_generator](../src/data_generator) directory.
 
 | Data Set                       | Description                                                                                      | Data Generator Tool                                                                 |
 |--------------------------------|--------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
@@ -48,4 +48,4 @@ The accelerator includes sample data sets to facilitate testing, demonstrating a
 These data sets enable comprehensive evaluation of LLM and agent capabilities across document understanding, summarization, Q&A, classification, and workflow automation tasks.
 
 ---
-This accelerator is ideal for secure, rapid prototyping and evaluation of Azure AI Foundry in enterprise environments.
+This accelerator is ideal for secure, rapid prototyping and evaluation of Microsoft Foundry in enterprise environments.

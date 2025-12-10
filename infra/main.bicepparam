@@ -10,7 +10,7 @@ param principalIdType = toLower(readEnvironmentVariable('AZURE_PRINCIPAL_ID_TYPE
 
 // Networking parameters
 param azureNetworkIsolation = toLower(readEnvironmentVariable('AZURE_NETWORK_ISOLATION', 'true')) == 'true'
-param aiFoundryIpAllowList = empty(readEnvironmentVariable('AZURE_AI_FOUNDRY_IP_ALLOW_LIST', '')) ? [] : split(readEnvironmentVariable('AZURE_AI_FOUNDRY_IP_ALLOW_LIST',''), ',')
+param foundryIpAllowList = empty(readEnvironmentVariable('MICROSOFT_FOUNDRY_IP_ALLOW_LIST', '')) ? [] : split(readEnvironmentVariable('MICROSOFT_FOUNDRY_IP_ALLOW_LIST',''), ',')
 
 // AI resources parameters
 param azureAiSearchSku = toLower(readEnvironmentVariable('AZURE_AI_SEARCH_SKU', 'standard'))
@@ -21,12 +21,12 @@ param azureAiSearchPartitionCount = int(readEnvironmentVariable('AZURE_AI_SEARCH
 // Storage account override (use 'default' to keep the generated name)
 param azureStorageAccountName = readEnvironmentVariable('AZURE_STORAGE_ACCOUNT_NAME', '') == '' ? 'default' : readEnvironmentVariable('AZURE_STORAGE_ACCOUNT_NAME', '')
 
-// AI Foundry project parameters
-param aiFoundryProjectDeploy = toLower(readEnvironmentVariable('AZURE_AI_FOUNDRY_PROJECT_DEPLOY', 'true')) == 'true'
-param aiFoundryProjectName = readEnvironmentVariable('AZURE_AI_FOUNDRY_PROJECT_NAME', 'sample-project') 
-param aiFoundryProjectDescription = readEnvironmentVariable('AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION', 'A sample project for Azure AI Foundry')
-param aiFoundryProjectFriendlyName = readEnvironmentVariable('AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME', 'Sample Project')
-param aiFoundryProjectsFromJson = toLower(readEnvironmentVariable('AZURE_AI_FOUNDRY_PROJECTS_FROM_JSON', 'false')) == 'true'
+// Foundry project parameters
+param foundryProjectDeploy = toLower(readEnvironmentVariable('MICROSOFT_FOUNDRY_PROJECT_DEPLOY', 'true')) == 'true'
+param foundryProjectName = readEnvironmentVariable('MICROSOFT_FOUNDRY_PROJECT_NAME', 'sample-project') 
+param foundryProjectDescription = readEnvironmentVariable('MICROSOFT_FOUNDRY_PROJECT_DESCRIPTION', 'A sample project for Microsoft Foundry')
+param foundryProjectFriendlyName = readEnvironmentVariable('MICROSOFT_FOUNDRY_PROJECT_FRIENDLY_NAME', 'Sample Project')
+param foundryProjectsFromJson = toLower(readEnvironmentVariable('MICROSOFT_FOUNDRY_PROJECTS_FROM_JSON', 'false')) == 'true'
 
 // Sample data parameters
 param deploySampleModels = toLower(readEnvironmentVariable('DEPLOY_SAMPLE_MODELS', 'true')) == 'true'

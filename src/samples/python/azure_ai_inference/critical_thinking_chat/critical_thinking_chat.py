@@ -1,7 +1,7 @@
 """
 Critical Thinking Chat Assistant with Tool Calling and User Permission.
 
-The assistant uses the Azure AI Projects SDK to connect to Azure AI Foundry and
+The assistant uses the Azure AI Projects SDK to connect to Microsoft Foundry and
 implements function tool calling with the evaluate_syllogism tool for logical analysis.
 
 Features:
@@ -159,7 +159,7 @@ def initialize_client(endpoint: Optional[str] = None) -> AzureOpenAI:
         client = inference_attr.get_azure_openai_client(api_version="2024-10-21")
 
         logger.info("Created Azure OpenAI client via AIProjectClient for endpoint: %s", project_endpoint)
-        print(f"Connected to Azure AI Foundry project: {project_endpoint}")
+        print(f"Connected to Microsoft Foundry project: {project_endpoint}")
 
         return client
 

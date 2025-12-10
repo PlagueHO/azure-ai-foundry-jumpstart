@@ -7,7 +7,7 @@ This demo showcases the progression of building an Azure architecture consultant
 Before you begin, ensure you have the following prerequisites:
 
 - .NET 9.0 SDK or later
-- Azure AI Foundry service endpoint, project and GPT 4.1 deployment configured
+- Microsoft Foundry service endpoint, project and GPT 4.1 deployment configured
 - Azure CLI installed and authenticated (for Azure credential authentication)
 
 **Note**: These demos use Azure CLI credentials for authentication. Make sure you're logged in with `az login` and have access to the Azure Foundry resource. For more information, see the [Azure CLI documentation](https://learn.microsoft.com/cli/azure/authenticate-azure-cli-interactively).
@@ -15,10 +15,10 @@ Before you begin, ensure you have the following prerequisites:
 Set the following environment variables:
 
 ```powershell
-$env:AZURE_OPENAI_ENDPOINT="<Your Azure OpenAI Endpoint - provided within Azure AI Foundry>"
-$env:AZURE_OPENAI_DEPLOYMENT_NAME="<GPT 4.1 model deployed to Azure AI Foundry Project>"
-$env:AZURE_FOUNDRY_PROJECT_ENDPOINT="<Your Azure AI Foundry Project Endpoint>"
-$env:AZURE_FOUNDRY_PROJECT_DEPLOYMENT_NAME="<GPT 4.1 model deployed to Azure AI Foundry Project>"
+$env:AZURE_OPENAI_ENDPOINT="<Your Azure OpenAI Endpoint - provided within Microsoft Foundry>"
+$env:AZURE_OPENAI_DEPLOYMENT_NAME="<GPT 4.1 model deployed to Microsoft Foundry Project>"
+$env:MICROSOFT_FOUNDRY_PROJECT_ENDPOINT="<Your Microsoft Foundry Project Endpoint>"
+$env:MICROSOFT_FOUNDRY_PROJECT_DEPLOYMENT_NAME="<GPT 4.1 model deployed to Microsoft Foundry Project>"
 ```
 
 ## Purpose
@@ -33,7 +33,7 @@ The demo follows a structured progression from basic agent creation to advanced 
 | Title | Highlights |
 | --- | --- |
 | [Step 1: Simple Agent](./AzureArchitect_Step01_Simple/) | <ul><li>Builds a baseline Azure architecture advisor using Azure OpenAI chat completions.</li><li>Demonstrates both standard and streaming conversations that share a thread.</li><li>Establishes the Well-Architected focused agent persona and guidance style.</li></ul> |
-| [Step 2: Azure AI Foundry Agent Service](./AzureArchitect_Step02_Foundry_AgentService/) | <ul><li>Creates and retrieves persistent server-side agents with Azure AI Foundry.</li><li>Manages multiple agent instances and their lifecycle from a single client.</li><li>Shows how Azure CLI credentials flow to hosted agent services.</li></ul> |
+| [Step 2: Microsoft Foundry Agent Service](./AzureArchitect_Step02_Foundry_AgentService/) | <ul><li>Creates and retrieves persistent server-side agents with Microsoft Foundry.</li><li>Manages multiple agent instances and their lifecycle from a single client.</li><li>Shows how Azure CLI credentials flow to hosted agent services.</li></ul> |
 | [Step 3: Using Function Tools](./AzureArchitect_Step03_UsingFunctionTools/) | <ul><li>Registers a custom SLO calculator function tool with the agent.</li><li>Invokes tools during both non-streaming and streaming interactions.</li><li>Explains availability trade-offs through tool-augmented reasoning.</li></ul> |
 | [Step 4: Function Tools with Approvals](./AzureArchitect_Step04_UsingFunctionToolsWithApprovals/) | <ul><li>Wraps the SLO calculator with approval requirements for human oversight.</li><li>Processes user approval responses to govern tool execution at runtime.</li><li>Illustrates repeatable human-in-the-loop compliance patterns.</li></ul> |
 | [Step 5: MCP Server Integration](./AzureArchitect_Step05_MCPServer/) | <ul><li>Discovers Microsoft Learn tools via the Model Context Protocol server.</li><li>Combines official guidance tools with the reliability agent persona.</li><li>Grounds availability recommendations with cited Learn content.</li></ul> |

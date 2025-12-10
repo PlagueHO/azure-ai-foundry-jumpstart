@@ -1,19 +1,19 @@
 
-# Solution: Azure AI Foundry Jumpstart
+# Solution: Microsoft Foundry Jumpstart
 
 **Version:** 1.0
 **Last Updated:** 2025-05-30
-**Owner:** Azure AI Foundry Jumpstart Team
-**GitHub Repository:** https://github.com/PlagueHO/azure-ai-foundry-jumpstart
+**Owner:** Microsoft Foundry Jumpstart Team
+**GitHub Repository:** https://github.com/PlagueHO/microsoft-foundry-jumpstart
 
 ## 1. Purpose & Scope
 
-This repository provides a solution accelerator for deploying an Azure AI Foundry environment and its dependent resources. It is designed for Azure developers, architects, and DevOps engineers seeking to deploy secure, scalable, and well-architected AI infrastructure using Azure Verified Modules (AVM), Bicep, and best practices. The solution includes infrastructure as code, sample data, automation scripts, and comprehensive documentation.
+This repository provides a solution accelerator for deploying an Microsoft Foundry environment and its dependent resources. It is designed for Azure developers, architects, and DevOps engineers seeking to deploy secure, scalable, and well-architected AI infrastructure using Azure Verified Modules (AVM), Bicep, and best practices. The solution includes infrastructure as code, sample data, automation scripts, and comprehensive documentation.
 
 ## 2. Folder Structure
 
 ```
-azure-ai-foundry-jumpstart/
+microsoft-foundry-jumpstart/
 │
 ├── docs/                # Developer and user documentation
 │   ├── ARCHITECTURE.md  # Solution architecture overview
@@ -46,7 +46,7 @@ azure-ai-foundry-jumpstart/
 │   │   └── security/
 │   └── types/           # Custom Bicep types
 │       └── ai/
-│           └── aiFoundryProjectType.bicep
+│           └── foundryProjectType.bicep
 │
 ├── sample-data/         # Example datasets for testing/demo
 │   ├── financial-transactions/
@@ -116,10 +116,10 @@ azure-ai-foundry-jumpstart/
   - `main.bicep`: Entry point for environment deployment.
   - `core/ai/ai-foundry-project-datastore.bicep`: AI project data store module.
   - `core/security/role_aisearch.bicep`, `role_aiservice.bicep`: Security roles.
-  - `types/ai/aiFoundryProjectType.bicep`: Custom Bicep types.
+  - `types/ai/foundryProjectType.bicep`: Custom Bicep types.
 - `sample-data/`: Example datasets for validation and demonstration.
 - `scripts/`: Automation scripts for deployment and data management.
 - `src/`: Source code for CLI tools, data generators, and samples.
 - `tests/`: Test code for validation and CI.
 
-# For LLMs: Use this file to locate all relevant documentation, specifications, and code structure for understanding and reasoning about the Azure AI Foundry Jumpstart solution. Do not include implementation details here.
+# For LLMs: Use this file to locate all relevant documentation, specifications, and code structure for understanding and reasoning about the Microsoft Foundry Jumpstart solution. Do not include implementation details here.

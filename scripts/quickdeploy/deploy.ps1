@@ -1,10 +1,10 @@
 <#
     .SYNOPSIS
-        A PowerShell script that combines configuration and deployment of the Azure AI Foundry Jumpstart
+        A PowerShell script that combines configuration and deployment of the Microsoft Foundry Jumpstart
         into a single command.
 
     .DESCRIPTION
-        This script automates the process of deploying the Azure AI Foundry Jumpstart. It combines the
+        This script automates the process of deploying the Microsoft Foundry Jumpstart. It combines the
         configuration and deployment steps into a single command, making it easier to set up the environment.
         It just makes calls to the Azure Developer CLI command line tool (azd) to do the work.
 

@@ -1,7 +1,7 @@
 metadata name = 'Cognitive Services Project'
 metadata description = '''
 This module deploys a Project within a Cognitive Services account.
-It allows for the creation of a AI Foundry Project with optional managed identities and role assignments.
+It allows for the creation of a Foundry Project with optional managed identities and role assignments.
 '''
 
 @sys.description('Required. The name of the parent Cognitive Services account.')
@@ -36,7 +36,7 @@ param displayName string
 param description string = ''
 
 import { connectionType } from '../connection/main.bicep'
-@sys.description('Optional. Connections to create in the AI Foundry Project.')
+@sys.description('Optional. Connections to create in the Foundry Project.')
 param connections connectionType[] = []
 
 

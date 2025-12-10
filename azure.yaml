@@ -1,9 +1,9 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
-name: azure-ai-foundry-jumpstart
+name: microsoft-foundry-jumpstart
 
 metadata:
-  template: azure-ai-foundry-jumpstart@1.0
-  name: azure-ai-foundry-jumpstart@1.0
+  template: microsoft-foundry-jumpstart@1.0
+  name: microsoft-foundry-jumpstart@1.0
 
 hooks:
   postprovision:
