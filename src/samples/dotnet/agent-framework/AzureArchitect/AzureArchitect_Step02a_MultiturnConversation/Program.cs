@@ -45,7 +45,7 @@ AgentThread thread = architectAgent.GetNewThread();
 
 // First question in the conversation
 Console.WriteLine("Question 1: I am building an AI agent in Azure using Microsoft Agent Framework. What Azure services can I use to host it and get 3 9's availability?\n");
-await foreach (AgentRunResponseUpdate update in thread.RunStreamingAsync("I am building an AI agent in Azure using Microsoft Agent Framework. What Azure services can I use to host it and get 3 9's availability?", thread))
+await foreach (AgentRunResponseUpdate update in architectAgent.RunStreamingAsync("I am building an AI agent in Azure using Microsoft Agent Framework. What Azure services can I use to host it and get 3 9's availability?", thread))
 {
     Console.Write(update);
 }
@@ -54,7 +54,7 @@ Console.WriteLine("\n\n-------------------\n");
 
 // Second question - this will have context from the first question because we're using the same thread
 Console.WriteLine("Question 2: I want to use Azure App Service, how do I ensure it is secure?\n");
-await foreach (AgentRunResponseUpdate update in thread.RunStreamingAsync("I want to use Azure App Service, how do I ensure it is secure?", thread))
+await foreach (AgentRunResponseUpdate update in architectAgent.RunStreamingAsync("I want to use Azure App Service, how do I ensure it is secure?", thread))
 {
     Console.Write(update);
 }
@@ -63,7 +63,7 @@ Console.WriteLine("\n\n-------------------\n");
 
 // Third question - demonstrating continued context
 Console.WriteLine("Question 3: What about cost optimization for this setup?\n");
-await foreach (AgentRunResponseUpdate update in thread.RunStreamingAsync("What about cost optimization for this setup?", thread))
+await foreach (AgentRunResponseUpdate update in architectAgent.RunStreamingAsync("What about cost optimization for this setup?", thread))
 {
     Console.Write(update);
 }
