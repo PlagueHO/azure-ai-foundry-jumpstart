@@ -205,4 +205,4 @@ This sample application is for demonstration purposes only. The loan information
 
 ## 🤝 Contributing
 
-This is part of the Azure AI Foundry Jumpstart project. Contributions are welcome following the project's contribution guidelines.
+This is part of the Microsoft Foundry Jumpstart project. Contributions are welcome following the project's contribution guidelines.

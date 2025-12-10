@@ -63,7 +63,7 @@ def initialize_client():
     except ImportError:
         pass  # python-dotenv not available, use system environment variables
 
-    # Create project client using connection string, copied from your Azure AI Foundry project
+    # Create project client using connection string, copied from your Microsoft Foundry project
     credential = DefaultAzureCredential()
 
     # Create project client following the official documentation pattern

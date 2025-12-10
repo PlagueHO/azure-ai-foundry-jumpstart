@@ -1,6 +1,6 @@
 # Synthetic Data Generator (Package-level Guide)
 
-This package provides the **engine, interfaces and scenario plug-ins** used by the Azure AI Foundry Jumpstart Solution Accelerator to create realistic yet *entirely fictional* datasets with Azure OpenAI + Semantic Kernel.
+This package provides the **engine, interfaces and scenario plug-ins** used by the Microsoft Foundry Jumpstart Solution Accelerator to create realistic yet *entirely fictional* datasets with Azure OpenAI + Semantic Kernel.
 
 ## 1. Quick Start (One-liner)
 

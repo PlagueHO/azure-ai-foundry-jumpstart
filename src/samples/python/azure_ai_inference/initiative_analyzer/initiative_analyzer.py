@@ -2,7 +2,7 @@
 Initiative Analyzer - AI-powered backlog item analysis and initiative association.
 
 This application analyzes CSV backlog items against organizational initiatives
-using Azure AI Foundry's language models to generate comprehensive markdown reports
+using Microsoft Foundry's language models to generate comprehensive markdown reports
 organized by initiative.
 
 Features:
@@ -376,7 +376,7 @@ def initialize_client(endpoint: Optional[str] = None) -> AzureOpenAI:
         client = inference_ops.get_azure_openai_client(api_version="2024-10-21")
 
         logger.info("Created Azure OpenAI client via AIProjectClient for endpoint: %s", project_endpoint)
-        print(f"Connected to Azure AI Foundry project: {project_endpoint}")
+        print(f"Connected to Microsoft Foundry project: {project_endpoint}")
 
         return client
 

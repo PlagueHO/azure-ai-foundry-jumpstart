@@ -89,7 +89,7 @@ The agent is configured via a `template.py` file and deployable with Bicep for e
 
 ### Prerequisites
 
-1. **Azure AI Foundry Project**: Set up an Azure AI Foundry project
+1. **Microsoft Foundry Project**: Set up an Microsoft Foundry project
 2. **Authentication**: Login via Azure CLI: `az login`
 3. **Python Environment**: Python 3.8+ with required packages
 
@@ -147,7 +147,7 @@ The `home_loan_agent.py` script demonstrates a complete agent lifecycle with mod
 
 ### 1. **Connection & Authentication**
 
-- Establishes connection to Azure AI Foundry using `DefaultAzureCredential`
+- Establishes connection to Microsoft Foundry using `DefaultAzureCredential`
 - Tests the connection before proceeding
 - Uses environment variables for configuration
 

@@ -2,7 +2,7 @@
 
 ## 1. Purpose  
 
-Provide a reusable, secure, and easily extensible Python CLI for generating scenario-specific synthetic data with Azure OpenAI and the Semantic-Kernel SDK. The tool will be used by the **Azure AI Foundry Jumpstart Solution Accelerator** to seed demonstration environments, but maybe used for general synthetic data generation.
+Provide a reusable, secure, and easily extensible Python CLI for generating scenario-specific synthetic data with Azure OpenAI and the Semantic-Kernel SDK. The tool will be used by the **Microsoft Foundry Jumpstart Solution Accelerator** to seed demonstration environments, but maybe used for general synthetic data generation.
 
 This tool is intended to superceed the version found in [/scripts/data-generators/](/scripts/data-generators/), but refer back to that for the original implementation, especially around Semantic Kernel usage.
 
@@ -210,7 +210,7 @@ If neither CLI flags nor variables are found, startup fails with a clear
 
 ```powershell
 # Repo root
-cd D:\source\GitHub\PlagueHO\azure-ai-foundry-jumpstart
+cd D:\source\GitHub\PlagueHO\microsoft-foundry-jumpstart
 
 # Expose the src-layout for the current shell only
 $env:PYTHONPATH = "$PWD\src"

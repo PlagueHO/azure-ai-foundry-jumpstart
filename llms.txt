@@ -4,7 +4,7 @@
 **Version:** 1.0
 **Last Updated:** 2025-05-30
 **Owner:** Microsoft Foundry Jumpstart Team
-**GitHub Repository:** https://github.com/PlagueHO/azure-ai-foundry-jumpstart
+**GitHub Repository:** https://github.com/PlagueHO/microsoft-foundry-jumpstart
 
 ## 1. Purpose & Scope
 
@@ -13,7 +13,7 @@ This repository provides a solution accelerator for deploying an Microsoft Found
 ## 2. Folder Structure
 
 ```
-azure-ai-foundry-jumpstart/
+microsoft-foundry-jumpstart/
 │
 ├── docs/                # Developer and user documentation
 │   ├── ARCHITECTURE.md  # Solution architecture overview
