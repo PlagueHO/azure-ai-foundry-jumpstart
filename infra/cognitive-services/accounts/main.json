@@ -1,19 +1,15 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "2.1-experimental",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-    "_EXPERIMENTAL_FEATURES_ENABLED": [
-      "Extensibility"
-    ],
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "9940039322222733312"
+      "version": "0.36.268.17113",
+      "templateHash": "4647805671928123401"
     },
     "name": "Cognitive Services",
-    "description": "This module deploys a Cognitive Service account.\nThis is a temporary module for deploying Microsoft Foundry Cognitive Services accounts.\nIt is intended to be replaced by the Azure Verified Module (AVM) for Microsoft.CognitiveServices accounts\nonce it supports AI Foundry V2 (projects, connections etc)\nhttps://github.com/Azure/bicep-registry-modules/issues/5390\n"
+    "description": "This module deploys a Cognitive Service account.\nThis is a temporary module for deploying Azure Foundry Cognitive Services accounts.\nIt is intended to be replaced by the Azure Verified Module (AVM) for Microsoft.CognitiveServices accounts\nonce it supports Foundry V2 (projects, connections etc)\nhttps://github.com/Azure/bicep-registry-modules/issues/5390\n"
   },
   "definitions": {
     "privateEndpointOutputType": {
@@ -307,7 +303,7 @@
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "Defines the properties for an Microsoft Foundry Project."
+        "description": "Defines the properties for an Azure Foundry Project."
       }
     },
     "foundryProjectPropertiesType": {
@@ -327,7 +323,7 @@
         }
       },
       "metadata": {
-        "description": "Defines the nested properties for an Microsoft Foundry Project, corresponding to the \"properties\" object of the Microsoft.CognitiveServices/accounts/projects resource."
+        "description": "Defines the nested properties for an Azure Foundry Project, corresponding to the \"properties\" object of the Microsoft.CognitiveServices/accounts/projects resource."
       }
     },
     "_1.secretSetOutputType": {
@@ -1977,7 +1973,7 @@
       "type": "bool",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Enable/Disable project management feature for AI Foundry."
+        "description": "Optional. Enable/Disable project management feature for Foundry."
       }
     },
     "projects": {
@@ -1998,6 +1994,20 @@
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Connections to create in the Cognitive Services account."
+      }
+    },
+    "storedCompletionsDisabled": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The flag to disable stored completions. When true, Azure OpenAI will not store prompts and completions for content filtering and abuse monitoring."
+      }
+    },
+    "defaultProject": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Specifies the default project (by project name) that is targeted when data plane endpoints are called without a project parameter. Only applicable when allowProjectManagement is true."
       }
     }
   },
@@ -2100,7 +2110,7 @@
     },
     "cognitiveService": {
       "type": "Microsoft.CognitiveServices/accounts",
-      "apiVersion": "2025-04-01-preview",
+      "apiVersion": "2025-10-01-preview",
       "name": "[parameters('name')]",
       "kind": "[parameters('kind')]",
       "identity": "[coalesce(variables('identity'), createObject('type', 'None'))]",
@@ -2122,7 +2132,9 @@
         "restore": "[parameters('restore')]",
         "restrictOutboundNetworkAccess": "[parameters('restrictOutboundNetworkAccess')]",
         "userOwnedStorage": "[parameters('userOwnedStorage')]",
-        "dynamicThrottlingEnabled": "[parameters('dynamicThrottlingEnabled')]"
+        "dynamicThrottlingEnabled": "[parameters('dynamicThrottlingEnabled')]",
+        "storedCompletionsDisabled": "[parameters('storedCompletionsDisabled')]",
+        "defaultProject": "[parameters('defaultProject')]"
       },
       "dependsOn": [
         "cMKKeyVault",
@@ -2138,7 +2150,7 @@
         "batchSize": 1
       },
       "type": "Microsoft.CognitiveServices/accounts/deployments",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-10-01-preview",
       "name": "[format('{0}/{1}', parameters('name'), coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'name'), format('{0}-deployments', parameters('name'))))]",
       "properties": {
         "model": "[coalesce(parameters('deployments'), createArray())[copyIndex()].model]",
@@ -2230,7 +2242,9 @@
     "cognitiveService_privateEndpoints": {
       "copy": {
         "name": "cognitiveService_privateEndpoints",
-        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -3029,20 +3043,16 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.1-experimental",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-            "_EXPERIMENTAL_FEATURES_ENABLED": [
-              "Extensibility"
-            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "11465885867999178999"
+              "version": "0.36.268.17113",
+              "templateHash": "7233639600812296195"
             },
             "name": "Cognitive Services Project",
-            "description": "This module deploys a Project within a Cognitive Services account.\nIt allows for the creation of a AI Foundry Project with optional managed identities and role assignments.\n"
+            "description": "This module deploys a Project within a Cognitive Services account.\nIt allows for the creation of a Foundry Project with optional managed identities and role assignments.\n"
           },
           "definitions": {
             "_1.aadAuthTypeWorkspaceConnectionPropertyType": {
@@ -4153,7 +4163,7 @@
               },
               "defaultValue": [],
               "metadata": {
-                "description": "Optional. Connections to create in the AI Foundry Project."
+                "description": "Optional. Connections to create in the Foundry Project."
               }
             }
           },
@@ -4210,12 +4220,12 @@
             "parentAccount": {
               "existing": true,
               "type": "Microsoft.CognitiveServices/accounts",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-10-01-preview",
               "name": "[parameters('accountName')]"
             },
             "project": {
               "type": "Microsoft.CognitiveServices/accounts/projects",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-10-01-preview",
               "name": "[format('{0}/{1}', parameters('accountName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[coalesce(parameters('tags'), createObject())]",
@@ -4231,7 +4241,7 @@
                 "count": "[length(coalesce(parameters('connections'), createArray()))]"
               },
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-10-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), coalesce(parameters('connections'), createArray())[copyIndex()].name)]",
               "properties": "[union(coalesce(parameters('connections'), createArray())[copyIndex()].connectionProperties, createObject('category', coalesce(parameters('connections'), createArray())[copyIndex()].category, 'expiryTime', tryGet(coalesce(parameters('connections'), createArray())[copyIndex()], 'expiryTime'), 'isSharedToAll', tryGet(coalesce(parameters('connections'), createArray())[copyIndex()], 'isSharedToAll'), 'metadata', tryGet(coalesce(parameters('connections'), createArray())[copyIndex()], 'metadata'), 'sharedUserList', tryGet(coalesce(parameters('connections'), createArray())[copyIndex()], 'sharedUserList'), 'target', coalesce(parameters('connections'), createArray())[copyIndex()].target))]",
               "dependsOn": [
@@ -4323,7 +4333,7 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[tryGet(tryGet(reference('project', '2025-04-01-preview', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(reference('project', '2025-10-01-preview', 'full'), 'identity'), 'principalId')]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -4342,7 +4352,9 @@
     "cognitiveServices_connections": {
       "copy": {
         "name": "cognitiveServices_connections",
-        "count": "[length(parameters('connections'))]"
+        "count": "[length(parameters('connections'))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -4386,17 +4398,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.1-experimental",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-            "_EXPERIMENTAL_FEATURES_ENABLED": [
-              "Extensibility"
-            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "18319371933629896379"
+              "version": "0.36.268.17113",
+              "templateHash": "9578025451818724333"
             },
             "name": "Machine Learning Services Workspaces Connections",
             "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -5225,12 +5233,12 @@
             "cognitiveServicesAccount": {
               "existing": true,
               "type": "Microsoft.CognitiveServices/accounts",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-10-01-preview",
               "name": "[parameters('accountName')]"
             },
             "connection": {
               "type": "Microsoft.CognitiveServices/accounts/connections",
-              "apiVersion": "2025-04-01-preview",
+              "apiVersion": "2025-10-01-preview",
               "name": "[format('{0}/{1}', parameters('accountName'), parameters('name'))]",
               "properties": "[union(createObject('category', parameters('category'), 'expiryTime', parameters('expiryTime'), 'isSharedToAll', parameters('isSharedToAll'), 'metadata', parameters('metadata'), 'sharedUserList', parameters('sharedUserList'), 'target', parameters('target'), 'value', parameters('value')), parameters('connectionProperties'))]"
             }
@@ -5261,7 +5269,9 @@
         }
       },
       "dependsOn": [
-        "cognitiveService"
+        "cognitiveService",
+        "cognitiveService_deployments",
+        "cognitiveService_projects"
       ]
     },
     "secretsExport": {
@@ -5281,22 +5291,18 @@
             "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '2025-04-01-preview').key1)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '2025-04-01-preview').key2)), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys('cognitiveService', '2025-10-01-preview').key1)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys('cognitiveService', '2025-10-01-preview').key2)), createArray()))]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.1-experimental",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-            "_EXPERIMENTAL_FEATURES_ENABLED": [
-              "Extensibility"
-            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "5771271412797233990"
+              "version": "0.36.268.17113",
+              "templateHash": "2336553046692823842"
             }
           },
           "definitions": {
@@ -5458,14 +5464,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('cognitiveService', '2025-04-01-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('cognitiveService', '2025-10-01-preview', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('cognitiveService', '2025-04-01-preview', 'full').location]"
+      "value": "[reference('cognitiveService', '2025-10-01-preview', 'full').location]"
     },
     "exportedSecrets": {
       "$ref": "#/definitions/secretsOutputType",
@@ -5499,7 +5505,7 @@
         "$ref": "#/definitions/projectOutputType"
       },
       "metadata": {
-        "description": "The AI Foundry Projects created in the Cognitive Services account."
+        "description": "The Foundry Projects created in the Cognitive Services account."
       },
       "copy": {
         "count": "[length(coalesce(parameters('projects'), createArray()))]",

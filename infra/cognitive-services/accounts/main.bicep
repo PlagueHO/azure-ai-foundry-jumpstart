@@ -464,6 +464,7 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
   }
 ]
 
+@batchSize(1)
 module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: take('${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}', 64)
@@ -540,9 +541,14 @@ module cognitiveService_projects './project/main.bicep' = [
   }
 ]
 
+@batchSize(1)
 module cognitiveServices_connections 'connection/main.bicep' = [
   for connection in connections: {
-    name: concat(take('${cognitiveService.name}-${connection.name}', 60),'-con')
+    name: '${take('${cognitiveService.name}-${connection.name}', 60)}-con'
+    dependsOn: [
+      cognitiveService_deployments
+      cognitiveService_projects
+    ]
     params: {
       accountName: cognitiveService.name
       name: connection.name

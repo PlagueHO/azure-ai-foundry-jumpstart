@@ -1,16 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "2.1-experimental",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-    "_EXPERIMENTAL_FEATURES_ENABLED": [
-      "Extensibility"
-    ],
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "18319371933629896379"
+      "version": "0.36.268.17113",
+      "templateHash": "9578025451818724333"
     },
     "name": "Machine Learning Services Workspaces Connections",
     "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -839,12 +835,12 @@
     "cognitiveServicesAccount": {
       "existing": true,
       "type": "Microsoft.CognitiveServices/accounts",
-      "apiVersion": "2025-04-01-preview",
+      "apiVersion": "2025-10-01-preview",
       "name": "[parameters('accountName')]"
     },
     "connection": {
       "type": "Microsoft.CognitiveServices/accounts/connections",
-      "apiVersion": "2025-04-01-preview",
+      "apiVersion": "2025-10-01-preview",
       "name": "[format('{0}/{1}', parameters('accountName'), parameters('name'))]",
       "properties": "[union(createObject('category', parameters('category'), 'expiryTime', parameters('expiryTime'), 'isSharedToAll', parameters('isSharedToAll'), 'metadata', parameters('metadata'), 'sharedUserList', parameters('sharedUserList'), 'target', parameters('target'), 'value', parameters('value')), parameters('connectionProperties'))]"
     }
