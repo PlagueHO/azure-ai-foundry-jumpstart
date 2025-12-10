@@ -40,7 +40,7 @@ There are several features of the solution accelerator that are worth highlighti
 - **Zero-trust**: Support for deploying a zero-trust environment (network isolation).
 - **Managed identities**: Use of managed identities for Azure resources to authenticate to each other. API keys are not used and can optionally be disabled.
 - **Azure Verified Modules**: Use of Bicep [Azure verified modules](https://aka.ms/avm) to deploy the resources where possible.
-- **Project deployment**: Optional deployment of [Microsoft Foundry projects](https://learn.microsoft.com/azure/ai-foundry/concepts/ai-resources#organize-work-in-projects-for-customization) to the AI Services resource.
+- **Project deployment**: Optional deployment of [Microsoft Foundry projects]([https://learn.microsoft.com/azure/ai-foundry/concepts/ai-resources#organize-work-in-projects-for-customization](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/create-projects?view=foundry&tabs=foundry)) to the Foundry resource.
 - **Diagnostic settings**: Diagnostic settings are configured for all resources to send logs to a Log Analytics workspace.
 - **Model deployment**: Optionally deploy a selection of current AI models, speeding up getting started.
 - **Sample data deployment**: Optionally upload sample data to an additional sample data storage account help you get started with Microsoft Foundry.
