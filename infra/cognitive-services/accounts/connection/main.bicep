@@ -39,7 +39,7 @@ param connectionProperties connectionPropertyType
 // Existing resources references //
 // ============================= //
 
-resource cognitiveServicesAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
+resource cognitiveServicesAccount 'Microsoft.CognitiveServices/accounts@2025-10-01-preview' existing = {
   name: accountName
 }
 
@@ -47,7 +47,7 @@ resource cognitiveServicesAccount 'Microsoft.CognitiveServices/accounts@2025-04-
 // Resources      //
 // ============== //
 
-resource connection 'Microsoft.CognitiveServices/accounts/connections@2025-04-01-preview' = {
+resource connection 'Microsoft.CognitiveServices/accounts/connections@2025-10-01-preview' = {
   name: name
   parent: cognitiveServicesAccount
   properties: union(

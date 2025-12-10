@@ -139,6 +139,19 @@ The Microsoft Foundry Jumpstart supports multiple project deployment scenarios b
 1. **No Projects**: Set `MICROSOFT_FOUNDRY_PROJECT_DEPLOY=false` to deploy only the AI Foundry/AI Services without any projects
 2. **Projects to AI Foundry/AI Services**: Set `MICROSOFT_FOUNDRY_PROJECT_DEPLOY=true` to deploy projects directly to the AI Foundry/AI Services resource.
 
+### Foundry Project Experience Differences
+
+**Important**: Azure AI Foundry supports two different project experiences that behave differently when working with multiple projects:
+
+- **Foundry (Classic)**: In the Classic experience, the Default Project and **all other projects** deployed to the AI Services resource are visible and usable in the UI. This allows you to work with multiple projects from the same AI Foundry resource.
+  - [Learn more about Foundry Classic](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/create-projects?view=foundry-classic&tabs=foundry)
+
+- **Foundry (New)**: In the New experience, **only the Default Project** is accessible through the UI. While additional projects can still be deployed as child resources to the AI Services account, they will not appear in the Foundry portal UI.
+  - [Learn more about Foundry New experience](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/create-projects?view=foundry&tabs=foundry)
+
+> [!NOTE]
+> If you plan to use the Foundry (New) experience and need to work with multiple projects through the UI, you will need to deploy separate AI Services resources, each with its own Default Project. Alternatively, use the Foundry (Classic) experience to access all projects from a single resource.
+
 ### Project Sources
 
 The projects that will be deployed can be defined in two ways:
