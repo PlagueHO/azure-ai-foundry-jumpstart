@@ -780,17 +780,17 @@ output AZURE_SAMPLE_DATA_STORAGE_ACCOUNT_BLOB_ENDPOINT string = deploySampleData
 output AZURE_DISABLE_API_KEYS bool = disableApiKeys
 output AZURE_AI_SEARCH_NAME string = azureAiSearchDeploy ? aiSearchService.outputs.name : ''
 output AZURE_AI_SEARCH_ID   string = azureAiSearchDeploy ? aiSearchService.outputs.resourceId : ''
-output AZURE_FOUNDRY_NAME string = foundryService.outputs.name
-output AZURE_FOUNDRY_ID string = foundryService.outputs.resourceId
-output AZURE_FOUNDRY_ENDPOINT string = foundryService.outputs.endpoint
-output AZURE_FOUNDRY_RESOURCE_ID string = foundryService.outputs.resourceId
+output MICROSOFT_FOUNDRY_NAME string = foundryService.outputs.name
+output MICROSOFT_FOUNDRY_ID string = foundryService.outputs.resourceId
+output MICROSOFT_FOUNDRY_ENDPOINT string = foundryService.outputs.endpoint
+output MICROSOFT_FOUNDRY_RESOURCE_ID string = foundryService.outputs.resourceId
 
 // Output the Foundry project
-output AZURE_FOUNDRY_PROJECT_DEPLOY bool = foundryProjectDeploy
-output AZURE_FOUNDRY_PROJECTS_FROM_JSON bool = foundryProjectsFromJson
-output AZURE_FOUNDRY_PROJECT_NAME string = foundryProjectDeploy ? foundryProjectName : ''
-output AZURE_FOUNDRY_PROJECT_DESCRIPTION string = foundryProjectDeploy ? foundryProjectDescription : ''
-output AZURE_FOUNDRY_PROJECT_FRIENDLY_NAME string = foundryProjectDeploy ? foundryProjectFriendlyName : ''
+output MICROSOFT_FOUNDRY_PROJECT_DEPLOY bool = foundryProjectDeploy
+output MICROSOFT_FOUNDRY_PROJECTS_FROM_JSON bool = foundryProjectsFromJson
+output MICROSOFT_FOUNDRY_PROJECT_NAME string = foundryProjectDeploy ? foundryProjectName : ''
+output MICROSOFT_FOUNDRY_PROJECT_DESCRIPTION string = foundryProjectDeploy ? foundryProjectDescription : ''
+output MICROSOFT_FOUNDRY_PROJECT_FRIENDLY_NAME string = foundryProjectDeploy ? foundryProjectFriendlyName : ''
 
 // Output the Bastion Host resources
 output AZURE_BASTION_HOST_DEPLOY bool = bastionHostDeploy

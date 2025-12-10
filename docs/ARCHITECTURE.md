@@ -148,7 +148,7 @@ flowchart RL
 ### Minimal Deployment (Public Endpoints)
 
 ```bash
-azd env set AZURE_FOUNDRY_PROJECT_DEPLOY true
+azd env set MICROSOFT_FOUNDRY_PROJECT_DEPLOY true
 azd env set AZURE_NETWORK_ISOLATION false
 ```
 
@@ -157,7 +157,7 @@ azd env set AZURE_NETWORK_ISOLATION false
 ### Full Deployment with Network Isolation
 
 ```bash
-azd env set AZURE_FOUNDRY_PROJECT_DEPLOY true
+azd env set MICROSOFT_FOUNDRY_PROJECT_DEPLOY true
 azd env set AZURE_AI_SEARCH_DEPLOY true
 azd env set DEPLOY_SAMPLE_DATA true
 azd env set AZURE_NETWORK_ISOLATION true

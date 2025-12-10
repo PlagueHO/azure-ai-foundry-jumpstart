@@ -42058,39 +42058,39 @@
       "type": "string",
       "value": "[if(parameters('azureAiSearchDeploy'), reference('aiSearchService').outputs.resourceId.value, '')]"
     },
-    "AZURE_FOUNDRY_NAME": {
+    "MICROSOFT_FOUNDRY_NAME": {
       "type": "string",
       "value": "[reference('foundryService').outputs.name.value]"
     },
-    "AZURE_FOUNDRY_ID": {
+    "MICROSOFT_FOUNDRY_ID": {
       "type": "string",
       "value": "[reference('foundryService').outputs.resourceId.value]"
     },
-    "AZURE_FOUNDRY_ENDPOINT": {
+    "MICROSOFT_FOUNDRY_ENDPOINT": {
       "type": "string",
       "value": "[reference('foundryService').outputs.endpoint.value]"
     },
-    "AZURE_FOUNDRY_RESOURCE_ID": {
+    "MICROSOFT_FOUNDRY_RESOURCE_ID": {
       "type": "string",
       "value": "[reference('foundryService').outputs.resourceId.value]"
     },
-    "AZURE_FOUNDRY_PROJECT_DEPLOY": {
+    "MICROSOFT_FOUNDRY_PROJECT_DEPLOY": {
       "type": "bool",
       "value": "[parameters('foundryProjectDeploy')]"
     },
-    "AZURE_FOUNDRY_PROJECTS_FROM_JSON": {
+    "MICROSOFT_FOUNDRY_PROJECTS_FROM_JSON": {
       "type": "bool",
       "value": "[parameters('foundryProjectsFromJson')]"
     },
-    "AZURE_FOUNDRY_PROJECT_NAME": {
+    "MICROSOFT_FOUNDRY_PROJECT_NAME": {
       "type": "string",
       "value": "[if(parameters('foundryProjectDeploy'), parameters('foundryProjectName'), '')]"
     },
-    "AZURE_FOUNDRY_PROJECT_DESCRIPTION": {
+    "MICROSOFT_FOUNDRY_PROJECT_DESCRIPTION": {
       "type": "string",
       "value": "[if(parameters('foundryProjectDeploy'), parameters('foundryProjectDescription'), '')]"
     },
-    "AZURE_FOUNDRY_PROJECT_FRIENDLY_NAME": {
+    "MICROSOFT_FOUNDRY_PROJECT_FRIENDLY_NAME": {
       "type": "string",
       "value": "[if(parameters('foundryProjectDeploy'), parameters('foundryProjectFriendlyName'), '')]"
     },

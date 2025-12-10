@@ -131,10 +131,10 @@ azd env set DEPLOY_SAMPLE_MODELS true
 azd env set DEPLOY_SAMPLE_DATA true
 azd env set AZURE_CONTAINER_REGISTRY_DEPLOY false
 azd env set AZURE_AI_SEARCH_DEPLOY false
-azd env set AZURE_FOUNDRY_PROJECT_DEPLOY true # Deploy projects (sample or single)
-azd env set AZURE_FOUNDRY_PROJECT_NAME "my-ai-project"
-azd env set AZURE_FOUNDRY_PROJECT_DESCRIPTION "This is my first AI project."
-azd env set AZURE_FOUNDRY_PROJECT_FRIENDLY_NAME "My AI Project"
+azd env set MICROSOFT_FOUNDRY_PROJECT_DEPLOY true # Deploy projects (sample or single)
+azd env set MICROSOFT_FOUNDRY_PROJECT_NAME "my-ai-project"
+azd env set MICROSOFT_FOUNDRY_PROJECT_DESCRIPTION "This is my first AI project."
+azd env set MICROSOFT_FOUNDRY_PROJECT_FRIENDLY_NAME "My AI Project"
 ```
 
 A complete list of environment variables can be found in the [Configuration Options](docs/CONFIGURATION_OPTIONS.md) document.

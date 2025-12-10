@@ -9,8 +9,8 @@ azd env set AZURE_NETWORK_ISOLATION false
 azd env set DEPLOY_SAMPLE_MODELS true
 azd env set DEPLOY_SAMPLE_DATA true
 azd env set AZURE_AI_SEARCH_DEPLOY true
-azd env set AZURE_FOUNDRY_PROJECTS_FROM_JSON true
-azd env set AZURE_FOUNDRY_PROJECT_DEPLOY true
+azd env set MICROSOFT_FOUNDRY_PROJECTS_FROM_JSON true
+azd env set MICROSOFT_FOUNDRY_PROJECT_DEPLOY true
 ```
 
 ## With Network Isolation
@@ -20,6 +20,6 @@ azd env set AZURE_NETWORK_ISOLATION true
 azd env set DEPLOY_SAMPLE_MODELS true
 azd env set DEPLOY_SAMPLE_DATA true
 azd env set AZURE_AI_SEARCH_DEPLOY true
-azd env set AZURE_FOUNDRY_PROJECTS_FROM_JSON true
-azd env set AZURE_FOUNDRY_PROJECT_DEPLOY true
+azd env set MICROSOFT_FOUNDRY_PROJECTS_FROM_JSON true
+azd env set MICROSOFT_FOUNDRY_PROJECT_DEPLOY true
 ```

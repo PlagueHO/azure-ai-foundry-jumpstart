@@ -17,8 +17,8 @@ Set the following environment variables:
 ```powershell
 $env:AZURE_OPENAI_ENDPOINT="<Your Azure OpenAI Endpoint - provided within Microsoft Foundry>"
 $env:AZURE_OPENAI_DEPLOYMENT_NAME="<GPT 4.1 model deployed to Microsoft Foundry Project>"
-$env:AZURE_FOUNDRY_PROJECT_ENDPOINT="<Your Microsoft Foundry Project Endpoint>"
-$env:AZURE_FOUNDRY_PROJECT_DEPLOYMENT_NAME="<GPT 4.1 model deployed to Microsoft Foundry Project>"
+$env:MICROSOFT_FOUNDRY_PROJECT_ENDPOINT="<Your Microsoft Foundry Project Endpoint>"
+$env:MICROSOFT_FOUNDRY_PROJECT_DEPLOYMENT_NAME="<GPT 4.1 model deployed to Microsoft Foundry Project>"
 ```
 
 ## Purpose
