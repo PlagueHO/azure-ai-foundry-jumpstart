@@ -6,7 +6,7 @@ The configuration options are grouped into the following categories:
 
 - [Create Sample Data](#create-sample-data)
 - [Networking & Isolation](#networking--isolation)
-- [Azure AI Foundry Project](#azure-ai-foundry-project)
+- [Microsoft Foundry Project](#azure-ai-foundry-project)
 - [Azure AI Search Service](#azure-ai-search-service)
 - [Identity & Access](#identity--access)
 - [Optional Infrastructure](#optional-infrastructure)
@@ -18,7 +18,7 @@ These options control the creation of sample data and configuration in the Azure
 
 ### DEPLOY_SAMPLE_MODELS
 
-Deploy seme common OpenAI models into the Azure OpenAI Service connected to the Azure AI Foundry Hub.
+Deploy seme common OpenAI models into the Azure OpenAI Service connected to the Microsoft Foundry Hub.
 Default: `true`.
 
 This will deploy the following models into the Azure OpenAI Service. If the models aren't available in the selected region, or the quota is exceeded, the deployment will fail:
@@ -49,8 +49,8 @@ azd env set DEPLOY_SAMPLE_MODELS false
 
 ### DEPLOY_SAMPLE_DATA
 
-Create a dedicated Azure Storage Account for sample data with separation of concerns from the Azure AI Foundry Hub operational storage.
-When enabled, sample data containers will be created in the dedicated storage account and datastores will be created in the Azure AI Foundry projects to connect to each container.
+Create a dedicated Azure Storage Account for sample data with separation of concerns from the Microsoft Foundry Hub operational storage.
+When enabled, sample data containers will be created in the dedicated storage account and datastores will be created in the Microsoft Foundry projects to connect to each container.
 
 > [!IMPORTANT]
 > When being deployed from a Windows machine, a PowerShell script is used to upload the sample data to the containers. This script will require the [PowerShell script execution policy](https://learn.microsoft.com/powershell/module/microsoft.powershell.core/about/about_execution_policies) to be set to `RemoteSigned` or `Unrestricted`, otherwise an execution error will occur.
@@ -103,9 +103,9 @@ Default: `false`.
 azd env set AZURE_DISABLE_API_KEYS true
 ```
 
-## Azure AI Foundry Project
+## Microsoft Foundry Project
 
-The Azure AI Foundry Jumpstart supports multiple project deployment scenarios based on your architecture preferences:
+The Microsoft Foundry Jumpstart supports multiple project deployment scenarios based on your architecture preferences:
 
 ### Project Deployment Scenarios
 
@@ -121,8 +121,8 @@ The projects that will be deployed can be defined in two ways:
 
 ### AZURE_AI_FOUNDRY_PROJECT_DEPLOY
 
-Enable deployment of Projects into the Azure AI Foundry/AI Services resource.
-When set to `false`, no project resources are created in the Azure AI Foundry/AI Services resource.
+Enable deployment of Projects into the Microsoft Foundry/AI Services resource.
+When set to `false`, no project resources are created in the Microsoft Foundry/AI Services resource.
 
 Default: `true`.
 
@@ -132,7 +132,7 @@ azd env set AZURE_AI_FOUNDRY_PROJECT_DEPLOY false
 
 ### AZURE_AI_FOUNDRY_PROJECT_NAME
 
-The name of the sample Azure AI Foundry Project. This is used in the resource name, so can not contain spaces or special characters.
+The name of the sample Microsoft Foundry Project. This is used in the resource name, so can not contain spaces or special characters.
 Default: `sample-project`.
 
 ```powershell
@@ -141,7 +141,7 @@ azd env set AZURE_AI_FOUNDRY_PROJECT_NAME "my-ai-project"
 
 ### AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME
 
-Friendly display name for the sample Azure AI Foundry Project.
+Friendly display name for the sample Microsoft Foundry Project.
 Default: `Sample Project`.
 
 ```powershell
@@ -150,8 +150,8 @@ azd env set AZURE_AI_FOUNDRY_PROJECT_FRIENDLY_NAME "My AI Project"
 
 ### AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION
 
-Optional description for the sample Azure AI Foundry Project shown in the Azure portal.
-Default: `A sample project for Azure AI Foundry`.
+Optional description for the sample Microsoft Foundry Project shown in the Azure portal.
+Default: `A sample project for Microsoft Foundry`.
 
 ```powershell
 azd env set AZURE_AI_FOUNDRY_PROJECT_DESCRIPTION "This is my first AI project."

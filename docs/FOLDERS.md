@@ -1,6 +1,6 @@
 # FOLDERS.md
 
-This document describes the folder structure of the Azure AI Foundry Jumpstart Solution Accelerator repository. Each folder is organized to support modularity, clarity, and ease of navigation.
+This document describes the folder structure of the Microsoft Foundry Jumpstart Solution Accelerator repository. Each folder is organized to support modularity, clarity, and ease of navigation.
 
 ---
 

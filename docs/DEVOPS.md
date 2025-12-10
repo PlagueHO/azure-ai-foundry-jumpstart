@@ -1,6 +1,6 @@
 # DevOps Approach: CI/CD Strategy and Workflows
 
-This document outlines the DevOps strategy, automated testing, and CI/CD workflows used in the Azure AI Foundry Secure Hub Solution Accelerator.
+This document outlines the DevOps strategy, automated testing, and CI/CD workflows used in the Microsoft Foundry Secure Hub Solution Accelerator.
 
 ## Overview
 

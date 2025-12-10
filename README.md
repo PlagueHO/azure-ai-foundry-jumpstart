@@ -1,4 +1,4 @@
-# Azure AI Foundry Jumpstart Solution Accelerator
+# Microsoft Foundry Jumpstart Solution Accelerator
 
 [![CI][ci-shield]][ci-url]
 [![CD][cd-shield]][cd-url]
@@ -6,23 +6,23 @@
 [![Azure][azure-shield]][azure-url]
 [![IaC][iac-shield]][iac-url]
 
-## What is the Azure AI Jumpstart Solution Accelerator
+## What is the Microsoft Foundry Jumpstart Solution Accelerator
 
-The Azure AI Foundry Jumpstart Solution Accelerator deploys an [Azure AI Foundry environment](https://learn.microsoft.com/azure/ai-foundry/how-to/create-secure-ai-hub) and supporting services into your Azure subscription. This accelerator is designed to be used as a secure environment for exploring and experimenting with Azure AI Foundry capabilities.
+The Microsoft Foundry Jumpstart Solution Accelerator deploys a [Microsoft Foundry environment](https://learn.microsoft.com/azure/ai-foundry/how-to/create-secure-ai-hub) and supporting services into your Azure subscription. This accelerator is designed to be used as a secure environment for exploring and experimenting with Microsoft Foundry capabilities.
 
-This solution accelerator is intended to help getting started with Azure AI Foundry quickly and easily, while meeting security and well-architected framework best practices.
+This solution accelerator is intended to help getting started with Microsoft Foundry quickly and easily, while meeting security and well-architected framework best practices.
 
 If you just want to get started, jump to the [Deploying](#deploying) section.
 
-## A Zero-trust AI Foundry Environment
+## A Zero-trust Foundry Environment
 
-By default, this solution accelerator deploys Azure AI Foundry and most of the supporting resources into a *virtual network* using *private endpoints*, *disables public access* and configures *managed identities for services to authenticate* to each other. This aligns to [Microsoft's Secure Future Initiative](https://www.microsoft.com/trust-center/security/secure-future-initiative) and the [Zero Trust security model](https://learn.microsoft.com/security/zero-trust/).
+By default, this solution accelerator deploys Microsoft Foundry and most of the supporting resources into a *virtual network* using *private endpoints*, *disables public access* and configures *managed identities for services to authenticate* to each other. This aligns to [Microsoft's Secure Future Initiative](https://www.microsoft.com/trust-center/security/secure-future-initiative) and the [Zero Trust security model](https://learn.microsoft.com/security/zero-trust/).
 
-It automates the deployment of the services using the same approach as the instructions on [How to create a secure Azure AI Foundry hub and project with a managed virtual network](https://learn.microsoft.com/azure/ai-foundry/how-to/secure-data-playground) page.
+It automates the deployment of the services using the same approach as the instructions on [How to create a secure Microsoft Foundry hub and project with a managed virtual network](https://learn.microsoft.com/azure/ai-foundry/how-to/secure-data-playground) page.
 
 > [!IMPORTANT]
 > Zero-trust with network isolation is the default configuration for this solution accelerator. But you can choose to deploy the resources without a virtual network and public endpoints if you prefer. See the [Configuration Options](#configuration-options) section for more details.
-> When deployed with zero-trust, the Azure AI Foundry environment is not accessible from the public internet. You will need to use a VPN or Azure Bastion to access it.
+> When deployed with zero-trust, the Microsoft Foundry environment is not accessible from the public internet. You will need to use a VPN or Azure Bastion to access it.
 
 
 ## Requirements
@@ -41,14 +41,14 @@ There are several features of the solution accelerator that are worth highlighti
 - **Zero-trust**: Support for deploying a zero-trust environment (network isolation).
 - **Managed identities**: Use of managed identities for Azure resources to authenticate to each other. API keys are not used and can optionally be disabled.
 - **Azure Verified Modules**: Use of Bicep [Azure verified modules](https://aka.ms/avm) to deploy the resources where possible.
-- **Project deployment**: Optional deployment of [Azure AI Foundry projects](https://learn.microsoft.com/azure/ai-foundry/concepts/ai-resources#organize-work-in-projects-for-customization) to the AI Services resource.
+- **Project deployment**: Optional deployment of [Microsoft Foundry projects](https://learn.microsoft.com/azure/ai-foundry/concepts/ai-resources#organize-work-in-projects-for-customization) to the AI Services resource.
 - **Diagnostic settings**: Diagnostic settings are configured for all resources to send logs to a Log Analytics workspace.
 - **Model deployment**: Optionally deploy a selection of current AI models, speeding up getting started.
-- **Sample data deployment**: Optionally upload sample data to an additional sample data storage account help you get started with Azure AI Foundry.
-- **Sample data creation**: Data generation tool to create custom synthetic data for using with Azure AI Foundry.
+- **Sample data deployment**: Optionally upload sample data to an additional sample data storage account help you get started with Microsoft Foundry.
+- **Sample data creation**: Data generation tool to create custom synthetic data for using with Microsoft Foundry.
 
 > [!WARNING]
-> **Hub Mode Deprecated** - As of December 2025, Azure AI Foundry Hub mode support has been removed from this solution accelerator. The solution now deploys only AI Services-based projects (Microsoft.CognitiveServices/accounts), which is the recommended approach. The Hub mode (Microsoft.MachineLearningServices/workspaces) required additional supporting resources (Key Vault, Storage Account, Container Registry) and is no longer necessary for Azure AI Foundry deployments. If you need Hub mode support, please use a previous version of this repository.
+> **Hub Mode Deprecated** - As of December 2025, Microsoft Foundry Hub mode support has been removed from this solution accelerator. The solution now deploys only AI Services-based projects (Microsoft.CognitiveServices/accounts), which is the recommended approach. The Hub mode (Microsoft.MachineLearningServices/workspaces) required additional supporting resources (Key Vault, Storage Account, Container Registry) and is no longer necessary for Microsoft Foundry deployments. If you need Hub mode support, please use a previous version of this repository.
 
 
 ## Deploying
@@ -65,10 +65,10 @@ This section will create Azure resources and deploy the solution from your local
 #### If you have not cloned this repo
 
 1. Download the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/overview)
-1. If you have not cloned this repo, you can use the `azd init -t PlagueHO/azure-ai-foundry-jumpstart` command to clone the repo and initialize it.
+1. If you have not cloned this repo, you can use the `azd init -t PlagueHO/microsoft-foundry-jumpstart` command to clone the repo and initialize it.
 
    ```powershell
-   azd init -t PlagueHO/azure-ai-foundry-jumpstart
+   azd init -t PlagueHO/microsoft-foundry-jumpstart
    ```
 
 1. Authenticate the Azure Developer CLI  by running `azd auth login`.
@@ -84,7 +84,7 @@ This section will create Azure resources and deploy the solution from your local
    ```
 
 > [!NOTE]
-> This will deploy the Azure AI Foundry service with public endpoints. You can access the Azure AI Foundry service from the public internet. This is recommended for demonstration and testing purposes or when there is no requirement for network isolation.
+> This will deploy the Microsoft Foundry service with public endpoints. You can access the Microsoft Foundry service from the public internet. This is recommended for demonstration and testing purposes or when there is no requirement for network isolation.
 
 1. Run `azd up` to provision and deploy the application
 
@@ -97,7 +97,7 @@ This section will create Azure resources and deploy the solution from your local
 1. If you have already cloned this repo, change directory to the repo root directory.
 
    ```powershell
-   cd azure-ai-foundry-jumpstart
+   cd microsoft-foundry-jumpstart
    ```
 
 1. Authenticate the Azure Developer CLI  by running `azd auth login`.
@@ -113,7 +113,7 @@ This section will create Azure resources and deploy the solution from your local
    ```
 
 > [!NOTE]
-> This will deploy the Azure AI Foundry service with public endpoints. You can access the Azure AI Foundry service from the public internet. This is recommended for demonstration and testing purposes or when there is no requirement for network isolation.
+> This will deploy the Microsoft Foundry service with public endpoints. You can access the Microsoft Foundry service from the public internet. This is recommended for demonstration and testing purposes or when there is no requirement for network isolation.
 
 1. Run `azd up` to provision and deploy the application
 
@@ -150,10 +150,10 @@ Click on the Deploy to Azure button to deploy the Azure resources for this solut
 
 ## Next Steps
 
-After the deployment is complete, you can access the Azure AI Foundry service using the URL provided in the output of the deployment or going to [https://ai.azure.com/](https://ai.azure.com/). You can also access the Azure AI Foundry service using the Azure portal by navigating to the resource group created during the deployment.
+After the deployment is complete, you can access the Microsoft Foundry service using the URL provided in the output of the deployment or going to [https://ai.azure.com/](https://ai.azure.com/). You can also access the Microsoft Foundry service using the Azure portal by navigating to the resource group created during the deployment.
 
 > [!IMPORTANT]
-> If you deployed the solution accelerator with network isolation, you will need to use a VPN or Azure Bastion to access the Azure AI Foundry service and project. The Azure AI Foundry service and project are not accessible from the public internet.
+> If you deployed the solution accelerator with network isolation, you will need to use a VPN or Azure Bastion to access the Microsoft Foundry service and project. The Microsoft Foundry service and project are not accessible from the public internet.
 
 ## Deleting the Deployment
 
@@ -188,15 +188,15 @@ The following diagrams illustrate the architecture of the solution accelerator. 
 
 ### With Network Isolation
 
-The following diagram illustrates the architecture of the solution accelerator with network isolation when deploying an Azure AI Foundry project environment.
+The following diagram illustrates the architecture of the solution accelerator with network isolation when deploying a Microsoft Foundry project environment.
 
-[![Azure AI Foundry Jumpstart Solution Accelerator with Network Isolation](docs/images/azure-ai-foundry-jumpstart-zero-trust.svg)](docs/images/azure-ai-foundry-jumpstart-zero-trust.svg)
+[![Microsoft Foundry Jumpstart Solution Accelerator with Network Isolation](docs/images/microsoft-foundry-jumpstart-zero-trust.svg)](docs/images/microsoft-foundry-jumpstart-zero-trust.svg)
 
 ### Without Network Isolation
 
-The following diagram illustrates the architecture of the solution accelerator without network isolation when deploying an Azure AI Foundry project environment.
+The following diagram illustrates the architecture of the solution accelerator without network isolation when deploying a Microsoft Foundry project environment.
 
-[![Azure AI Foundry Jumpstart Solution Accelerator without network isolation](docs/images/azure-ai-foundry-jumpstart-public.svg)](docs/images/azure-ai-foundry-jumpstart-public.svg)
+[![Microsoft Foundry Jumpstart Solution Accelerator without network isolation](docs/images/microsoft-foundry-jumpstart-public.svg)](docs/images/microsoft-foundry-jumpstart-public.svg)
 
 ## Contributing
 

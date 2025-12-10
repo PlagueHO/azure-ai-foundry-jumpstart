@@ -1,6 +1,6 @@
 version: 2
 
-# Dependabot configuration for Azure AI Foundry Jumpstart
+# Dependabot configuration for Microsoft Foundry Jumpstart
 updates:
   # Python dependencies
   - package-ecosystem: "pip"

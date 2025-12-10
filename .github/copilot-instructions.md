@@ -1,4 +1,4 @@
-This is an Azure Developer CLI (azd) solution accelerator for deploying Azure AI Foundry environments with zero-trust networking and enterprise security patterns.
+This is an Azure Developer CLI (azd) solution accelerator for deploying Microsoft Foundry environments with zero-trust networking and enterprise security patterns.
 
 ## Architecture Overview
 
