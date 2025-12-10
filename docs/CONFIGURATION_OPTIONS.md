@@ -83,17 +83,6 @@ Default: `true`.
 azd env set AZURE_NETWORK_ISOLATION false
 ```
 
-### MICROSOFT_FOUNDRY_HUB_IP_ALLOW_LIST
-
-Comma‑separated list of IPv4 addresses / CIDR ranges permitted when network isolation is enabled.  
-Default: `''` - no public IP addresses are allowed to access the AI Foundry hub.
-
-> Note: This setting is only relevant when `AZURE_NETWORK_ISOLATION` is set to `true`.
-
-```powershell
-azd env set MICROSOFT_FOUNDRY_HUB_IP_ALLOW_LIST "203.0.113.10/32,198.51.100.0/24"
-```
-
 ### AZURE_DISABLE_API_KEYS
 
 Disable API keys on Azure AI services (`true`) and enforce Entra ID authentication only.  
