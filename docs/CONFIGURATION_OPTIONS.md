@@ -18,7 +18,7 @@ These options control the creation of sample data and configuration in the Azure
 
 ### DEPLOY_SAMPLE_MODELS
 
-Deploy seme common OpenAI models into the Azure OpenAI Service connected to the Microsoft Foundry Hub.
+Deploy sample base models into the Microsoft Foundry Project.
 Default: `true`.
 
 This will deploy the following models into the Azure OpenAI Service. If the models aren't available in the selected region, or the quota is exceeded, the deployment will fail:
