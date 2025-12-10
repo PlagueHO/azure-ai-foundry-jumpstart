@@ -1,12 +1,12 @@
-metadata name = 'Azure AI Foundry Role Assignments'
-metadata description = 'Creates role assignments on an Azure AI Foundry account.'
+metadata name = 'Microsoft Foundry Role Assignments'
+metadata description = 'Creates role assignments on a Microsoft Foundry account.'
 
 // TODO: Once this proposal is implemented: https://github.com/azure/bicep/issues/2245
 // We can create a generalized version of this resource that can be used any resource
 // by passing in the resource as a parameter.
 
-@description('Required. The name of the Azure AI Foundry account to assign roles to.')
-param azureAiFoundryName string
+@description('Required. The name of the Microsoft Foundry account to assign roles to.')
+param foundryName string
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
@@ -132,14 +132,14 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource azureAiFoundryAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
-  name: azureAiFoundryName
+resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
+  name: foundryName
 }
 
-resource aiFoundry_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+resource foundry_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: roleAssignment.?name ?? guid(
-      azureAiFoundryAccount.id,
+      foundryAccount.id,
       roleAssignment.principalId,
       roleAssignment.roleDefinitionId
     )
@@ -152,18 +152,18 @@ resource aiFoundry_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
       conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
-    scope: azureAiFoundryAccount
+    scope: foundryAccount
   }
 ]
 
 @description('The resource IDs of the role assignments.')
 output roleAssignmentResourceIds array = [
-  for (roleAssignment, index) in (formattedRoleAssignments ?? []): aiFoundry_roleAssignments[index].id
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): foundry_roleAssignments[index].id
 ]
 
 @description('The names of the role assignments.')
 output roleAssignmentNames array = [
-  for (roleAssignment, index) in (formattedRoleAssignments ?? []): aiFoundry_roleAssignments[index].name
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): foundry_roleAssignments[index].name
 ]
 
 // =============== //

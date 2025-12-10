@@ -1,6 +1,6 @@
 {
     "aiSearchSearchServices": "aisrch-",
-    "aiFoundryAccounts": "aif-",
+    "foundryAccounts": "aif-",
     "analysisServicesServers": "as",
     "apiManagementService": "apim-",
     "appConfigurationStores": "appcs-",
