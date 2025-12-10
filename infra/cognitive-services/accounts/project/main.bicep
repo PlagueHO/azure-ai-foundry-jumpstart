@@ -205,11 +205,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource parentAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
+resource parentAccount 'Microsoft.CognitiveServices/accounts@2025-10-01-preview' existing = {
   name: accountName
 }
 
-resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview' = {
+resource project 'Microsoft.CognitiveServices/accounts/projects@2025-10-01-preview' = {
   parent: parentAccount
   name: name
   location: location
@@ -221,7 +221,7 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-previ
   }
 }
 
-resource project_connections 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = [
+resource project_connections 'Microsoft.CognitiveServices/accounts/projects/connections@2025-10-01-preview' = [
   for (connection, index) in (connections ?? []): {
     parent: project
     name: connection.name
