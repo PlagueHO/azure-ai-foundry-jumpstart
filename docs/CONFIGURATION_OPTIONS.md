@@ -6,7 +6,7 @@ The configuration options are grouped into the following categories:
 
 - [Create Sample Data](#create-sample-data)
 - [Networking & Isolation](#networking--isolation)
-- [Microsoft Foundry Project](#azure-ai-foundry-project)
+- [Microsoft Foundry Project](#microsoft-foundry-project)
 - [Azure AI Search Service](#azure-ai-search-service)
 - [Identity & Access](#identity--access)
 - [Optional Infrastructure](#optional-infrastructure)
