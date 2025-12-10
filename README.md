@@ -18,7 +18,7 @@ If you just want to get started, jump to the [Deploying](#deploying) section.
 
 By default, this solution accelerator deploys Microsoft Foundry and most of the supporting resources into a *virtual network* using *private endpoints*, *disables public access* and configures *managed identities for services to authenticate* to each other. This aligns to [Microsoft's Secure Future Initiative](https://www.microsoft.com/trust-center/security/secure-future-initiative) and the [Zero Trust security model](https://learn.microsoft.com/security/zero-trust/).
 
-It automates the deployment of the services using the same approach as the instructions on [How to create a secure Microsoft Foundry hub and project with a managed virtual network](https://learn.microsoft.com/azure/ai-foundry/how-to/secure-data-playground) page.
+It automates the deployment of the Microsoft Foundry services and capabilities, optionally into a virtual network using Private Link as described in the [How to configure a private link for Microsoft Foundry (Foundry projects)](https://learn.microsoft.com/en-us/azure/ai-foundry/how-to/configure-private-link?view=foundry) page.
 
 > [!IMPORTANT]
 > Zero-trust with network isolation is the default configuration for this solution accelerator. But you can choose to deploy the resources without a virtual network and public endpoints if you prefer. See the [Configuration Options](#configuration-options) section for more details.
