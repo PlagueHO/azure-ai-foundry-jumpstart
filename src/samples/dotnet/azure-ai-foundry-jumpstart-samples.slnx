@@ -3,7 +3,8 @@
   <Folder Name="/src/samples/" />
   <Folder Name="/src/samples/agent-framework/">
     <Project Path="agent-framework/AzureArchitect/AzureArchitect_Step01_Simple/AzureArchitect_Step01_Simple.csproj" />
-    <Project Path="agent-framework/AzureArchitect/AzureArchitect_Step02_Foundry_AgentService/AzureArchitect_Step02_Foundry_AgentService.csproj" />
+    <Project Path="agent-framework/AzureArchitect/AzureArchitect_Step02a_Foundry_Agent_SingleTurn/AzureArchitect_Step02a_Foundry_Agent_SingleTurn.csproj" />
+    <Project Path="agent-framework/AzureArchitect/AzureArchitect_Step02b_Foundry_Agent_MultiturnConversation/AzureArchitect_Step02b_Foundry_Agent_MultiturnConversation.csproj" />
     <Project Path="agent-framework/AzureArchitect/AzureArchitect_Step03_UsingFunctionTools/AzureArchitect_Step03_UsingFunctionTools.csproj" />
     <Project Path="agent-framework/AzureArchitect/AzureArchitect_Step04_UsingFunctionToolsWithApprovals/AzureArchitect_Step04_UsingFunctionToolsWithApprovals.csproj" />
     <Project Path="agent-framework/AzureArchitect/AzureArchitect_Step05_MCPServer/AzureArchitect_Step05_MCPServer.csproj" />
