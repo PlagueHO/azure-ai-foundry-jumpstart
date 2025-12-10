@@ -148,6 +148,12 @@ import { connectionType } from 'connection/main.bicep'
 @sys.description('Optional. Connections to create in the Cognitive Services account.')
 param connections connectionType[] = []
 
+@sys.description('Optional. The flag to disable stored completions. When true, Azure OpenAI will not store prompts and completions for content filtering and abuse monitoring.')
+param storedCompletionsDisabled bool?
+
+@sys.description('Optional. Specifies the default project (by project name) that is targeted when data plane endpoints are called without a project parameter. Only applicable when allowProjectManagement is true.')
+param defaultProject string?
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -393,11 +399,13 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-10-01-previ
     restrictOutboundNetworkAccess: restrictOutboundNetworkAccess
     userOwnedStorage: userOwnedStorage
     dynamicThrottlingEnabled: dynamicThrottlingEnabled
+    storedCompletionsDisabled: storedCompletionsDisabled
+    defaultProject: defaultProject
   }
 }
 
 @batchSize(1)
-resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [
+resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/deployments@2025-10-01-preview' = [
   for (deployment, index) in (deployments ?? []): {
     parent: cognitiveService
     name: deployment.?name ?? '${name}-deployments'

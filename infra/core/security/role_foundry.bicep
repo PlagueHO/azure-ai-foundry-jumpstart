@@ -132,7 +132,7 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
+resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-10-01-preview' existing = {
   name: foundryName
 }
 
