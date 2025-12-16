@@ -22,11 +22,11 @@
       "type": "stdio",
       "env": {}
     },
-    "Agent Framework Docs": {
+    "agent-framework-docs": {
       "url": "https://gitmcp.io/microsoft/agent-framework",
       "type": "sse"
     },
-    "Azure Verified Module Bicep Docs": {
+    "azure-verified-module-bicep-docs": {
       "type": "sse",
       "url": "https://gitmcp.io/Azure/bicep-registry-modules"
     },
@@ -37,6 +37,10 @@
         "playwright",
         "run-test-mcp-server"
       ]
-    }
+    },
+    "foundry-mcp-remote": { 
+      "type": "http", 
+      "url": "https://mcp.ai.azure.com" 
+    } 
   }
 }
